@@ -10,3 +10,10 @@ This is a repo for implementing the project thesis for the study programme Cyber
 #### Supervisors:
 - Lars Struen Imsland (ITK) lars.imsland@ntnu.no
 - Gisle Otto Eikrem (Equinor) gise@equinor.com
+
+##### Input / output format
+- json file 
+
+### Dependancies:
+
+- OSQP, QP-solver [https://osqp.org/]
