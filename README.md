@@ -11,9 +11,29 @@ This is a repo for implementing the project thesis for the study programme Cyber
 - Lars Struen Imsland (ITK) lars.imsland@ntnu.no
 - Gisle Otto Eikrem (Equinor) gise@equinor.com
 
-##### Input / output format
-- json file 
+##### Input format
+```json  
+{
+ "model": "modelname",
+ "weights": [],
+ "horizon": 10
+}
+``` 
+[Json parser C++](https://linuxhint.com/parse-json-data-cpp/)
+
+##### Output format
+```json  
+{
+ "simulation": [
+    "t0": value,
+    "t1": value,
+    "t2": value,
+    "t3": value,
+    "t4": value,
+    ],
+ "horizon": 10
+}
+``` 
 
 ### Dependancies:
-
 - OSQP, QP-solver [https://osqp.org/]
