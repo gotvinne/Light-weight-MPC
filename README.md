@@ -37,3 +37,13 @@ This is a repo for implementing the project thesis for the study programme Cyber
 
 ### Dependancies:
 - OSQP, QP-solver [https://osqp.org/]
+
+
+### Cmake
+- Navigate to build. 
+  
+```console
+cmake ../
+make
+./light_weight
+```
