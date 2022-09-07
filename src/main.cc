@@ -2,10 +2,11 @@
 
 #include <iostream>
 
-#include "../include/parser.h"
+#include "../include/formatting.h"
 
 int main() {
 
-    std::cout << "Hello world!" << std::endl;
+    json data = parse("../scenarios/test.json");
+    std::cout << data.dump() << std::endl;
     return 0;
 }
