@@ -8,3 +8,7 @@ project(light_weight VERSION 1.0)
 file(GLOB_RECURSE SRC_FILES src/*.cc)
 add_executable(light_weight ${SRC_FILES})
 target_include_directories(light_weight PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+# External code:
+find_package(jsoncpp CONFIG REQUIRED)
+target_link_libraries(light_weight jsoncpp_lib)
