@@ -1,0 +1,1 @@
+/usr/bin/c++     CMakeFiles/light_weight.dir/src/main.cc.o  -o light_weight 
