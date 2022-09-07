@@ -1,8 +1,8 @@
 // Copyright (C) Geir Ola Tvinnereim 2022
 
 #include <iostream>
-#include "json/json.h"
 
+#include "../include/parser.h"
 
 int main() {
 

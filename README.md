@@ -5,6 +5,7 @@ This is a repo for implementing the project thesis for the study programme [Cybe
 [Project thesis description](https://www.itk.ntnu.no/ansatte/imsland_lars/projects2022.html)
 
 The documentation is generated using [Doxygen](https://doxygen.nl/)
+Operation system: Linux
 
 #### Master student: 
 - Geir Ola Tvinnereim gotvinne@stud.ntnu.no
@@ -38,17 +39,23 @@ The documentation is generated using [Doxygen](https://doxygen.nl/)
 ``` 
 
 ### Dependancies:
-- OSQP, QP-solver [https://osqp.org/]
-- [JsonCpp](https://github.com/open-source-parsers/jsoncpp)
-  Downloaded using [vcpkg](https://github.com/Microsoft/vcpkg.git)
+This software is developed using a package manager [Conan](https://conan.io/) and builded using [CMake](https://cmake.org/)
 
+Installing Conan
 ```console
-git clone https://github.com/Microsoft/vcpkg.git
-cd vcpkg
-./bootstrap-vcpkg.sh
-./vcpkg integrate install
-./vcpkg install jsoncpp
+sudo pip install conan
 ```
+
+- OSQP, QP-solver [https://osqp.org/]
+- [nlohmann/json](https://github.com/nlohmann/json)
+
+
+### Run:
+```console
+sh setup.sh
+```
+
+
 
 
 
