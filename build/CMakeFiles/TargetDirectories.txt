@@ -1,3 +1,0 @@
-/home/gotvinne/Documents/Light-weight-MPC/build/CMakeFiles/rebuild_cache.dir
-/home/gotvinne/Documents/Light-weight-MPC/build/CMakeFiles/edit_cache.dir
-/home/gotvinne/Documents/Light-weight-MPC/build/CMakeFiles/light_weight.dir
