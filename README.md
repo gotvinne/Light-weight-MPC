@@ -4,6 +4,8 @@ This is a repo for implementing the project thesis for the study programme Cyber
 
 [Project thesis description](https://www.itk.ntnu.no/ansatte/imsland_lars/projects2022.html)
 
+The documentation is generated using [Doxygen](https://doxygen.nl/)
+
 #### Master student: 
 - Geir Ola Tvinnereim gotvinne@stud.ntnu.no
 
@@ -37,13 +39,16 @@ This is a repo for implementing the project thesis for the study programme Cyber
 
 ### Dependancies:
 - OSQP, QP-solver [https://osqp.org/]
+- [JsonCpp](https://github.com/open-source-parsers/jsoncpp)
+  Downloaded using [vcpkg](https://github.com/Microsoft/vcpkg.git)
 
-
-### Cmake
-- Navigate to build. 
-  
 ```console
-cmake ../
-make
-./light_weight
+git clone https://github.com/Microsoft/vcpkg.git
+cd vcpkg
+./bootstrap-vcpkg.sh
+./vcpkg integrate install
+./vcpkg install jsoncpp
 ```
+
+
+
