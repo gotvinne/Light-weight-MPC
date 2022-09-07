@@ -9,8 +9,12 @@ project(light_weight VERSION 1.0 LANGUAGES CXX)
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)  # Includes the contents of the conanbuildinfo.cmake file.
 conan_basic_setup()  # Prepares the CMakeList.txt for Conan.
 
+# OSQP
+find_package(osqp REQUIRED)
+
 file(GLOB_RECURSE SRC_FILES src/*.cc)
 add_executable(light_weight ${SRC_FILES})
 
 target_include_directories(light_weight PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_link_libraries(light_weight ${CONAN_LIBS})
+target_link_libraries(light_weight PRIVATE osqp::osqp)
