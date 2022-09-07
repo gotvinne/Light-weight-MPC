@@ -46,7 +46,7 @@ Installing Conan
 sudo pip install conan
 ```
 
-- OSQP, QP-solver [https://osqp.org/]
+- OSQP, Operator Splitting Quadratic program [https://osqp.org/]
 - [nlohmann/json](https://github.com/nlohmann/json)
 
 
