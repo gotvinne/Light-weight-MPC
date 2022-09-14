@@ -10,3 +10,4 @@ json parse(std::string filepath) {
     std::ifstream file(filepath);
     return json::parse(file);
 }
+
