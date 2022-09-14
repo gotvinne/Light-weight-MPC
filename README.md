@@ -36,7 +36,8 @@ Step response MIMO model without inequality constraints:
          "S": [[S11, S12, S13, ... , S1N],
                [S21, S22, S23, ... , S2N], 
                ... , 
-               [S n_MV, ... , S n_MV N]] 
+               [S n_MV, ... , S n_MV N]],
+         "r": [r1, r2, r3, ... , rT] (Setpoint trajectory)
       }, 
          ... ,
       { 
@@ -46,7 +47,8 @@ Step response MIMO model without inequality constraints:
          "S": [[S11, S12, S13, ... , S1N],
                [S21, S22, S23, ... , S2N], 
                ... , 
-               [S n_MV, ... , S n_MV N]] 
+               [S n_MV, ... , S n_MV N]],
+         "r": [r1, r2, r3, ... , rT] (Setpoint trajectory)
       }
    ]
  }, 
