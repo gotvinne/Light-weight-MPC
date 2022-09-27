@@ -15,67 +15,80 @@ Operating system: Linux
 - Gisle Otto Eikrem (Equinor) gise@equinor.com
 
 ##### Input format
-Step response MIMO model without inequality constraints:
-```json  
+- A json file defining the system (states, inputs, step coefficients and references )
+- A scenario file defining the MPC applied to the corresponding system file. 
+  
+*System file*:
+```json
 {
- "system": "modelname", (sr - step response / ss - state space)
- "T": int, (Simulation steps)
- 
- "model": {
-   "n_CV": int,
-   "n_MV": int,
-   "N": int, (#Step-response coefficients)
- },
+   "system": "system_name", (sr - step response / ss - state space)
+   "model": {
+      "n_CV": int,
+      "n_MV": int,
+      "N": int, (#Step-response coefficients)
+   },
 
- "CV": { 
-   [
+   "CV": [
       { 
          "description": "state", (Name of state)
-         "id": int,
+         "id": "x[1]",
          "init": double,
          "S": [[S11, S12, S13, ... , S1N],
                [S21, S22, S23, ... , S2N], 
                ... , 
                [S n_MV, ... , S n_MV N]],
-         "r": [r1, r2, r3, ... , rT] (Setpoint trajectory)
       }, 
          ... ,
       { 
          "description": "state", (Name of state)
-         "id": int,
+         "id": "x[2]",
          "init": double,
          "S": [[S11, S12, S13, ... , S1N],
                [S21, S22, S23, ... , S2N], 
                ... , 
                [S n_MV, ... , S n_MV N]],
-         "r": [r1, r2, r3, ... , rT] (Setpoint trajectory)
+         
       }
-   ]
- }, 
-
- "MV": { 
-   [
+   ],
+   
+   "MV": [
       {
          "description": "input", (Name of input)
-         "id": int, 
-         "init": double 
+         "id": "u[1]", 
+         "init": double,
+         "r": [r1, r2, r3, ... , rT] (Setpoint trajectory)
       },
          ... , 
       {
          "description": "input", (Name of input)
-         "id": int, 
-         "init": double 
+         "id": "u[2]", 
+         "init": double,
+         "r": [r1, r2, r3, ... , rT] (Setpoint trajectory)
       } 
-   ], 
- },
+   ],                         
+}
+```
+
+*Scenario file*:
+```json  
+{
+ "scenario": "scenario_name", 
+ "T": int, (Simulation steps),
+ "system": "system_name", (sr - step response / ss - state space)
  
- "mpc": {
+ "MPC": {
    "P": int, (Prediction horizon)
    "M": int, (Control horizon)
-   "Q": [Q1, Q2, ... , QP],
-   "R": [R1, R2, ... , RP],
+   "W": int, (Time delay)
+   "Q": [Q1, Q2, ... , QP], (Positive definite - diagonal matrix with positive elements)
+   "R": [R1, R2, ... , RP], (Positive definite)
    "ρ": int (Slack variable)
  }
+
+ "c_i": [
+   "x[1]": {low, high}, (int)
+   "u[1]": {low, high}, (int)
+ ]
 }
 ``` 
 [Json parser C++](https://linuxhint.com/parse-json-data-cpp/)
