@@ -8,6 +8,7 @@ make
 if [ $? -eq 0 ]; then
     echo 
     ./bin/light_weight
+    echo
 else
     RED='\033[0;31m'
     NC='\033[0m' 

@@ -11,3 +11,6 @@ json parse(std::string filepath) {
     return json::parse(file);
 }
 
+void create_empty_scenario(std::string filename) {
+    
+}
