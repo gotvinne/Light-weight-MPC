@@ -11,8 +11,8 @@ Operating system: Linux
 - Geir Ola Tvinnereim gotvinne@stud.ntnu.no
 
 #### Supervisors:
-- Lars Struen Imsland (ITK) lars.imsland@ntnu.no
-- Gisle Otto Eikrem (Equinor) gise@equinor.com
+- Prof. Lars Struen Imsland (ITK) lars.imsland@ntnu.no
+- Prof. Gisle Otto Eikrem (Equinor) gise@equinor.com
 
 ##### Input format
 - A json file defining the system (states, inputs, step coefficients and references )
@@ -41,7 +41,7 @@ Operating system: Linux
          ... ,
       { 
          "description": "state", (Name of state)
-         "id": "x[2]",
+         "id": "x[n_CV]",
          "init": double,
          "S": [[S11, S12, S13, ... , S1N],
                [S21, S22, S23, ... , S2N], 
@@ -61,7 +61,7 @@ Operating system: Linux
          ... , 
       {
          "description": "input", (Name of input)
-         "id": "u[2]", 
+         "id": "u[n_MV]", 
          "init": double,
          "r": [r1, r2, r3, ... , rT] (Setpoint trajectory)
       } 
@@ -83,11 +83,15 @@ Operating system: Linux
    "Q": [Q1, Q2, ... , QP], (Positive definite - diagonal matrix with positive elements)
    "R": [R1, R2, ... , RP], (Positive definite)
    "ρ": int (Slack variable)
- }
+ },
 
  "c_i": [
-   "x[1]": {low, high}, (int)
-   "u[1]": {low, high}, (int)
+   {"x[1]": [low, high]}, (int)
+   ...,
+   {"x[n_CV]": [low, high]}, (int)
+   {"u[1]": [low, high]}, (int)
+   ...,
+   {"u[n_MV]": [low, high]}, (int)
  ]
 }
 ``` 
@@ -96,28 +100,27 @@ Operating system: Linux
 ##### Output format
 ```json  
 {
- "CV": 
-   [ 
+ "CV": [ 
       {
          "description": "state",
-         "sim": [x1, x2, x3, ... , xT] 
+         "y[1]": [x1, x2, x3, ... , xT] 
       }, 
          ... , 
       { 
          "description": "state",
-         "sim": [x1, x2, x3, ... , xT] 
+         "y[n_CV]": [x1, x2, x3, ... , xT] 
       }
-   ]
- "MV": 
-   [ 
+   ],
+
+ "MV": [ 
       {
          "description": "input",
-         "sim": [u1, u2, u3, ... , uT] 
+         "u[1] ": [u1, u2, u3, ... , uT] 
       }, 
          ... , 
       { 
          "description": "input",
-         "sim": [u1, u2, u3, ... , uT] 
+         "u[n_MV]": [u1, u2, u3, ... , uT] 
       }
    ]
 }
