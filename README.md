@@ -17,6 +17,8 @@ Operating system: Linux
 ##### Input format
 - A json file defining the system (states, inputs, step coefficients and references )
 - A scenario file defining the MPC applied to the corresponding system file. 
+
+[Json parser C++](https://linuxhint.com/parse-json-data-cpp/)
   
 *System file*:
 ```json
@@ -95,7 +97,6 @@ Operating system: Linux
  ]
 }
 ``` 
-[Json parser C++](https://linuxhint.com/parse-json-data-cpp/)
 
 ##### Output format
 ```json  
@@ -129,12 +130,8 @@ Operating system: Linux
 ### Dependancies:
 This software is developed using a package manager [Conan](https://conan.io/) and builded using [CMake](https://cmake.org/)
 
-Installing Conan
-```console
-sudo pip install conan
-```
-
-- OSQP, Operator Splitting Quadratic program [https://osqp.org/]
+- [OSQP](https://osqp.org/), Operator Splitting Quadratic program (Source code)
+- [osqp-eigen](https://github.com/robotology/osqp-eigen), C++ wrapper for OSQP, installed via [Conda](https://www.anaconda.com/products/distribution) 
 - [nlohmann/json](https://github.com/nlohmann/json)
 
 
