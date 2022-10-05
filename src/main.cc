@@ -5,6 +5,7 @@
 
 #include "../include/formatting.h"
 #include "../include/step_coefficients.h"
+#include "OSQP/example.cc"
 
 int main() {
 
@@ -14,8 +15,8 @@ int main() {
     float theta = 3;
     int N = 80;
 
-    std::vector<float> vec = step_coefficients(k, tau, theta, N);
-    print_coefficients(vec);
+    //std::vector<float> vec = step_coefficients(k, tau, theta, N);
+    //print_coefficients(vec);
     
 
     // json data = parse("../scenarios/test.json");
