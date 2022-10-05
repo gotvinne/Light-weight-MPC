@@ -135,10 +135,13 @@ This software is developed using a package manager [Conan](https://conan.io/) an
 - [nlohmann/json](https://github.com/nlohmann/json)
 
 
-### Run:
+### Run project: 
 ```console
 sh setup.sh
 ```
+
+### LICENCE:
+Licence of osqp-eigen
 
 
 
