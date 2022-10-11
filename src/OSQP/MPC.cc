@@ -8,12 +8,7 @@
 
 
 // osqp-eigen
-#include "OsqpEigen/OsqpEigen.h"
-
-// eigen
-#include <Eigen/Dense>
-
-#include <iostream>
+#include "../../include/example_mpc.h"
 
 void setDynamicsMatrices(Eigen::Matrix<double, 12, 12> &a, Eigen::Matrix<double, 12, 4> &b)
 {

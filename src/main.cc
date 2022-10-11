@@ -5,7 +5,7 @@
 
 #include "../include/formatting.h"
 #include "../include/step_coefficients.h"
-#include "OSQP/MPC.cc"
+#include "../include/example_mpc.h"
 
 int main() {
 
