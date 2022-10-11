@@ -2,7 +2,7 @@
 cd build
 
 conan install ..
-cmake ..
+cmake .. -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX
 make
 
 if [ $? -eq 0 ]; then
