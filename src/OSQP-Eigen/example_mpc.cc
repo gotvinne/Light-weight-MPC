@@ -1,4 +1,3 @@
-
 /**
  * @file MPCExample.cpp
  * @author Giulio Romualdi

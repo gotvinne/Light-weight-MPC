@@ -8,6 +8,12 @@
 
 using json = nlohmann::json;
 
+/**
+ * @brief 
+ * 
+ * @param filepath 
+ * @return json 
+ */
 json parse(std::string filepath);
 
 #endif  // FORMATTING_H
