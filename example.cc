@@ -276,7 +276,7 @@ int solver()
     for (int i = 0; i < numberOfSteps; i++){
 
         // solve the QP problem
-        if(solver.solveProblem() != OsqpEigen::ErrorExitFlag::NoError) return 1;
+        if(solver.solveProblem() != OsqpEigen::ErrorExitFlag::NoError) return 1; // Getting error here. 
 
         // get the controller input
         QPSolution = solver.getSolution();

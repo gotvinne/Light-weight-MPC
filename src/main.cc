@@ -5,7 +5,7 @@
 
 #include "../include/formatting.h"
 #include "../include/step_coefficients.h"
-#include "OSQP/example.cc"
+#include "OSQP/MPC.cc"
 
 int main() {
 
@@ -14,6 +14,8 @@ int main() {
     float tau = 15;
     float theta = 3;
     int N = 80;
+
+    solver();
 
     //std::vector<float> vec = step_coefficients(k, tau, theta, N);
     //print_coefficients(vec);
