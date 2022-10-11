@@ -128,7 +128,7 @@ Operating system: Linux
 ``` 
 
 ### Dependancies:
-This software is developed using a package manager [Conan](https://conan.io/) and builded using [CMake](https://cmake.org/)
+This software is developed using a environment and package manager [Anaconda](https://www.anaconda.com/products/distribution) and builded using [CMake](https://cmake.org/)
 
 - [OSQP](https://osqp.org/), Operator Splitting Quadratic program (Source code)
 - [osqp-eigen](https://github.com/robotology/osqp-eigen), C++ wrapper for OSQP, installed via [Conda](https://www.anaconda.com/products/distribution) 
@@ -136,6 +136,13 @@ This software is developed using a package manager [Conan](https://conan.io/) an
 
 
 ### Run project: 
+From project root: 
+
+- Use Anaconda in order to create environment:
+```console
+conda env create -f env.yml
+```
+- Build and run program
 ```console
 sh setup.sh
 ```

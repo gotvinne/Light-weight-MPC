@@ -1,7 +1,6 @@
 #!/bin/bash 
 cd build
 
-conan install ..
 cmake .. -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX
 make
 
