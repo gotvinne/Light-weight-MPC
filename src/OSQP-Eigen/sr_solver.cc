@@ -12,6 +12,6 @@ void sr_solver() {
 
     OsqpEigen::Solver solver;
     
-    int sim_steps 
+    int sim_steps; 
     //int n = 
 }

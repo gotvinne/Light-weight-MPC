@@ -5,7 +5,7 @@
 
 #include "../include/formatting.h"
 #include "../include/step_coefficients.h"
-#include "../include/example_mpc.h"
+#include "../include/sr_solver.h"
 
 int main() {
 
@@ -15,7 +15,7 @@ int main() {
     float theta = 3;
     int N = 80;
 
-    solver();
+    sr_solver();
 
     //std::vector<float> vec = step_coefficients(k, tau, theta, N);
     //print_coefficients(vec);

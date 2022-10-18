@@ -14,4 +14,4 @@
  */
 void sr_solver();
 
-#endif SR_SOLVER_H
+#endif // SR_SOLVER_H

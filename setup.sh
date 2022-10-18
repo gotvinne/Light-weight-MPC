@@ -1,6 +1,11 @@
-#!/bin/bash 
-cd build
+#!/bin/bash
+# Check if the folder exists
+if [[ ! -d "/build" ]]
+then
+    mkdir build
+fi
 
+cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX
 make
 
