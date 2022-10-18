@@ -15,6 +15,26 @@ int main() {
     float theta = 3;
     int N = 80;
 
+    /**
+     Read
+     name
+     T
+     scenario
+     system
+
+     Q_
+     R_
+
+     W 
+     P
+     M
+
+     S
+
+     constraints
+
+    **/ 
+
     sr_solver();
 
     //std::vector<float> vec = step_coefficients(k, tau, theta, N);
