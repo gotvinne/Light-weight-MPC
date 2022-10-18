@@ -1,5 +1,4 @@
 {
-    "system": "sr_siso_test",
     "model": {
         "n_CV": 1,
         "n_MV": 1,

@@ -3,9 +3,13 @@
 #include <iostream>
 #include <string>
 
-#include "../include/formatting.h"
-#include "../include/step_coefficients.h"
-#include "../include/sr_solver.h"
+#include "formatting.h"
+#include "step_coefficients.h"
+#include "sr_solver.h"
+#include "parse.h"
+
+#include <array>
+#include <string>
 
 int main() {
 
@@ -14,6 +18,12 @@ int main() {
     float tau = 15;
     float theta = 3;
     int N = 80;
+
+    std::string filepath = "../data/systems/sr_siso_test.json";
+    json data = read_json(filepath);
+    std::array<int, 3> model = system_model_data(data);
+    
+    print_container(model);
 
     /**
      Read
