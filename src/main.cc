@@ -19,6 +19,8 @@ int main() {
     float theta = 3;
     int N = 80;
 
+    const int T = 50; 
+
     std::string filepath = "../data/systems/sr_siso_test.json";
     json data = read_json(filepath);
     std::array<int, 3> model = system_model_data(data);

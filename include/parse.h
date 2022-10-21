@@ -55,14 +55,22 @@ const std::string kC = "c";
 json ReadJson(std::string filepath);
 
 // System data
-struct IOVariableData {
-    std::string Description; 
+struct StateData {
+    std::string State; 
     std::string Id;
     std::float Init;
     Eigen::MatrixXf S;
+
+    StateData(std::string state, std::string id, float init, int n_MV, int n);
+}
+
+struct InputData {
+    std::string Input; 
+    std::string Id;
+    std::float Init;
     Eigen::ArrayXf Ref;
 
-    IOVariableInfo(std::string description, std::string id, float init, int n_MV, int n);
+    InputData(std::string input, std::string id, float init, int T);
 }
 
 std::array<int,kModelParam> SystemModelData(json data);
@@ -79,6 +87,9 @@ struct MPCConfig {
 
     MPCConfig(int p, int m, int w, float ro, int n_CV, int n_MV); 
 }
+
+Eigen::ArrayXf ScenarioUpperConstraintData(json data);
+Eigen::ArrayXf ScenarioLowerConstraintData(json data);
 void PrintContainer(std::array<int, 3> container);
 
 

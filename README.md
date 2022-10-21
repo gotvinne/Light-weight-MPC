@@ -15,10 +15,9 @@ Operating system: Linux
 - Prof. Gisle Otto Eikrem (Equinor) gise@equinor.com
 
 ##### Input format
-- A json file defining the system (states, inputs, step coefficients and references )
+- A json file defining the system (states, inputs, step coefficients and references)
 - A scenario file defining the MPC applied to the corresponding system file. 
 
-[Json parser C++](https://linuxhint.com/parse-json-data-cpp/)
   
 *System file (sr - step response / ss - state space)*:
 ```json
@@ -31,8 +30,8 @@ Operating system: Linux
 
    "CV": [
       { 
-         "description": "state", (Name of state)
-         "id": "x[1]",
+         "state": "state_name",
+         "id": "y[1]",
          "init": float,
          "S": [[S11, S12, S13, ... , S1N],
                [S21, S22, S23, ... , S2N], 
@@ -41,8 +40,8 @@ Operating system: Linux
       }, 
          ... ,
       { 
-         "description": "state", (Name of state)
-         "id": "x[n_CV]",
+         "state": "state_name",
+         "id": "y[n_CV]",
          "init": float,
          "S": [[S11, S12, S13, ... , S1N],
                [S21, S22, S23, ... , S2N], 
@@ -54,14 +53,14 @@ Operating system: Linux
    
    "MV": [
       {
-         "description": "input", (Name of input)
+         "input": "input_name", 
          "id": "u[1]", 
          "init": float,
          "u": [r1, r2, r3, ... , uT] (Setpoint trajectory)
       },
          ... , 
       {
-         "description": "input", (Name of input)
+         "input": "input_name",
          "id": "u[n_MV]", 
          "init": float,
          "u": [u1, u2, u3, ... , uT] (Setpoint trajectory)
@@ -74,7 +73,6 @@ Operating system: Linux
 ```json  
 {
  "system": "system_name", (sr - step response / ss - state space)
- "T": int, (Simulation steps),
  
  "MPC": {
    "P": int, (Prediction horizon)
@@ -86,12 +84,16 @@ Operating system: Linux
  },
 
  "c_i": [
-   {"x[1]": [low, high]}, (float)
+   {"du[1]": [low, high]}, (float)
    ...,
-   {"x[n_CV]": [low, high]}, (float)
+   {"du[n_MV]": [low, high]}, (float)
    {"u[1]": [low, high]}, (float)
    ...,
    {"u[n_MV]": [low, high]}, (float)
+
+   {"y[1]": [low, high]}, (float)
+   ...,
+   {"y[n_CV]": [low, high]} (float)
  ]
 }
 ``` 
@@ -100,25 +102,25 @@ Operating system: Linux
 ```json  
 {
  "CV": [ 
-      {
-         "description": "state",
-         "y[1]": [x1, x2, x3, ... , xT] 
+      {  // This is only the predicted states, the simulation uses a model.
+         "state": "state_name",
+         "y_hat[1]": [y1, y2, y3, ... , yT] 
       }, 
          ... , 
       { 
-         "description": "state",
-         "y[n_CV]": [x1, x2, x3, ... , xT] 
+         "state": "state_name",
+         "y_hat[n_CV]": [y1, y2, y3, ... , yT] 
       }
    ],
 
  "MV": [ 
       {
-         "description": "input",
+         "input": "input_name",
          "u[1] ": [u1, u2, u3, ... , uT] 
       }, 
          ... , 
       { 
-         "description": "input",
+         "input": "input_name",
          "u[n_MV]": [u1, u2, u3, ... , uT] 
       }
    ]
