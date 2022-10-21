@@ -8,6 +8,7 @@
 #include "parse.h"
 
 #include <nlohmann/json.hpp>
+#include <Eigen/Dense>
 
 #include <string>
 #include <iostream>
@@ -27,6 +28,12 @@ void print_container(std::array<int,3> container) {
     for (auto ptr = container.begin(); ptr != container.end(); ptr++) {
         std::cout << *ptr << std::endl;
     }
+}
+
+IOVariableInfo::IOVariableInfo(std::string description, std::string id, float init,
+                                int n_MV, int N) : description{description}, id{id}, init{init} {
+    S = Eigen::MatrixXd::Zero(n_NM, N);
+    // Load data in Matrix                                
 }
 
 

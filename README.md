@@ -74,9 +74,8 @@ Operating system: Linux
 *Scenario file*:
 ```json  
 {
- "scenario": "scenario_name", 
- "T": int, (Simulation steps),
  "system": "system_name", (sr - step response / ss - state space)
+ "T": int, (Simulation steps),
  
  "MPC": {
    "P": int, (Prediction horizon)
