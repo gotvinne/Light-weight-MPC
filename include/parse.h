@@ -19,7 +19,7 @@
 
 using json = nlohmann::json;
 
-// system file specifiers
+// ------- System file specifiers ------- 
 const int kModelParam = 3;
 
 const std::string kModel = "model";
@@ -34,9 +34,9 @@ const std::string kDescription = "description";
 const std::string kId = "id";
 const std::string kInit = "init";
 const std::string kS = "S"; 
-const std::string kR = "r";
+const std::string kR = "u";
 
-// scenario file specifiers
+// ------- Scenario file specifiers ------- 
 const std::string kSystem = "system";
 const std::string kT = "T";
 
@@ -49,22 +49,37 @@ const std::string kR = "R";
 const std::string kRo = "ro";
 
 const std::string kC = "c"; 
-//
 
-struct IOVariableInfo {
-    std::string description; 
-    std::string id;
-    std::float init;
+// ------- ------- ------- ------- ------- 
+
+json ReadJson(std::string filepath);
+
+// System data
+struct IOVariableData {
+    std::string Description; 
+    std::string Id;
+    std::float Init;
     Eigen::MatrixXf S;
+    Eigen::ArrayXf Ref;
 
-    IOVariableInfo(std::string description, std::string id, float init, int n_MV, int N);
+    IOVariableInfo(std::string description, std::string id, float init, int n_MV, int n);
 }
 
-json read_json(std::string filepath);
-std::array<int,kModelParam> system_model_data(json data);
+std::array<int,kModelParam> SystemModelData(json data);
 
-void print_container(std::array<int,3> container);
+// Scenario data
+struct MPCConfig {
+    int P;
+    int M;
+    int W; 
 
+    Eigen::ArrayXf Q;
+    Eigen::ArrayXf R; 
+    float Ro; 
+
+    MPCConfig(int p, int m, int w, float ro, int n_CV, int n_MV); 
+}
+void PrintContainer(std::array<int, 3> container);
 
 
 #endif  // PARSE_H

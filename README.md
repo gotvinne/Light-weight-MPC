@@ -20,10 +20,9 @@ Operating system: Linux
 
 [Json parser C++](https://linuxhint.com/parse-json-data-cpp/)
   
-*System file*:
+*System file (sr - step response / ss - state space)*:
 ```json
 {
-   "system": "system_name", (sr - step response / ss - state space)
    "model": {
       "n_CV": int,
       "n_MV": int,
@@ -34,7 +33,7 @@ Operating system: Linux
       { 
          "description": "state", (Name of state)
          "id": "x[1]",
-         "init": double,
+         "init": float,
          "S": [[S11, S12, S13, ... , S1N],
                [S21, S22, S23, ... , S2N], 
                ... , 
@@ -44,7 +43,7 @@ Operating system: Linux
       { 
          "description": "state", (Name of state)
          "id": "x[n_CV]",
-         "init": double,
+         "init": float,
          "S": [[S11, S12, S13, ... , S1N],
                [S21, S22, S23, ... , S2N], 
                ... , 
@@ -57,15 +56,15 @@ Operating system: Linux
       {
          "description": "input", (Name of input)
          "id": "u[1]", 
-         "init": double,
-         "r": [r1, r2, r3, ... , rT] (Setpoint trajectory)
+         "init": float,
+         "u": [r1, r2, r3, ... , uT] (Setpoint trajectory)
       },
          ... , 
       {
          "description": "input", (Name of input)
          "id": "u[n_MV]", 
-         "init": double,
-         "r": [r1, r2, r3, ... , rT] (Setpoint trajectory)
+         "init": float,
+         "u": [u1, u2, u3, ... , uT] (Setpoint trajectory)
       } 
    ],                         
 }
@@ -83,16 +82,16 @@ Operating system: Linux
    "W": int, (Time delay)
    "Q": [Q1, Q2, ... , QP], (Positive definite - diagonal matrix with positive elements)
    "R": [R1, R2, ... , RP], (Positive definite)
-   "ρ": int (Slack variable)
+   "ρ": float (Slack variable)
  },
 
  "c_i": [
-   {"x[1]": [low, high]}, (int)
+   {"x[1]": [low, high]}, (float)
    ...,
-   {"x[n_CV]": [low, high]}, (int)
-   {"u[1]": [low, high]}, (int)
+   {"x[n_CV]": [low, high]}, (float)
+   {"u[1]": [low, high]}, (float)
    ...,
-   {"u[n_MV]": [low, high]}, (int)
+   {"u[n_MV]": [low, high]}, (float)
  ]
 }
 ``` 
