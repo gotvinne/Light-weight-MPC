@@ -59,7 +59,7 @@ struct StateData {
     float Init;
     Eigen::MatrixXf S;
 
-    StateData(json data, int n_MV, int n);
+    StateData(json sys_data, int n_MV, int n);
 };
 
 struct InputData {
@@ -68,10 +68,10 @@ struct InputData {
     float Init;
     Eigen::ArrayXf Ref;
 
-    InputData(json data, int T);
+    InputData(json sys_data, int T);
 };
 
-std::array<int,kModelParam> SystemModelData(json data);
+std::array<int,kModelParam> ModelData(json sys_data);
 
 // Scenario data
 struct MPCConfig {
@@ -84,12 +84,10 @@ struct MPCConfig {
     float Ro; 
     bool bias_update;
 
-    MPCConfig(json data, int n_CV, int n_MV); 
+    MPCConfig(json sce_data, int n_CV, int n_MV); 
 };
 
-Eigen::ArrayXf ScenarioUpperConstraintData(json data);
-Eigen::ArrayXf ScenarioLowerConstraintData(json data);
+Eigen::ArrayXf ConstraintData(json sce_data, bool upper);
 void PrintContainer(std::array<int, 3> container);
-
 
 #endif  // PARSE_H

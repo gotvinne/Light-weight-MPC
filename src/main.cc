@@ -22,15 +22,15 @@ int main() {
 
     const int T = 50; // THIS is an input variable, MPC horizon. 
 
-    std::string system_filepath = "../data/systems/sr_siso_test.json";
-    std::string scenario_filepath = "../data/scenarios/siso_test.json";
-    json system_data = ReadJson(system_filepath);
-    json scenario_data = ReadJson(scenario_filepath);
+    std::string sys_filepath = "../data/systems/sr_siso_test.json";
+    std::string sce_filepath = "../data/scenarios/siso_test.json";
 
-    std::cout << typeid(scenario_data[kC]).name() << std::endl;
-    
-    
+    json sys_data = ReadJson(sys_filepath);
+    json sce_data = ReadJson(sce_filepath);
 
+    std::cout << sce_data[kC].size() << std::endl;
+    json j_arr(sce_data.at(kC));
+    
 
     /**
      Read
@@ -52,7 +52,7 @@ int main() {
 
     **/ 
 
-    sr_solver();
+    //sr_solver();
 
     //std::vector<float> vec = step_coefficients(k, tau, theta, N);
     //print_coefficients(vec);
