@@ -11,6 +11,7 @@
 #include <array>
 #include <string>
 
+#include <typeinfo> // For type checking
 int main() {
 
     // Testing step model:
@@ -19,13 +20,17 @@ int main() {
     float theta = 3;
     int N = 80;
 
-    const int T = 50; 
+    const int T = 50; // THIS is an input variable, MPC horizon. 
 
-    std::string filepath = "../data/systems/sr_siso_test.json";
-    json data = read_json(filepath);
+    std::string system_filepath = "../data/systems/sr_siso_test.json";
+    std::string scenario_filepath = "../data/scenarios/siso_test.json";
+    json system_data = ReadJson(system_filepath);
+    json scenario_data = ReadJson(scenario_filepath);
+
+    std::cout << typeid(scenario_data[kC]).name() << std::endl;
     
     
-    print_container(model);
+
 
     /**
      Read

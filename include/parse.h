@@ -25,20 +25,17 @@ const int kModelParam = 3;
 const std::string kModel = "model";
 const std::string kN_CV = "n_CV";
 const std::string kN_MV = "n_MV";
-
 const std::string kN = "N";
-const std::string kMV = "MV";
-const std::string kCV = "CV";
 
-const std::string kDescription = "description";
+const std::string kState = "state";
+const std::string kInput = "input";
 const std::string kId = "id";
 const std::string kInit = "init";
 const std::string kS = "S"; 
-const std::string kR = "u";
+const std::string kU = "u";
 
 // ------- Scenario file specifiers ------- 
 const std::string kSystem = "system";
-const std::string kT = "T";
 
 const std::string kMPC = "MPC";
 const std::string kP = "P";
@@ -47,8 +44,9 @@ const std::string kW = "W";
 const std::string kQ = "Q";
 const std::string kR = "R";
 const std::string kRo = "ro";
+const std::string kBu = "bias update";
 
-const std::string kC = "c"; 
+const std::string kC = "c_i"; 
 
 // ------- ------- ------- ------- ------- 
 
@@ -58,20 +56,20 @@ json ReadJson(std::string filepath);
 struct StateData {
     std::string State; 
     std::string Id;
-    std::float Init;
+    float Init;
     Eigen::MatrixXf S;
 
     StateData(json data, int n_MV, int n);
-}
+};
 
 struct InputData {
     std::string Input; 
     std::string Id;
-    std::float Init;
+    float Init;
     Eigen::ArrayXf Ref;
 
     InputData(json data, int T);
-}
+};
 
 std::array<int,kModelParam> SystemModelData(json data);
 
@@ -87,7 +85,7 @@ struct MPCConfig {
     bool bias_update;
 
     MPCConfig(json data, int n_CV, int n_MV); 
-}
+};
 
 Eigen::ArrayXf ScenarioUpperConstraintData(json data);
 Eigen::ArrayXf ScenarioLowerConstraintData(json data);

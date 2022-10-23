@@ -44,17 +44,14 @@ MPCConfig::MPCConfig(json data, int n_CV, int n_MV) {
     // Load Q and R
 }
 
-Eigen::ArrayXf ScenarioUpperConstraintData(json data) {
-    
-}
-
-Eigen::ArrayXf ScenarioLowerConstraintData(json data) {
-    
-}
+//Eigen::ArrayXf ScenarioUpperConstraintData(json data) {
+  //  return 0;
+//}
 
 //Eigen::ArrayXf ScenarioLowerConstraintData(json data) {
-
+  //  return 0;
 //}
+
 
 
 

@@ -80,7 +80,8 @@ Operating system: Linux
    "W": int, (Time delay)
    "Q": [Q1, Q2, ... , QP], (Positive definite - diagonal matrix with positive elements)
    "R": [R1, R2, ... , RP], (Positive definite)
-   "Ro": float (Slack variable)
+   "Ro": float, (Slack variable)
+   "bias update": bool
  },
 
  "c_i": [
