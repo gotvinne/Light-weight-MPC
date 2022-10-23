@@ -80,7 +80,7 @@ Operating system: Linux
    "W": int, (Time delay)
    "Q": [Q1, Q2, ... , QP], (Positive definite - diagonal matrix with positive elements)
    "R": [R1, R2, ... , RP], (Positive definite)
-   "ρ": float (Slack variable)
+   "Ro": float (Slack variable)
  },
 
  "c_i": [
@@ -90,13 +90,21 @@ Operating system: Linux
    {"u[1]": [low, high]}, (float)
    ...,
    {"u[n_MV]": [low, high]}, (float)
-
    {"y[1]": [low, high]}, (float)
    ...,
    {"y[n_CV]": [low, high]} (float)
  ]
 }
 ``` 
+
+- Simulation without slack variables: 
+```json
+"Ro": null 
+```
+- Simulation without integral effect:
+```json
+"bias update": false 
+```
 
 ##### Output format
 ```json  
