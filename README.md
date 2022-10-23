@@ -144,8 +144,8 @@ conda install -c anaconda cmake
 ```
 
 - [OSQP](https://osqp.org/), Operator Splitting Quadratic program (Source code)
-- [osqp-eigen](https://github.com/robotology/osqp-eigen), C++ wrapper for OSQP, installed via [Conda](https://www.anaconda.com/products/distribution) 
-- [nlohmann/json](https://github.com/nlohmann/json)
+- [osqp-eigen](https://github.com/robotology/osqp-eigen), C++ wrapper for OSQP 
+- [nlohmann/json](https://json.nlohmann.me/api/basic_json/)
 
 
 ### Run project: 
