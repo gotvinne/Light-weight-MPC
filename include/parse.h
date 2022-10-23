@@ -50,7 +50,7 @@ const std::string kC = "c_i";
 
 // ------- ------- ------- ------- ------- 
 
-json ReadJson(std::string filepath);
+json ReadJson(const std::string& filepath);
 
 // System data
 struct StateData {
@@ -58,8 +58,7 @@ struct StateData {
     std::string Id;
     float Init;
     Eigen::MatrixXf S;
-
-    StateData(json sys_data, int n_MV, int n);
+    StateData(const json& sys_data, int n_MV, int n);
 };
 
 struct InputData {
@@ -67,11 +66,12 @@ struct InputData {
     std::string Id;
     float Init;
     Eigen::ArrayXf Ref;
-
-    InputData(json sys_data, int T);
+    InputData(const json& sys_data, int T);
 };
 
-std::array<int,kModelParam> ModelData(json sys_data);
+std::array<int,kModelParam> ModelData(const json& sys_data);
+void ParseSystemData(const json& sys_data, std::array<int, kModelParam>& model_param,
+                    StateData& state_data, InputData& input_data); 
 
 // Scenario data
 struct MPCConfig {
@@ -83,11 +83,13 @@ struct MPCConfig {
     Eigen::ArrayXf R; 
     float Ro; 
     bool bias_update;
-
-    MPCConfig(json sce_data, int n_CV, int n_MV); 
+    MPCConfig(const json& sce_data, int n_CV, int n_MV); 
 };
 
-Eigen::ArrayXf ConstraintData(json sce_data, bool upper);
+Eigen::ArrayXf ConstraintData(const json& sce_data, bool upper);
+void ParseScenarioData(const json& sce_data, std::string& system, MPCConfig& mpc_conf, 
+                        Eigen::ArrayXf upper_constraints, Eigen::ArrayXf lower_constraints,
+                        int n_CV, int n_MV);
 void PrintContainer(std::array<int, 3> container);
 
 #endif  // PARSE_H
