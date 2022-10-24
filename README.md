@@ -31,7 +31,6 @@ Operating system: Linux
    "CV": [
       { 
          "state": "state_name",
-         "id": "y[1]",
          "init": float,
          "S": [[S11, S12, S13, ... , S1N],
                [S21, S22, S23, ... , S2N], 
@@ -41,7 +40,6 @@ Operating system: Linux
          ... ,
       { 
          "state": "state_name",
-         "id": "y[n_CV]",
          "init": float,
          "S": [[S11, S12, S13, ... , S1N],
                [S21, S22, S23, ... , S2N], 
@@ -54,14 +52,12 @@ Operating system: Linux
    "MV": [
       {
          "input": "input_name", 
-         "id": "u[1]", 
          "init": float,
          "u": [r1, r2, r3, ... , uT] (Setpoint trajectory)
       },
          ... , 
       {
          "input": "input_name",
-         "id": "u[n_MV]", 
          "init": float,
          "u": [u1, u2, u3, ... , uT] (Setpoint trajectory)
       } 
@@ -100,7 +96,7 @@ Operating system: Linux
 
 - Simulation without slack variables: 
 ```json
-"Ro": null 
+"Ro": 0
 ```
 - Simulation without integral effect:
 ```json
