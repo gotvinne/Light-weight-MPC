@@ -8,7 +8,7 @@
 
       "Q": [1],
       "R": [1], 
-      "Ro": null,
+      "Ro": 0,
       "bias update": false
     },
 
