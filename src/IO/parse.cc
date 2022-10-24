@@ -69,7 +69,7 @@ MPCConfig::MPCConfig(const json& sce_data, int n_CV, int n_MV) {
     } 
 }
 
-Eigen::ArrayXf ConstraintData(const json& sce_data, Eigen::ArrayXf& arr, bool upper) {
+void ConstraintData(const json& sce_data, Eigen::ArrayXf& arr, bool upper) {
     try {
         json j_arr(sce_data.at(kC));
         int size = j_arr.size();
@@ -80,7 +80,6 @@ Eigen::ArrayXf ConstraintData(const json& sce_data, Eigen::ArrayXf& arr, bool up
                 arr[i] = elem.value().at(upper);
             }
         }
-        return arr;
     }
     catch(json::exception& e) {
         std::cout << e.what() << std::endl; 
@@ -88,7 +87,7 @@ Eigen::ArrayXf ConstraintData(const json& sce_data, Eigen::ArrayXf& arr, bool up
 }
 
 void ParseScenarioData(const json& sce_data, std::string& system, MPCConfig& mpc_config, 
-                        Eigen::ArrayXf upper_constraints, Eigen::ArrayXf lower_constraints,
+                        Eigen::ArrayXf& upper_constraints, Eigen::ArrayXf& lower_constraints,
                         int n_CV, int n_MV) {
     system = sce_data.at(kSystem);
     mpc_config = MPCConfig(sce_data, n_CV, n_MV);

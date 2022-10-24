@@ -1,4 +1,9 @@
-// Copyright (C) Geir Ola Tvinnereim 2022
+/**
+ * @file main.cc
+ * @author Geir Ola Tvinnereim
+ * @copyright  Geir Ola Tvinnereim 
+ * @date 2022
+ */
 
 #include <iostream>
 #include <string>
@@ -9,7 +14,7 @@
 #include "parse.h"
 
 #include <array>
-#include <string>
+#include <Eigen/Dense>
 
 #include <typeinfo> // For type checking
 int main() {
@@ -28,8 +33,19 @@ int main() {
     json sys_data = ReadJson(sys_filepath);
     json sce_data = ReadJson(sce_filepath);
 
-    std::cout << sce_data[kC].size() << std::endl;
-    json j_arr(sce_data.at(kC));
+    // Parse Scenario:
+    std::string system; 
+    MPCConfig mpc_config; //Default initializer
+    Eigen::ArrayXf upper; 
+    Eigen::ArrayXf lower; 
+
+    ParseScenarioData(sce_data, system, mpc_config, upper, lower, 1, 1);
+
+    std::cout << system << std::endl; 
+    std::cout << mpc_config.Q << std::endl; 
+    std::cout << upper << std::endl;
+
+    //ParseScenarioData(sce_data, mpc_config, upper)
     
 
     /**
