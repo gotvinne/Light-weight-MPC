@@ -104,6 +104,8 @@ Operating system: Linux
 ```
 
 ##### Output format
+
+*Simulation file*
 ```json  
 {
  "CV": [ 
@@ -141,18 +143,19 @@ conda install -c anaconda cmake
 
 - [OSQP](https://osqp.org/), Operator Splitting Quadratic program (Source code)
 - [osqp-eigen](https://github.com/robotology/osqp-eigen), C++ wrapper for OSQP 
-- [nlohmann/json](https://json.nlohmann.me/api/basic_json/)
+- [nlohmann/json](https://json.nlohmann.me/api/basic_json/), Json parser
+- [Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page), Template library for linear algebra
 
 
-### Run project: 
-From project root: 
+### Run Light-weight-MPC: 
+*From project root:* 
 
 - Use Anaconda in order to create environment:
 ```console
 conda env create -f env.yml
 ```
 
-or make a new environment and install conda packages: 
+or make a new environment, *env*, and install conda packages: 
 ```console
 conda install -n env -c conda-forge osqp-eigen
 conda install -n env -c conda-forge nlohmann_json
