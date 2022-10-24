@@ -15,8 +15,12 @@
 
 #include <array>
 #include <Eigen/Dense>
+#include "nlohmann/json.hpp"
 
 #include <typeinfo> // For type checking
+
+using json = nlohmann::json; 
+
 int main() {
 
     // Testing step model:
@@ -33,6 +37,14 @@ int main() {
     json sys_data = ReadJson(sys_filepath);
     json sce_data = ReadJson(sce_filepath);
 
+    // Parse system
+    std::array<int, kModelParam> arr;
+    ModelData(sys_data, arr);
+    PrintContainer(arr);
+
+    std::vector<&StateData> sd_vec;
+    std::vector<&InputData> id_vec;
+
     // Parse Scenario:
     std::string system; 
     MPCConfig mpc_config; //Default initializer
@@ -41,41 +53,8 @@ int main() {
 
     ParseScenarioData(sce_data, system, mpc_config, upper, lower, 1, 1);
 
-    std::cout << system << std::endl; 
-    std::cout << mpc_config.Q << std::endl; 
-    std::cout << upper << std::endl;
-
-    //ParseScenarioData(sce_data, mpc_config, upper)
-    
-
-    /**
-     Read
-     name
-     T
-     scenario
-     system
-
-     Q_
-     R_
-
-     W 
-     P
-     M
-
-     S
-
-     constraints
-
-    **/ 
-
     //sr_solver();
-
-    //std::vector<float> vec = step_coefficients(k, tau, theta, N);
-    //print_coefficients(vec);
     
-    // json data = parse("../scenarios/test.json");
-    // std::cout << data.dump() << std::endl;
-
     // // Flow: 
     // 1)
     // std::string scenario {"../scenarios/siso_test.json"};

@@ -14,6 +14,8 @@
 #include <iostream>
 #include <fstream>
 
+using json = nlohmann::json; 
+
 json ReadJson(const std::string& filepath) {
     try {
         std::ifstream file(filepath);
@@ -21,30 +23,53 @@ json ReadJson(const std::string& filepath) {
     }
     catch (std::exception& e) {
         std::cout << e.what() << std::endl; 
+        return 1;
     }
 }
 
 void ModelData(const json& sys_data, std::array<int, kModelParam>& arr) {
-    arr = {sys_data.at(kModel).at(kN_CV), sys_data.at(kModel).at(kN_MV),
-            sys_data.at(kModel).at(kN)};
+    try {
+        json model_data = sys_data.at(kModel);
+        arr = {model_data.at(kN_CV), model_data.at(kN_MV), model_data.at(kN)};
+    }
+    catch(json::exception& e) {
+        std::cout << e.what() << std::endl; 
+    }    
+}
+/* Error handling:
+    Check that S is correct with N_MV and N_CV
+    Check that number of S is correct with n_CV
+*/
+StateData::StateData() : Init() {}
+StateData::StateData(const json& cv_data, int n_MV, int N) {
+    
+        State = cv_data.at(kState);
+        Init = cv_data.at(kInit);
+
+        S.resize(n_MV, N);
+        for (int i = 0; i < n_MV; i++) {
+            for (int j = 0; j < N; j++) {
+                S(i,j) = cv_data.at(kS).at(i).at(j);
+            }
+        }
+                              
 }
 
-StateData::StateData(const json& sys_data, int n_MV, int N) {
-    S = Eigen::MatrixXf::Zero(n_MV, N);
-    // Load data in Matrix                                
-}
+InputData::InputData() : Init() {}
+InputData::InputData(const json& mv_data, int T) {
 
-InputData::InputData(const json& sys_data, int T) {
-    Ref = Eigen::ArrayXf::Zero(T);
-    // Load data in Matrix                                
+        Input = mv_data.at(kInput);
+        Id = mv_data.at(kId);
+        Init = mv_data.at(kInit);
+
+        Ref.resize(T);
+        for (int i = 0; i < T; i++) {
+            Ref[i] = mv_data.at(kU).at(i);
+        }  
+                              
 }
 
 MPCConfig::MPCConfig() : P(), M(), W(), Ro(), bias_update() {}
-
-/* Errorhandling, 
-    Always use at() for type checking. 
-
-*/
 MPCConfig::MPCConfig(const json& sce_data, int n_CV, int n_MV) {
     try {
         json mpc_data = sce_data.at(kMPC);
@@ -97,7 +122,9 @@ void ParseScenarioData(const json& sce_data, std::string& system, MPCConfig& mpc
 
 void ParseSystemData(const json& sys_data, std::array<int, kModelParam>& model_param,
                     StateData& state_data, InputData& input_data) {
-    
+    ModelData(sys_data, model_param);
+    // Read State and Input data. 
+
 }
 
 void PrintContainer(std::array<int,3> container) {
