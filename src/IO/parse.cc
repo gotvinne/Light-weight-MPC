@@ -54,15 +54,17 @@ StateData::StateData(const json& cv_data, int n_MV, int n_CV, int N) {
         State.push_back(state_data.at(kState));
         Init.push_back(state_data.at(kInit));
 
-    }
-        for (int i = 0; i < n_MV; i++) {
-            for (int j = 0; j < N; j++) {
-                S(i,j) = cv_data.at(kS).at(i).at(j);
-            }
-        }                             
+        FillStateCoMatrix(state_data.at(kS), S, n_MV, n_states*N, N);
+    }                          
 }
 
-//void FillStateCoMatrix(const json& data, Eigen::MatrixXf S, )
+void FillStateCoMatrix(const json& s_data, Eigen::MatrixXf S, int n_MV, int start_index, int interval) {
+    for (int i = 0; i < n_MV; i++) {
+        for (int j = start_index; j < (start_index+1)*interval; j++) {
+            S(i,j) = s_data.at(i).at(j);
+        }
+    }       
+}
 
 // Need to customize input data, to generate datapoints based on mpc_horizon.
 // Check that n_inputs == n_MV!
@@ -80,9 +82,9 @@ InputData::InputData(const json& mv_data, int n_MV, int T) {
     }             
 }
 
-void FillReference(const json& data, Eigen::ArrayXf& ref, int start_index, int interval) {
+void FillReference(const json& ref_data, Eigen::ArrayXf& ref, int start_index, int interval) {
     for (int i = start_index; i < (start_index+1)*interval; i++) {
-            ref[i] = data.at(i);
+            ref[i] = ref_data.at(i);
     }  
 }
 
@@ -138,11 +140,13 @@ void ParseScenarioData(const json& sce_data, std::string& system, MPCConfig& mpc
 }
 
 void ParseSystemData(const json& sys_data, std::map<std::string, int>& model_param,
-                    StateData& state_data, InputData& input_data) {
+                    StateData& state_data, InputData& input_data, int T) {
     ModelData(sys_data, model_param);
+    json cv_data = sys_data.at(kCV);
+    json mv_data = sys_data.at(kMV);
 
-    //input_data(sys_data.at(kMV), ) 
-
+    state_data = StateData(cv_data, model_param[kN_MV], model_param[kN_CV], model_param[kN]);
+    input_data = InputData(mv_data, model_param[kN_MV], T); 
 }
 
 void PrintContainer(std::map<std::string,int> container) {

@@ -40,13 +40,12 @@ int main() {
     // Parse system
     std::map<std::string, int> model_param;
     ModelData(sys_data, model_param);
-
-    PrintContainer(model_param);
     
     json cv_data = sys_data.at(kCV);
     json mv_data = sys_data.at(kMV);
 
-    //InputData id(mv_data, T);
+    InputData id(mv_data, model_param[kN_MV], T);
+    //StateData sd(cv_data, model_param[kN_MV], model_param[kN_CV], model_param[kN]);
 
     
     //int n_states = mv_data.size();

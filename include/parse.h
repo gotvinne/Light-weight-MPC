@@ -19,9 +19,7 @@
 
 using json = nlohmann::json;
 
-// ------- System file specifiers ------- 
-const int kModelParam = 3;
-
+// ------- System file specifiers ------- //
 const std::string kModel = "model";
 const std::string kN_CV = "n_CV";
 const std::string kN_MV = "n_MV";
@@ -35,7 +33,7 @@ const std::string kInit = "init";
 const std::string kS = "S"; 
 const std::string kU = "u";
 
-// ------- Scenario file specifiers ------- 
+// ------- Scenario file specifiers ------- //
 const std::string kSystem = "system";
 
 const std::string kMPC = "MPC";
@@ -49,7 +47,7 @@ const std::string kBu = "bias update";
 
 const std::string kC = "c_i"; 
 
-// ------- ------- ------- ------- ------- 
+// ------- ------- ------- ------- ------- //
 
 json ReadJson(const std::string& filepath);
 
@@ -72,8 +70,9 @@ struct InputData {
 
 void ModelData(const json& sys_data, std::map<std::string,int>& map);
 void ParseSystemData(const json& sys_data, std::map<std::string, int>& model_param,
-                    StateData& state_data, InputData& input_data); 
-void FillReference(const json& data, Eigen::ArrayXf& ref, int start_index, int interval);
+                    StateData& state_data, InputData& input_data, int T); 
+void FillReference(const json& s_data, Eigen::ArrayXf& ref, int start_index, int interval);
+void FillStateCoMatrix(const json& ref_data, Eigen::MatrixXf S, int n_MV, int start_index, int interval);
 
 // Scenario data
 struct MPCConfig {
