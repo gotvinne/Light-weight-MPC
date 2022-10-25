@@ -1,4 +1,9 @@
-// Copyright (C) Geir Ola Tvinnereim 2022
+/**
+ * @file formatting
+ * @author Geir Ola Tvinnereim
+ * @copyright  Geir Ola Tvinnereim 
+ * @date 2022
+ */
 
 #include <fstream>
 #include <nlohmann/json.hpp>
@@ -6,8 +11,6 @@
 
 using json = nlohmann::json;
 
-json parse(std::string filepath) {
-    std::ifstream file(filepath);
-    return json::parse(file);
+void WriteJson(const json& data, std::string filepath) {
+    
 }
-

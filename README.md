@@ -15,15 +15,13 @@ Operating system: Linux
 - Prof. Gisle Otto Eikrem (Equinor) gise@equinor.com
 
 ##### Input format
-- A json file defining the system (states, inputs, step coefficients and references )
+- A json file defining the system (states, inputs, step coefficients and references)
 - A scenario file defining the MPC applied to the corresponding system file. 
 
-[Json parser C++](https://linuxhint.com/parse-json-data-cpp/)
   
-*System file*:
+*System file (sr - step response / ss - state space)*:
 ```json
 {
-   "system": "system_name", (sr - step response / ss - state space)
    "model": {
       "n_CV": int,
       "n_MV": int,
@@ -32,9 +30,8 @@ Operating system: Linux
 
    "CV": [
       { 
-         "description": "state", (Name of state)
-         "id": "x[1]",
-         "init": double,
+         "state": "state_name",
+         "init": float,
          "S": [[S11, S12, S13, ... , S1N],
                [S21, S22, S23, ... , S2N], 
                ... , 
@@ -42,9 +39,8 @@ Operating system: Linux
       }, 
          ... ,
       { 
-         "description": "state", (Name of state)
-         "id": "x[n_CV]",
-         "init": double,
+         "state": "state_name",
+         "init": float,
          "S": [[S11, S12, S13, ... , S1N],
                [S21, S22, S23, ... , S2N], 
                ... , 
@@ -55,17 +51,15 @@ Operating system: Linux
    
    "MV": [
       {
-         "description": "input", (Name of input)
-         "id": "u[1]", 
-         "init": double,
-         "r": [r1, r2, r3, ... , rT] (Setpoint trajectory)
+         "input": "input_name", 
+         "init": float,
+         "u": [r1, r2, r3, ... , uT] (Setpoint trajectory)
       },
          ... , 
       {
-         "description": "input", (Name of input)
-         "id": "u[n_MV]", 
-         "init": double,
-         "r": [r1, r2, r3, ... , rT] (Setpoint trajectory)
+         "input": "input_name",
+         "init": float,
+         "u": [u1, u2, u3, ... , uT] (Setpoint trajectory)
       } 
    ],                         
 }
@@ -74,8 +68,6 @@ Operating system: Linux
 *Scenario file*:
 ```json  
 {
- "scenario": "scenario_name", 
- "T": int, (Simulation steps),
  "system": "system_name", (sr - step response / ss - state space)
  
  "MPC": {
@@ -84,43 +76,58 @@ Operating system: Linux
    "W": int, (Time delay)
    "Q": [Q1, Q2, ... , QP], (Positive definite - diagonal matrix with positive elements)
    "R": [R1, R2, ... , RP], (Positive definite)
-   "ρ": int (Slack variable)
+   "Ro": float, (Slack variable)
+   "bias update": bool
  },
 
  "c_i": [
-   {"x[1]": [low, high]}, (int)
+   {"du[1]": [low, high]}, (float)
    ...,
-   {"x[n_CV]": [low, high]}, (int)
-   {"u[1]": [low, high]}, (int)
+   {"du[n_MV]": [low, high]}, (float)
+   {"u[1]": [low, high]}, (float)
    ...,
-   {"u[n_MV]": [low, high]}, (int)
+   {"u[n_MV]": [low, high]}, (float)
+   {"y[1]": [low, high]}, (float)
+   ...,
+   {"y[n_CV]": [low, high]} (float)
  ]
 }
 ``` 
 
+- Simulation without slack variables: 
+```json
+"Ro": 0
+```
+- Simulation without integral effect:
+```json
+"bias update": false 
+```
+
 ##### Output format
+
+*Simulation file*
 ```json  
 {
  "CV": [ 
-      {
-         "description": "state",
-         "y[1]": [x1, x2, x3, ... , xT] 
+      {  // This is only the predicted states, the simulation uses a model.
+         "state": "state_name",
+         "y_hat[1]": [y1, y2, y3, ... , yT] 
       }, 
          ... , 
       { 
-         "description": "state",
-         "y[n_CV]": [x1, x2, x3, ... , xT] 
+         "state": "state_name",
+         "y_hat[n_CV]": [y1, y2, y3, ... , yT] 
       }
    ],
 
  "MV": [ 
       {
-         "description": "input",
+         "input": "input_name",
          "u[1] ": [u1, u2, u3, ... , uT] 
       }, 
          ... , 
       { 
-         "description": "input",
+         "input": "input_name",
          "u[n_MV]": [u1, u2, u3, ... , uT] 
       }
    ]
@@ -128,14 +135,33 @@ Operating system: Linux
 ``` 
 
 ### Dependancies:
-This software is developed using a package manager [Conan](https://conan.io/) and builded using [CMake](https://cmake.org/)
+This software is developed using a environment and package manager [Anaconda](https://www.anaconda.com/products/distribution) and builded using [CMake](https://cmake.org/)
+
+```console 
+conda install -c anaconda cmake
+```
 
 - [OSQP](https://osqp.org/), Operator Splitting Quadratic program (Source code)
-- [osqp-eigen](https://github.com/robotology/osqp-eigen), C++ wrapper for OSQP, installed via [Conda](https://www.anaconda.com/products/distribution) 
-- [nlohmann/json](https://github.com/nlohmann/json)
+- [osqp-eigen](https://github.com/robotology/osqp-eigen), C++ wrapper for OSQP 
+- [nlohmann/json](https://json.nlohmann.me/api/basic_json/), Json parser
+- [Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page), Template library for linear algebra
 
 
-### Run project: 
+### Run Light-weight-MPC: 
+*From project root:* 
+
+- Use Anaconda in order to create environment:
+```console
+conda env create -f env.yml
+```
+
+or make a new environment, *env*, and install conda packages: 
+```console
+conda install -n env -c conda-forge osqp-eigen
+conda install -n env -c conda-forge nlohmann_json
+```
+
+- Build and run program
 ```console
 sh setup.sh
 ```

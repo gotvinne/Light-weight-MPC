@@ -1,4 +1,9 @@
-// Copyright (C) Geir Ola Tvinnereim 2022 
+/**
+ * @file formatting.h
+ * @author Geir Ola Tvinnereim
+ * @copyright  Geir Ola Tvinnereim 
+ * @date 2022
+ */
 
 #ifndef FORMATTING_H
 #define FORMATTING_H 
@@ -8,6 +13,9 @@
 
 using json = nlohmann::json;
 
-json parse(std::string filepath);
+void WriteJson(const json& data, std::string filepath);
+
+void FormatSystemData(json& data);
+void FormatScenarioData(json& data); 
 
 #endif  // FORMATTING_H
