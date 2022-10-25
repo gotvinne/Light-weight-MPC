@@ -10,14 +10,16 @@
 
 #include <vector>
 
+/* Module creating finite step response model for a first order system */
+
 const int SETTLING_COEFFICIENT = 5;
 
 /**
- * @brief 
+ * @brief Calculating step response for a first order system given parameters.
  * 
- * @param k 
- * @param tau 
- * @param theta 
+ * @param k transfer function gain
+ * @param tau time constant
+ * @param theta time delay
  * @param dt 
  * @param i 
  * @return float 
@@ -25,21 +27,16 @@ const int SETTLING_COEFFICIENT = 5;
 float step_response(float k, float tau, float theta, float dt, int i);
 
 /**
- * @brief 
+ * @brief Calculating step response coefficients given system and horizon.
  * 
- * @param k 
- * @param tau 
- * @param theta 
- * @param N 
- * @return std::vector<float> 
+ * @param k transfer function gain
+ * @param tau time constant
+ * @param theta time delay
+ * @param N Number of step coefficients
+ * @return std::vector<float> holding the step coefficients for the given parameters
  */
 std::vector<float> step_coefficients(float k, float tau, float theta, int N);
 
-/**
- * @brief 
- * 
- * @param vec 
- */
 void print_coefficients(const std::vector<float> &vec);
 
 #endif  // STEP_COEFFICIENTS_H
