@@ -37,34 +37,18 @@ int main() {
 
     // Parse system
     std::map<std::string, int> model_param;
-    ModelData(sys_data, model_param);
-    //PrintContainer(model_param);
-    
-    json cv_data = sys_data.at(kCV);
-    json mv_data = sys_data.at(kMV);
+    StateData sd;
+    InputData id;
 
-    InputData id(mv_data, model_param[kN_MV], T);
-    StateData sd(cv_data, model_param[kN_MV], model_param[kN_CV], model_param[kN]);
+    ParseSystemData(sys_data, model_param, sd, id, T);
     
-    std::cout << sd.S << std::endl;
-    
-
-    
-    
-    //int n_states = mv_data.size();
-    //for (int states = 0; states < n_states; states++) {
-    //    json data = mv_data.at(states);
-    //    std::cout << data.at(kU) << std::endl; 
-    //}
-
     // Parse Scenario:
     std::string system; 
     MPCConfig mpc_config; //Default initializer
     Eigen::ArrayXf upper; 
     Eigen::ArrayXf lower; 
 
-    //ParseScenarioData(sce_data, system, mpc_config, upper, lower, 1, 1);
-    //sr_solver();
+    ParseScenarioData(sce_data, system, mpc_config, upper, lower, 1, 1);
     
     // // Flow: 
     // 1)

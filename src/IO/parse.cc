@@ -45,6 +45,7 @@ void ModelData(const json& sys_data, std::map<std::string,int>& map) {
     Check that number of S is correct with n_CV
 */
 
+StateData::StateData() {}
 StateData::StateData(const json& cv_data, int n_MV, int n_CV, int N) {
     int n_states = cv_data.size();
 
@@ -70,6 +71,7 @@ void FillStateCoMatrix(const json& s_data, Eigen::MatrixXf& S, int n_MV, int sta
 // Need to customize input data, to generate datapoints based on mpc_horizon.
 // Check that n_inputs == n_MV!
 // Check that T < then number of reference points in data. 
+InputData::InputData() {}
 InputData::InputData(const json& mv_data, int n_MV, int T) {
     int n_inputs = mv_data.size();
 

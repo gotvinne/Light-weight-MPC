@@ -57,6 +57,7 @@ struct StateData {
     std::vector<float> Init;
     Eigen::MatrixXf S;
 
+    StateData();
     StateData(const json& cv_data, int n_MV, int n_CV, int N);
 };
 
@@ -65,6 +66,7 @@ struct InputData {
     std::vector<float> Init;
     Eigen::ArrayXf Ref;
 
+    InputData();
     InputData(const json& mv_data, int n_MV, int T);
 };
 
