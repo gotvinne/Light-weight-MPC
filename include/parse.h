@@ -72,7 +72,7 @@ void ModelData(const json& sys_data, std::map<std::string,int>& map);
 void ParseSystemData(const json& sys_data, std::map<std::string, int>& model_param,
                     StateData& state_data, InputData& input_data, int T); 
 void FillReference(const json& s_data, Eigen::ArrayXf& ref, int start_index, int interval);
-void FillStateCoMatrix(const json& ref_data, Eigen::MatrixXf S, int n_MV, int start_index, int interval);
+void FillStateCoMatrix(const json& ref_data, Eigen::MatrixXf& S, int n_MV, int start_index, int interval);
 
 // Scenario data
 struct MPCConfig {

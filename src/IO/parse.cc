@@ -54,14 +54,15 @@ StateData::StateData(const json& cv_data, int n_MV, int n_CV, int N) {
         State.push_back(state_data.at(kState));
         Init.push_back(state_data.at(kInit));
 
-        FillStateCoMatrix(state_data.at(kS), S, n_MV, n_states*N, N);
+        FillStateCoMatrix(state_data.at(kS), S, n_MV, states*N, N);
+        std::cout << std::endl;
     }                          
 }
 
-void FillStateCoMatrix(const json& s_data, Eigen::MatrixXf S, int n_MV, int start_index, int interval) {
+void FillStateCoMatrix(const json& s_data, Eigen::MatrixXf& S, int n_MV, int start_index, int interval) {
     for (int i = 0; i < n_MV; i++) {
-        for (int j = start_index; j < (start_index+1)*interval; j++) {
-            S(i,j) = s_data.at(i).at(j);
+        for (int j = 0; j < interval; j++) {
+            S(i,start_index+j) = s_data.at(i).at(j);
         }
     }       
 }
@@ -83,7 +84,7 @@ InputData::InputData(const json& mv_data, int n_MV, int T) {
 }
 
 void FillReference(const json& ref_data, Eigen::ArrayXf& ref, int start_index, int interval) {
-    for (int i = start_index; i < (start_index+1)*interval; i++) {
+    for (int i = start_index; i < start_index+interval; i++) {
             ref[i] = ref_data.at(i);
     }  
 }
