@@ -47,25 +47,23 @@ void ModelData(const json& sys_data, std::map<std::string,int>& map) {
     Check that S is correct with N_MV and N_CV
     Check that number of S is correct with n_CV
 */
-StateData::StateData() {}
-StateData::StateData(const json& cv_data, int n_MV, int n_CV, int N) {
+CVData::CVData() {}
+CVData::CVData(const json& cv_data, int n_MV, int n_CV, int N) {
     int n_states = cv_data.size();
     if (n_states != n_CV) {
         throw std::invalid_argument("n_CV does not coincide with CV");
     }
-
     S.resize(n_MV, N*n_CV);
     for (int states = 0; states < n_CV; states++) {
         json state_data = cv_data.at(states); //Selecting one state
         State.push_back(state_data.at(kState));
         Init.push_back(state_data.at(kInit));
 
-        FillStateCoMatrix(state_data.at(kS), S, n_MV, states*N, N);
-        std::cout << std::endl;
+        FillStepCoMatrix(state_data.at(kS), S, n_MV, states*N, N);
     }                          
 }
 
-void FillStateCoMatrix(const json& s_data, Eigen::MatrixXf& S, int n_MV, int start_index, int interval) {
+void FillStepCoMatrix(const json& s_data, Eigen::MatrixXf& S, int n_MV, int start_index, int interval) {
     for (int i = 0; i < n_MV; i++) {
         for (int j = 0; j < interval; j++) {
             S(i,start_index+j) = s_data.at(i).at(j);
@@ -74,13 +72,12 @@ void FillStateCoMatrix(const json& s_data, Eigen::MatrixXf& S, int n_MV, int sta
 }
 
 // Check that T < then number of reference points in data. 
-InputData::InputData() {}
-InputData::InputData(const json& mv_data, int n_MV, int T) {
+MVData::MVData() {}
+MVData::MVData(const json& mv_data, int n_MV, int T) {
     int n_inputs = mv_data.size();
     if (n_inputs != n_MV) {
         throw std::invalid_argument("n_MV does not coincide with MV");
     }
-
     Ref.resize(T*n_MV);
     for (int inputs = 0; inputs < n_MV; inputs++) {
         json input_data = mv_data.at(inputs); // Selecting one input
@@ -147,7 +144,7 @@ void ParseScenarioData(const json& sce_data, std::string& system, MPCConfig& mpc
 }
 
 void ParseSystemData(const json& sys_data, std::map<std::string, int>& model_param,
-                    StateData& state_data, InputData& input_data, int T) {
+                    CVData& state_data, MVData& input_data, int T) {
     try {
         ModelData(sys_data, model_param);
         json cv_data = sys_data.at(kCV);

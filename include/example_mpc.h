@@ -1,5 +1,3 @@
-// Copyright (C) Geir Ola Tvinnereim 2022 
-
 #ifndef EXAMPLE_MPC_H
 #define EXAMPLE_MPC_H
 
