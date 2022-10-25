@@ -37,8 +37,8 @@ int main() {
 
     // Parse system
     std::map<std::string, int> model_param;
-    StateData sd;
-    InputData id;
+    CVData sd;
+    MVData id;
 
     ParseSystemData(sys_data, model_param, sd, id, T);
     
