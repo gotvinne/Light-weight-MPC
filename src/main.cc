@@ -13,7 +13,7 @@
 #include "sr_solver.h"
 #include "parse.h"
 
-#include <array>
+#include <map>
 #include <Eigen/Dense>
 #include "nlohmann/json.hpp"
 
@@ -38,14 +38,15 @@ int main() {
     json sce_data = ReadJson(sce_filepath);
 
     // Parse system
-    std::array<int, kModelParam> arr;
-    std::vector<std::string> State;
-    ModelData(sys_data, arr);
+    std::map<std::string, int> model_param;
+    ModelData(sys_data, model_param);
+
+    PrintContainer(model_param);
     
     json cv_data = sys_data.at(kCV);
     json mv_data = sys_data.at(kMV);
 
-    InputData id(mv_data, T);
+    //InputData id(mv_data, T);
 
     
     //int n_states = mv_data.size();

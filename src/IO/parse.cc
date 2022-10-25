@@ -11,6 +11,7 @@
 #include <Eigen/Dense>
 
 #include <string>
+#include <map>
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -28,10 +29,12 @@ json ReadJson(const std::string& filepath) {
     }
 }
 
-void ModelData(const json& sys_data, std::array<int, kModelParam>& arr) {
+void ModelData(const json& sys_data, std::map<std::string,int>& map) {
     try {
         json model_data = sys_data.at(kModel);
-        arr = {model_data.at(kN_CV), model_data.at(kN_MV), model_data.at(kN)};
+        map[kN_CV] = model_data.at(kN_CV);
+        map[kN_MV] = model_data.at(kN_MV);
+        map[kN] = model_data.at(kN);
     }
     catch(json::exception& e) {
         std::cout << e.what() << std::endl; 
@@ -42,16 +45,16 @@ void ModelData(const json& sys_data, std::array<int, kModelParam>& arr) {
     Check that number of S is correct with n_CV
 */
 
-StateData::StateData(const json& cv_data, int n_MV, int N) {
-    
-    int size = cv_data.size();
+StateData::StateData(const json& cv_data, int n_MV, int n_CV, int N) {
+    int n_states = cv_data.size();
 
-    for (const auto& elem : cv_data) {
-        State.push_back(elem.at(kState));
-        Init.push_back(elem.at(kInit));
+    S.resize(n_MV, N*n_CV);
+    for (int states = 0; states < n_CV; states++) {
+        json state_data = cv_data.at(states); //Selecting one state
+        State.push_back(state_data.at(kState));
+        Init.push_back(state_data.at(kInit));
 
     }
-        S.resize(n_MV, N);
         for (int i = 0; i < n_MV; i++) {
             for (int j = 0; j < N; j++) {
                 S(i,j) = cv_data.at(kS).at(i).at(j);
@@ -59,17 +62,21 @@ StateData::StateData(const json& cv_data, int n_MV, int N) {
         }                             
 }
 
-// Need to customize input data, to generate datapoints based on mpc_horizon.
-InputData::InputData(const json& mv_data, int T) {
-    int n_states = mv_data.size();
-    Ref.resize(T*n_states);
+//void FillStateCoMatrix(const json& data, Eigen::MatrixXf S, )
 
-    for (int states = 0; states < n_states; states++) {
-        json input_data = mv_data.at(states);
+// Need to customize input data, to generate datapoints based on mpc_horizon.
+// Check that n_inputs == n_MV!
+// Check that T < then number of reference points in data. 
+InputData::InputData(const json& mv_data, int n_MV, int T) {
+    int n_inputs = mv_data.size();
+
+    Ref.resize(T*n_MV);
+    for (int inputs = 0; inputs < n_MV; inputs++) {
+        json input_data = mv_data.at(inputs); // Selecting one input
         Input.push_back(input_data.at(kInput));
         Init.push_back(input_data.at(kInit));
 
-        FillReference(input_data.at(kU), Ref, T*states, T);
+        FillReference(input_data.at(kU), Ref, T*inputs, T);
     }             
 }
 
@@ -130,15 +137,16 @@ void ParseScenarioData(const json& sce_data, std::string& system, MPCConfig& mpc
     ConstraintData(sce_data, lower_constraints, false);
 }
 
-void ParseSystemData(const json& sys_data, std::array<int, kModelParam>& model_param,
+void ParseSystemData(const json& sys_data, std::map<std::string, int>& model_param,
                     StateData& state_data, InputData& input_data) {
     ModelData(sys_data, model_param);
-    // Read State and Input data. 
+
+    //input_data(sys_data.at(kMV), ) 
 
 }
 
-void PrintContainer(std::array<int,3> container) {
+void PrintContainer(std::map<std::string,int> container) {
     for (auto ptr = container.begin(); ptr != container.end(); ptr++) {
-        std::cout << *ptr << std::endl;
+        std::cout << ptr->first << ", " << ptr->second << std::endl;
     }
 }

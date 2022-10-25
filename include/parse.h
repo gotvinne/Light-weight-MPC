@@ -14,7 +14,7 @@
 #include <Eigen/Dense>
 
 #include <string>
-#include <array>
+#include <map>
 #include <vector>
 
 using json = nlohmann::json;
@@ -59,7 +59,7 @@ struct StateData {
     std::vector<float> Init;
     Eigen::MatrixXf S;
 
-    StateData(const json& cv_data, int n_MV, int N);
+    StateData(const json& cv_data, int n_MV, int n_CV, int N);
 };
 
 struct InputData {
@@ -67,11 +67,11 @@ struct InputData {
     std::vector<float> Init;
     Eigen::ArrayXf Ref;
 
-    InputData(const json& mv_data, int T);
+    InputData(const json& mv_data, int n_MV, int T);
 };
 
-void ModelData(const json& sys_data, std::array<int,kModelParam>& arr);
-void ParseSystemData(const json& sys_data, std::array<int, kModelParam>& model_param,
+void ModelData(const json& sys_data, std::map<std::string,int>& map);
+void ParseSystemData(const json& sys_data, std::map<std::string, int>& model_param,
                     StateData& state_data, InputData& input_data); 
 void FillReference(const json& data, Eigen::ArrayXf& ref, int start_index, int interval);
 
@@ -95,6 +95,6 @@ void ParseScenarioData(const json& sce_data, std::string& system, MPCConfig& mpc
                         Eigen::ArrayXf& upper_constraints, Eigen::ArrayXf& lower_constraints,
                         int n_CV, int n_MV);
 
-void PrintContainer(std::array<int, 3> container);
+void PrintContainer(std::map<std::string, int> container);
 
 #endif  // PARSE_H
