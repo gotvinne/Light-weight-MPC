@@ -53,7 +53,7 @@ Operating system: Linux
       {
          "input": "input_name", 
          "init": float,
-         "u": [r1, r2, r3, ... , uT] (Setpoint trajectory)
+         "u": [u1, u2, u3, ... , uT] (Setpoint trajectory)
       },
          ... , 
       {
@@ -74,7 +74,7 @@ Operating system: Linux
    "P": int, (Prediction horizon)
    "M": int, (Control horizon)
    "W": int, (Time delay)
-   "Q": [Q1, Q2, ... , QP], (Positive definite - diagonal matrix with positive elements)
+   "Q": [Q1, Q2, ... , QP], (Positive definite)
    "R": [R1, R2, ... , RP], (Positive definite)
    "Ro": float, (Slack variable)
    "bias update": bool
@@ -137,10 +137,11 @@ Operating system: Linux
 ### Dependancies:
 This software is developed using a environment and package manager [Anaconda](https://www.anaconda.com/products/distribution) and builded using [CMake](https://cmake.org/)
 
+Install cmake: 
 ```console 
 conda install -c anaconda cmake
 ```
-
+Other libraries used: 
 - [OSQP](https://osqp.org/), Operator Splitting Quadratic program (Source code)
 - [osqp-eigen](https://github.com/robotology/osqp-eigen), C++ wrapper for OSQP 
 - [nlohmann/json](https://json.nlohmann.me/api/basic_json/), Json parser
