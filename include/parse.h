@@ -14,8 +14,8 @@
 #include <Eigen/Dense>
 
 #include <string>
-
 #include <array>
+#include <vector>
 
 using json = nlohmann::json;
 
@@ -27,6 +27,8 @@ const std::string kN_CV = "n_CV";
 const std::string kN_MV = "n_MV";
 const std::string kN = "N";
 
+const std::string kCV = "CV";
+const std::string kMV = "MV";
 const std::string kState = "state";
 const std::string kInput = "input";
 const std::string kInit = "init";
@@ -57,7 +59,6 @@ struct StateData {
     std::vector<float> Init;
     Eigen::MatrixXf S;
 
-    StateData();
     StateData(const json& cv_data, int n_MV, int N);
 };
 
@@ -66,13 +67,13 @@ struct InputData {
     std::vector<float> Init;
     Eigen::ArrayXf Ref;
 
-    InputData();
     InputData(const json& mv_data, int T);
 };
 
 void ModelData(const json& sys_data, std::array<int,kModelParam>& arr);
 void ParseSystemData(const json& sys_data, std::array<int, kModelParam>& model_param,
                     StateData& state_data, InputData& input_data); 
+void FillReference(const json& data, Eigen::ArrayXf& ref, int start_index, int interval);
 
 // Scenario data
 struct MPCConfig {

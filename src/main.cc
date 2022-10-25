@@ -29,7 +29,7 @@ int main() {
     float theta = 3;
     int N = 80;
 
-    const int T = 50; // THIS is an input variable, MPC horizon. 
+    const int T = 80; // THIS is an input variable, MPC horizon. 
 
     std::string sys_filepath = "../data/systems/sr_siso_test.json";
     std::string sce_filepath = "../data/scenarios/siso_test.json";
@@ -39,11 +39,20 @@ int main() {
 
     // Parse system
     std::array<int, kModelParam> arr;
+    std::vector<std::string> State;
     ModelData(sys_data, arr);
-    PrintContainer(arr);
+    
+    json cv_data = sys_data.at(kCV);
+    json mv_data = sys_data.at(kMV);
 
-    std::vector<&StateData> sd_vec;
-    std::vector<&InputData> id_vec;
+    InputData id(mv_data, T);
+
+    
+    //int n_states = mv_data.size();
+    //for (int states = 0; states < n_states; states++) {
+    //    json data = mv_data.at(states);
+    //    std::cout << data.at(kU) << std::endl; 
+    //}
 
     // Parse Scenario:
     std::string system; 
@@ -51,8 +60,7 @@ int main() {
     Eigen::ArrayXf upper; 
     Eigen::ArrayXf lower; 
 
-    ParseScenarioData(sce_data, system, mpc_config, upper, lower, 1, 1);
-
+    //ParseScenarioData(sce_data, system, mpc_config, upper, lower, 1, 1);
     //sr_solver();
     
     // // Flow: 

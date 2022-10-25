@@ -13,6 +13,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <vector>
 
 using json = nlohmann::json; 
 
@@ -40,33 +41,42 @@ void ModelData(const json& sys_data, std::array<int, kModelParam>& arr) {
     Check that S is correct with N_MV and N_CV
     Check that number of S is correct with n_CV
 */
-StateData::StateData() : Init() {}
+
 StateData::StateData(const json& cv_data, int n_MV, int N) {
     
-        State = cv_data.at(kState);
-        Init = cv_data.at(kInit);
+    int size = cv_data.size();
 
+    for (const auto& elem : cv_data) {
+        State.push_back(elem.at(kState));
+        Init.push_back(elem.at(kInit));
+
+    }
         S.resize(n_MV, N);
         for (int i = 0; i < n_MV; i++) {
             for (int j = 0; j < N; j++) {
                 S(i,j) = cv_data.at(kS).at(i).at(j);
             }
-        }
-                              
+        }                             
 }
 
-InputData::InputData() : Init() {}
+// Need to customize input data, to generate datapoints based on mpc_horizon.
 InputData::InputData(const json& mv_data, int T) {
+    int n_states = mv_data.size();
+    Ref.resize(T*n_states);
 
-        Input = mv_data.at(kInput);
-        Id = mv_data.at(kId);
-        Init = mv_data.at(kInit);
+    for (int states = 0; states < n_states; states++) {
+        json input_data = mv_data.at(states);
+        Input.push_back(input_data.at(kInput));
+        Init.push_back(input_data.at(kInit));
 
-        Ref.resize(T);
-        for (int i = 0; i < T; i++) {
-            Ref[i] = mv_data.at(kU).at(i);
-        }  
-                              
+        FillReference(input_data.at(kU), Ref, T*states, T);
+    }             
+}
+
+void FillReference(const json& data, Eigen::ArrayXf& ref, int start_index, int interval) {
+    for (int i = start_index; i < (start_index+1)*interval; i++) {
+            ref[i] = data.at(i);
+    }  
 }
 
 MPCConfig::MPCConfig() : P(), M(), W(), Ro(), bias_update() {}
