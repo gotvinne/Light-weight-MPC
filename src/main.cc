@@ -28,10 +28,8 @@ int main() {
     int N = 80;
 
     const int T = 80; // THIS is an input variable, MPC horizon. 
-
     std::string sys_filepath = "../data/systems/sr_siso_test.json";
     std::string sce_filepath = "../data/scenarios/siso_test.json";
-
     json sys_data = ReadJson(sys_filepath);
     json sce_data = ReadJson(sce_filepath);
 
@@ -39,15 +37,13 @@ int main() {
     std::map<std::string, int> model_param;
     CVData sd;
     MVData id;
-
     ParseSystemData(sys_data, model_param, sd, id, T);
     
-    // Parse Scenario:
+    // Parse scenario:
     std::string system; 
     MPCConfig mpc_config; //Default initializer
     Eigen::ArrayXf upper; 
     Eigen::ArrayXf lower; 
-
     ParseScenarioData(sce_data, system, mpc_config, upper, lower, 1, 1);
     
     // // Flow: 
