@@ -6,6 +6,7 @@
  */
 
 #include "parse.h"
+#include "json_specifiers.h"
 
 #include <nlohmann/json.hpp>
 #include <Eigen/Dense>
@@ -15,7 +16,6 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-
 #include <stdexcept>
 
 using json = nlohmann::json; 

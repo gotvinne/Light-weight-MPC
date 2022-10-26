@@ -12,6 +12,9 @@
  * @brief 
  * 
  */
-void sr_solver();
+void sr_solver(const int& T, const std::map<std::string,int> model_param);
+
+void setInequalityConstraints();
+void setWeightMatrices();
 
 #endif // SR_SOLVER_H
