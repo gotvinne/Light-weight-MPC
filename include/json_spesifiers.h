@@ -1,12 +1,11 @@
 /**
- * @file data_constants.h
+ * @file json_specifiers.h
  * @author Geir Ola Tvinnereim
  * @copyright  Geir Ola Tvinnereim 
  * @date 2022
  */
-
-#ifndef DATA_CONSTANTS_H
-#define DATA_CONSTANTS_H
+#ifndef JSON_SPECIFIERS_H
+#define JSON_SPECIFIERS_H
 
 #include <string>
 
@@ -39,4 +38,4 @@ const std::string kBu = "bias update";
 const std::string kC = "c_i"; 
 // ------- ------- ------- ------- ------- //
 
-#endif // DATA_CONSTANTS_H
+#endif // JSON_SPECIFIERS_H

@@ -14,7 +14,12 @@ Operating system: Linux
 - Prof. Lars Struen Imsland (ITK) lars.imsland@ntnu.no
 - Prof. Gisle Otto Eikrem (Equinor) gise@equinor.com
 
-##### Input format
+### Modules
+[OSQP-Eigen](src/OSQP-Eigen/README.md): Solving the MPC problems
+[Model](src/model/README.md): Generating a FSRM model
+[Data](data/README.md): System and scenario files defining the simulation 
+
+### Input format
 - A json file defining the system (states, inputs, step coefficients and references)
 - A scenario file defining the MPC applied to the corresponding system file. 
 
@@ -103,7 +108,7 @@ Operating system: Linux
 "bias update": false 
 ```
 
-##### Output format
+### Output format
 
 *Simulation file*
 ```json  
