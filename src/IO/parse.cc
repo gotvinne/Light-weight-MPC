@@ -48,19 +48,31 @@ void ModelData(const json& sys_data, std::map<std::string,int>& map) {
     Check that number of S is correct with n_CV
 */
 CVData::CVData() {}
-CVData::CVData(const json& cv_data, int n_MV, int n_CV, int N) {
-    int n_states = cv_data.size();
-    if (n_states != n_CV) {
+CVData::CVData(const json& cv_data, int n_MV, int n_CV, int N, int T) {
+    int n_outputs = cv_data.size();
+    if (n_outputs != n_CV) {
         throw std::invalid_argument("n_CV does not coincide with CV");
     }
+    Y_Ref.resize(T*n_MV);
     S.resize(n_MV, N*n_CV);
-    for (int states = 0; states < n_CV; states++) {
-        json state_data = cv_data.at(states); //Selecting one state
-        State.push_back(state_data.at(kState));
-        Init.push_back(state_data.at(kInit));
+    for (int outputs = 0; outputs < n_CV; outputs++) {
+        json output_data = cv_data.at(outputs); //Selecting one output
+        Outputs.push_back(output_data.at(kOutput));
+        Inits.push_back(output_data.at(kInit));
+        Units.push_back(output_data.at(kUnit));
 
-        FillStepCoMatrix(state_data.at(kS), S, n_MV, states*N, N);
+        if (output_data.at(kY_Ref).size() < T) {
+            throw std::invalid_argument("Too few input data for the horizon");
+        }
+        FillReference(output_data.at(kY_Ref), Y_Ref, T*outputs, T);
+        FillStepCoMatrix(output_data.at(kS), S, n_MV, outputs*N, N);
     }                          
+}
+
+void FillReference(const json& ref_data, Eigen::ArrayXf& ref, int start_index, int interval) {
+    for (int i = start_index; i < start_index+interval; i++) {
+            ref[i] = ref_data.at(i);
+    }  
 }
 
 void FillStepCoMatrix(const json& s_data, Eigen::MatrixXf& S, int n_MV, int start_index, int interval) {
@@ -71,30 +83,19 @@ void FillStepCoMatrix(const json& s_data, Eigen::MatrixXf& S, int n_MV, int star
     }       
 }
 
-// Check that T < then number of reference points in data. 
 MVData::MVData() {}
-MVData::MVData(const json& mv_data, int n_MV, int T) {
+MVData::MVData(const json& mv_data, int n_MV) {
     int n_inputs = mv_data.size();
     if (n_inputs != n_MV) {
         throw std::invalid_argument("n_MV does not coincide with MV");
     }
-    Ref.resize(T*n_MV);
+    
     for (int inputs = 0; inputs < n_MV; inputs++) {
         json input_data = mv_data.at(inputs); // Selecting one input
-        Input.push_back(input_data.at(kInput));
-        Init.push_back(input_data.at(kInit));
-
-        if (input_data.at(kU).size() < T) {
-            throw std::invalid_argument("Too few input data for the horizon");
-        }
-        FillReference(input_data.at(kU), Ref, T*inputs, T);
+        Inputs.push_back(input_data.at(kInput));
+        Inits.push_back(input_data.at(kInit));
+        Units.push_back(input_data.at(kUnit));        
     }             
-}
-
-void FillReference(const json& ref_data, Eigen::ArrayXf& ref, int start_index, int interval) {
-    for (int i = start_index; i < start_index+interval; i++) {
-            ref[i] = ref_data.at(i);
-    }  
 }
 
 MPCConfig::MPCConfig() : P(), M(), W(), Ro(), bias_update() {}
@@ -144,14 +145,14 @@ void ParseScenarioData(const json& sce_data, std::string& system, MPCConfig& mpc
 }
 
 void ParseSystemData(const json& sys_data, std::map<std::string, int>& model_param,
-                    CVData& state_data, MVData& input_data, int T) {
+                    CVData& output_data, MVData& input_data, int T) {
     try {
         ModelData(sys_data, model_param);
         json cv_data = sys_data.at(kCV);
         json mv_data = sys_data.at(kMV);
 
-        state_data = CVData(cv_data, model_param[kN_MV], model_param[kN_CV], model_param[kN]);
-        input_data = MVData(mv_data, model_param[kN_MV], T); 
+        output_data = CVData(cv_data, model_param[kN_MV], model_param[kN_CV], model_param[kN], T);
+        input_data = MVData(mv_data, model_param[kN_MV]); 
     }
     catch(json::exception& e) {
         std::cerr << "ERROR! " << e.what() << std::endl; 

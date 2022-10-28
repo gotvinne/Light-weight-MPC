@@ -17,11 +17,13 @@ const std::string kN = "N";
 
 const std::string kCV = "CV";
 const std::string kMV = "MV";
-const std::string kState = "state";
+const std::string kOutput = "output";
 const std::string kInput = "input";
 const std::string kInit = "init";
+const std::string kUnit = "unit";
+
+const std::string kY_Ref = "y_ref";
 const std::string kS = "S"; 
-const std::string kU = "u";
 
 // ------- Scenario file specifiers ------- //
 const std::string kSystem = "system";

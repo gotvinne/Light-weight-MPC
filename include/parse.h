@@ -32,12 +32,14 @@ json ReadJson(const std::string& filepath);
  * 
  */
 struct CVData {
-    std::vector<std::string> State; 
-    std::vector<float> Init;
+    std::vector<std::string> Outputs; 
+    std::vector<float> Inits;
+    std::vector<std::string> Units;
     Eigen::MatrixXf S;
+    Eigen::ArrayXf Y_Ref;
 
     CVData();
-    CVData(const json& cv_data, int n_MV, int n_CV, int N);
+    CVData(const json& cv_data, int n_MV, int n_CV, int N, int T);
 };
 
 /**
@@ -45,12 +47,12 @@ struct CVData {
  * 
  */
 struct MVData {
-    std::vector<std::string> Input; 
-    std::vector<float> Init;
-    Eigen::ArrayXf Ref;
+    std::vector<std::string> Inputs; 
+    std::vector<float> Inits;
+    std::vector<std::string> Units;
 
     MVData();
-    MVData(const json& mv_data, int n_MV, int T);
+    MVData(const json& mv_data, int n_MV);
 };
 
 /**
@@ -66,12 +68,12 @@ void ModelData(const json& sys_data, std::map<std::string,int>& map);
  * 
  * @param sys_data json object of system file
  * @param model_param std::map holding model parameters
- * @param state_data CVData 
+ * @param output_data CVData 
  * @param input_data MVData
  * @param T mpc horizon
  */
 void ParseSystemData(const json& sys_data, std::map<std::string, int>& model_param,
-                    CVData& state_data, MVData& input_data, int T); 
+                    CVData& output_data, MVData& input_data, int T); 
 
 /**
  * @brief Assigns reference values to the Eigen::ArrayXf passed by reference
