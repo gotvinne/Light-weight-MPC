@@ -174,8 +174,3 @@ sh setup.sh
 
 ### LICENCE:
 Licence of osqp-eigen
-
-
-
-
-
