@@ -35,22 +35,25 @@ Operating system: Linux
 
    "CV": [
       { 
-         "state": "state_name",
+         "output": "output_name",
          "init": float,
+         "unit": string,
+         "y_ref": [y1, y2, y3, ... , yT], (Setpoint trajectory)
          "S": [[S11, S12, S13, ... , S1N],
                [S21, S22, S23, ... , S2N], 
                ... , 
-               [S n_MV, ... , S n_MV N]],
+               [S n_MV, ... , S n_MV N]]
       }, 
          ... ,
       { 
-         "state": "state_name",
+         "output": "output_name",
          "init": float,
+         "unit": string,
+         "y_ref": [y1, y2, y3, ... , yT], (Setpoint trajectory)
          "S": [[S11, S12, S13, ... , S1N],
                [S21, S22, S23, ... , S2N], 
                ... , 
-               [S n_MV, ... , S n_MV N]],
-         
+               [S n_MV, ... , S n_MV N]]
       }
    ],
    
@@ -58,13 +61,13 @@ Operating system: Linux
       {
          "input": "input_name", 
          "init": float,
-         "u": [u1, u2, u3, ... , uT] (Setpoint trajectory)
+         "unit": string
       },
          ... , 
       {
          "input": "input_name",
          "init": float,
-         "u": [u1, u2, u3, ... , uT] (Setpoint trajectory)
+         "unit": string
       } 
    ],                         
 }
