@@ -24,7 +24,7 @@ const int SETTLING_COEFFICIENT = 5;
  * @param i 
  * @return float 
  */
-float step_response(float k, float tau, float theta, float dt, int i);
+float StepResponse(float k, float tau, float theta, float dt, int i);
 
 /**
  * @brief Calculating step response coefficients given system and horizon.
@@ -35,8 +35,14 @@ float step_response(float k, float tau, float theta, float dt, int i);
  * @param N Number of step coefficients
  * @return std::vector<float> holding the step coefficients for the given parameters
  */
-std::vector<float> step_coefficients(float k, float tau, float theta, int N);
+std::vector<float> StepCoefficients(float k, float tau, float theta, int N);
 
-void print_coefficients(const std::vector<float> &vec);
+// Need a function to generate predicted outputs, based on optimized actuations. 
+// Additionally white noise needs to be applied
+
+float w
+
+
+void PrintCoefficients(const std::vector<float> &vec);
 
 #endif  // STEP_COEFFICIENTS_H

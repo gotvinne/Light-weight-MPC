@@ -8,11 +8,11 @@
 #include "step_coefficients.h"
 
 
-float step_response(float k, float tau, float theta, float dt, int i) {
+float StepResponse(float k, float tau, float theta, float dt, int i) {
     return k * (1 - exp(-(i * dt - theta) / tau));
 }
 
-std::vector<float> step_coefficients(float k, float tau, float theta, int N) {
+std::vector<float> StepCoefficients(float k, float tau, float theta, int N) {
     float dt = (SETTLING_COEFFICIENT * tau + theta) / N;
 
     std::vector<float> step_coefficients_vec;
@@ -22,13 +22,13 @@ std::vector<float> step_coefficients(float k, float tau, float theta, int N) {
         if ((i * dt) <= theta) {
             step_coefficients_vec[i] = 0;
         } else {
-            step_coefficients_vec[i] = step_response(k, tau, theta, dt, i);
+            step_coefficients_vec[i] = StepResponse(k, tau, theta, dt, i);
         }
     } 
     return step_coefficients_vec;
 }
 
-void print_coefficients(const std::vector<float> &vec) {
+void PrintCoefficients(const std::vector<float> &vec) {
     for (const auto &elem : vec) {
         std::cout << elem << " ";
     }
