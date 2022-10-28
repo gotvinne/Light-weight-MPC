@@ -33,7 +33,7 @@ std::vector<float> StepCoefficients(float k, float tau, float theta, int N) {
 }
 
 float FRSM_SISO_Prediction(Eigen::ArrayXf theta, Eigen::ArrayXf du, float offset) {
-    return offset + theta*du.transpose();
+    return offset; //+ theta*du.transpose();
 }
 
 void PrintCoefficients(const std::vector<float> &vec) {

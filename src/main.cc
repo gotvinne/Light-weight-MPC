@@ -9,7 +9,7 @@
 #include <string>
 
 #include "formatting.h"
-#include "step_coefficients.h"
+#include "step_response_model.h"
 #include "sr_solver.h"
 #include "parse.h"
 
