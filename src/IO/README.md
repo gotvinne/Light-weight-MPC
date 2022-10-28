@@ -100,13 +100,14 @@ The [nlohmann/json](https://json.nlohmann.me/api/basic_json/) library is used in
 
 - **The simulation file** contains every variable needed in order to assess the performance of the MPC configuration by plotting the data. 
 
-*Simulation file*
+*Simulation file (sim_scenario_name)*
 ```json  
 {
  "CV": [ 
       {  // This is only the predicted states, the simulation uses a model.
          "output": "output_name",
          "unit": string, 
+         "c": [low, high] (float),
          "y[1]": [y1, y2, y3, ... , yT], (Reference model simulation)
          "y_hat[1]": [y1, y2, y3, ... , yT] (Predicted model simulation)
       }, 
@@ -114,6 +115,7 @@ The [nlohmann/json](https://json.nlohmann.me/api/basic_json/) library is used in
       { 
          "output": "output_name",
          "unit": string, 
+         "c": [low, high] (float),
          "y[n_CV]": [y1, y2, y3, ... , yT], (Reference model simulation)
          "y_hat[n_CV]": [y1, y2, y3, ... , yT] (Predicted model simulation)
       }
@@ -123,12 +125,14 @@ The [nlohmann/json](https://json.nlohmann.me/api/basic_json/) library is used in
       {
          "input": "input_name",
          "unit": string, 
+         "c": [low, high], (float, constraining u)
          "u[1] ": [u1, u2, u3, ... , uT] 
       }, 
          ... , 
       { 
          "input": "input_name",
          "unit": string, 
+         "c": [low, high], (float, constraining u)
          "u[n_MV]": [u1, u2, u3, ... , uT] 
       }
    ]
