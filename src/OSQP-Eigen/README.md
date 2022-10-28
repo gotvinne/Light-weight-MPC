@@ -1,11 +1,7 @@
 
 # Module implementing and solving QP problem
 
-This is done by using OSQP, implemented using OSQP-Eigen C++ wrapper.
-
-[OSQP Example](https://osqp.org/docs/examples/setup-and-solve.html)
-[OSQP-Eigen MPC_example](https://github.com/robotology/osqp-eigen/blob/master/example/src/MPCExample.cpp)
-
+Implemented using [osqp-eigen](https://github.com/robotology/osqp-eigen) C++ wrapper for the [OSQP](https://osqp.org/) software.
 
 The OSQP, operator splitting QP solver solves the problems of the following form:
 
