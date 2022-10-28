@@ -13,14 +13,14 @@
 #include <map>
 #include <string>
 
-void sr_solver(const int& T, const std::map<std::string,int> model_param) {
+void sr_solver(const int& T, std::map<std::string,int>& model_param) {
 
     OsqpEigen::Solver solver;
     solver.settings()->setWarmStart(true); // Starts primal and dual variables from previous QP
 
     // Define QP
     solver.data()->setNumberOfVariables(model_param[kN]);
-    solver.data()->setNumberOfConstraints(model_param[k])
+    //solver.data()->setNumberOfConstraints(model_param[k]);
 
     
     //int n = 

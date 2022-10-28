@@ -5,15 +5,15 @@
  * @date 2022
  */
 
-#include <iostream>
-#include <string>
-
 #include "formatting.h"
-#include "step_coefficients.h"
+#include "step_response_model.h"
 #include "sr_solver.h"
 #include "parse.h"
 
 #include <map>
+#include <iostream>
+#include <string>
+
 #include <Eigen/Dense>
 #include "nlohmann/json.hpp"
 
@@ -48,11 +48,10 @@ int main() {
     
     // // Flow: 
     // 1)
-    // std::string scenario {"../scenarios/siso_test.json"};
     // // Read scenario and check if it is valid
 
     // 2)
-    // // Simulate scenario returning simulation
+    // // Simulate scenario closed loop using reference model returning simulation
 
     // 3)
     // // Write simulation to an output file

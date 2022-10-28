@@ -118,24 +118,30 @@ Operating system: Linux
 {
  "CV": [ 
       {  // This is only the predicted states, the simulation uses a model.
-         "state": "state_name",
-         "y_hat[1]": [y1, y2, y3, ... , yT] 
+         "output": "output_name",
+         "unit": string, 
+         "y[1]": [y1, y2, y3, ... , yT], (Reference model simulation)
+         "y_hat[1]": [y1, y2, y3, ... , yT] (Predicted model simulation)
       }, 
          ... , 
       { 
-         "state": "state_name",
-         "y_hat[n_CV]": [y1, y2, y3, ... , yT] 
+         "output": "output_name",
+         "unit": string, 
+         "y[n_CV]": [y1, y2, y3, ... , yT], (Reference model simulation)
+         "y_hat[n_CV]": [y1, y2, y3, ... , yT] (Predicted model simulation)
       }
    ],
 
  "MV": [ 
       {
          "input": "input_name",
+         "unit": string, 
          "u[1] ": [u1, u2, u3, ... , uT] 
       }, 
          ... , 
       { 
          "input": "input_name",
+         "unit": string, 
          "u[n_MV]": [u1, u2, u3, ... , uT] 
       }
    ]
@@ -154,6 +160,8 @@ Other libraries used:
 - [osqp-eigen](https://github.com/robotology/osqp-eigen), C++ wrapper for OSQP 
 - [nlohmann/json](https://json.nlohmann.me/api/basic_json/), Json parser
 - [Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page), Template library for linear algebra
+- [boost/odeint](http://headmyshoulder.github.io/odeint-v2/)
+Numerical ODE solver
 
 
 ### Run Light-weight-MPC: 
@@ -168,6 +176,7 @@ or make a new environment, *env*, and install conda packages:
 ```console
 conda install -n env -c conda-forge osqp-eigen
 conda install -n env -c conda-forge nlohmann_json
+conda install -n env -c conda-forge boost
 ```
 
 - Build and run program

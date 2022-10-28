@@ -8,11 +8,15 @@
 #ifndef SR_SOLVER_H
 #define SR_SOLVER_H
 
+#include <string>
+#include <map>
+
+
 /**
  * @brief 
  * 
  */
-void sr_solver(const int& T, const std::map<std::string,int> model_param);
+void sr_solver(const int& T, std::map<std::string,int>& model_param);
 
 void setInequalityConstraints();
 void setWeightMatrices();

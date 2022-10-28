@@ -1,14 +1,15 @@
 /**
- * @file step_coefficients.h
+ * @file step_response_model.h
  * @author Geir Ola Tvinnereim
  * @copyright  Geir Ola Tvinnereim 
  * @date 2022
  */
 
-#ifndef STEP_COEFFICIENTS_H
-#define STEP_COEFFICIENTS_H
+#ifndef STEP_RESPONSE_MODEL_H
+#define STEP_RESPONSE_MODEL_H
 
 #include <vector>
+#include "Eigen/Dense"
 
 /* Module creating finite step response model for a first order system */
 
@@ -24,7 +25,7 @@ const int SETTLING_COEFFICIENT = 5;
  * @param i 
  * @return float 
  */
-float step_response(float k, float tau, float theta, float dt, int i);
+float StepResponse(float k, float tau, float theta, float dt, int i);
 
 /**
  * @brief Calculating step response coefficients given system and horizon.
@@ -35,8 +36,10 @@ float step_response(float k, float tau, float theta, float dt, int i);
  * @param N Number of step coefficients
  * @return std::vector<float> holding the step coefficients for the given parameters
  */
-std::vector<float> step_coefficients(float k, float tau, float theta, int N);
+std::vector<float> StepCoefficients(float k, float tau, float theta, int N);
 
-void print_coefficients(const std::vector<float> &vec);
+float FRSM_SISO_Prediction(Eigen::ArrayXf theta, Eigen::ArrayXf du, float offset);
 
-#endif  // STEP_COEFFICIENTS_H
+void PrintCoefficients(const std::vector<float> &vec);
+
+#endif  // STEP_RESPONSE_MODEL_H

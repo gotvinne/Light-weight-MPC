@@ -150,8 +150,8 @@ void ParseSystemData(const json& sys_data, std::map<std::string, int>& model_par
         json cv_data = sys_data.at(kCV);
         json mv_data = sys_data.at(kMV);
 
-        state_data = StateData(cv_data, model_param[kN_MV], model_param[kN_CV], model_param[kN]);
-        input_data = InputData(mv_data, model_param[kN_MV], T); 
+        state_data = CVData(cv_data, model_param[kN_MV], model_param[kN_CV], model_param[kN]);
+        input_data = MVData(mv_data, model_param[kN_MV], T); 
     }
     catch(json::exception& e) {
         std::cerr << "ERROR! " << e.what() << std::endl; 
