@@ -151,6 +151,8 @@ Other libraries used:
 - [osqp-eigen](https://github.com/robotology/osqp-eigen), C++ wrapper for OSQP 
 - [nlohmann/json](https://json.nlohmann.me/api/basic_json/), Json parser
 - [Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page), Template library for linear algebra
+- [boost/odeint](http://headmyshoulder.github.io/odeint-v2/)
+Numerical ODE solver
 
 
 ### Run Light-weight-MPC: 
@@ -165,6 +167,7 @@ or make a new environment, *env*, and install conda packages:
 ```console
 conda install -n env -c conda-forge osqp-eigen
 conda install -n env -c conda-forge nlohmann_json
+conda install -n env -c conda-forge boost
 ```
 
 - Build and run program
