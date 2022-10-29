@@ -13,7 +13,9 @@ find_package(nlohmann_json 3.11.2 REQUIRED)
 file(GLOB_RECURSE SRC_FILES src/*.cc)
 add_executable(light_weight ${SRC_FILES}) # Define executable
 
-# Include libs: include, conan, osqp
+# Include libs: include, conan, osqp, boost
 target_include_directories(light_weight PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
-target_link_libraries(light_weight OsqpEigen::OsqpEigen nlohmann_json::nlohmann_json)
+target_link_libraries(light_weight OsqpEigen::OsqpEigen nlohmann_json::nlohmann_json ${Boost_LIBRARIES})
+
+
 
