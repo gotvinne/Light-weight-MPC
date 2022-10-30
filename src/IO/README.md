@@ -100,9 +100,12 @@ The [nlohmann/json](https://json.nlohmann.me/api/basic_json/) library is used in
 
 - **The simulation file** contains every variable needed in order to assess the performance of the MPC configuration by plotting the data. 
 
-*Simulation file (sim_scenario_name)*
+*Simulation file*
 ```json  
 {
+ "scenario": "scenario_name", 
+ "n_CV": int,
+ "n_MV": int, 
  "CV": [ 
       {  // This is only the predicted states, the simulation uses a model.
          "output": "output_name",
