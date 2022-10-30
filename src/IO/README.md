@@ -104,23 +104,25 @@ The [nlohmann/json](https://json.nlohmann.me/api/basic_json/) library is used in
 ```json  
 {
  "scenario": "scenario_name", 
+ "T": int,
  "n_CV": int,
  "n_MV": int, 
+ 
  "CV": [ 
       {  // This is only the predicted states, the simulation uses a model.
          "output": "output_name",
          "unit": string, 
          "c": [low, high] (float),
-         "y[1]": [y1, y2, y3, ... , yT], (Reference model simulation)
-         "y_hat[1]": [y1, y2, y3, ... , yT] (Predicted model simulation)
+         "y": [y1, y2, y3, ... , yT], (Reference model simulation)
+         "y_hat": [y1, y2, y3, ... , yT] (Predicted model simulation)
       }, 
          ... , 
       { 
          "output": "output_name",
          "unit": string, 
          "c": [low, high] (float),
-         "y[n_CV]": [y1, y2, y3, ... , yT], (Reference model simulation)
-         "y_hat[n_CV]": [y1, y2, y3, ... , yT] (Predicted model simulation)
+         "y": [y1, y2, y3, ... , yT], (Reference model simulation)
+         "y_hat": [y1, y2, y3, ... , yT] (Predicted model simulation)
       }
    ],
 
@@ -129,14 +131,14 @@ The [nlohmann/json](https://json.nlohmann.me/api/basic_json/) library is used in
          "input": "input_name",
          "unit": string, 
          "c": [low, high], (float, constraining u)
-         "u[1] ": [u1, u2, u3, ... , uT] 
+         "u": [u1, u2, u3, ... , uT] 
       }, 
          ... , 
       { 
          "input": "input_name",
          "unit": string, 
          "c": [low, high], (float, constraining u)
-         "u[n_MV]": [u1, u2, u3, ... , uT] 
+         "u": [u1, u2, u3, ... , uT] 
       }
    ]
 }
