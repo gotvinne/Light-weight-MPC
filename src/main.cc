@@ -7,6 +7,7 @@
 
 #include "formatting.h"
 #include "step_response_model.h"
+#include "json_specifiers.h"
 #include "sr_solver.h"
 #include "parse.h"
 
@@ -42,10 +43,16 @@ int main() {
     // Parse scenario:
     std::string system; 
     MPCConfig mpc_config; //Default initializer
-    Eigen::ArrayXf upper; 
-    Eigen::ArrayXf lower; 
-    ParseScenarioData(sce_data, system, mpc_config, upper, lower, 1, 1);
+    Eigen::VectorXf z_max; // These constraints can be used directly in solver
+    Eigen::VectorXf z_min; 
+    ParseScenarioData(sce_data, system, mpc_config, z_max, z_min, model_param[kN_CV], model_param[kN_MV]);
     
+    // Defining MPC matrices
+    Eigen::MatrixXf Q_bar; 
+    Eigen::MatrixXf R_bar; 
+    setWeightMatrices(Q_bar, R_bar, mpc_config);
+    
+
     // // Flow: 
     // 1)
     // // Read scenario and check if it is valid

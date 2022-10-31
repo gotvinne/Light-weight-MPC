@@ -68,7 +68,7 @@ The [nlohmann/json](https://json.nlohmann.me/api/basic_json/) library is used in
    "M": int, (Control horizon)
    "W": int, (Time delay)
    "Q": [Q1, Q2, ... , QP], (Positive definite)
-   "R": [R1, R2, ... , RP], (Positive definite)
+   "R": [R1, R2, ... , RM], (Positive definite)
    "Ro": float, (Slack variable)
    "bias update": bool
  },

@@ -12,6 +12,16 @@
 
 #include <map>
 #include <string>
+#include <iostream>
+
+void setWeightMatrices(Eigen::MatrixXf& Q_bar, Eigen::MatrixXf& R_bar, 
+                        const MPCConfig& mpc_config) {
+    Q_bar.resize(mpc_config.P - mpc_config.W, mpc_config.P - mpc_config.W);
+    R_bar.resize(mpc_config.M, mpc_config.M);
+
+    Q_bar = mpc_config.Q.asDiagonal();
+    R_bar = mpc_config.R.asDiagonal();
+}
 
 void sr_solver(const int& T, std::map<std::string,int>& model_param) {
 
