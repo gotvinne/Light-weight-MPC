@@ -105,7 +105,7 @@ MPCConfig::MPCConfig(const json& sce_data, int n_CV, int n_MV) {
     M = mpc_data.at(kM);
     W = mpc_data.at(kW);
 
-    Q.resize((P-W+1)*n_CV); 
+    Q.resize((P-W)*n_CV); 
     R.resize(M*n_MV);
     // Implement size check
     for (int i = 0; i < ((P-W)*n_CV); i++) {
