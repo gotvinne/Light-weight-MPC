@@ -14,6 +14,7 @@
 #include <map>
 #include <string>
 #include <iostream>
+#include <stdexcept>
 
 void setWeightMatrices(Eigen::MatrixXf& Q_bar, Eigen::MatrixXf& R_bar, 
                         const MPCConfig& mpc_config) {
@@ -26,7 +27,7 @@ void setWeightMatrices(Eigen::MatrixXf& Q_bar, Eigen::MatrixXf& R_bar,
 
 void setHessianMatrix(Eigen::MatrixXf& hessian, const Eigen::MatrixXf& theta, const Eigen::MatrixXf& Q_bar, 
                         const Eigen::MatrixXf& R_bar, int n_MV, int M) {
-    hessian.resize(M*n_MV);
+    hessian.resize(M*n_MV, M*n_MV);
     //hessian = 2*theta.T*Q_bar*theta + 2*R_bar;
 }
 
@@ -41,6 +42,6 @@ void sr_solver(const int& T, std::map<std::string,int>& model_param) {
 
 
     if (!solver.initSolver()) { // If solver cannot be initialized
-        return 1
+        throw std::runtime_error("Cannot initialize solver");
     }
 }

@@ -10,6 +10,7 @@
 
 #include <vector>
 #include "Eigen/Dense"
+#include "parse.h"
 
 /* Module creating finite step response model for a first order system */
 
@@ -39,6 +40,10 @@ float StepResponse(float k, float tau, float theta, float dt, int i);
 std::vector<float> StepCoefficients(float k, float tau, float theta, int N);
 
 float FRSM_SISO_Prediction(Eigen::ArrayXf theta, Eigen::ArrayXf du, float offset);
+
+void setThetaMatrix(Eigen::MatrixXf& theta, const CVData& cv_data, const MPCConfig& mpc_config);
+
+void setPhiMatrix(Eigen::MatrixXf& phi, const CVData& cv_data, const MPCConfig& mpc_config);
 
 void PrintCoefficients(const std::vector<float> &vec);
 

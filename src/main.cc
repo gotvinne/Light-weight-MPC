@@ -52,7 +52,7 @@ int main() {
     Eigen::MatrixXf R_bar; 
     setWeightMatrices(Q_bar, R_bar, mpc_config);
 
-    Eigen::Matrix<float, model_param[kN_MV]> dt_opt; // Optimal actuation 
+    Eigen::MatrixXf dt_opt; // Optimal actuation 
     
 
     // // Flow: 
