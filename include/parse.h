@@ -130,14 +130,13 @@ void ConstraintData(const json& sce_data, Eigen::ArrayXf& arr, bool upper);
  * @param sce_data json object of scenario file
  * @param system corresponding system file
  * @param mpc_conf MPCConfig object
- * @param upper_constraints Eigen::ArrayXf
- * @param lower_constraints Eigen::ArrayXF 
+ * @param z_max Eigen::ArrayXf
+ * @param z_min Eigen::ArrayXF 
  * @param n_CV number of control variables 
  * @param n_MV number of manipulated variables
  */
 void ParseScenarioData(const json& sce_data, std::string& system, MPCConfig& mpc_conf, 
-                        Eigen::ArrayXf& upper_constraints, Eigen::ArrayXf& lower_constraints,
-                        int n_CV, int n_MV);
+                        Eigen::ArrayXf& z_max, Eigen::ArrayXf& z_min, int n_CV, int n_MV);
 
 
 void PrintContainer(std::map<std::string, int> container);

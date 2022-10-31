@@ -107,6 +107,7 @@ MPCConfig::MPCConfig(const json& sce_data, int n_CV, int n_MV) {
 
     Q.resize(n_CV); 
     R.resize(n_MV);
+    // Implement size check
     for (int i = 0; i < n_CV; i++) {
         Q[i] = mpc_data.at(kQ).at(i);
     }
@@ -121,7 +122,7 @@ MPCConfig::MPCConfig(const json& sce_data, int n_CV, int n_MV) {
 void ConstraintData(const json& sce_data, Eigen::ArrayXf& arr, bool upper) {
     json j_arr(sce_data.at(kC));
     int size = j_arr.size();
-
+    // Implement size check
     arr.resize(size);
     for (int i = 0; i < size; i++) {
         for (auto& elem : j_arr.at(i).items()) {
@@ -131,13 +132,12 @@ void ConstraintData(const json& sce_data, Eigen::ArrayXf& arr, bool upper) {
 }
 
 void ParseScenarioData(const json& sce_data, std::string& system, MPCConfig& mpc_config, 
-                        Eigen::ArrayXf& upper_constraints, Eigen::ArrayXf& lower_constraints,
-                        int n_CV, int n_MV) {
+                        Eigen::ArrayXf& z_max, Eigen::ArrayXf& z_min, int n_CV, int n_MV) {
     try {                     
         system = sce_data.at(kSystem);
         mpc_config = MPCConfig(sce_data, n_CV, n_MV);
-        ConstraintData(sce_data, upper_constraints, true);
-        ConstraintData(sce_data, lower_constraints, false);
+        ConstraintData(sce_data, z_max, true);
+        ConstraintData(sce_data, z_min, false);
     }
     catch(json::exception& e) {
         std::cerr << "ERROR! " << e.what() << std::endl; 
