@@ -36,7 +36,7 @@ struct CVData {
     std::vector<float> Inits;
     std::vector<std::string> Units;
     Eigen::MatrixXf S;
-    Eigen::ArrayXf Y_Ref;
+    Eigen::VectorXf Y_Ref;
 
     CVData();
     CVData(const json& cv_data, int n_MV, int n_CV, int N, int T);
@@ -76,14 +76,14 @@ void ParseSystemData(const json& sys_data, std::map<std::string, int>& model_par
                     CVData& output_data, MVData& input_data, int T); 
 
 /**
- * @brief Assigns reference values to the Eigen::ArrayXf passed by reference
+ * @brief Assigns reference values to the Eigen::VectorXf passed by reference
  * 
  * @param ref_data json object holding input reference data
- * @param ref Eigen::ArrayXf
+ * @param ref Eigen::VectorXf
  * @param start_index index to start to fill from
  * @param interval number of values to be filled
  */
-void FillReference(const json& ref_data, Eigen::ArrayXf& ref, int start_index, int interval);
+void FillReference(const json& ref_data, Eigen::VectorXf& ref, int start_index, int interval);
 
 /**
  * @brief Assigns step coefficients to the Eigen::MatrixXf passed by reference 
@@ -106,8 +106,8 @@ struct MPCConfig {
     int M;
     int W; 
 
-    Eigen::ArrayXf Q; // Container with dynamic size, not allocated yet
-    Eigen::ArrayXf R; 
+    Eigen::VectorXf Q; // Container with dynamic size, not allocated yet
+    Eigen::VectorXf R; 
     float Ro; 
     bool bias_update;
 
@@ -116,13 +116,13 @@ struct MPCConfig {
 };
 
 /**
- * @brief Fills an Eigen::ArrayXf with the corresponding constraint data from system file
+ * @brief Fills an Eigen::VectorXf with the corresponding constraint data from system file
  * 
  * @param sce_data json object of scenario file
- * @param arr Eigen::ArrayXf to hold the constraints [dU, U, Y]
+ * @param arr Eigen::VectorXf to hold the constraints [dU, U, Y]
  * @param upper bool indicating if upper constraints are returned, upper = false: lower constraints are returnd 
  */
-void ConstraintData(const json& sce_data, Eigen::ArrayXf& arr, bool upper);
+void ConstraintData(const json& sce_data, Eigen::VectorXf& arr, bool upper);
 
 /**
  * @brief High-level function parsing a scenario file
@@ -130,13 +130,13 @@ void ConstraintData(const json& sce_data, Eigen::ArrayXf& arr, bool upper);
  * @param sce_data json object of scenario file
  * @param system corresponding system file
  * @param mpc_conf MPCConfig object
- * @param z_max Eigen::ArrayXf
- * @param z_min Eigen::ArrayXF 
+ * @param z_max Eigen::VectorXf
+ * @param z_min Eigen::VectorXF 
  * @param n_CV number of control variables 
  * @param n_MV number of manipulated variables
  */
 void ParseScenarioData(const json& sce_data, std::string& system, MPCConfig& mpc_conf, 
-                        Eigen::ArrayXf& z_max, Eigen::ArrayXf& z_min, int n_CV, int n_MV);
+                        Eigen::VectorXf& z_max, Eigen::VectorXf& z_min, int n_CV, int n_MV);
 
 
 void PrintContainer(std::map<std::string, int> container);

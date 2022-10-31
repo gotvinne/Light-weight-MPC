@@ -69,7 +69,7 @@ CVData::CVData(const json& cv_data, int n_MV, int n_CV, int N, int T) {
     }                          
 }
 
-void FillReference(const json& ref_data, Eigen::ArrayXf& ref, int start_index, int interval) {
+void FillReference(const json& ref_data, Eigen::VectorXf& ref, int start_index, int interval) {
     for (int i = start_index; i < start_index+interval; i++) {
             ref[i] = ref_data.at(i);
     }  
@@ -105,13 +105,13 @@ MPCConfig::MPCConfig(const json& sce_data, int n_CV, int n_MV) {
     M = mpc_data.at(kM);
     W = mpc_data.at(kW);
 
-    Q.resize(n_CV); 
-    R.resize(n_MV);
+    Q.resize((P-W+1)*n_CV); 
+    R.resize(M*n_MV);
     // Implement size check
-    for (int i = 0; i < n_CV; i++) {
+    for (int i = 0; i < ((P-W)*n_CV); i++) {
         Q[i] = mpc_data.at(kQ).at(i);
     }
-    for (int i = 0; i < n_MV; i++) {
+    for (int i = 0; i < M*n_MV; i++) {
         R[i] = mpc_data.at(kR).at(i);
     }
 
@@ -119,7 +119,7 @@ MPCConfig::MPCConfig(const json& sce_data, int n_CV, int n_MV) {
     bias_update = mpc_data.at(kBu);
 }
 
-void ConstraintData(const json& sce_data, Eigen::ArrayXf& arr, bool upper) {
+void ConstraintData(const json& sce_data, Eigen::VectorXf& arr, bool upper) {
     json j_arr(sce_data.at(kC));
     int size = j_arr.size();
     // Implement size check
@@ -132,7 +132,7 @@ void ConstraintData(const json& sce_data, Eigen::ArrayXf& arr, bool upper) {
 }
 
 void ParseScenarioData(const json& sce_data, std::string& system, MPCConfig& mpc_config, 
-                        Eigen::ArrayXf& z_max, Eigen::ArrayXf& z_min, int n_CV, int n_MV) {
+                        Eigen::VectorXf& z_max, Eigen::VectorXf& z_min, int n_CV, int n_MV) {
     try {                     
         system = sce_data.at(kSystem);
         mpc_config = MPCConfig(sce_data, n_CV, n_MV);
