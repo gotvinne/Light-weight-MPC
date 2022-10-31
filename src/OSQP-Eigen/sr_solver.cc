@@ -6,6 +6,7 @@
  */
 #include "sr_solver.h"
 #include "json_specifiers.h"
+#include "parse.h"
 
 #include "OsqpEigen/OsqpEigen.h"
 #include <Eigen/Dense>
@@ -23,6 +24,12 @@ void setWeightMatrices(Eigen::MatrixXf& Q_bar, Eigen::MatrixXf& R_bar,
     R_bar = mpc_config.R.asDiagonal();
 }
 
+void setHessianMatrix(Eigen::MatrixXf& hessian, const Eigen::MatrixXf& theta, const Eigen::MatrixXf& Q_bar, 
+                        const Eigen::MatrixXf& R_bar, int n_MV, int M) {
+    hessian.resize(M*n_MV);
+    //hessian = 2*theta.T*Q_bar*theta + 2*R_bar;
+}
+
 void sr_solver(const int& T, std::map<std::string,int>& model_param) {
 
     OsqpEigen::Solver solver;
@@ -32,11 +39,8 @@ void sr_solver(const int& T, std::map<std::string,int>& model_param) {
     solver.data()->setNumberOfVariables(model_param[kN]);
     //solver.data()->setNumberOfConstraints(model_param[k]);
 
-    
-    //int n = 
 
-    // For diagonal matrices
-    /*
-    Eigen::Vector4f diag_Vec(1, 2, 4, 7);
-    Eigen::Matrix4f Mat = diag_Vec.matrix().asDiagonal(); // Transfer vector to diagonal matrix.*/
+    if (!solver.initSolver()) { // If solver cannot be initialized
+        return 1
+    }
 }
