@@ -10,6 +10,7 @@
 #include "json_specifiers.h"
 #include "sr_solver.h"
 #include "parse.h"
+#include "FSRCoefficients.h"
 
 #include <map>
 #include <iostream>
@@ -35,24 +36,28 @@ int main() {
     json sce_data = ReadJson(sce_filepath);
 
     // Parse system
-    std::map<std::string, int> model_param;
+    std::map<std::string, int> m_param;
     CVData sd;
     MVData id;
-    ParseSystemData(sys_data, model_param, sd, id, T);
+    ParseSystemData(sys_data, m_param, sd, id, T);
     
     // Parse scenario:
     std::string system; 
-    MPCConfig mpc_config; //Default initializer
+    MPCConfig conf; //Default initializer
     Eigen::VectorXf z_max; // These constraints can be used directly in solver
     Eigen::VectorXf z_min; 
-    ParseScenarioData(sce_data, system, mpc_config, z_max, z_min, model_param[kN_CV], model_param[kN_MV]);
+    ParseScenarioData(sce_data, system, conf, z_max, z_min, m_param[kN_CV], m_param[kN_MV]);
     
-    // Defining MPC matrices
-    Eigen::MatrixXf Q_bar; 
-    Eigen::MatrixXf R_bar; 
-    setWeightMatrices(Q_bar, R_bar, mpc_config);
+    std::cout << sd.S << std::endl;
+    FSRCoefficients S(sd.S, m_param[kN_CV], m_param[kN_MV], m_param[kN], conf.P, conf.M, conf.W);
+    
+    S.PrintSRMatrix(0, 0);
+    // // Defining MPC matrices
+    // Eigen::MatrixXf Q_bar; 
+    // Eigen::MatrixXf R_bar; 
+    // setWeightMatrices(Q_bar, R_bar, mpc_config);
 
-    Eigen::MatrixXf dt_opt; // Optimal actuation 
+    // Eigen::MatrixXf dt_opt; // Optimal actuation 
     
 
     // // Flow: 
