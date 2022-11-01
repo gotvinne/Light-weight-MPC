@@ -41,10 +41,6 @@ std::vector<float> StepCoefficients(float k, float tau, float theta, int N);
 
 float FRSM_SISO_Prediction(Eigen::ArrayXf theta, Eigen::ArrayXf du, float offset);
 
-void setThetaMatrix(Eigen::MatrixXf& theta, const CVData& cv_data, const MPCConfig& mpc_config);
-
-void setPhiMatrix(Eigen::MatrixXf& phi, const CVData& cv_data, const MPCConfig& mpc_config);
-
 void PrintCoefficients(const std::vector<float> &vec);
 
 #endif  // STEP_RESPONSE_MODEL_H

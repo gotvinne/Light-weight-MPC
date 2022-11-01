@@ -6,7 +6,6 @@
  */
 
 #include "FSRCoefficients.h"
-#include <vector>
 #include <iostream>
 
 #include <Eigen/Dense>
@@ -52,9 +51,7 @@ void FSRCoefficients::SelectPredictionVec(Eigen::MatrixXf& S) {
     for (int i = 0; i < n_CV_; i++) {
         Eigen::VectorXf vec = Eigen::VectorXf::Zero(P_);
         for (int j = 0; j < n_MV_*N_; j = j + N_) {
-            for (int k = 0; k < P_; k++) {
-                vec(k) = SR_(i, j+k);
-            } 
+            vec(Eigen::seq(0, Eigen::last)) = SR_(i,Eigen::seq(0, P_-1));
             GenerateLowerTriangularMatrix(vec, S);
         }
     }
@@ -65,7 +62,15 @@ void FSRCoefficients::setSRMatrix() {
         Eigen::MatrixXf S = Eigen::MatrixXf::Zero(P_, M_);
         for (int j = 0; j < n_CV_; j++) {
             SelectPredictionVec(S);
-            pp_SR_[i][j] = S;
+            pp_SR_[i][j] = S(Eigen::seq(W_, Eigen::last), Eigen::seq(0, Eigen::last));
+        }
+    }
+}
+
+void FSRCoefficients::setThetaMatrix() {
+    for (int i = 0; i < n_MV_; i++) {
+        for (int j = 0; j < n_CV_; j++) {
+            //pp_SR_[i][j]
         }
     }
 }
