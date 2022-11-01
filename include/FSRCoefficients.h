@@ -21,7 +21,7 @@ private:
     int W_;
 
     Eigen::MatrixXf SR_; // Can consider making this array of Eigen::VectorXf, simplifying access
-    std::vector<std::vector<Eigen::MatrixXf>> SR_matrix_; // (P,M) times (n_CV, n_MV) , can consider allocating memory for array instead of vector
+    Eigen::MatrixXf** pp_SR_; // (P,M) times (n_CV, n_MV)
     Eigen::MatrixXf theta_; // (n_CV *(P-W), n_MV*M)
     Eigen::MatrixXf phi_; // (P, N-P)
 public: 
@@ -30,7 +30,8 @@ public:
     void SelectPredictionVec(Eigen::MatrixXf& S);
     void setSRMatrix();
 
-    void PrintSRMatrix(int i, int j);
+    void PrintPPSR(int i, int j);
+    ~FSRCoefficients();
 };
 
 #endif // STEP_RESPONSE_COEFFICIENTS_H

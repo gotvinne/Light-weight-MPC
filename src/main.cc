@@ -51,7 +51,7 @@ int main() {
     std::cout << sd.S << std::endl;
     FSRCoefficients S(sd.S, m_param[kN_CV], m_param[kN_MV], m_param[kN], conf.P, conf.M, conf.W);
     
-    S.PrintSRMatrix(0, 0);
+    S.PrintPPSR(0, 0);
     // // Defining MPC matrices
     // Eigen::MatrixXf Q_bar; 
     // Eigen::MatrixXf R_bar; 

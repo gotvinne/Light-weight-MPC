@@ -16,14 +16,26 @@ FSRCoefficients::FSRCoefficients(const Eigen::MatrixXf& SR, int n_CV, int n_MV, 
     // Initializing theta, phi and SR_matrix
     theta_ = Eigen::MatrixXf::Zero(n_CV*(P-W), n_MV*M);
     phi_ = Eigen::MatrixXf::Zero(P, N-P);
+
+    //Allocate memory
+    pp_SR_ = new Eigen::MatrixXf*[n_CV];
+    for (int i = 0; i < n_CV; ++i) {
+        pp_SR_[i] = new Eigen::MatrixXf[n_MV];
+    }
+
     for (int row = 0; row < n_CV; row++) {
-        std::vector<Eigen::MatrixXf> col_vec; 
         for (int col = 0; col < n_MV; col++) {
-            col_vec.push_back(Eigen::MatrixXf::Zero(P, M));
+            pp_SR_[row][col] = Eigen::MatrixXf::Zero(P, M);
         }
-        SR_matrix_.push_back(col_vec);
     }
     setSRMatrix();
+}
+
+FSRCoefficients::~FSRCoefficients() {
+    for (int i = 0 ; i < n_CV_ ; i++ ) {
+        delete[] pp_SR_[i];
+        delete[] pp_SR_;
+    }
 }
 
 void FSRCoefficients::GenerateLowerTriangularMatrix(const Eigen::VectorXf& vec, Eigen::MatrixXf& S) {
@@ -53,11 +65,11 @@ void FSRCoefficients::setSRMatrix() {
         Eigen::MatrixXf S = Eigen::MatrixXf::Zero(P_, M_);
         for (int j = 0; j < n_CV_; j++) {
             SelectPredictionVec(S);
-            SR_matrix_[i][j] = S;
+            pp_SR_[i][j] = S;
         }
     }
 }
 
-void FSRCoefficients::PrintSRMatrix(int i, int j) {
-    std::cout << SR_matrix_[i][j] << std::endl;
+void FSRCoefficients::PrintPPSR(int i, int j) {
+    std::cout << pp_SR_[i][j] << std::endl;
 }
