@@ -27,27 +27,16 @@ FSRCoefficients::FSRCoefficients(const Eigen::MatrixXf& SR, int n_CV, int n_MV, 
 }
 
 void FSRCoefficients::GenerateLowerTriangularMatrix(const Eigen::VectorXf& vec, Eigen::MatrixXf& S) {
-    int n = M_;
-    int t = 0;
-    for (int i = 0; i < P_; i++) {
-        if (i >= (M_-1)) {
-            n--; 
+    int n = 0; 
+    for (int i = 0; i < M_; i++) {
+        for (int j = 0; j < P_-n; j++) {
+            S(j+n, i) = vec(j);
         }
-        if (n > 0) {
-            for (int j = 0; j < n; j++) {
-                S(i+j, j) = vec(i);
-            }
-        } else {
-            for (int k = 0; k < M_; k++) {
-                S(i, (M_-1)-k) = vec((M_-1)+t+k);
-            }
-            t++;
-        }
+        n++;
     }
 }
 
 void FSRCoefficients::SelectPredictionVec(Eigen::MatrixXf& S) {
-    int interval = 0; 
     for (int i = 0; i < n_CV_; i++) {
         Eigen::VectorXf vec = Eigen::VectorXf::Zero(P_);
         for (int j = 0; j < n_MV_*N_; j = j + N_) {
