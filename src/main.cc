@@ -11,6 +11,7 @@
 #include "sr_solver.h"
 #include "parse.h"
 #include "FSRCoefficients.h"
+#include "data_structs.h"
 
 #include <map>
 #include <iostream>

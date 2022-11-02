@@ -5,12 +5,14 @@
  * @date 2022
  */
 
+#include "step_response_model.h"
+
 #include <iostream>
 #include <vector>
 #include <cmath>
 #include <string> 
 
-#include "step_response_model.h"
+#include <Eigen/Dense>
 
 float StepResponse(float k, float tau, float theta, float dt, int i) {
     return k * (1 - exp(-(i * dt - theta) / tau));

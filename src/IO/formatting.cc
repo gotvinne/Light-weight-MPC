@@ -12,5 +12,10 @@
 using json = nlohmann::json;
 
 void WriteJson(const json& data, std::string filepath) {
-    
+    std::ofstream ofs(filepath);
+    ofs << data << std::endl;
+}
+
+void FormatSimulationData(json& data, std::string filepath) {
+
 }

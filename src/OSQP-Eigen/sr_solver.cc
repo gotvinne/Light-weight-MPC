@@ -6,7 +6,7 @@
  */
 #include "sr_solver.h"
 #include "json_specifiers.h"
-#include "parse.h"
+#include "data_structs.h"
 
 #include "OsqpEigen/OsqpEigen.h"
 #include <Eigen/Dense>

@@ -15,7 +15,8 @@ using json = nlohmann::json;
 
 void WriteJson(const json& data, std::string filepath);
 
-void FormatSystemData(json& data);
-void FormatScenarioData(json& data); 
+void FormatSystemData(json& data, std::string filepath);
+void FormatScenarioData(json& data, std::string filepath); 
+void FormatSimulationData(json& data, std::string filepath)
 
 #endif  // FORMATTING_H
