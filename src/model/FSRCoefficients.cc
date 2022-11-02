@@ -28,7 +28,8 @@ FSRCoefficients::FSRCoefficients(const Eigen::MatrixXf& SR, int n_CV, int n_MV, 
         }
     }
     setSRMatrix();
-    //setThetaMatrix();
+    setThetaMatrix();
+    setPhiMatrix();
 }
 
 FSRCoefficients::~FSRCoefficients() {

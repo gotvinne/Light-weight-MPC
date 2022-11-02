@@ -13,10 +13,10 @@
 
 using json = nlohmann::json;
 
-void WriteJson(const json& data, std::string filepath);
+void WriteJson(const json& data, const std::string& filepath);
 
-void FormatSystemData(json& data, std::string filepath);
-void FormatScenarioData(json& data, std::string filepath); 
-void FormatSimulationData(json& data, std::string filepath)
+//void FormatSystemData(json& data, const std::string& filepath);
+//void FormatScenarioData(json& data, const std::string& filepath); 
+//void FormatSimulationData(json& data, const std::string&  filepath)
 
 #endif  // FORMATTING_H

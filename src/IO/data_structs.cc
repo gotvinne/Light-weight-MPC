@@ -8,9 +8,6 @@
 #include "data_structs.h"
 #include "json_specifiers.h"
 
-#include <nlohmann/json.hpp>
-#include <Eigen/Dense>
-
 #include <vector>
 #include <stdexcept>
 

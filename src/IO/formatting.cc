@@ -5,17 +5,21 @@
  * @date 2022
  */
 
+#include "formatting.h"
+
+#include <iostream>
 #include <fstream>
-#include <nlohmann/json.hpp>
 #include <string>
 
-using json = nlohmann::json;
+#include <nlohmann/json.hpp>
 
-void WriteJson(const json& data, std::string filepath) {
+using json = nlohmann::json; 
+
+void WriteJson(const json& data, const std::string& filepath) {
     std::ofstream ofs(filepath);
-    ofs << data << std::endl;
+    ofs << data << std::endl; // Read in data
 }
 
-void FormatSimulationData(json& data, std::string filepath) {
+//void FormatSimulationData(json& data, std::string filepath) {
 
-}
+//}
