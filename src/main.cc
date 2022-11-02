@@ -48,11 +48,10 @@ int main() {
     Eigen::VectorXf z_min; 
     ParseScenarioData(sce_data, system, conf, z_max, z_min, m_param[kN_CV], m_param[kN_MV]);
     
-    std::cout << sd.S << std::endl;
     FSRCoefficients S(sd.S, m_param[kN_CV], m_param[kN_MV], m_param[kN], conf.P, conf.M, conf.W);
-    
-    S.PrintPPSR(0, 0);
-    S.PrintTheta();
+    S.PrintSR();
+    S.setPhiMatrix();
+    S.PrintPhi();
     // // Defining MPC matrices
     // Eigen::MatrixXf Q_bar; 
     // Eigen::MatrixXf R_bar; 

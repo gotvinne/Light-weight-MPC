@@ -21,8 +21,8 @@ private:
 
     Eigen::MatrixXf SR_; // Can consider making this array of Eigen::VectorXf, simplifying access
     Eigen::MatrixXf** pp_SR_; // (P-W,M) times (n_CV, n_MV)
-    Eigen::MatrixXf theta_; // (n_CV *(P-W), n_MV*M)
-    Eigen::MatrixXf phi_; // (P-W, N-(P-W))
+    Eigen::MatrixXf theta_; // (n_CV*(P-W), n_MV*M)
+    Eigen::MatrixXf phi_; // (n_CV*P-W, n_MV*N-(P-W))
 public: 
     FSRCoefficients(const Eigen::MatrixXf& SR, int n_CV, int n_MV, int N, int P, int M, int W);
     void GenerateLowerTriangularMatrix(const Eigen::VectorXf& vec, Eigen::MatrixXf& S);
@@ -32,8 +32,14 @@ public:
     void setThetaMatrix();
     void FillTheta(const Eigen::MatrixXf& S, const int& i, const int& j);
 
+    void setPhiMatrix();
+    void SelectPastVec();
+    void FillPhi(const Eigen::VectorXf& vec, const int& row);
+
     void PrintPPSR(int i, int j);
     void PrintTheta();
+    void PrintSR();
+    void PrintPhi();
     ~FSRCoefficients();
 };
 
