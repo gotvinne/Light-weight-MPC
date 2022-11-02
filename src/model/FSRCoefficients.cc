@@ -28,6 +28,7 @@ FSRCoefficients::FSRCoefficients(const Eigen::MatrixXf& SR, int n_CV, int n_MV, 
         }
     }
     setSRMatrix();
+    setThetaMatrix();
 }
 
 FSRCoefficients::~FSRCoefficients() {
@@ -58,9 +59,9 @@ void FSRCoefficients::SelectPredictionVec(Eigen::MatrixXf& S) {
 }
 
 void FSRCoefficients::setSRMatrix() {
-    for (int i = 0; i < n_MV_; i++) {
+    for (int i = 0; i < n_CV_; i++) {
         Eigen::MatrixXf S = Eigen::MatrixXf::Zero(P_, M_);
-        for (int j = 0; j < n_CV_; j++) {
+        for (int j = 0; j < n_MV_; j++) {
             SelectPredictionVec(S);
             pp_SR_[i][j] = S(Eigen::seq(W_, Eigen::last), Eigen::seq(0, Eigen::last));
         }
@@ -68,13 +69,29 @@ void FSRCoefficients::setSRMatrix() {
 }
 
 void FSRCoefficients::setThetaMatrix() {
-    for (int i = 0; i < n_MV_; i++) {
-        for (int j = 0; j < n_CV_; j++) {
-            //pp_SR_[i][j]
+    for (int i = 0; i < n_CV_; i++) {
+        for (int j = 0; j < n_MV_; j++) {
+            FillTheta(pp_SR_[i][j], i, j);
+        }
+    }
+}
+
+void FSRCoefficients::FillTheta(const Eigen::MatrixXf& S, const int& i, const int& j) {
+    for (int k = j * M_; k < (j+1)*M_; k++) {
+        for (int l = i*(P_-W_); l < (i+1)*(P_-W_); l++) {
+            theta_(l, k) = S(l, k);
         }
     }
 }
 
 void FSRCoefficients::PrintPPSR(int i, int j) {
+    std::cout << "SISO SRC matrix: " << "(" << P_-W_ << ", " << M_ << ")" << std::endl; 
     std::cout << pp_SR_[i][j] << std::endl;
+    std::cout << std::endl;
+}
+
+void FSRCoefficients::PrintTheta() {
+    std::cout << "Theta: " << "(" << theta_.rows() << ", " << theta_.cols() << ")" << std::endl; 
+    std::cout << theta_ << std::endl; 
+    std::cout << std::endl;
 }

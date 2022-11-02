@@ -30,9 +30,10 @@ public:
     void setSRMatrix();
 
     void setThetaMatrix();
-
+    void FillTheta(const Eigen::MatrixXf& S, const int& i, const int& j);
 
     void PrintPPSR(int i, int j);
+    void PrintTheta();
     ~FSRCoefficients();
 };
 
