@@ -44,9 +44,8 @@ public:
     void setThetaMatrix();
 
     // Previous Phi matrix
-    // void setPhiMatrix();
-    // void SelectPastVec();
-    // void FillPhi(const Eigen::VectorXf& vec, const int& row);
+    void setPhiMatrix();
+    void FillPhi(const Eigen::VectorXf& vec, const int& row);
 
     // Get functions
     int getN() const { return N_; }
@@ -55,11 +54,12 @@ public:
     int getW() const { return W_; }
     int getN_CV() const { return n_CV_; }
     int getN_MV() const { return n_MV_; }
+    Eigen::MatrixXf getTheta() const { return theta_; }
+    Eigen::MatrixXf getPhi() const { return phi_; }
 
     // Print functionality
     void PrintPPSR(int i, int j);
     void PrintTheta();
-    //void PrintSR(); Need new implementation
     void PrintPhi();
     
 };

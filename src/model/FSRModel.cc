@@ -43,7 +43,7 @@ FSRModel::FSRModel(Eigen::VectorXf** SR, int n_CV, int n_MV, int N, int P, int M
     // Setting matrix member variables
     setSRMatrix();
     setThetaMatrix();
-    //setPhiMatrix();
+    setPhiMatrix();
 }
 
 FSRModel::~FSRModel() {
@@ -83,30 +83,26 @@ void FSRModel::setThetaMatrix() {
     }
 }
 
-// void FSRModel::setPhiMatrix() {
-//     SelectPastVec();
-// }
+void FSRModel::setPhiMatrix() {
+    // NB: Need supervision for padding Sn 
+    for (int i = 0; i < n_CV_; i++) {
+        Eigen::VectorXf vec = Eigen::VectorXf::Zero(N_-P_);
+        for (int j = 0; j < n_MV_; j++) { 
+            // Pad vector
+            //if (vec.size() !=  )
+            vec = pp_SR_vec_[i][j](Eigen::seq(P_-W_+j,Eigen::last)); 
+            FillPhi(vec, i);
+        }
+    }
+}
 
-// void FSRModel::SelectPastVec() {
-//     // NB: Need supervision for padding Sn 
-//     for (int i = 0; i < n_CV_; i++) {
-//         Eigen::VectorXf vec = Eigen::VectorXf::Zero(N_-P_);
-//         for (int j = 0; j < n_MV_*N_; j = j + N_) { // Step N
-//             for (int k = 0; k < P_; k++) {
-//                 vec(Eigen::seq(0, Eigen::last)) = pp_SR_vec_(i,Eigen::seq(j+(P_-W_), j+N_-1-W_)); 
-//                 FillPhi(vec, i);
-//             }
-//         }
-//     }
-// }
-
-// void FSRModel::FillPhi(const Eigen::VectorXf& vec, const int& row) {
-//     for (int i = 0; i < n_MV_; i++) {
-//         for (int j = row; j < P_; j++) {
-//             phi_(j, Eigen::seq(i*(N_-P_-1), (i+1)*(N_-P_-1))) = vec(Eigen::seq(0, Eigen::last));
-//         } 
-//     }
-// }
+void FSRModel::FillPhi(const Eigen::VectorXf& vec, const int& row) {
+    for (int i = 0; i < n_MV_; i++) {
+        for (int j = row; j < P_; j++) {
+            phi_(j, Eigen::seq(i*(N_-P_-1), (i+1)*(N_-P_-1))) = vec(Eigen::seq(0, Eigen::last));
+        } 
+    }
+}
 
 
 // Print functions: 
