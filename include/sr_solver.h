@@ -8,18 +8,16 @@
 #ifndef SR_SOLVER_H
 #define SR_SOLVER_H
 
-#include <string>
-#include <map>
-
 #include <Eigen/Dense>
-#include "parse.h"
+#include "data_structs.h"
+#include "FSRCoefficients.h"
 
 
 /**
  * @brief 
  * 
  */
-void sr_solver(const int& T, std::map<std::string,int>& model_param);
+void sr_solver(const int& T, FSRCoefficients fsr);
 
 void setWeightMatrices(Eigen::MatrixXf& Q_bar, Eigen::MatrixXf& R_bar, const MPCConfig& mpc_config);
 
