@@ -93,18 +93,24 @@ void FSRCoefficients::SelectPastVec() {
     for (int i = 0; i < n_CV_; i++) {
         Eigen::VectorXf vec = Eigen::VectorXf::Zero(N_-P_);
         for (int j = 0; j < n_MV_*N_; j = j + N_) { // Step N
-            vec(Eigen::seq(0, Eigen::last)) = SR_(i,Eigen::seq(j+P_, j+N_-1));
-            FillPhi(vec, i);
+            for (int k = 0; k < P_; k++) {
+                vec(Eigen::seq(0, Eigen::last)) = SR_(i,Eigen::seq(j+(P_-W_), j+N_-1-W_)); // Insert W 
+                FillPhi(vec, i);
+            }
         }
     }
 }
 
 void FSRCoefficients::FillPhi(const Eigen::VectorXf& vec, const int& row) {
     for (int i = 0; i < n_MV_; i++) {
-        phi_(row, Eigen::seq(i*(N_-P_-1), (i+1)*(N_-P_-1))) = vec(Eigen::seq(0, Eigen::last));
+        for (int j = row; j < P_; j++) {
+            phi_(j, Eigen::seq(i*(N_-P_-1), (i+1)*(N_-P_-1))) = vec(Eigen::seq(0, Eigen::last));
+        } 
     }
 }
 
+
+// Print functions: 
 void FSRCoefficients::PrintPPSR(int i, int j) {
     std::cout << "SISO SRC matrix: " << "(" << P_-W_ << ", " << M_ << ")" << std::endl; 
     std::cout << pp_SR_[i][j] << std::endl;
