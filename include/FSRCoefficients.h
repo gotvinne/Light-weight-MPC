@@ -10,6 +10,11 @@
 
 #include <Eigen/Dense>
 
+//! A Finite Step Response model object
+/*!
+ C++ class object holding the FSR model given a spesific format of the step response coefficients.
+ A MPC configuration is also passed as input in order shape the system matrices for the MPC algorithm. 
+ */
 class FSRCoefficients {
 private:
     int n_CV_;
@@ -24,18 +29,28 @@ private:
     Eigen::MatrixXf theta_; // (n_CV*(P-W), n_MV*M)
     Eigen::MatrixXf phi_; // (n_CV*P-W, n_MV*N-(P-W))
 public: 
+    //! The constructor
+    /*! Constructing the object allocating memory for the SISO prediction matric */
     FSRCoefficients(const Eigen::MatrixXf& SR, int n_CV, int n_MV, int N, int P, int M, int W);
-    void GenerateLowerTriangularMatrix(const Eigen::VectorXf& vec, Eigen::MatrixXf& S);
-    void SelectPredictionVec(Eigen::MatrixXf& S);
-    void setSRMatrix();
+    //! The destructor 
+    /*! Freeing the memory allocated in the constructor */
+    ~FSRCoefficients();
 
+    // SISO Step response matrix
+    void setSRMatrix();
+    void SelectPredictionVec(Eigen::MatrixXf& S);
+    void GenerateLowerTriangularMatrix(const Eigen::VectorXf& vec, Eigen::MatrixXf& S);
+    
+    // Prediction Theta matrix
     void setThetaMatrix();
     void FillTheta(const Eigen::MatrixXf& S, const int& i, const int& j);
 
+    // Previous Phi matrix
     void setPhiMatrix();
     void SelectPastVec();
     void FillPhi(const Eigen::VectorXf& vec, const int& row);
 
+    // Get functions
     int getN() const { return N_; }
     int getP() const { return P_; }
     int getM() const { return M_; }
@@ -43,11 +58,12 @@ public:
     int getN_CV() const { return n_CV_; }
     int getN_MV() const { return n_MV_; }
 
+    // Print functionality
     void PrintPPSR(int i, int j);
     void PrintTheta();
     void PrintSR();
     void PrintPhi();
-    ~FSRCoefficients();
+    
 };
 
 #endif // STEP_RESPONSE_COEFFICIENTS_H
