@@ -11,6 +11,7 @@
 #include <vector>
 #include <stdexcept>
 #include <iostream>
+
 #include <nlohmann/json.hpp>
 #include <Eigen/Dense>
 
@@ -98,6 +99,10 @@ void CVData::FillSR(const json& s_data) {
             pp_SR_vec_[i][j] = vec;
         }
     }       
+}
+
+Eigen::VectorXf CVData::getYRef(int P, int k) {
+    return y_ref(Eigen::seq(k, P+k));
 }
 
 MVData::MVData() {}

@@ -41,6 +41,7 @@ class CVData {
     void FillSR(const json& s_data);
     CVData& operator=(const CVData& rhs);
     Eigen::VectorXf** getSR() const { return pp_SR_vec_; }
+    Eigen::VectorXf getYRef(int P, int k);
 };
 
 /**
