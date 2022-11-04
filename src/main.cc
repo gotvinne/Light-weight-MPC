@@ -10,7 +10,7 @@
 #include "json_specifiers.h"
 #include "sr_solver.h"
 #include "parse.h"
-#include "FSRCoefficients.h"
+#include "FSRModel.h"
 #include "data_structs.h"
 
 #include <map>
@@ -49,7 +49,7 @@ int main() {
     Eigen::VectorXf z_min; 
     ParseScenarioData(sce_data, system, conf, z_max, z_min, m_param[kN_CV], m_param[kN_MV]);
     
-    FSRCoefficients S(sd.S, m_param[kN_CV], m_param[kN_MV], m_param[kN], conf.P, conf.M, conf.W);
+    FSRModel S(sd.S, m_param[kN_CV], m_param[kN_MV], m_param[kN], conf.P, conf.M, conf.W);
     S.PrintSR();
     S.PrintPhi();
     // // Defining MPC matrices

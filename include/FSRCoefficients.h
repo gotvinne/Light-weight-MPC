@@ -1,12 +1,12 @@
 /**
- * @file FSRCoefficients.h
+ * @file FSRModel.h
  * @author Geir Ola Tvinnereim
  * @copyright  Geir Ola Tvinnereim 
  * @date 2022
  */
 
-#ifndef FSR_COEFFICIENTS_H
-#define FSR_COEFFICIENTS_H
+#ifndef FSR_MODEL_H
+#define FSR_MODEL_H
 
 #include <Eigen/Dense>
 
@@ -15,7 +15,7 @@
  C++ class object holding the FSR model given a spesific format of the step response coefficients.
  A MPC configuration is also passed as input in order shape the system matrices for the MPC algorithm. 
  */
-class FSRCoefficients {
+class FSRModel {
 private:
     int n_CV_;
     int n_MV_;
@@ -31,10 +31,10 @@ private:
 public: 
     //! The constructor
     /*! Constructing the object allocating memory for the SISO prediction matric */
-    FSRCoefficients(const Eigen::MatrixXf& SR, int n_CV, int n_MV, int N, int P, int M, int W);
+    FSRModel(const Eigen::MatrixXf& SR, int n_CV, int n_MV, int N, int P, int M, int W);
     //! The destructor 
     /*! Freeing the memory allocated in the constructor */
-    ~FSRCoefficients();
+    ~FSRModel();
 
     // SISO Step response matrix
     void setSRMatrix();
@@ -66,4 +66,4 @@ public:
     
 };
 
-#endif // STEP_RESPONSE_COEFFICIENTS_H
+#endif // FSR_MODEL_H

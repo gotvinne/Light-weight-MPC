@@ -10,14 +10,14 @@
 
 #include <Eigen/Dense>
 #include "data_structs.h"
-#include "FSRCoefficients.h"
+#include "FSRModel.h"
 
 
 /**
  * @brief 
  * 
  */
-void sr_solver(const int& T, const FSRCoefficients& fsr);
+void sr_solver(const int& T, const FSRModel& fsr);
 
 void setWeightMatrices(Eigen::MatrixXf& Q_bar, Eigen::MatrixXf& R_bar, const MPCConfig& mpc_config);
 

@@ -31,13 +31,13 @@ void setHessianMatrix(Eigen::MatrixXf& hessian, const Eigen::MatrixXf& theta, co
     //hessian = 2*theta.T*Q_bar*theta + 2*R_bar;
 }
 
-void sr_solver(const int& T, std::map<std::string,int>& model_param) {
+void sr_solver(const int& T, const FSRModel& fsr) {
 
     OsqpEigen::Solver solver;
     solver.settings()->setWarmStart(true); // Starts primal and dual variables from previous QP
 
     // Define QP
-    solver.data()->setNumberOfVariables(model_param[kN]);
+    //solver.data()->setNumberOfVariables();
     //solver.data()->setNumberOfConstraints(model_param[k]);
 
 
