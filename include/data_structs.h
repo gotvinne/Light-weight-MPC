@@ -24,11 +24,12 @@ struct CVData {
     std::vector<std::string> Outputs; 
     std::vector<float> Inits;
     std::vector<std::string> Units;
-    Eigen::MatrixXf S;
+    Eigen::VectorXf** S;
     Eigen::VectorXf Y_Ref;
 
     CVData();
     CVData(const json& cv_data, int n_MV, int n_CV, int N, int T);
+    ~CVData();
 };
 
 /**

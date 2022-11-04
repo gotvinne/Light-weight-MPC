@@ -22,7 +22,19 @@ CVData::CVData(const json& cv_data, int n_MV, int n_CV, int N, int T) {
         throw std::invalid_argument("n_CV does not coincide with CV");
     }
     Y_Ref.resize(T*n_MV);
-    S.resize(n_MV, N*n_CV);
+
+    // Allocate matrix of Eigen::VectorXf
+    S = new Eigen::VectorXf*[n_CV];
+    for (int i = 0; i < n_CV; ++i) {
+        S[i] = new Eigen::VectorXf[n_MV];
+    }
+
+    for (int row = 0; row < n_CV; row++) {
+        for (int col = 0; col < n_MV; col++) {
+            S[row][col] = Eigen::VectorXf::Zero(N);
+        }
+    }
+    
     for (int outputs = 0; outputs < n_CV; outputs++) {
         json output_data = cv_data.at(outputs); //Selecting one output
         Outputs.push_back(output_data.at(kOutput));
@@ -33,8 +45,15 @@ CVData::CVData(const json& cv_data, int n_MV, int n_CV, int N, int T) {
             throw std::invalid_argument("Too few input data for the horizon");
         }
         FillReference(output_data.at(kY_Ref), Y_Ref, T*outputs, T);
-        FillStepCoMatrix(output_data.at(kS), S, n_MV, outputs*N, N);
+        //FillStepCoMatrix(output_data.at(kS), S, n_MV, outputs*N, N);
     }                          
+}
+
+CVData::~CVData() {
+    for (int i = 0 ; i < n_CV_; i++) {
+        delete[] S[i];
+    }
+    delete[] S;
 }
 
 void FillReference(const json& ref_data, Eigen::VectorXf& ref, int start_index, int interval) {
