@@ -28,10 +28,14 @@ void setWeightMatrices(Eigen::MatrixXf& Q_bar, Eigen::MatrixXf& R_bar,
 void setHessianMatrix(Eigen::MatrixXf& hessian, const Eigen::MatrixXf& theta, const Eigen::MatrixXf& Q_bar, 
                         const Eigen::MatrixXf& R_bar, int n_MV, int M) {
     hessian.resize(M*n_MV, M*n_MV);
-    //hessian = 2*theta.T*Q_bar*theta + 2*R_bar;
+    hessian = 2*theta.transpose()*Q_bar*theta + 2*R_bar;
 }
 
-void sr_solver(const int& T, const FSRModel& fsr) {
+void sr_solver(const int& T, const FSRModel& fsr, const MPCConfig& conf) {
+
+    Eigen::MatrixXf Q_bar; 
+    Eigen::MatrixXf R_bar; 
+    setWeightMatrices(Q_bar, R_bar, conf);
 
     OsqpEigen::Solver solver;
     solver.settings()->setWarmStart(true); // Starts primal and dual variables from previous QP
