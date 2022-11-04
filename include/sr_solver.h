@@ -9,7 +9,7 @@
 #define SR_SOLVER_H
 
 #include <Eigen/Dense>
-#include "data_structs.h"
+#include "data_objects.h"
 #include "FSRModel.h"
 
 

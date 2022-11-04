@@ -9,7 +9,7 @@
 #ifndef PARSE_H
 #define PARSE_H
 
-#include "data_structs.h"
+#include "data_objects.h"
 
 #include <nlohmann/json.hpp>
 #include <Eigen/Dense>

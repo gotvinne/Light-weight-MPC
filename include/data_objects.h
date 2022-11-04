@@ -1,12 +1,12 @@
 /**
- * @file data_structs.h
+ * @file data_objects.h
  * @author Geir Ola Tvinnereim
  * @copyright  Geir Ola Tvinnereim 
  * @date 2022
  */
 
-#ifndef DATA_STRUCTS_H
-#define DATA_STRUCTS_H
+#ifndef DATA_OBJECTS_H
+#define DATA_OBJECTS_H
 
 #include <vector>
 #include <string>
@@ -20,16 +20,27 @@ using json = nlohmann::json;
  * @brief C++ struct representing state data described in system file
  * 
  */
-struct CVData {
-    std::vector<std::string> Outputs; 
-    std::vector<float> Inits;
-    std::vector<std::string> Units;
-    Eigen::VectorXf** S;
-    Eigen::VectorXf Y_Ref;
+class CVData {
+    private:
+    int n_CV_;
+    int n_MV_; 
+    int N_;
+    
+    std::vector<std::string> outputs_; 
+    std::vector<float> inits_;
+    std::vector<std::string> units_;
 
+    Eigen::VectorXf** pp_SR_vec_;
+    Eigen::VectorXf y_ref_;
+
+    public:
     CVData();
     CVData(const json& cv_data, int n_MV, int n_CV, int N, int T);
     ~CVData();
+
+    void FillSR(const json& s_data);
+    CVData& operator=(const CVData& rhs);
+    Eigen::VectorXf** getSR() const { return pp_SR_vec_; }
 };
 
 /**
@@ -73,16 +84,4 @@ struct MPCConfig {
  */
 void FillReference(const json& ref_data, Eigen::VectorXf& ref, int start_index, int interval);
 
-/**
- * @brief Assigns step coefficients to the Eigen::MatrixXf passed by reference 
- * 
- * @param s_data json object holding step coefficient data 
- * @param S Eigen::MatrixXf to be filled with step coefficients
- * @param n_MV number of manipulated variables
- * @param start_index index to start to fill from
- * @param interval number of values to be filled
- */
-void FillStepCoMatrix(const json& s_data, Eigen::MatrixXf& S, int n_MV, int start_index, int interval);
-
-
-#endif // DATA_STRUCTS_H
+#endif // DATA_OBJECTS_H

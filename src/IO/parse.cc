@@ -7,7 +7,7 @@
 
 #include "parse.h"
 #include "json_specifiers.h"
-#include "data_structs.h"
+#include "data_objects.h"
 
 #include <nlohmann/json.hpp>
 #include <Eigen/Dense>

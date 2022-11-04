@@ -11,7 +11,7 @@
 #include "sr_solver.h"
 #include "parse.h"
 #include "FSRModel.h"
-#include "data_structs.h"
+#include "data_objects.h"
 
 #include <map>
 #include <iostream>

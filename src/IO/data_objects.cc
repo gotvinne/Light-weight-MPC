@@ -1,59 +1,85 @@
 /**
- * @file data_structs.cc
+ * @file data_objects.cc
  * @author Geir Ola Tvinnereim
  * @copyright  Geir Ola Tvinnereim 
  * @date 2022
  */
 
-#include "data_structs.h"
+#include "data_objects.h"
 #include "json_specifiers.h"
 
 #include <vector>
 #include <stdexcept>
+#include <iostream>
+#include <nlohmann/json.hpp>
+#include <Eigen/Dense>
 
 /* Error handling:
     Check that S is correct with N_MV and N_CV
     Check that number of S is correct with n_CV
 */
 CVData::CVData() {}
-CVData::CVData(const json& cv_data, int n_MV, int n_CV, int N, int T) {
+CVData::CVData(const json& cv_data, int n_MV, int n_CV, int N, int T) : n_CV_{n_CV}, n_MV_{n_MV}, N_{N} {
     int n_outputs = cv_data.size();
     if (n_outputs != n_CV) {
         throw std::invalid_argument("n_CV does not coincide with CV");
     }
-    Y_Ref.resize(T*n_MV);
+    y_ref_.resize(T*n_MV);
 
     // Allocate matrix of Eigen::VectorXf
-    S = new Eigen::VectorXf*[n_CV];
-    for (int i = 0; i < n_CV; ++i) {
-        S[i] = new Eigen::VectorXf[n_MV];
+    pp_SR_vec_ = new Eigen::VectorXf*[n_CV_];
+    for (int i = 0; i < n_CV_; ++i) {
+        pp_SR_vec_[i] = new Eigen::VectorXf[n_MV_];
     }
 
-    for (int row = 0; row < n_CV; row++) {
-        for (int col = 0; col < n_MV; col++) {
-            S[row][col] = Eigen::VectorXf::Zero(N);
+    for (int row = 0; row < n_CV_; row++) {
+        for (int col = 0; col < n_MV_; col++) {
+            pp_SR_vec_[row][col] = Eigen::VectorXf::Zero(N);
         }
     }
     
     for (int outputs = 0; outputs < n_CV; outputs++) {
         json output_data = cv_data.at(outputs); //Selecting one output
-        Outputs.push_back(output_data.at(kOutput));
-        Inits.push_back(output_data.at(kInit));
-        Units.push_back(output_data.at(kUnit));
+        outputs_.push_back(output_data.at(kOutput));
+        inits_.push_back(output_data.at(kInit));
+        units_.push_back(output_data.at(kUnit));
 
         if (output_data.at(kY_Ref).size() < T) {
             throw std::invalid_argument("Too few input data for the horizon");
         }
-        FillReference(output_data.at(kY_Ref), Y_Ref, T*outputs, T);
-        //FillStepCoMatrix(output_data.at(kS), S, n_MV, outputs*N, N);
+        FillReference(output_data.at(kY_Ref), y_ref_, T*outputs, T);
+        FillSR(output_data.at(kS));
     }                          
 }
 
 CVData::~CVData() {
     for (int i = 0 ; i < n_CV_; i++) {
-        delete[] S[i];
+        delete[] pp_SR_vec_[i];
     }
-    delete[] S;
+    delete[] pp_SR_vec_;
+}
+
+CVData& CVData::operator=(const CVData& rhs) {
+    n_CV_ = rhs.n_CV_;
+    n_MV_ = rhs.n_MV_;
+    N_ = rhs.N_;
+    
+    outputs_ = rhs.outputs_;
+    inits_ = rhs.inits_;
+    units_ = rhs.units_;
+    y_ref_ = rhs.y_ref_;
+
+    pp_SR_vec_ = new Eigen::VectorXf*[n_CV_];
+    for (int i = 0; i < n_CV_; ++i) {
+        pp_SR_vec_[i] = new Eigen::VectorXf[n_MV_];
+    }
+
+    for (int row = 0; row < n_CV_; row++) {
+        for (int col = 0; col < n_MV_; col++) {
+            pp_SR_vec_[row][col] = rhs.pp_SR_vec_[row][col];
+        }
+    }
+    return *this;
 }
 
 void FillReference(const json& ref_data, Eigen::VectorXf& ref, int start_index, int interval) {
@@ -62,10 +88,14 @@ void FillReference(const json& ref_data, Eigen::VectorXf& ref, int start_index, 
     }  
 }
 
-void FillStepCoMatrix(const json& s_data, Eigen::MatrixXf& S, int n_MV, int start_index, int interval) {
-    for (int i = 0; i < n_MV; i++) {
-        for (int j = 0; j < interval; j++) {
-            S(i,start_index+j) = s_data.at(i).at(j);
+void CVData::FillSR(const json& s_data) {
+    for (int i = 0; i < n_CV_; i++) {
+        for (int j = 0; j < n_MV_; j++) {
+            Eigen::VectorXf vec = Eigen::VectorXf::Zero(N_);
+            for (int k = 0; k < N_; k++) {
+                vec(k) = s_data.at(i).at(k);
+            }
+            pp_SR_vec_[i][j] = vec;
         }
     }       
 }
