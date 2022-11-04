@@ -17,7 +17,7 @@
  * @brief 
  * 
  */
-void sr_solver(const int& T, FSRCoefficients fsr);
+void sr_solver(const int& T, const FSRCoefficients& fsr);
 
 void setWeightMatrices(Eigen::MatrixXf& Q_bar, Eigen::MatrixXf& R_bar, const MPCConfig& mpc_config);
 
