@@ -24,31 +24,29 @@ private:
     int M_;
     int W_;
 
-    Eigen::MatrixXf SR_; // Can consider making this array of Eigen::VectorXf, simplifying access
-    Eigen::MatrixXf** pp_SR_; // (P-W,M) times (n_CV, n_MV)
+    Eigen::VectorXf** pp_SR_vec_;
+    Eigen::MatrixXf** pp_SR_mat_; // (P-W,M) times (n_CV, n_MV)
     Eigen::MatrixXf theta_; // (n_CV*(P-W), n_MV*M)
     Eigen::MatrixXf phi_; // (n_CV*P-W, n_MV*N-(P-W))
 public: 
     //! The constructor
     /*! Constructing the object allocating memory for the SISO prediction matric */
-    FSRModel(const Eigen::MatrixXf& SR, int n_CV, int n_MV, int N, int P, int M, int W);
+    FSRModel(Eigen::VectorXf** SR, int n_CV, int n_MV, int N, int P, int M, int W);
     //! The destructor 
     /*! Freeing the memory allocated in the constructor */
     ~FSRModel();
 
     // SISO Step response matrix
     void setSRMatrix();
-    void SelectPredictionVec(Eigen::MatrixXf& S);
     void GenerateLowerTriangularMatrix(const Eigen::VectorXf& vec, Eigen::MatrixXf& S);
     
     // Prediction Theta matrix
     void setThetaMatrix();
-    void FillTheta(const Eigen::MatrixXf& S, const int& i, const int& j);
 
     // Previous Phi matrix
-    void setPhiMatrix();
-    void SelectPastVec();
-    void FillPhi(const Eigen::VectorXf& vec, const int& row);
+    // void setPhiMatrix();
+    // void SelectPastVec();
+    // void FillPhi(const Eigen::VectorXf& vec, const int& row);
 
     // Get functions
     int getN() const { return N_; }
@@ -61,7 +59,7 @@ public:
     // Print functionality
     void PrintPPSR(int i, int j);
     void PrintTheta();
-    void PrintSR();
+    //void PrintSR(); Need new implementation
     void PrintPhi();
     
 };
