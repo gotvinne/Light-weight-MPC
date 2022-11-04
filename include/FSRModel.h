@@ -48,10 +48,6 @@ public:
     void FillPhi(const Eigen::VectorXf& vec, const int& row);
 
     // Get functions
-    int getN() const { return N_; }
-    int getP() const { return P_; }
-    int getM() const { return M_; }
-    int getW() const { return W_; }
     int getN_CV() const { return n_CV_; }
     int getN_MV() const { return n_MV_; }
     Eigen::MatrixXf getTheta() const { return theta_; }

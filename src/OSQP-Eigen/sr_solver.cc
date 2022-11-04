@@ -35,7 +35,10 @@ void sr_solver(const int& T, const FSRModel& fsr, const MPCConfig& conf) {
 
     Eigen::MatrixXf Q_bar; 
     Eigen::MatrixXf R_bar; 
+    Eigen::MatrixXf hessian;
+
     setWeightMatrices(Q_bar, R_bar, conf);
+    setHessianMatrix(hessian, fsr.getTheta(), Q_bar, R_bar, conf.M, conf.M);
 
     OsqpEigen::Solver solver;
     solver.settings()->setWarmStart(true); // Starts primal and dual variables from previous QP
