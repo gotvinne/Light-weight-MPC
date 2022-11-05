@@ -49,8 +49,11 @@ int main() {
     Eigen::VectorXf z_min; 
     ParseScenarioData(sce_data, system, conf, z_max, z_min, m_param[kN_CV], m_param[kN_MV]);
     
-    FSRModel S(sd.getSR(), m_param[kN_CV], m_param[kN_MV], m_param[kN], conf.P, conf.M, conf.W);
+    FSRModel FSR(sd.getSR(), m_param[kN_CV], m_param[kN_MV], m_param[kN], conf.P, conf.M, conf.W);
 
+    Eigen::MatrixXf K;
+    setKmatrix(K, FSR.getM(), m_param[kN_MV]);
+    std::cout << K << std::endl;
     // Eigen::MatrixXf dt_opt; // Optimal actuation 
     
 

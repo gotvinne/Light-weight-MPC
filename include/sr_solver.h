@@ -21,7 +21,7 @@ void setWeightMatrices(Eigen::MatrixXf& Q_bar, Eigen::MatrixXf& R_bar, const MPC
 void setHessianMatrix(Eigen::MatrixXf& hessian, const Eigen::MatrixXf& theta, const Eigen::MatrixXf& Q_bar, const Eigen::MatrixXf& R_bar, int n_MV, int M); 
 void setKmatrix(Eigen::MatrixXf& K, int M, int n_MV);
 
-void blkdiag(Eigen::MatrixXf blk_mat, const Eigen::MatrixXf& arg, int count);
+void blkdiag(Eigen::MatrixXf& blk_mat, const Eigen::MatrixXf& arg, int count);
 
 
 

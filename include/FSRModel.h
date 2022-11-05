@@ -49,8 +49,9 @@ public:
     Eigen::VectorXf PadVec(Eigen::VectorXf& vec, int pad);
 
     // Get functions
-    int getN_CV() const { return n_CV_; }
-    int getN_MV() const { return n_MV_; }
+    int getP() const { return P_; }
+    int getM() const { return M_; }
+    int getW() const { return W_; }
     Eigen::MatrixXf getTheta() const { return theta_; }
     Eigen::MatrixXf getPhi() const { return phi_; }
 

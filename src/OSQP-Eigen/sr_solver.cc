@@ -34,20 +34,22 @@ void setHessianMatrix(Eigen::MatrixXf& hessian, const Eigen::MatrixXf& theta, co
 
 void setKmatrix(Eigen::MatrixXf& blk_mat, int M, int n_MV) {
     Eigen::MatrixXf K = Eigen::MatrixXf::Zero(M, M);
-    std::array<float, 2> arr = {1, -1};
+    std::array<float, 2> arr = {1.0, -1.0};
     for (int i = 0; i < M; i++) {
-        for (int j = 0; j < arr.size(); j++) {
+        for (int j = 0; j < arr.size(); j++) { // NB M > 2. 
+            if (i == M-1 && j == 1) {
+                break;
+            }
             K(i+j, i) = arr[j];
         }
     }
-    blk_mat.resize(M * n_MV, M * n_MV);
     blkdiag(blk_mat, K, n_MV);
 }
 
-void blkdiag(Eigen::MatrixXf blk_mat, const Eigen::MatrixXf& arg, int count) {
-    Eigen::MatrixXf bdm = Eigen::MatrixXf::Zero(arg.rows() * count, arg.cols() * count);
+void blkdiag(Eigen::MatrixXf& blk_mat, const Eigen::MatrixXf& arg, int count) {
+    blk_mat = Eigen::MatrixXf::Zero(arg.rows() * count, arg.cols() * count);
     for (int i = 0; i < count; i++) {
-        bdm.block(i * arg.rows(), i * arg.cols(), arg.rows(), arg.cols()) = arg;
+        blk_mat.block(i * arg.rows(), i * arg.cols(), arg.rows(), arg.cols()) = arg;
     }
 }
 
