@@ -86,14 +86,25 @@ void FSRModel::setThetaMatrix() {
 void FSRModel::setPhiMatrix() {
     // NB: Need supervision for padding Sn 
     for (int i = 0; i < n_CV_; i++) {
-        Eigen::VectorXf vec = Eigen::VectorXf::Zero(N_-P_);
+        Eigen::VectorXf phi_vec = Eigen::VectorXf::Zero(N_-P_);
         for (int j = 0; j < n_MV_; j++) { 
-            // Pad vector
-            //if (vec.size() !=  )
-            vec = pp_SR_vec_[i][j](Eigen::seq(P_-W_+j,Eigen::last)); 
+            Eigen::VectorXf vec = pp_SR_vec_[i][j](Eigen::seq(P_-W_+j,Eigen::last));
+            if (vec.size() != N_-P_) {
+                int pad = vec.size() - (N_-P_);
+                Eigen::VectorXf vec = PadVec(vec, pad);
+            }
             FillPhi(vec, i);
         }
     }
+}
+
+Eigen::VectorXf FSRModel::PadVec(Eigen::VectorXf& vec, int pad) {
+    float num = vec(Eigen::last);
+    Eigen::VectorXf num_vec = Eigen::VectorXf::Constant(pad, num);
+    Eigen::VectorXf padded_vec(vec.size() + num_vec.size());
+    padded_vec << vec;
+    padded_vec << num_vec;
+    return padded_vec; 
 }
 
 void FSRModel::FillPhi(const Eigen::VectorXf& vec, const int& row) {

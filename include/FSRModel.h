@@ -46,6 +46,7 @@ public:
     // Previous Phi matrix
     void setPhiMatrix();
     void FillPhi(const Eigen::VectorXf& vec, const int& row);
+    Eigen::VectorXf PadVec(Eigen::VectorXf& vec, int pad);
 
     // Get functions
     int getN_CV() const { return n_CV_; }

@@ -102,7 +102,7 @@ void CVData::FillSR(const json& s_data) {
 }
 
 Eigen::VectorXf CVData::getYRef(int P, int k) {
-    return y_ref(Eigen::seq(k, P+k));
+    return y_ref_(Eigen::seq(k, P+k));
 }
 
 MVData::MVData() {}
