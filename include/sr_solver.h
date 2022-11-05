@@ -19,7 +19,9 @@
 void sr_solver(const int& T, const FSRModel& fsr);
 void setWeightMatrices(Eigen::MatrixXf& Q_bar, Eigen::MatrixXf& R_bar, const MPCConfig& mpc_config);
 void setHessianMatrix(Eigen::MatrixXf& hessian, const Eigen::MatrixXf& theta, const Eigen::MatrixXf& Q_bar, const Eigen::MatrixXf& R_bar, int n_MV, int M); 
+void setKmatrix(Eigen::MatrixXf& K, int M, int n_MV);
 
+void blkdiag(Eigen::MatrixXf blk_mat, const Eigen::MatrixXf& arg, int count);
 
 
 
