@@ -53,6 +53,11 @@ void blkdiag(Eigen::MatrixXf& blk_mat, const Eigen::MatrixXf& arg, int count) {
     }
 }
 
+void setKInv(Eigen::MatrixXf& K_inv, int M, int n_MV) {
+    K_inv = Eigen::MatrixXf::Constant(M, M, 1);
+    K_inv = K_inv.triangularView<Eigen::Lower>();
+}
+
 void sr_solver(const int& T, const FSRModel& fsr, const MPCConfig& conf) {
 
     Eigen::MatrixXf Q_bar; 

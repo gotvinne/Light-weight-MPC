@@ -51,9 +51,9 @@ int main() {
     
     FSRModel FSR(sd.getSR(), m_param[kN_CV], m_param[kN_MV], m_param[kN], conf.P, conf.M, conf.W);
 
-    Eigen::MatrixXf K;
-    setKmatrix(K, FSR.getM(), m_param[kN_MV]);
-    std::cout << K << std::endl;
+    Eigen::MatrixXf K_inv;
+    setKInv(K_inv, FSR.getM(), m_param[kN_MV]);
+    std::cout << K_inv << std::endl;
     // Eigen::MatrixXf dt_opt; // Optimal actuation 
     
 
