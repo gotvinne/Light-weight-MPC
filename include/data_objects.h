@@ -40,8 +40,12 @@ class CVData {
 
     void FillSR(const json& s_data);
     CVData& operator=(const CVData& rhs);
+
+    // Get functions
     Eigen::VectorXf** getSR() const { return pp_SR_vec_; }
     Eigen::VectorXf getYRef(int P, int k);
+    std::vector<std::string> getOutputs() const { return outputs_; }
+    std::vector<std::string> getUnits() const { return units_; }
 };
 
 /**
