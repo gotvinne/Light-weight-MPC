@@ -98,10 +98,10 @@ void sr_solver(const int& T, const FSRModel& fsr, const MPCConfig& conf) { // Mi
     setConstraintMatrix(A, fsr, m, n);
 
     if (!solver.data()->setHessianMatrix(G)) { throw std::runtime_error("Cannot initialize Hessian"); }
-    // if(!solver.data()->setGradient(gradient)) return 1;
+    // if (!solver.data()->setGradient(q)) { throw std::runtime_error("Cannot initialize Gradient"); }
     if(!solver.data()->setLinearConstraintsMatrix(A)) { throw std::runtime_error("Cannot initialize constraint matrix"); }
-    // if(!solver.data()->setLowerBound(lowerBound)) return 1;
-    // if(!solver.data()->setUpperBound(upperBound)) return 1;
+    // if (!solver.data()->setLowerBound(l)) { throw std::runtime_error("Cannot initialize lower bound"); }
+    // if (!solver.data()->setUpperBound(u)) { throw std::runtime_error("Cannot initialize upper bound"); }
 
     // if (!solver.initSolver()) { // If solver cannot be initialized
     //     throw std::runtime_error("Cannot initialize solver");
