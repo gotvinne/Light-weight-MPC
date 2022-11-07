@@ -11,8 +11,6 @@
 #include "OsqpEigen/OsqpEigen.h"
 #include <Eigen/Eigen>
 
-#include <map>
-#include <array>
 #include <string>
 #include <iostream>
 #include <stdexcept>
@@ -90,6 +88,7 @@ void sr_solver(const int& T, const FSRModel& fsr, const MPCConfig& conf) { // Mi
     Eigen::MatrixXf R_bar; 
     Eigen::SparseMatrix<float> G;
     Eigen::SparseMatrix<float> A;
+    Eigen::SparseMatrix<float> q;
 
     Eigen::VectorXf l;
     Eigen::VectorXf u; 
@@ -104,9 +103,31 @@ void sr_solver(const int& T, const FSRModel& fsr, const MPCConfig& conf) { // Mi
     // if(!solver.data()->setLowerBound(lowerBound)) return 1;
     // if(!solver.data()->setUpperBound(upperBound)) return 1;
 
-
-
     // if (!solver.initSolver()) { // If solver cannot be initialized
     //     throw std::runtime_error("Cannot initialize solver");
     // }
+
+    // controller input and QPSolution vector
+    Eigen::Vector<float, n> du;
+
+    // for (int i = 0; i < T; i++) {
+
+    //     // solve the QP problem
+    //     if(solver.solveProblem() != OsqpEigen::ErrorExitFlag::NoError) { throw std::runtime_error("Cannot solve problem"); }
+
+    //     // Claim solution
+    //     du = solver.getSolution();
+
+    //     // save data into file
+    //     auto x0Data = x0.data();
+
+    //     // propagate the model
+    //     x0 = a * x0 + b * ctr;
+
+    //     // update the constraint bound
+    //     updateConstraintVectors(x0, lowerBound, upperBound);
+    //     if (!solver.updateBounds(lowerBound, upperBound)) { throw std::runtime_error("Cannot update problem"); }
+    // }
+
+    // Save data to file
 }
