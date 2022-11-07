@@ -12,7 +12,6 @@
 #include "FSRModel.h"
 
 #include <Eigen/Eigen>
-
 /**
  * @brief solving the condensed optimalization problem using OSQP-Eigen
  * 
