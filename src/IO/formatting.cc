@@ -46,3 +46,16 @@ void FormatSimCV(json& data, const CVData& cv_data, int n_CV) {
     }
     data[kCV] = arr;
 }
+
+void FormatSimMV(json& data, const MVData& mv_data, int n_MV) {
+    json arr = json::array(); 
+
+    for (int i = 0; i < n_MV; i++) {
+        json obj = json::object();
+        obj[kInput] = mv_data.Inputs[i];
+        obj[kUnit] = mv_data.Units[i];
+        // Fill inn c, y, y_hat
+        arr.push_back(obj);
+    }
+    data[kMV] = arr;
+}
