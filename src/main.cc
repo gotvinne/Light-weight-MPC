@@ -59,7 +59,9 @@ int main() {
     std::string scenario = "sr_siso_test";
     std::string scenario_file = "format_test.json";
     std::string sim_filepath = "../data/systems/sim_" + scenario_file; 
-    FormatSimulationData(output_data, sim_filepath, scenario, T, fsr.getN_CV(), fsr.getN_MV());
+    
+    FormatSimData(output_data, sim_filepath, scenario, T, fsr.getN_CV(), fsr.getN_MV());
+    FormatSimCV(output_data, sd, fsr.getN_CV());
     WriteJson(output_data, sim_filepath);
 
     // // Flow: 

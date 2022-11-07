@@ -10,12 +10,16 @@
 
 #include <nlohmann/json.hpp>
 #include <string>
+#include "data_objects.h"
+
+#include "Eigen/Dense"
 
 using json = nlohmann::json;
 
 void WriteJson(const json& data, const std::string& filepath);
 
-void FormatSimulationData(json& data, const std::string& filepath, const std::string& scenario, 
+void FormatSimData(json& data, const std::string& filepath, const std::string& scenario, 
                         const int& T, const int& n_CV, const int& n_MV);
+void FormatSimCV(json& data, const CVData& cv_data, int n_CV); //const Eigen::Vector& z_min, const Eigen::Vector& z_max);
 
 #endif  // FORMATTING_H
