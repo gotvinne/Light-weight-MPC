@@ -53,7 +53,14 @@ int main() {
 
     sr_solver(T, fsr, conf);
     // Eigen::MatrixXf dt_opt; // Optimal actuation 
-    
+    Eigen::MatrixXf du; // n_CV x T
+
+    json output_data;
+    std::string scenario = "sr_siso_test";
+    std::string scenario_file = "format_test.json";
+    std::string sim_filepath = "../data/systems/sim_" + scenario_file; 
+    FormatSimulationData(output_data, sim_filepath, scenario, T, fsr.getN_CV(), fsr.getN_MV());
+    WriteJson(output_data, sim_filepath);
 
     // // Flow: 
     // 1)

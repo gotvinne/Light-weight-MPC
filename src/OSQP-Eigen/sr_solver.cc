@@ -78,8 +78,8 @@ void sr_solver(const int& T, const FSRModel& fsr, const MPCConfig& conf) { // Mi
     solver.settings()->setWarmStart(true); // Starts primal and dual variables from previous QP
 
     // Define QP
-    int n = fsr.getM() * fsr.getN_MV(); // Optimization variables 
-    int m = fsr.getP() * fsr.getN_CV() + 2 * n; // Constraints
+    const int n = fsr.getM() * fsr.getN_MV(); // Optimization variables 
+    const int m = fsr.getP() * fsr.getN_CV() + 2 * n; // Constraints
 
     solver.data()->setNumberOfVariables(n);
     solver.data()->setNumberOfConstraints(m);
@@ -108,7 +108,7 @@ void sr_solver(const int& T, const FSRModel& fsr, const MPCConfig& conf) { // Mi
     // }
 
     // controller input and QPSolution vector
-    Eigen::Vector<float, n> du;
+    Eigen::MatrixXf du = Eigen::MatrixXf::Zero(fsr.getN_MV(), T);
 
     // for (int i = 0; i < T; i++) {
 
