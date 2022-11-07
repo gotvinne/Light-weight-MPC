@@ -8,44 +8,44 @@
 #define JSON_SPECIFIERS_H
 
 #include <string>
+using string = std::string;
 
 // ------- System file specifiers ------- //
-const std::string kModel = "model";
-const std::string kN_CV = "n_CV";
-const std::string kN_MV = "n_MV";
-const std::string kN = "N";
+const string kModel = "model";
+const string kN_CV = "n_CV";
+const string kN_MV = "n_MV";
+const string kN = "N";
 
-const std::string kCV = "CV";
-const std::string kMV = "MV";
-const std::string kOutput = "output";
-const std::string kInput = "input";
-const std::string kInit = "init";
-const std::string kUnit = "unit";
+const string kCV = "CV";
+const string kMV = "MV";
+const string kOutput = "output";
+const string kInput = "input";
+const string kInit = "init";
+const string kUnit = "unit";
 
-const std::string kY_Ref = "y_ref";
-const std::string kS = "S"; 
+const string kY_Ref = "y_ref";
+const string kS = "S"; 
 
 // ------- Scenario file specifiers ------- //
-const std::string kSystem = "system";
+const string kSystem = "system";
 
-const std::string kMPC = "MPC";
-const std::string kP = "P";
-const std::string kM = "M";
-const std::string kW = "W";
-const std::string kQ = "Q";
-const std::string kR = "R";
-const std::string kRo = "Ro";
-const std::string kBu = "bias update";
+const string kMPC = "MPC";
+const string kP = "P";
+const string kM = "M";
+const string kW = "W";
+const string kQ = "Q";
+const string kR = "R";
+const string kRo = "Ro";
+const string kBu = "bias update";
 
-const std::string kC = "c_i"; 
+const string kC = "c_i"; 
 
 // ------- Simulation file specifiers ------- //
-const std::string kScenario = "scenario";
-const std::string kT = "T";
+const string kScenario = "scenario";
+const string kT = "T";
 
-const std::string kY = "y";
-const std::string kY_Hat = "y_hat";
-const std::string kU = "u";
+const string kY = "y";
+const string kY_Hat = "y_hat";
+const string kU = "u";
 // ------- ------- ------- ------- ------- //
-
 #endif // JSON_SPECIFIERS_H

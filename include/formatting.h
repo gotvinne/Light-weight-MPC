@@ -9,8 +9,9 @@
 #define FORMATTING_H 
 
 #include <nlohmann/json.hpp>
-#include <string>
 #include "data_objects.h"
+
+#include <string>
 
 #include "Eigen/Dense"
 
@@ -23,4 +24,5 @@ void FormatSimData(json& data, const std::string& filepath, const std::string& s
 void FormatSimCV(json& data, const CVData& cv_data, int n_CV); //const Eigen::Vector& z_min, const Eigen::Vector& z_max);
 
 void FormatSimMV(json& data, const MVData& mv_data, int n_MV);
+
 #endif  // FORMATTING_H
