@@ -58,21 +58,24 @@ void setKInv(Eigen::MatrixXf& K_inv, int M, int n_MV) {
     K_inv = K_inv.triangularView<Eigen::Lower>();
 }
 
-void sr_solver(const int& T, const FSRModel& fsr, const MPCConfig& conf) {
+void sr_solver(const int& T, const FSRModel& fsr, const MPCConfig& conf) { // Might consider only feeding R and Q
 
     Eigen::MatrixXf Q_bar; 
     Eigen::MatrixXf R_bar; 
     Eigen::MatrixXf hessian;
 
     setWeightMatrices(Q_bar, R_bar, conf);
-    setHessianMatrix(hessian, fsr.getTheta(), Q_bar, R_bar, conf.M, conf.M);
+    setHessianMatrix(hessian, fsr.getTheta(), Q_bar, R_bar, fsr.getM(), fsr.getM());
 
     OsqpEigen::Solver solver;
     solver.settings()->setWarmStart(true); // Starts primal and dual variables from previous QP
 
     // Define QP
-    //solver.data()->setNumberOfVariables();
-    //solver.data()->setNumberOfConstraints(model_param[k]);
+    int n = fsr.getM() * fsr.getN_MV(); // Optimization variables 
+    int m = fsr.getP() * fsr.getN_CV() + 2 * n; // Constraints
+
+    solver.data()->setNumberOfVariables(n);
+    solver.data()->setNumberOfConstraints(m);
 
 
     if (!solver.initSolver()) { // If solver cannot be initialized

@@ -60,8 +60,8 @@ void ParseScenarioData(const json& sce_data, std::string& system, MPCConfig& mpc
     try {                     
         system = sce_data.at(kSystem);
         mpc_config = MPCConfig(sce_data, n_CV, n_MV);
-        ConstraintData(sce_data, z_max, true);
-        ConstraintData(sce_data, z_min, false);
+        ConstraintData(sce_data, z_max, true); // NB! Size check
+        ConstraintData(sce_data, z_min, false); //NB size check
     }
     catch(json::exception& e) {
         std::cerr << "ERROR! " << e.what() << std::endl; 
