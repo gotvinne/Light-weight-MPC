@@ -57,7 +57,7 @@ int main() {
 
     // // Flow: 
     // 1)
-    // // Read scenario and check if it is valid
+    // // Read scenario and check if it is valid **
 
     // 2)
     // // Simulate scenario closed loop using reference model returning simulation
@@ -66,7 +66,7 @@ int main() {
     // // Write simulation to an output file
 
     // 4)
-    // // Call python script to read data and plot simulation. 
+    // // Call python script to read data and plot simulation. **
   
     return 0;
 }
