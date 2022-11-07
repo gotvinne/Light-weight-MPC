@@ -54,7 +54,7 @@ void FormatSimMV(json& data, const MVData& mv_data, int n_MV) {
         json obj = json::object();
         obj[kInput] = mv_data.Inputs[i];
         obj[kUnit] = mv_data.Units[i];
-        // Fill inn c, y, y_hat
+        // Fill inn c, u
         arr.push_back(obj);
     }
     data[kMV] = arr;

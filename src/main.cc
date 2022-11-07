@@ -25,10 +25,10 @@ using json = nlohmann::json;
 int main() {
 
     // Testing step model:
-    float k = 5;
-    float tau = 15;
-    float theta = 3;
-    int N = 80;
+    //float k = 5;
+    //float tau = 15;
+    //float theta = 3;
+    //int N = 80;
 
     const int T = 80; // THIS is an input variable, MPC horizon. 
     std::string sys_filepath = "../data/systems/sr_siso_test.json";
@@ -57,8 +57,7 @@ int main() {
 
     json output_data;
     std::string scenario = "sr_siso_test";
-    std::string scenario_file = "format_test.json";
-    std::string sim_filepath = "../data/systems/sim_" + scenario_file; 
+    std::string sim_filepath = "../data/scenario/sim_" + scenario; 
 
     FormatSimData(output_data, sim_filepath, scenario, T, fsr.getN_CV(), fsr.getN_MV());
     FormatSimCV(output_data, sd, fsr.getN_CV());
