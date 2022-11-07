@@ -38,6 +38,14 @@ const std::string kRo = "Ro";
 const std::string kBu = "bias update";
 
 const std::string kC = "c_i"; 
+
+// ------- Simulation file specifiers ------- //
+const std::string kScenario = "scenario";
+const std::string kT = "T";
+
+const std::string kY = "y";
+const std::string kY_Hat = "y_hat";
+const std::string kU = "u";
 // ------- ------- ------- ------- ------- //
 
 #endif // JSON_SPECIFIERS_H
