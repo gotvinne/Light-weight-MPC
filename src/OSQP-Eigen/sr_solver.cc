@@ -16,7 +16,7 @@
 #include <stdexcept>
 
 void setWeightMatrices(Eigen::MatrixXf& Q_bar, Eigen::MatrixXf& R_bar, 
-                        const MPCConfig& mpc_config) {
+                        const MPCConfig& mpc_config) { // Consider making Q_bar, R_bar SparseMatrix
     Q_bar.resize(mpc_config.P - mpc_config.W, mpc_config.P - mpc_config.W);
     R_bar.resize(mpc_config.M, mpc_config.M);
 
