@@ -15,67 +15,115 @@
 #include <Eigen/Dense>
 
 using json = nlohmann::json; 
+using VectorXf = Eigen::VectorXf;
 
 /**
- * @brief C++ struct representing state data described in system file
- * 
+ * @brief C++ class representing state data described in system file
  */
 class CVData {
     private:
-    int n_CV_;
-    int n_MV_; 
-    int N_;
+    int n_CV_; /** Number of controlled variables */
+    int n_MV_; /** Number of manipulated variables */
+    int N_; /** Number of step response coefficients */
     
-    std::vector<std::string> outputs_; 
-    std::vector<float> inits_;
-    std::vector<std::string> units_;
+    std::vector<std::string> outputs_; /** vector of state specifiers */
+    std::vector<float> inits_; /** vector of initial values */
+    std::vector<std::string> units_; /** vector of corresponding state units */
 
-    Eigen::VectorXf** pp_SR_vec_;
-    Eigen::VectorXf y_ref_;
+    VectorXf** pp_SR_vec_; /** Matrix of Eigen::VectorXf holding every n_CV * n_MV step response */
+    VectorXf y_ref_; /** Vector of state reference values */
 
     public:
+    /**
+     * @brief Empty Constructor. Construct a new CVData object.
+     */
     CVData();
+
+    /**
+     * @brief Constructor. Construct a new CVData object. Allocating memory for pp_SR_vec
+     * 
+     * @param cv_data nlohmann::json object holding state system data
+     * @param n_MV number of maipulated variables
+     * @param n_CV number of controlled variables
+     * @param N number of step coefficients
+     * @param T mpc horizon
+     */
     CVData(const json& cv_data, int n_MV, int n_CV, int N, int T);
+
+    /**
+     * @brief Destructor. Destroy the CVData object. Free memory of pp_SR_vec
+     */
     ~CVData();
 
+    /**
+     * @brief 
+     * 
+     * @param s_data 
+     */
     void FillSR(const json& s_data);
+
+    /**
+     * @brief Operator assignment, performing deep copying
+     * 
+     * @param rhs right hand operator of type CVData
+     * @return CVData& 
+     */
     CVData& operator=(const CVData& rhs);
 
     // Get functions
-    Eigen::VectorXf** getSR() const { return pp_SR_vec_; }
-    Eigen::VectorXf getYRef(int P, int k);
+    VectorXf** getSR() const { return pp_SR_vec_; }
+    VectorXf getYRef(int P, int k);
     std::vector<std::string> getOutputs() const { return outputs_; }
     std::vector<std::string> getUnits() const { return units_; }
 };
 
 /**
  * @brief C++ struct representing input data 
- * 
  */
 struct MVData {
-    std::vector<std::string> Inputs; 
-    std::vector<float> Inits;
-    std::vector<std::string> Units;
+    std::vector<std::string> Inputs; /** Vector containing input spesifiers */
+    std::vector<float> Inits; /** Vector holding initial values */
+    std::vector<std::string> Units; /** Vector of corresponding input units */
 
+    /**
+     * @brief Empty constructor. Construct a new MVData object
+     */
     MVData();
+
+    /**
+     * @brief Construct a new MVData object
+     * 
+     * @param mv_data nhlomann::json object holding input system data
+     * @param n_MV number of manipulated variables
+     */
     MVData(const json& mv_data, int n_MV);
 };
 
 /**
  * @brief C++ struct representing the MPC spesifics described in the scenario file
- * 
  */
 struct MPCConfig {
-    int P;
-    int M;
-    int W; 
+    int P; /** Prediction horison */
+    int M; /** Control horizon */
+    int W; /** Time delay coefficient */
 
-    Eigen::VectorXf Q; // Container with dynamic size, not allocated yet
-    Eigen::VectorXf R; 
-    float Ro; 
-    bool bias_update;
+    VectorXf Q; /** Output tuning */
+    VectorXf R; /** Input change tuning */
+    float Ro; /** Slack variable tuning */
+    bool bias_update; /** Bias update / Integral effect enabled */
 
+    /**
+     * @brief Empty Constructor. Construct a new MPCConfig object.
+     */
     MPCConfig();
+
+    /**
+     * @brief Construct a new MPCConfig object
+     * 
+     * @param sce_data nlohmann::json object holding scenario data
+     * @param n_CV number of controlled variables
+     * @param n_MV number of manipulated variables
+     */
     MPCConfig(const json& sce_data, int n_CV, int n_MV); 
 };
 
@@ -87,6 +135,6 @@ struct MPCConfig {
  * @param start_index index to start to fill from
  * @param interval number of values to be filled
  */
-void FillReference(const json& ref_data, Eigen::VectorXf& ref, int start_index, int interval);
+void FillReference(const json& ref_data, VectorXf& ref, int start_index, int interval);
 
 #endif // DATA_OBJECTS_H
