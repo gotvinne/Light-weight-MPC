@@ -8,13 +8,12 @@
 #ifndef FORMATTING_H
 #define FORMATTING_H 
 
-#include <nlohmann/json.hpp>
 #include "data_objects.h"
 
 #include <string>
 
 #include "Eigen/Dense"
-
+#include <nlohmann/json.hpp>
 using json = nlohmann::json;
 
 void WriteJson(const json& data, const std::string& filepath);

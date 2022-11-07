@@ -43,7 +43,7 @@ void ModelData(const json& sys_data, std::map<std::string,int>& map) {
     }    
 }
 
-void ConstraintData(const json& sce_data, Eigen::VectorXf& arr, bool upper) {
+void ConstraintData(const json& sce_data, VectorXf& arr, bool upper) {
     json j_arr(sce_data.at(kC));
     int size = j_arr.size();
     // Implement size check
@@ -56,7 +56,7 @@ void ConstraintData(const json& sce_data, Eigen::VectorXf& arr, bool upper) {
 }
 
 void ParseScenarioData(const json& sce_data, std::string& system, MPCConfig& mpc_config, 
-                        Eigen::VectorXf& z_max, Eigen::VectorXf& z_min, int n_CV, int n_MV) {
+                        VectorXf& z_max, VectorXf& z_min, int n_CV, int n_MV) {
     try {                     
         system = sce_data.at(kSystem);
         mpc_config = MPCConfig(sce_data, n_CV, n_MV);

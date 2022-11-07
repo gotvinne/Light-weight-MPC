@@ -14,12 +14,11 @@
 #include <vector>
 
 #include <nlohmann/json.hpp>
-
 using json = nlohmann::json; 
 
 void WriteJson(const json& data, const std::string& filepath) {
     std::ofstream ofs(filepath);
-    ofs << data.dump(4) << std::endl; // Read in data
+    ofs << data.dump(4) << std::endl;
     ofs.close();
 }
 
