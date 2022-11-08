@@ -15,20 +15,22 @@
 #include <iostream>
 #include <stdexcept>
 
-void setWeightMatrices(Eigen::MatrixXf& Q_bar, Eigen::MatrixXf& R_bar, 
+void setWeightMatrices(Eigen::SparseMatrix<float>& Q_bar, Eigen::SparseMatrix<float>& R_bar, 
                         const MPCConfig& mpc_config) { // Consider making Q_bar, R_bar SparseMatrix
-    Q_bar.resize(mpc_config.P - mpc_config.W, mpc_config.P - mpc_config.W);
-    R_bar.resize(mpc_config.M, mpc_config.M);
+    Eigen::MatrixXf Q = Eigen::MatrixXf::Zero(mpc_config.P - mpc_config.W, mpc_config.P - mpc_config.W);
+    Eigen::MatrixXf R = Eigen::MatrixXf::Zero(mpc_config.M, mpc_config.M);
 
-    Q_bar = mpc_config.Q.asDiagonal();
-    R_bar = mpc_config.R.asDiagonal();
+    Q = mpc_config.Q.asDiagonal();
+    R = mpc_config.R.asDiagonal();
+
+    Q_bar = Q.sparseView();
+    R_bar = R.sparseView();
 }
 
-void setHessianMatrix(Eigen::SparseMatrix<float>& G, const Eigen::MatrixXf& theta, const Eigen::MatrixXf& Q_bar, 
-                        const Eigen::MatrixXf& R_bar, int n_MV, int M) {
+void setHessianMatrix(Eigen::SparseMatrix<float>& G, const Eigen::MatrixXf& theta, const Eigen::SparseMatrix<float>& Q_bar, 
+                        const Eigen::SparseMatrix<float>& R_bar, int n_MV, int M) {
     G.resize(M*n_MV, M*n_MV);
-    Eigen::MatrixXf dense = 2*theta.transpose()*Q_bar*theta + 2*R_bar;
-    G = dense.sparseView();
+    G = 2*theta.transpose()*Q_bar*theta + 2*R_bar;
 }
 
 void setKmatrix(Eigen::SparseMatrix<float>& K, int M, int n_MV) {
@@ -85,8 +87,8 @@ void sr_solver(const int& T, const FSRModel& fsr, const MPCConfig& conf) { // Mi
     solver.data()->setNumberOfVariables(n);
     solver.data()->setNumberOfConstraints(m);
 
-    Eigen::MatrixXf Q_bar; 
-    Eigen::MatrixXf R_bar; 
+    Eigen::SparseMatrix<float> Q_bar; 
+    Eigen::SparseMatrix<float> R_bar; 
     Eigen::SparseMatrix<float> G;
     Eigen::SparseMatrix<float> A;
     Eigen::SparseMatrix<float> q;

@@ -24,11 +24,11 @@ void sr_solver(const int& T, const FSRModel& fsr, const MPCConfig& conf);
 /**
  * @brief Set the Weight Matrices object
  * 
- * @param Q_bar Eigen::MatrixXf to be filled by output tuning
- * @param R_bar Eigen::MatrixXf to be filled by change of input tuning
+ * @param Q_bar Eigen::SparseMatrix<float> to be filled by output tuning
+ * @param R_bar Eigen::SparseMatrix<float> to be filled by change of input tuning
  * @param mpc_config 
  */
-void setWeightMatrices(Eigen::MatrixXf& Q_bar, Eigen::MatrixXf& R_bar, const MPCConfig& mpc_config);
+void setWeightMatrices(Eigen::SparseMatrix<float>& Q_bar, Eigen::SparseMatrix<float>& R_bar, const MPCConfig& mpc_config);
 
 /**
  * @brief Set the Hessian Matrix object
@@ -45,7 +45,7 @@ void setHessianMatrix(Eigen::SparseMatrix<float>& G, const Eigen::MatrixXf& thet
 /**
  * @brief Calculate K matrix
  * 
- * @param K Eigen::MatrixXf to be filled 
+ * @param K Eigen::SparseMatrix<float> to be filled 
  * @param M Control horizon
  * @param n_MV number of manupulated variables
  */
