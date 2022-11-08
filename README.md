@@ -24,10 +24,6 @@ Operating system: Linux
 ### Dependancies:
 This software is developed using a environment and package manager [Anaconda](https://www.anaconda.com/products/distribution) and builded using [CMake](https://cmake.org/)
 
-Install cmake: 
-```console 
-conda install -c anaconda cmake
-```
 Other libraries used: 
 - [OSQP](https://osqp.org/), Operator Splitting Quadratic program (Source code)
 - [osqp-eigen](https://github.com/robotology/osqp-eigen), C++ wrapper for OSQP 
@@ -46,6 +42,7 @@ conda env create -f env.yml
 
 or make a new environment, *env*, and install conda packages: 
 ```console
+conda install -n env -c anaconda cmake
 conda install -n env -c conda-forge osqp-eigen
 conda install -n env -c conda-forge nlohmann_json
 conda install -n env -c conda-forge boost
