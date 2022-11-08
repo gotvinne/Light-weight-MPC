@@ -31,25 +31,26 @@ void setHessianMatrix(Eigen::SparseMatrix<float>& G, const Eigen::MatrixXf& thet
     G = dense.sparseView();
 }
 
-void setKmatrix(Eigen::MatrixXf& blk_mat, int M, int n_MV) {
-    Eigen::MatrixXf K = Eigen::MatrixXf::Zero(M, M);
+void setKmatrix(Eigen::SparseMatrix<float>& K, int M, int n_MV) {
+    Eigen::MatrixXf K_arg = Eigen::MatrixXf::Zero(M, M);
     std::array<float, 2> arr = {1.0, -1.0};
     for (int i = 0; i < M; i++) {
         for (int j = 0; j < arr.size(); j++) { // NB M > 2. 
             if (i == M-1 && j == 1) {
                 break;
             }
-            K(i+j, i) = arr[j];
+            K_arg(i+j, i) = arr[j];
         }
     }
-    blkdiag(blk_mat, K, n_MV);
+    blkdiag(K, K_arg, n_MV);
 }
 
-void blkdiag(Eigen::MatrixXf& blk_mat, const Eigen::MatrixXf& arg, int count) {
-    blk_mat = Eigen::MatrixXf::Zero(arg.rows() * count, arg.cols() * count);
+void blkdiag(Eigen::SparseMatrix<float>& blk_mat, const Eigen::MatrixXf& arg, int count) {
+    Eigen::MatrixXf mat = Eigen::MatrixXf::Zero(arg.rows() * count, arg.cols() * count);
     for (int i = 0; i < count; i++) {
-        blk_mat.block(i * arg.rows(), i * arg.cols(), arg.rows(), arg.cols()) = arg;
+        mat.block(i * arg.rows(), i * arg.cols(), arg.rows(), arg.cols()) = arg;
     }
+    blk_mat = mat.sparseView();
 }
 
 void setKInv(Eigen::MatrixXf& K_inv, int M) {

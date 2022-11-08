@@ -49,7 +49,7 @@ void setHessianMatrix(Eigen::SparseMatrix<float>& G, const Eigen::MatrixXf& thet
  * @param M Control horizon
  * @param n_MV number of manupulated variables
  */
-void setKmatrix(Eigen::MatrixXf& K, int M, int n_MV);
+void setKmatrix(Eigen::SparseMatrix<float>& K, int M, int n_MV);
 
 /**
  * @brief Calculate K inverse
@@ -61,14 +61,15 @@ void setKInv(Eigen::MatrixXf& K_inv, int M);
 
 void setConstrainVectors(Eigen::VectorXf& l, Eigen::VectorXf& u, const Eigen::VectorXf& z_max, const Eigen::VectorXf& z_min);
 void setConstraintMatrix(Eigen::SparseMatrix<float>& A, const FSRModel& fsr, const int& m, const int& n);
+void setGammaVector(Eigen::SparseMatrix<float>& gamma, int n_MV); 
 
 /**
  * @brief Helper function. Implementing block diagonal
  * 
- * @param blk_mat Eigen::MatrixXf to be block diagonalized
+ * @param blk_mat Eigen::SparseMatrix<float> to be block diagonalized
  * @param arg block argument
  * @param count Number of blocks
  */
-void blkdiag(Eigen::MatrixXf& blk_mat, const Eigen::MatrixXf& arg, int count);
+void blkdiag(Eigen::SparseMatrix<float>& blk_mat, const Eigen::MatrixXf& arg, int count);
 
 #endif // SR_SOLVER_H
