@@ -73,7 +73,7 @@ void FSRModel::setSRMatrix() {
 void FSRModel::setThetaMatrix() {
     for (int i = 0; i < n_CV_; i++) {
         for (int j = 0; j < n_MV_; j++) {
-            theta_.block(i*(P_-W_), j*M_, P_-W_, M_) = pp_SR_mat_[i][j];
+            theta_.block(i*(P_-W_), j*M_, P_-W_, M_) = pp_SR_mat_[i][j]; // This must be checked
         }
     }
 }
