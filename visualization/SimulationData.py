@@ -21,7 +21,7 @@ U = "u"
 
 
 class SimulationData():
-    def __init__(self, filepath):
+    def __init__(self, filepath: str):
         """
         Constructor for the SimulationData object parsing a simulation file
         :param filepath: The local filepath to simulation data
