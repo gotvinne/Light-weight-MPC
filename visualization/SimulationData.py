@@ -1,4 +1,3 @@
-
 import numpy as np
 import json
 import os
@@ -20,9 +19,14 @@ Y = "y"
 Y_HAT = "y_hat"
 U = "u"
 
+
 class SimulationData():
     def __init__(self, filepath):
-        simulation_filepath = str(Path(__file__).parent.parent) + filepath # Relative filepath
+        """
+        Constructor for the SimulationData object parsing a simulation file
+        :param filepath: The local filepath to simulation data
+        """
+        simulation_filepath = str(Path(__file__).parent.parent) + filepath  # Relative filepath
         json_data = self.ReadSimulation(simulation_filepath)
 
         self.scenario = json_data[SCENARIO]
@@ -39,15 +43,19 @@ class SimulationData():
 
     def ReadSimulation(self, filepath):
         """
-
-        :param filepath:
-        :return:
+        Read simulation data json file
+        :param filepath: relative path to simulation data
+        :return: a json object holding the parsed simulation data
         """
         with open(filepath, "r") as file:
             return json.load(file)
 
-    def ParseCVData(self, data):
-        cv_data = data[CV]
+    def ParseCVData(self, json_data):
+        """
+        Parsing the controlled variable simulation
+        :param json_data: json object holding parsed simulation data
+        """
+        cv_data = json_data[CV]
         outputs, cv_units, cv_constraints = [], [], []
         for index, elem in enumerate(cv_data):
             outputs.append(elem[OUTPUT])
@@ -60,6 +68,10 @@ class SimulationData():
         self.outputs, self.cv_units, self.cv_constraints = outputs, cv_units, cv_constraints
 
     def ParseMVData(self, json_data):
+        """
+        Parsing the manipulated variable simulation
+        :param json_data: json object holding parsed simulation data
+        """
         mv_data = json_data[MV]
         inputs, mv_units, mv_constraints = [], [], []
         for index, elem in enumerate(mv_data):
@@ -70,10 +82,11 @@ class SimulationData():
             self.u.T[..., index] = elem[U]
         self.inputs, self.mv_units, self.mv_constraints = inputs, mv_units, mv_constraints
 
+
 def ListSimulations(sim_dirpath):
     """
-
-    :return:
+    Listing all avaliable simulations
+    :param sim_dirpath: Local directory path
     """
     simulation_filepath = str(Path(__file__).parent.parent) + sim_dirpath
     files = os.listdir(simulation_filepath)
