@@ -14,7 +14,7 @@ using VectorXf = Eigen::VectorXf;
 FSRModel::FSRModel(VectorXf** SR, int n_CV, int n_MV, int N, int P, int M, int W) :
                      n_CV_{n_CV}, n_MV_{n_MV}, N_{N}, P_{P}, M_{M}, W_{W} {
     theta_ = MatrixXf::Zero(n_CV*(P-W), n_MV*M);
-    phi_ = MatrixXf::Zero(n_CV*(P-W), n_MV*(N-(P-W)));
+    phi_ = MatrixXf::Zero(n_CV*(P-W), n_MV*(N-W-1));
     // Allocate memory
     pp_SR_mat_ = new MatrixXf*[n_CV];
     for (int i = 0; i < n_CV; ++i) {
@@ -84,7 +84,7 @@ void FSRModel::setPhiMatrix() {
         for (int j = 0; j < n_MV_; j++) { 
             VectorXf vec = pp_SR_vec_[i][j](Eigen::seq(P_-W_+j,Eigen::last));
             if (vec.size() != N_-P_) { // Pad vector
-                int pad = vec.size() - (N_-P_);
+                int pad = vec.size() - (N_-W_-1);
                 VectorXf vec = PadVec(vec, pad);
             }
             FillRowPhi(vec, i);

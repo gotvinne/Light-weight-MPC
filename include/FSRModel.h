@@ -30,7 +30,7 @@ private:
     VectorXf** pp_SR_vec_; /** Matrix of Eigen::VectorXf holding every n_CV * n_MV step response */
     MatrixXf** pp_SR_mat_; /** Tensor of Eigen::MatrixXf representing the SISO prediction (P-W,M) times (n_CV, n_MV) */
     MatrixXf theta_; /** Matrix of all SISO predictions (n_CV*(P-W), n_MV*M) */
-    MatrixXf phi_; /** Past step coefficients (n_CV*P-W, n_MV*N-(P-W)) */
+    MatrixXf phi_; /** Past step coefficients (n_CV*P-W, n_MV*(N-W-1)) */
 public: 
     /**
      * @brief The constructor. Constructing the object allocating memory for the SISO prediction matric
