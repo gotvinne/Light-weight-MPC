@@ -61,7 +61,7 @@ void setKInv(Eigen::MatrixXf& K_inv, int M);
 
 void setConstrainVectors(Eigen::VectorXf& l, Eigen::VectorXf& u, const Eigen::VectorXf& z_max, const Eigen::VectorXf& z_min);
 void setConstraintMatrix(Eigen::SparseMatrix<float>& A, const FSRModel& fsr, const int& m, const int& n);
-void setGammaVector(Eigen::SparseMatrix<float>& gamma, int n_MV); 
+void setGammaVector(Eigen::SparseMatrix<float>& gamma, int M, int n_MV); 
 
 /**
  * @brief Helper function. Implementing block diagonal

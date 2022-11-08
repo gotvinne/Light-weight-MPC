@@ -60,6 +60,12 @@ void setKInv(Eigen::MatrixXf& K_inv, int M) {
     K_inv = K_inv.triangularView<Eigen::Lower>();
 }
 
+void setGammaVector(Eigen::SparseMatrix<float>& gamma, int M, int n_MV) {
+    Eigen::MatrixXf gamma_arg = Eigen::MatrixXf::Zero(M, 1);
+    gamma_arg(0, 0) = 1.0;
+    blkdiag(gamma, gamma_arg, n_MV);
+}
+
 void setConstraintMatrix(Eigen::SparseMatrix<float>& A, const FSRModel& fsr, const int& m, const int& n) {
     A.resize(m, n);
     Eigen::MatrixXf dense = Eigen::MatrixXf::Zero(m, n); 
