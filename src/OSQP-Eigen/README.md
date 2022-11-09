@@ -18,7 +18,7 @@ $$ min \quad Y(k+w)^TQY(k+w) + \Delta U(k+i)^TR\Delta U(k+i) $$
 
 *Condensed form:*
 
-$$ min \quad \frac{1}{2}z_{*}^T(2\Theta^T\bar{Q}\Theta + 2\bar{R})z_{*} + 2\Theta^TQ(\Lambda(k)-\tau(k))z_{*}$$
+$$ min \quad \frac{1}{2}z_{cd}^T(2\Theta^T\bar{Q}\Theta + 2\bar{R})z_{cd} + 2\Theta^TQ(\Lambda(k)-\tau(k))z_{cd} $$
 where 
 
 $$ \Lambda(k) =  $$ 
