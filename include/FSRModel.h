@@ -36,16 +36,6 @@ private:
     MatrixXf theta_; /** Matrix of all SISO predictions (n_CV*(P-W), n_MV*M) */
     MatrixXf phi_; /** Past step coefficients (n_CV*P-W, n_MV*(N-W-1)) */
     MatrixXf azymuth_; /** Last step coefficient matrix, (n_CV (P-W), n_MV)*/
-public: 
-    /**
-     * @brief The constructor. Constructing the object allocating memory for the SISO prediction matric
-     */
-    FSRModel(VectorXf** SR, int n_CV, int n_MV, int N, int P, int M, int W, 
-            const std::vector<float>& init_u, const std::vector<float>& init_y);
-    /**
-     * @brief The destructor. Freeing the memory allocated in the constructor
-     */
-    ~FSRModel();
 
     void AllocateAndDeepCopy(VectorXf** SR);
 
@@ -89,6 +79,17 @@ public:
     VectorXf PadVec(VectorXf& vec, int pad);
 
     void setAzymuth();
+
+public: 
+    /**
+     * @brief The constructor. Constructing the object allocating memory for the SISO prediction matric
+     */
+    FSRModel(VectorXf** SR, int n_CV, int n_MV, int N, int P, int M, int W, 
+            const std::vector<float>& init_u, const std::vector<float>& init_y);
+    /**
+     * @brief The destructor. Freeing the memory allocated in the constructor
+     */
+    ~FSRModel();
 
     void UpdateU(const VectorXf& du);
 
