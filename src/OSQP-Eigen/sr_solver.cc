@@ -60,7 +60,7 @@ void setKInv(Eigen::MatrixXf& K_inv, int M) {
     K_inv = K_inv.triangularView<Eigen::Lower>();
 }
 
-void setGammaVector(Eigen::SparseMatrix<float>& gamma, int M, int n_MV) {
+void setGamma(Eigen::SparseMatrix<float>& gamma, int M, int n_MV) {
     Eigen::MatrixXf gamma_arg = Eigen::MatrixXf::Zero(M, 1);
     gamma_arg(0, 0) = 1.0;
     blkdiag(gamma, gamma_arg, n_MV);
@@ -77,9 +77,25 @@ void setConstraintMatrix(Eigen::SparseMatrix<float>& A, const FSRModel& fsr, con
     A = dense.sparseView();
 }
 
-void setConstrainVectors(Eigen::VectorXf& l, Eigen::VectorXf& u, const Eigen::VectorXf& z_max, const Eigen::VectorXf& z_min) {
+void setConstrainVectors(Eigen::VectorXf& l, Eigen::VectorXf& u, const Eigen::VectorXf& z_max, const Eigen::VectorXf& z_min,
+                        const Eigen::VectorXf& lambda, const Eigen::VectorXf& u_N, int M, int n_MV) {
     l.resize(z_min.rows());
     u.resize(z_max.rows());
+    
+    Eigen::MatrixXf K_inv;
+    setKInv(K_inv, M);
+
+    Eigen::SparseMatrix<float> gamma; 
+    setGamma(gamma, M, n_MV);
+
+    Eigen::VectorXf c;
+    c <<
+        Eigen::VectorXf::Zero(n_MV),
+        K_inv * gamma * u_N,
+        lambda;
+
+    l = z_min - c;
+    u = z_max - c;
 }
 
 void sr_solver(const int& T, const FSRModel& fsr, const MPCConfig& conf) { // Might consider only feeding R and Q
