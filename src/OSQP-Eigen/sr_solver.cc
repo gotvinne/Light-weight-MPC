@@ -78,7 +78,8 @@ void setConstraintMatrix(Eigen::SparseMatrix<float>& A, const FSRModel& fsr, con
 }
 
 void setConstrainVectors(Eigen::VectorXf& l, Eigen::VectorXf& u, const Eigen::VectorXf& z_max, const Eigen::VectorXf& z_min) {
-
+    l.resize(z_min.rows());
+    u.resize(z_max.rows());
 }
 
 void sr_solver(const int& T, const FSRModel& fsr, const MPCConfig& conf) { // Might consider only feeding R and Q

@@ -104,6 +104,7 @@ public:
     MatrixXf getTheta() const { return theta_; }
     MatrixXf getPhi() const { return phi_; }
     VectorXf getUK() const { return u_K_; }
+    VectorXf getLambda() const { return phi_*du_tilde_ + azymuth_*u_; }
 
     /** Print functions */
     void PrintPPSR(int i, int j);
