@@ -8,6 +8,8 @@
 #ifndef FSR_MODEL_H
 #define FSR_MODEL_H
 
+#include <vector>
+
 #include <Eigen/Dense>
 using MatrixXf = Eigen::MatrixXf;
 using VectorXf = Eigen::VectorXf; 
@@ -24,7 +26,8 @@ private:
     int M_; /** Control horizon */
     int W_; /** Time delay coefficient */
 
-    VectorXf u; /** Actiation n_MV*/
+    VectorXf u; /** Manipulated variables n_MV */
+    VectorXf y; /** Controlled variables n_CV */
     MatrixXf du; /** Change in actuation M * n_MV */
 
     VectorXf** pp_SR_vec_; /** Matrix of Eigen::VectorXf holding every n_CV * n_MV step response */
@@ -36,11 +39,14 @@ public:
     /**
      * @brief The constructor. Constructing the object allocating memory for the SISO prediction matric
      */
-    FSRModel(VectorXf** SR, int n_CV, int n_MV, int N, int P, int M, int W);
+    FSRModel(VectorXf** SR, int n_CV, int n_MV, int N, int P, int M, int W, 
+            const std::vector<float>& init_u, const std::vector<float>& init_y);
     /**
      * @brief The destructor. Freeing the memory allocated in the constructor
      */
     ~FSRModel();
+
+    void AllocateAndDeepCopy(VectorXf** SR);
 
     /**
      * @brief Set pp_SR_mat, by generating SISO predictions from pp_SR_vec

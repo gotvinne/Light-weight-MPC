@@ -6,35 +6,22 @@
  */
 #include "FSRModel.h"
 #include <iostream>
+#include <vector>
 
 #include <Eigen/Dense>
 using MatrixXf = Eigen::MatrixXf;
 using VectorXf = Eigen::VectorXf; 
 
-FSRModel::FSRModel(VectorXf** SR, int n_CV, int n_MV, int N, int P, int M, int W) :
+FSRModel::FSRModel(VectorXf** SR, int n_CV, int n_MV, int N, int P, int M, int W,
+                   const std::vector<float>& init_u, const std::vector<float>& init_y) :
                      n_CV_{n_CV}, n_MV_{n_MV}, N_{N}, P_{P}, M_{M}, W_{W} {
     theta_ = MatrixXf::Zero(n_CV*(P-W), n_MV*M);
     phi_ = MatrixXf::Zero(n_CV*(P-W), n_MV*(N-W-1));
-    // Allocate memory
-    pp_SR_mat_ = new MatrixXf*[n_CV];
-    for (int i = 0; i < n_CV; ++i) {
-        pp_SR_mat_[i] = new MatrixXf[n_MV];
-    }
-    for (int row = 0; row < n_CV; row++) {
-        for (int col = 0; col < n_MV; col++) {
-            pp_SR_mat_[row][col] = MatrixXf::Zero(P, M);
-        }
-    }
-    // Deep copy SR into pp_SR_vec
-    pp_SR_vec_ = new VectorXf*[n_CV];
-    for (int i = 0; i < n_CV; ++i) {
-        pp_SR_vec_[i] = new VectorXf[n_MV];
-    }
-    for (int row = 0; row < n_CV; row++) {
-        for (int col = 0; col < n_MV; col++) {
-            pp_SR_vec_[row][col] = SR[row][col];
-        }
-    }
+
+    u = Eigen::VectorXf::Map(init_u.data(), init_u.size());
+    y = Eigen::VectorXf::Map(init_y.data(), init_y.size());
+
+    AllocateAndDeepCopy(SR); 
     // Setting matrix member variables
     setSRMatrix();
     setThetaMatrix();
@@ -48,6 +35,29 @@ FSRModel::~FSRModel() {
     }
     delete[] pp_SR_vec_;
     delete[] pp_SR_mat_;
+}
+
+void FSRModel::AllocateAndDeepCopy(VectorXf** SR) {
+    // Allocate memory
+    pp_SR_mat_ = new MatrixXf*[n_CV_];
+    for (int i = 0; i < n_CV_; ++i) {
+        pp_SR_mat_[i] = new MatrixXf[n_MV_];
+    }
+    for (int row = 0; row < n_CV_; row++) {
+        for (int col = 0; col < n_MV_; col++) {
+            pp_SR_mat_[row][col] = MatrixXf::Zero(P_, M_);
+        }
+    }
+    // Deep copy SR into pp_SR_vec
+    pp_SR_vec_ = new VectorXf*[n_CV_];
+    for (int i = 0; i < n_CV_; ++i) {
+        pp_SR_vec_[i] = new VectorXf[n_MV_];
+    }
+    for (int row = 0; row < n_CV_; row++) {
+        for (int col = 0; col < n_MV_; col++) {
+            pp_SR_vec_[row][col] = SR[row][col];
+        }
+    }
 }
 
 void FSRModel::setLowerTriangularMatrix(const VectorXf& pred_vec, MatrixXf& S) {

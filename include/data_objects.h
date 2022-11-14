@@ -74,6 +74,7 @@ class CVData {
     VectorXf** getSR() const { return pp_SR_vec_; }
     VectorXf getYRef(int P, int k);
     std::vector<std::string> getOutputs() const { return outputs_; }
+    std::vector<float> getInits() const { return inits_; }
     std::vector<std::string> getUnits() const { return units_; }
 };
 
