@@ -103,6 +103,6 @@ public:
     void PrintPPSR(int i, int j);
     void PrintTheta();
     void PrintPhi();
-    void PrintAsymuth();
+    void PrintAzymuth();
 };
 #endif // FSR_MODEL_H

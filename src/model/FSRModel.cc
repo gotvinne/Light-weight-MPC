@@ -27,7 +27,7 @@ FSRModel::FSRModel(VectorXf** SR, int n_CV, int n_MV, int N, int P, int M, int W
     setSRMatrix();
     setThetaMatrix();
     setPhiMatrix();
-    setAsymuth();
+    setAzymuth();
 }
 
 FSRModel::~FSRModel() {
@@ -125,7 +125,7 @@ void FSRModel::setAzymuth() {
     for (int i = 0; i < n_CV_; i++) {
         for (int j = 0; j < n_MV_; j++) {
             VectorXf vec = VectorXf::Constant(P_-W_, pp_SR_vec_[i][j](Eigen::last));
-            asymuth_.block(i*(P_-W_), j, P_-W_, 1) = vec;
+            azymuth_.block(i*(P_-W_), j, P_-W_, 1) = vec;
         }
     }
 }
@@ -149,8 +149,8 @@ void FSRModel::PrintPhi() {
     std::cout << std::endl;
 }
 
-void FSRModel::PrintAsymuth() {
-    std::cout << "Asymuth : " << "(" << asymuth_.rows() << ", " << asymuth_.cols() << ")" << std::endl;
-    std::cout << asymuth_ << std::endl; 
+void FSRModel::PrintAzymuth() {
+    std::cout << "Asymuth : " << "(" << azymuth_.rows() << ", " << azymuth_.cols() << ")" << std::endl;
+    std::cout << azymuth_ << std::endl; 
     std::cout << std::endl;
 }
