@@ -19,7 +19,8 @@
  * @param fsr FSRModel of scenario file
  * @param conf MPCConfig
  */
-void sr_solver(const int& T, const FSRModel& fsr, const MPCConfig& conf);
+void sr_solver(const int& T, const FSRModel& fsr, const MPCConfig& conf,
+                const Eigen::VectorXf& z_min, const Eigen::VectorXf& z_max);
 
 /**
  * @brief Set the Weight Matrices object
@@ -60,7 +61,7 @@ void setKmatrix(Eigen::SparseMatrix<float>& K, int M, int n_MV);
 void setKInv(Eigen::MatrixXf& K_inv, int M);
 
 void setConstrainVectors(Eigen::VectorXf& l, Eigen::VectorXf& u, const Eigen::VectorXf& z_max, const Eigen::VectorXf& z_min,
-                        const Eigen::VectorXf& lambda, const Eigen::VectorXf& u_N, int M, int n_MV);
+                        const Eigen::VectorXf& lambda, const Eigen::VectorXf& u_k, int M, int n_MV, int n_CV);
 
 void setConstraintMatrix(Eigen::SparseMatrix<float>& A, const FSRModel& fsr, const int& m, const int& n);
 

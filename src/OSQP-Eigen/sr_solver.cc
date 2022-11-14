@@ -78,7 +78,7 @@ void setConstraintMatrix(Eigen::SparseMatrix<float>& A, const FSRModel& fsr, con
 }
 
 void setConstrainVectors(Eigen::VectorXf& l, Eigen::VectorXf& u, const Eigen::VectorXf& z_max, const Eigen::VectorXf& z_min,
-                        const Eigen::VectorXf& lambda, const Eigen::VectorXf& u_N, int M, int n_MV) {
+                        const Eigen::VectorXf& lambda, const Eigen::VectorXf& u_k, int M, int n_MV, int n_CV) {
     l.resize(z_min.rows());
     u.resize(z_max.rows());
     
@@ -88,17 +88,17 @@ void setConstrainVectors(Eigen::VectorXf& l, Eigen::VectorXf& u, const Eigen::Ve
     Eigen::SparseMatrix<float> gamma; 
     setGamma(gamma, M, n_MV);
 
-    Eigen::VectorXf c;
-    c <<
-        Eigen::VectorXf::Zero(n_MV),
-        K_inv * gamma * u_N,
-        lambda;
+    Eigen::VectorXf c(2 * n_MV + n_CV);
+    c.block(0, 0, n_MV, 1) = Eigen::VectorXf::Zero(n_MV);
+    c.block(n_MV, 0, n_MV, 1) = K_inv * gamma * u_k; // You were here!
+    c.block(2 * n_MV, 0, 2 * n_MV + n_CV, 1) = lambda;
 
     l = z_min - c;
     u = z_max - c;
 }
 
-void sr_solver(const int& T, const FSRModel& fsr, const MPCConfig& conf) { // Might consider only feeding R and Q
+void sr_solver(const int& T, const FSRModel& fsr, const MPCConfig& conf, const Eigen::VectorXf& z_min, 
+                const Eigen::VectorXf& z_max) { // Might consider only feeding R and Q
 
     OsqpEigen::Solver solver;
     solver.settings()->setWarmStart(true); // Starts primal and dual variables from previous QP
@@ -120,8 +120,11 @@ void sr_solver(const int& T, const FSRModel& fsr, const MPCConfig& conf) { // Mi
     Eigen::VectorXf u; 
 
     setWeightMatrices(Q_bar, R_bar, conf);
-    setHessianMatrix(G, fsr.getTheta(), Q_bar, R_bar, fsr.getM(), fsr.getM());
+    setHessianMatrix(G, fsr.getTheta(), Q_bar, R_bar, fsr.getN_MV(), fsr.getM());
     setConstraintMatrix(A, fsr, m, n);
+
+
+    setConstrainVectors(l, u, z_min, z_max, fsr.getLambda(), fsr.getUK(), fsr.getM(), fsr.getN_MV(), fsr.getN_CV());
 
     if (!solver.data()->setHessianMatrix(G)) { throw std::runtime_error("Cannot initialize Hessian"); }
     // if (!solver.data()->setGradient(q)) { throw std::runtime_error("Cannot initialize Gradient"); }

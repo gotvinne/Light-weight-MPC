@@ -50,7 +50,7 @@ int main() {
     
     FSRModel fsr(sd.getSR(), m_param[kN_CV], m_param[kN_MV], m_param[kN], conf.P, conf.M, conf.W, id.Inits, sd.getInits());
 
-    //sr_solver(T, fsr, conf);
+    sr_solver(T, fsr, conf, z_min, z_max);
     // Eigen::MatrixXf dt_opt; // Optimal actuation 
     Eigen::MatrixXf du; // n_CV x T
 
