@@ -16,8 +16,9 @@ FSRModel::FSRModel(VectorXf** SR, int n_CV, int n_MV, int N, int P, int M, int W
                    const std::vector<float>& init_u, const std::vector<float>& init_y) :
                      n_CV_{n_CV}, n_MV_{n_MV}, N_{N}, P_{P}, M_{M}, W_{W} {
     theta_ = MatrixXf::Zero(n_CV*(P-W), n_MV*M);
-    phi_ = MatrixXf::Zero(n_CV*(P-W), n_MV*(N-W-1));
-
+    phi_.resize(n_CV*(P-W), n_MV*(N-W-1));
+    asymuth_.resize(n_CV*(P-W), n_MV);
+    du.resize(M, n_MV);
     u = Eigen::VectorXf::Map(init_u.data(), init_u.size());
     y = Eigen::VectorXf::Map(init_y.data(), init_y.size());
 
@@ -26,6 +27,7 @@ FSRModel::FSRModel(VectorXf** SR, int n_CV, int n_MV, int N, int P, int M, int W
     setSRMatrix();
     setThetaMatrix();
     setPhiMatrix();
+    setAsymuth();
 }
 
 FSRModel::~FSRModel() {
@@ -118,6 +120,16 @@ void FSRModel::FillRowPhi(const VectorXf& pad_vec, const int& row) {
         } 
     }
 }
+
+void FSRModel::setAsymuth() {
+    for (int i = 0; i < n_CV_; i++) {
+        for (int j = 0; j < n_MV_; j++) {
+            VectorXf vec = VectorXf::Constant(P_-W_, pp_SR_vec_[i][j](Eigen::last));
+            asymuth_.block(i*(P_-W_), j, P_-W_, 1) = vec;
+        }
+    }
+}
+
 // Print functions: 
 void FSRModel::PrintPPSR(int i, int j) {
     std::cout << "SISO SRC matrix: " << "(" << P_-W_ << ", " << M_ << ")" << std::endl; 
@@ -134,5 +146,11 @@ void FSRModel::PrintTheta() {
 void FSRModel::PrintPhi() {
     std::cout << "Phi : " << "(" << phi_.rows() << ", " << phi_.cols() << ")" << std::endl;
     std::cout << phi_ << std::endl; 
+    std::cout << std::endl;
+}
+
+void FSRModel::PrintAsymuth() {
+    std::cout << "Asymuth : " << "(" << asymuth_.rows() << ", " << asymuth_.cols() << ")" << std::endl;
+    std::cout << asymuth_ << std::endl; 
     std::cout << std::endl;
 }

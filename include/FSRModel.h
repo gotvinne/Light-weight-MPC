@@ -34,7 +34,7 @@ private:
     MatrixXf** pp_SR_mat_; /** Tensor of Eigen::MatrixXf representing the SISO prediction (P-W,M) times (n_CV, n_MV) */
     MatrixXf theta_; /** Matrix of all SISO predictions (n_CV*(P-W), n_MV*M) */
     MatrixXf phi_; /** Past step coefficients (n_CV*P-W, n_MV*(N-W-1)) */
-    MatrixXf asymuth_; /** Last step coefficient matrix, (n_CV (P-W+1), n_MV)*/
+    MatrixXf asymuth_; /** Last step coefficient matrix, (n_CV (P-W), n_MV)*/
 public: 
     /**
      * @brief The constructor. Constructing the object allocating memory for the SISO prediction matric
@@ -87,6 +87,8 @@ public:
      */
     VectorXf PadVec(VectorXf& vec, int pad);
 
+    void setAsymuth();
+
     /** Get functions */
     int getP() const { return P_; }
     int getM() const { return M_; }
@@ -101,5 +103,6 @@ public:
     void PrintPPSR(int i, int j);
     void PrintTheta();
     void PrintPhi();
+    void PrintAsymuth();
 };
 #endif // FSR_MODEL_H
