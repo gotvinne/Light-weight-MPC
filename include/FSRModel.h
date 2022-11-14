@@ -28,13 +28,13 @@ private:
 
     VectorXf u; /** Manipulated variables n_MV */
     VectorXf y; /** Controlled variables n_CV */
-    MatrixXf du; /** Change in actuation M * n_MV */
+    MatrixXf du_tilde; /** Change in actuation (n_MV*(N-W-1), N-1) */
 
     VectorXf** pp_SR_vec_; /** Matrix of Eigen::VectorXf holding every n_CV * n_MV step response */
     MatrixXf** pp_SR_mat_; /** Tensor of Eigen::MatrixXf representing the SISO prediction (P-W,M) times (n_CV, n_MV) */
     MatrixXf theta_; /** Matrix of all SISO predictions (n_CV*(P-W), n_MV*M) */
     MatrixXf phi_; /** Past step coefficients (n_CV*P-W, n_MV*(N-W-1)) */
-    MatrixXf asymuth_; /** Last step coefficient matrix, (n_CV (P-W), n_MV)*/
+    MatrixXf azymuth_; /** Last step coefficient matrix, (n_CV (P-W), n_MV)*/
 public: 
     /**
      * @brief The constructor. Constructing the object allocating memory for the SISO prediction matric
@@ -87,7 +87,7 @@ public:
      */
     VectorXf PadVec(VectorXf& vec, int pad);
 
-    void setAsymuth();
+    void setAzymuth();
 
     /** Get functions */
     int getP() const { return P_; }

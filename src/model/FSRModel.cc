@@ -17,8 +17,8 @@ FSRModel::FSRModel(VectorXf** SR, int n_CV, int n_MV, int N, int P, int M, int W
                      n_CV_{n_CV}, n_MV_{n_MV}, N_{N}, P_{P}, M_{M}, W_{W} {
     theta_ = MatrixXf::Zero(n_CV*(P-W), n_MV*M);
     phi_.resize(n_CV*(P-W), n_MV*(N-W-1));
-    asymuth_.resize(n_CV*(P-W), n_MV);
-    du.resize(M, n_MV);
+    azymuth_.resize(n_CV*(P-W), n_MV);
+    du_tilde.resize(n_MV * (N-W-1), N-1);
     u = Eigen::VectorXf::Map(init_u.data(), init_u.size());
     y = Eigen::VectorXf::Map(init_y.data(), init_y.size());
 
@@ -121,7 +121,7 @@ void FSRModel::FillRowPhi(const VectorXf& pad_vec, const int& row) {
     }
 }
 
-void FSRModel::setAsymuth() {
+void FSRModel::setAzymuth() {
     for (int i = 0; i < n_CV_; i++) {
         for (int j = 0; j < n_MV_; j++) {
             VectorXf vec = VectorXf::Constant(P_-W_, pp_SR_vec_[i][j](Eigen::last));
