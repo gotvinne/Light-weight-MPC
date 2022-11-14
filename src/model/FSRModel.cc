@@ -18,9 +18,11 @@ FSRModel::FSRModel(VectorXf** SR, int n_CV, int n_MV, int N, int P, int M, int W
     theta_ = MatrixXf::Zero(n_CV*(P-W), n_MV*M);
     phi_.resize(n_CV*(P-W), n_MV*(N-W-1));
     azymuth_.resize(n_CV*(P-W), n_MV);
-    du_tilde.resize(n_MV * (N-W-1), N-1);
-    u = Eigen::VectorXf::Map(init_u.data(), init_u.size());
-    y = Eigen::VectorXf::Map(init_y.data(), init_y.size());
+    u_k_.resize(n_MV * (N-W-1));
+    du_tilde_.resize(n_MV * (N-W-1), N-1);
+
+    u_N_ = Eigen::VectorXf::Map(init_u.data(), init_u.size());
+    y_ = Eigen::VectorXf::Map(init_y.data(), init_y.size());
 
     AllocateAndDeepCopy(SR); 
     // Setting matrix member variables
@@ -128,6 +130,13 @@ void FSRModel::setAzymuth() {
             azymuth_.block(i*(P_-W_), j, P_-W_, 1) = vec;
         }
     }
+}
+
+void FSRModel::UpdateUN(const VectorXf& du) {
+    u_N_ = u_N_ + du_tilde_.block(u_N_.cols(), N_-1, u_N_.cols(), 1);
+    // Update du_tilde by left shift
+    du_tilde_ << 
+        du, du_tilde_.leftCols(N_-2);
 }
 
 // Print functions: 
