@@ -36,7 +36,7 @@ private:
     MatrixXf** pp_SR_mat_; /** Tensor of Eigen::MatrixXf representing the SISO prediction (P-W,M) times (n_CV, n_MV) */
     MatrixXf theta_; /** Matrix of all SISO predictions (n_CV*(P-W), n_MV*M) */
     MatrixXf phi_; /** Past step coefficients (n_CV*P-W, n_MV*(N-W-1)) */
-    MatrixXf azymuth_; /** Last step coefficient matrix, (n_CV (P-W), n_MV)*/
+    MatrixXf psi_; /** Last step coefficient matrix, (n_CV (P-W), n_MV)*/
 
     void AllocateAndDeepCopy(VectorXf** SR);
 
@@ -79,7 +79,7 @@ private:
      */
     VectorXf PadVec(VectorXf& vec, int pad);
 
-    void setAzymuth();
+    void setPsi();
 
 public: 
     /**
@@ -104,12 +104,12 @@ public:
     MatrixXf getTheta() const { return theta_; }
     MatrixXf getPhi() const { return phi_; }
     VectorXf getUK() const { return u_K_; }
-    VectorXf getLambda() const { return phi_*du_tilde_ + azymuth_*u_; }
+    VectorXf getLambda() const { return phi_*du_tilde_ + psi_*u_; }
 
     /** Print functions */
     void PrintPPSR(int i, int j);
     void PrintTheta();
     void PrintPhi();
-    void PrintAzymuth();
+    void PrintPsi();
 };
 #endif // FSR_MODEL_H

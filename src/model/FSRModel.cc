@@ -17,7 +17,7 @@ FSRModel::FSRModel(VectorXf** SR, int n_CV, int n_MV, int N, int P, int M, int W
                      n_CV_{n_CV}, n_MV_{n_MV}, N_{N}, P_{P}, M_{M}, W_{W} {
     theta_ = MatrixXf::Zero(n_CV*(P-W), n_MV*M);
     phi_.resize(n_CV*(P-W), n_MV*(N-W-1));
-    azymuth_.resize(n_CV*(P-W), n_MV);
+    psi_.resize(n_CV*(P-W), n_MV);
     du_tilde_ = VectorXf::Zero(n_MV * (N-W-1));
 
     u_K_ = VectorXf::Map(init_u.data(), init_u.size());
@@ -29,7 +29,7 @@ FSRModel::FSRModel(VectorXf** SR, int n_CV, int n_MV, int N, int P, int M, int W
     setSRMatrix();
     setThetaMatrix();
     setPhiMatrix();
-    setAzymuth();
+    setPsi();
 }
 
 FSRModel::~FSRModel() {
@@ -123,11 +123,11 @@ void FSRModel::FillRowPhi(const VectorXf& pad_vec, const int& row) {
     }
 }
 
-void FSRModel::setAzymuth() {
+void FSRModel::setPsi() {
     for (int i = 0; i < n_CV_; i++) {
         for (int j = 0; j < n_MV_; j++) {
             VectorXf vec = VectorXf::Constant(P_-W_, pp_SR_vec_[i][j](Eigen::last));
-            azymuth_.block(i*(P_-W_), j, P_-W_, 1) = vec;
+            psi_.block(i*(P_-W_), j, P_-W_, 1) = vec;
         }
     }
 }
@@ -159,8 +159,8 @@ void FSRModel::PrintPhi() {
     std::cout << std::endl;
 }
 
-void FSRModel::PrintAzymuth() {
-    std::cout << "Asymuth : " << "(" << azymuth_.rows() << ", " << azymuth_.cols() << ")" << std::endl;
-    std::cout << azymuth_ << std::endl; 
+void FSRModel::PrintPsi() {
+    std::cout << "Psi : " << "(" << psi_.rows() << ", " << psi_.cols() << ")" << std::endl;
+    std::cout << psi_ << std::endl; 
     std::cout << std::endl;
 }
