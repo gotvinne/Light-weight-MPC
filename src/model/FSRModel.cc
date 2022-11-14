@@ -18,10 +18,10 @@ FSRModel::FSRModel(VectorXf** SR, int n_CV, int n_MV, int N, int P, int M, int W
     theta_ = MatrixXf::Zero(n_CV*(P-W), n_MV*M);
     phi_.resize(n_CV*(P-W), n_MV*(N-W-1));
     azymuth_.resize(n_CV*(P-W), n_MV);
-    du_tilde_ = MatrixXf::Zero(n_MV * (N-W-1), N-1);
+    du_tilde_ = VectorXf::Zero(n_MV * (N-W-1));
 
-    u_k_ = VectorXf::Map(init_u.data(), init_u.size());
-    u_N_ = VectorXf::Map(init_u.data(), init_u.size());
+    u_K_ = VectorXf::Map(init_u.data(), init_u.size());
+    u_ = VectorXf::Map(init_u.data(), init_u.size());
     y_ = VectorXf::Map(init_y.data(), init_y.size());
 
     AllocateAndDeepCopy(SR); 
@@ -132,13 +132,12 @@ void FSRModel::setAzymuth() {
     }
 }
 
-void FSRModel::UpdateU(const VectorXf& du) {
-    u_k_ = u_k_ + du_tilde_.block(u_N_.cols(), 0, u_N_.cols(), 1); // Update using first col
-    u_N_ = u_N_ + du_tilde_.block(u_N_.cols(), N_-1, u_N_.cols(), 1); // Update using last col
+void FSRModel::UpdateU(const VectorXf& du, const MatrixXf& du_gamma) { //du_gamma = Gamma * du 
+    u_K_ += du; // Update using first col
     
     // Update du_tilde by left shift, adding the optimized du
     du_tilde_ << 
-        du, du_tilde_.leftCols(N_-2);
+        du_gamma, du_tilde_.leftCols(N_-2);
 }
 
 // Print functions: 

@@ -26,10 +26,11 @@ private:
     int M_; /** Control horizon */
     int W_; /** Time delay coefficient */
 
-    VectorXf u_N_; /** Manipulated variables n_MV */
+    VectorXf u_; /** Manipulated variables, U(k-N), n_MV */
     VectorXf y_; /** Controlled variables n_CV */
-    VectorXf u_k_; /** Denotes U_tilde(k-1) n_MV */
-    MatrixXf du_tilde_; /** Change in actuation (n_MV*(N-W-1), N-1) */
+
+    VectorXf u_K_; /** Denotes U(k-1), n_MV */
+    VectorXf du_tilde_; /** Post change in actuation (n_MV*(N-W-1)) */
 
     VectorXf** pp_SR_vec_; /** Matrix of Eigen::VectorXf holding every n_CV * n_MV step response */
     MatrixXf** pp_SR_mat_; /** Tensor of Eigen::MatrixXf representing the SISO prediction (P-W,M) times (n_CV, n_MV) */
@@ -91,7 +92,7 @@ public:
      */
     ~FSRModel();
 
-    void UpdateU(const VectorXf& du);
+    void UpdateU(const VectorXf& du, const MatrixXf& du_gamma);
 
     /** Get functions */
     int getP() const { return P_; }
@@ -102,7 +103,7 @@ public:
     int getN() const { return N_; }
     MatrixXf getTheta() const { return theta_; }
     MatrixXf getPhi() const { return phi_; }
-    VectorXf getUN() const { return u_N_; }
+    VectorXf getUK() const { return u_K_; }
 
     /** Print functions */
     void PrintPPSR(int i, int j);
