@@ -90,8 +90,7 @@ public:
 
     void setAzymuth();
 
-    void UpdateUN(const VectorXf& du);
-    void UpdateUK();
+    void UpdateU(const VectorXf& du);
 
     /** Get functions */
     int getP() const { return P_; }
