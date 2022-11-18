@@ -15,7 +15,7 @@
 #include <Eigen/Dense>
 
 using json = nlohmann::json; 
-using VectorXf = Eigen::VectorXf;
+using VectorXd = Eigen::VectorXd;
 
 /**
  * @brief C++ class representing state data described in system file
@@ -27,11 +27,11 @@ class CVData {
     int N_; /** Number of step response coefficients */
     
     std::vector<std::string> outputs_; /** vector of state specifiers */
-    std::vector<float> inits_; /** vector of initial values */
+    std::vector<double> inits_; /** vector of initial values */
     std::vector<std::string> units_; /** vector of corresponding state units */
 
-    VectorXf** pp_SR_vec_; /** Matrix of Eigen::VectorXf holding every n_CV * n_MV step response */
-    VectorXf y_ref_; /** Vector of state reference values */
+    VectorXd** pp_SR_vec_; /** Matrix of Eigen::VectorXd holding every n_CV * n_MV step response */
+    VectorXd y_ref_; /** Vector of state reference values */
 
     public:
     /**
@@ -71,10 +71,10 @@ class CVData {
     CVData& operator=(const CVData& rhs);
 
     // Get functions
-    VectorXf** getSR() const { return pp_SR_vec_; }
-    VectorXf getYRef(int P, int k);
+    VectorXd** getSR() const { return pp_SR_vec_; }
+    VectorXd getYRef(int P, int k);
     std::vector<std::string> getOutputs() const { return outputs_; }
-    std::vector<float> getInits() const { return inits_; }
+    std::vector<double> getInits() const { return inits_; }
     std::vector<std::string> getUnits() const { return units_; }
 };
 
@@ -83,7 +83,7 @@ class CVData {
  */
 struct MVData {
     std::vector<std::string> Inputs; /** Vector containing input spesifiers */
-    std::vector<float> Inits; /** Vector holding initial values */
+    std::vector<double> Inits; /** Vector holding initial values */
     std::vector<std::string> Units; /** Vector of corresponding input units */
 
     /**
@@ -108,9 +108,9 @@ struct MPCConfig {
     int M; /** Control horizon */
     int W; /** Time delay coefficient */
 
-    VectorXf Q; /** Output tuning */
-    VectorXf R; /** Input change tuning */
-    float Ro; /** Slack variable tuning */
+    VectorXd Q; /** Output tuning */
+    VectorXd R; /** Input change tuning */
+    double Ro; /** Slack variable tuning */
     bool bias_update; /** Bias update / Integral effect enabled */
 
     /**
@@ -129,13 +129,13 @@ struct MPCConfig {
 };
 
 /**
- * @brief Assigns reference values to the Eigen::VectorXf passed by reference
+ * @brief Assigns reference values to the Eigen::VectorXd passed by reference
  * 
  * @param ref_data json object holding input reference data
- * @param ref Eigen::VectorXf
+ * @param ref Eigen::VectorXd
  * @param start_index index to start to fill from
  * @param interval number of values to be filled
  */
-void FillReference(const json& ref_data, VectorXf& ref, int start_index, int interval);
+void FillReference(const json& ref_data, VectorXd& ref, int start_index, int interval);
 
 #endif // DATA_OBJECTS_H

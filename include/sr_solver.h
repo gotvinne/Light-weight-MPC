@@ -20,60 +20,60 @@
  * @param conf MPCConfig
  */
 void sr_solver(const int& T, const FSRModel& fsr, const MPCConfig& conf,
-                const Eigen::VectorXf& z_min, const Eigen::VectorXf& z_max);
+                const Eigen::VectorXd& z_min, const Eigen::VectorXd& z_max);
 
 /**
  * @brief Set the Weight Matrices object
  * 
- * @param Q_bar Eigen::SparseMatrix<float> to be filled by output tuning
- * @param R_bar Eigen::SparseMatrix<float> to be filled by change of input tuning
+ * @param Q_bar Eigen::SparseMatrix<double> to be filled by output tuning
+ * @param R_bar Eigen::SparseMatrix<double> to be filled by change of input tuning
  * @param mpc_config 
  */
-void setWeightMatrices(Eigen::SparseMatrix<float>& Q_bar, Eigen::SparseMatrix<float>& R_bar, const MPCConfig& mpc_config);
+void setWeightMatrices(Eigen::SparseMatrix<double>& Q_bar, Eigen::SparseMatrix<double>& R_bar, const MPCConfig& mpc_config);
 
 /**
  * @brief Set the Hessian Matrix object
  * 
  * @param G Positive definite optimization matrix
  * @param theta Step coefficient prediction matrix
- * @param Q_bar Positive definite Eigen::MatrixXf output tuning matrix
- * @param R_bar Positive definite Eigen::MatrixXf change of input tuning matrix
+ * @param Q_bar Positive definite Eigen::MatrixXd output tuning matrix
+ * @param R_bar Positive definite Eigen::MatrixXd change of input tuning matrix
  * @param n_MV number of manipualated variables
  * @param M control horizon
  */
-void setHessianMatrix(Eigen::SparseMatrix<float>& G, const Eigen::MatrixXf& theta, const Eigen::MatrixXf& Q_bar, const Eigen::MatrixXf& R_bar, int n_MV, int M); 
+void setHessianMatrix(Eigen::SparseMatrix<double>& G, const Eigen::MatrixXd& theta, const Eigen::MatrixXd& Q_bar, const Eigen::MatrixXd& R_bar, int n_MV, int M); 
 
 /**
  * @brief Calculate K matrix
  * 
- * @param K Eigen::SparseMatrix<float> to be filled 
+ * @param K Eigen::SparseMatrix<double> to be filled 
  * @param M Control horizon
  * @param n_MV number of manupulated variables
  */
-void setKmatrix(Eigen::SparseMatrix<float>& K, int M, int n_MV);
+void setKmatrix(Eigen::SparseMatrix<double>& K, int M, int n_MV);
 
 /**
  * @brief Calculate K inverse
  * 
- * @param K_inv Eigen::MatrixXf to be filled
+ * @param K_inv Eigen::MatrixXd to be filled
  * @param M control horizon
  */
-void setKInv(Eigen::MatrixXf& K_inv, int M);
+void setKInv(Eigen::MatrixXd& K_inv, int M);
 
-void setConstrainVectors(Eigen::VectorXf& l, Eigen::VectorXf& u, const Eigen::VectorXf& z_max, const Eigen::VectorXf& z_min,
-                        const Eigen::VectorXf& lambda, const Eigen::VectorXf& u_k, const int& M, const int& n_MV, const int& m);
+void setConstrainVectors(Eigen::VectorXd& l, Eigen::VectorXd& u, const Eigen::VectorXd& z_max, const Eigen::VectorXd& z_min,
+                        const Eigen::VectorXd& lambda, const Eigen::VectorXd& u_k, const int& M, const int& n_MV, const int& m);
 
-void setConstraintMatrix(Eigen::SparseMatrix<float>& A, const FSRModel& fsr, const int& m, const int& n);
+void setConstraintMatrix(Eigen::SparseMatrix<double>& A, const FSRModel& fsr, const int& m, const int& n);
 
-void setGamma(Eigen::SparseMatrix<float>& gamma, int M, int n_MV); 
+void setGamma(Eigen::SparseMatrix<double>& gamma, int M, int n_MV); 
 
 /**
  * @brief Helper function. Implementing block diagonal
  * 
- * @param blk_mat Eigen::SparseMatrix<float> to be block diagonalized
+ * @param blk_mat Eigen::SparseMatrix<double> to be block diagonalized
  * @param arg block argument
  * @param count Number of blocks
  */
-void blkdiag(Eigen::SparseMatrix<float>& blk_mat, const Eigen::MatrixXf& arg, int count);
+void blkdiag(Eigen::SparseMatrix<double>& blk_mat, const Eigen::MatrixXd& arg, int count);
 
 #endif // SR_SOLVER_H
