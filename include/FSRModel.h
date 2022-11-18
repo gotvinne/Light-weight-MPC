@@ -38,12 +38,18 @@ private:
     MatrixXd phi_; /** Past step coefficients (n_CV*P-W, n_MV*(N-W-1)) */
     MatrixXd psi_; /** Last step coefficient matrix, (n_CV (P-W), n_MV)*/
 
+    /**
+     * @brief Helper function allocating and performing deep copy of Eigen::VectorXd** 
+     * 
+     * @param SR Dobble pointer Eigen::VectorXd**
+     */
     void AllocateAndDeepCopy(VectorXd** SR);
 
     /**
      * @brief Set pp_SR_mat, by generating SISO predictions from pp_SR_vec
      */
     void setSRMatrix();
+    
     /**
      * @brief Set lower triangular matrix based on the prediction vector
      * 
@@ -79,6 +85,10 @@ private:
      */
     VectorXd PadVec(VectorXd& vec, int pad);
 
+    /**
+     * @brief Set the Psi object
+     * 
+     */
     void setPsi();
 
 public: 
@@ -92,6 +102,12 @@ public:
      */
     ~FSRModel();
 
+    /**
+     * @brief Projecting the FSRModel, by updating the former step responses and actuation
+     * 
+     * @param du Optimized actuation for next projection
+     * @param du_gamma Optimized actuation scaled to fit phi
+     */
     void UpdateU(const VectorXd& du, const MatrixXd& du_gamma);
 
     /** Get functions */
@@ -101,10 +117,11 @@ public:
     int getN_CV() const { return n_CV_; }
     int getN_MV() const { return n_MV_; }
     int getN() const { return N_; }
+
     MatrixXd getTheta() const { return theta_; }
     MatrixXd getPhi() const { return phi_; }
     VectorXd getUK() const { return u_K_; }
-    VectorXd getLambda() const { return phi_*du_tilde_ + psi_*u_; }
+    VectorXd getLambda() const { return phi_ * du_tilde_ + psi_ * u_; }
 
     /** Print functions */
     void PrintPPSR(int i, int j);
@@ -112,4 +129,5 @@ public:
     void PrintPhi();
     void PrintPsi();
 };
+
 #endif // FSR_MODEL_H
