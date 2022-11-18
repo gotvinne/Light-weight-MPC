@@ -62,6 +62,8 @@ class CVData {
      */
     void FillSR(const json& s_data);
 
+    void AllocateVectors(const int& T);
+
     /**
      * @brief Operator assignment, performing deep copying
      * 

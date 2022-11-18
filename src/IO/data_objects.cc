@@ -25,19 +25,7 @@ CVData::CVData(const json& cv_data, int n_MV, int n_CV, int N, int T) : n_CV_{n_
     if (n_outputs != n_CV) {
         throw std::invalid_argument("n_CV does not coincide with CV");
     }
-    // Allocate vector of Eigen::VectorXd
-    y_ref_ = new VectorXd[n_CV_];
-    // Allocate matrix of Eigen::VectorXd
-    pp_SR_vec_ = new VectorXd*[n_CV_];
-    for (int i = 0; i < n_CV_; ++i) {
-        y_ref_[i] = VectorXd::Zero(T);
-        pp_SR_vec_[i] = new VectorXd[n_MV_];
-    }
-    for (int row = 0; row < n_CV_; row++) {
-        for (int col = 0; col < n_MV_; col++) {
-            pp_SR_vec_[row][col] = VectorXd::Zero(N);
-        }
-    }
+    AllocateVectors(T);
     for (int outputs = 0; outputs < n_CV; outputs++) {
         json output_data = cv_data.at(outputs); //Selecting one output
         outputs_.push_back(output_data.at(kOutput));
@@ -59,6 +47,22 @@ CVData::~CVData() {
     }
     delete[] y_ref_;
     delete[] pp_SR_vec_;
+}
+
+void CVData::AllocateVectors(const int& T) {
+    // Allocate vector of Eigen::VectorXd
+    y_ref_ = new VectorXd[n_CV_];
+    // Allocate matrix of Eigen::VectorXd
+    pp_SR_vec_ = new VectorXd*[n_CV_];
+    for (int i = 0; i < n_CV_; ++i) {
+        y_ref_[i] = VectorXd::Zero(T);
+        pp_SR_vec_[i] = new VectorXd[n_MV_];
+    }
+    for (int row = 0; row < n_CV_; row++) {
+        for (int col = 0; col < n_MV_; col++) {
+            pp_SR_vec_[row][col] = VectorXd::Zero(N_);
+        }
+    }
 }
 
 CVData& CVData::operator=(const CVData& rhs) {

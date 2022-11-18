@@ -67,6 +67,8 @@ void setConstraintMatrix(Eigen::SparseMatrix<double>& A, const FSRModel& fsr, co
 
 void setGamma(Eigen::SparseMatrix<double>& gamma, int M, int n_MV); 
 
+//void setYRef(const Eigen::Ve)
+
 /**
  * @brief Helper function. Implementing block diagonal
  * 
