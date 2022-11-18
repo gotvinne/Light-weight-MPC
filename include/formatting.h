@@ -30,9 +30,9 @@ void WriteJson(const json& data, const std::string& filepath);
  * @param data 
  * @param filepath 
  * @param scenario 
- * @param T 
- * @param n_CV 
- * @param n_MV 
+ * @param T MPC horizon
+ * @param n_CV Number of controlled variables
+ * @param n_MV Number of manipulated variables 
  */
 void FormatSimData(json& data, const std::string& filepath, const std::string& scenario, 
                         const int& T, const int& n_CV, const int& n_MV);
@@ -41,8 +41,8 @@ void FormatSimData(json& data, const std::string& filepath, const std::string& s
  * @brief 
  * 
  * @param data 
- * @param cv_data 
- * @param n_CV 
+ * @param cv_data CDData object
+ * @param n_CV Number of controlled variables
  */
 void FormatSimCV(json& data, const CVData& cv_data, int n_CV); //const Eigen::Vector& z_min, const Eigen::Vector& z_max);
 
@@ -50,8 +50,8 @@ void FormatSimCV(json& data, const CVData& cv_data, int n_CV); //const Eigen::Ve
  * @brief 
  * 
  * @param data 
- * @param mv_data 
- * @param n_MV 
+ * @param mv_data MVData object
+ * @param n_MV Number of manipulated variables
  */
 void FormatSimMV(json& data, const MVData& mv_data, int n_MV);
 

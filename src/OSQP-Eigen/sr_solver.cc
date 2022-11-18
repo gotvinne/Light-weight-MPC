@@ -108,9 +108,14 @@ void setGradientVector(VectorXd& q, const FSRModel& fsr, const SparseXd& Q_bar,
     q = 2 * fsr.getTheta().transpose() * Q_bar * (fsr.getLambda() - tau);
 }
 
-void sr_solver(int T, const FSRModel& fsr, const MPCConfig& conf, const VectorXd& z_min, 
-                const VectorXd& z_max, VectorXd* y_ref) { // Might consider only feeding R and Q
+void StoreDU(MatrixXd& du, const VectorXd& z, int n_MV, int M, int k) {
+    for (int i = 0; i < n_MV; i++) {
+        du(i, k) = z(i * M);
+    }
+}
 
+void sr_solver(int T, const FSRModel& fsr, const MPCConfig& conf, const VectorXd& z_min, 
+                const VectorXd& z_max, VectorXd* y_ref) {
     OsqpEigen::Solver solver;
     solver.settings()->setWarmStart(true); // Starts primal and dual variables from previous QP
 
@@ -146,26 +151,23 @@ void sr_solver(int T, const FSRModel& fsr, const MPCConfig& conf, const VectorXd
 
     // controller input and QPSolution vector
     MatrixXd du = MatrixXd::Zero(fsr.getN_MV(), T);
-    VectorXd z;
 
-    //for (int i = 0; i < T; i++) {
+    for (int i = 0; i < T; i++) {
+        // solve the QP problem
+        if (solver.solveProblem() != OsqpEigen::ErrorExitFlag::NoError) { throw std::runtime_error("Cannot solve problem"); }
 
-    // solve the QP problem
-    //if (solver.solveProblem() != OsqpEigen::ErrorExitFlag::NoError) { throw std::runtime_error("Cannot solve problem"); }
+        // Claim solution
+        VectorXd z = solver.getSolution();
+        std::cout << z << std::endl;
 
-    // Claim solution
-    //z = solver.getSolution();
+        // Store optimal du
+        StoreDU(du, z, fsr.getN_MV(), fsr.getM(), i);
 
-    //     // save data into file
-    //     auto x0Data = x0.data();
-
-    //     // propagate the model
-    //     x0 = a * x0 + b * ctr;
+        // propagate the model
+        //x0 = a * x0 + b * ctr;
 
     //     // update the constraint bound
     //     updateConstraintVectors(x0, lowerBound, upperBound);
     //     if (!solver.updateBounds(lowerBound, upperBound)) { throw std::runtime_error("Cannot update problem"); }
-    //}
-
-    // Save data to file
+    }
 }

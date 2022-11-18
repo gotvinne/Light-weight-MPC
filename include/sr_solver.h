@@ -129,4 +129,6 @@ void setGradientVector(VectorXd& q, const FSRModel& fsr, const SparseXd& Q_bar,
  */
 void blkdiag(SparseXd& blk_mat, const MatrixXd& arg, int count);
 
+void StoreDU(MatrixXd& du, const VectorXd& z, int n_MV, int M, int k);
+
 #endif // SR_SOLVER_H
