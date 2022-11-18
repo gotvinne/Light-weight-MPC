@@ -10,6 +10,12 @@
 
 const float WHITE_NOISE_MEAN = 0.0;
 
+/**
+ * @brief Calculate white noise based on a random generator
+ * 
+ * @param sigma varience of the white noise
+ * @return float 
+ */
 float WhiteNoise(float sigma);
 
 // function solving reference model ODE, representing a sensor measurement
