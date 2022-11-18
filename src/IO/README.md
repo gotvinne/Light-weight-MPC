@@ -21,7 +21,7 @@ The [nlohmann/json](https://json.nlohmann.me/api/basic_json/) library is used in
    "CV": [
       { 
          "output": "output_name",
-         "init": float,
+         "init": double,
          "unit": string,
          "y_ref": [y1, y2, y3, ... , yT], (Setpoint trajectory)
          "S": [[S11, S12, S13, ... , S1N],
@@ -32,7 +32,7 @@ The [nlohmann/json](https://json.nlohmann.me/api/basic_json/) library is used in
          ... ,
       { 
          "output": "output_name",
-         "init": float,
+         "init": double,
          "unit": string,
          "y_ref": [y1, y2, y3, ... , yT], (Setpoint trajectory)
          "S": [[S11, S12, S13, ... , S1N],
@@ -45,13 +45,13 @@ The [nlohmann/json](https://json.nlohmann.me/api/basic_json/) library is used in
    "MV": [
       {
          "input": "input_name", 
-         "init": float,
+         "init": double,
          "unit": string
       },
          ... , 
       {
          "input": "input_name",
-         "init": float,
+         "init": double,
          "unit": string
       } 
    ],                         
@@ -69,20 +69,20 @@ The [nlohmann/json](https://json.nlohmann.me/api/basic_json/) library is used in
    "W": int, (Time delay)
    "Q": [Q1, Q2, ... , QP], (Positive definite)
    "R": [R1, R2, ... , RM], (Positive definite)
-   "Ro": float, (Slack variable)
+   "Ro": double, (Slack variable)
    "bias update": bool
  },
 
  "c_i": [
-   {"du[1]": [low, high]}, (float)
+   {"du[1]": [low, high]}, (double)
    ...,
-   {"du[n_MV]": [low, high]}, (float)
-   {"u[1]": [low, high]}, (float)
+   {"du[M * n_MV]": [low, high]}, (double)
+   {"u[1]": [low, high]}, (double)
    ...,
-   {"u[n_MV]": [low, high]}, (float)
-   {"y[1]": [low, high]}, (float)
+   {"u[M * n_MV]": [low, high]}, (double)
+   {"y[1]": [low, high]}, (double)
    ...,
-   {"y[n_CV]": [low, high]} (float)
+   {"y[P * n_CV]": [low, high]} (double)
  ]
 }
 ``` 
@@ -112,7 +112,7 @@ The [nlohmann/json](https://json.nlohmann.me/api/basic_json/) library is used in
       {  // This is only the predicted states, the simulation uses a model.
          "output": "output_name",
          "unit": string, 
-         "c": [low, high] (float),
+         "c": [low, high] (double),
          "y": [y1, y2, y3, ... , yT], (Reference model simulation)
          "y_hat": [y1, y2, y3, ... , yT] (Predicted model simulation)
       }, 
@@ -120,7 +120,7 @@ The [nlohmann/json](https://json.nlohmann.me/api/basic_json/) library is used in
       { 
          "output": "output_name",
          "unit": string, 
-         "c": [low, high] (float),
+         "c": [low, high] (double),
          "y": [y1, y2, y3, ... , yT], (Reference model simulation)
          "y_hat": [y1, y2, y3, ... , yT] (Predicted model simulation)
       }
@@ -130,14 +130,14 @@ The [nlohmann/json](https://json.nlohmann.me/api/basic_json/) library is used in
       {
          "input": "input_name",
          "unit": string, 
-         "c": [low, high], (float, constraining u)
+         "c": [low, high], (double, constraining u)
          "u": [u1, u2, u3, ... , uT] 
       }, 
          ... , 
       { 
          "input": "input_name",
          "unit": string, 
-         "c": [low, high], (float, constraining u)
+         "c": [low, high], (double, constraining u)
          "u": [u1, u2, u3, ... , uT] 
       }
    ]

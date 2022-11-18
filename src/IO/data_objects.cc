@@ -25,17 +25,7 @@ CVData::CVData(const json& cv_data, int n_MV, int n_CV, int N, int T) : n_CV_{n_
     if (n_outputs != n_CV) {
         throw std::invalid_argument("n_CV does not coincide with CV");
     }
-    y_ref_.resize(T*n_MV);
-    // Allocate matrix of Eigen::VectorXf
-    pp_SR_vec_ = new VectorXf*[n_CV_];
-    for (int i = 0; i < n_CV_; ++i) {
-        pp_SR_vec_[i] = new VectorXf[n_MV_];
-    }
-    for (int row = 0; row < n_CV_; row++) {
-        for (int col = 0; col < n_MV_; col++) {
-            pp_SR_vec_[row][col] = VectorXf::Zero(N);
-        }
-    }
+    AllocateVectors(T);
     for (int outputs = 0; outputs < n_CV; outputs++) {
         json output_data = cv_data.at(outputs); //Selecting one output
         outputs_.push_back(output_data.at(kOutput));
@@ -45,7 +35,8 @@ CVData::CVData(const json& cv_data, int n_MV, int n_CV, int N, int T) : n_CV_{n_
         if (output_data.at(kY_Ref).size() < T) {
             throw std::invalid_argument("Too few input data for the horizon");
         }
-        FillReference(output_data.at(kY_Ref), y_ref_, T*outputs, T);
+        std::vector<double> ref = output_data.at(kY_Ref).get<std::vector<double>>();
+        y_ref_[outputs] = VectorXd::Map(&ref[0], ref.size()); // Fill one vector
         FillSR(output_data.at(kS));
     }                          
 }
@@ -54,7 +45,24 @@ CVData::~CVData() {
     for (int i = 0 ; i < n_CV_; i++) {
         delete[] pp_SR_vec_[i];
     }
+    delete[] y_ref_;
     delete[] pp_SR_vec_;
+}
+
+void CVData::AllocateVectors(const int& T) {
+    // Allocate vector of Eigen::VectorXd
+    y_ref_ = new VectorXd[n_CV_];
+    // Allocate matrix of Eigen::VectorXd
+    pp_SR_vec_ = new VectorXd*[n_CV_];
+    for (int i = 0; i < n_CV_; ++i) {
+        y_ref_[i] = VectorXd::Zero(T);
+        pp_SR_vec_[i] = new VectorXd[n_MV_];
+    }
+    for (int row = 0; row < n_CV_; row++) {
+        for (int col = 0; col < n_MV_; col++) {
+            pp_SR_vec_[row][col] = VectorXd::Zero(N_);
+        }
+    }
 }
 
 CVData& CVData::operator=(const CVData& rhs) {
@@ -64,12 +72,13 @@ CVData& CVData::operator=(const CVData& rhs) {
     outputs_ = rhs.outputs_;
     inits_ = rhs.inits_;
     units_ = rhs.units_;
-    y_ref_ = rhs.y_ref_;
 
     // Deep copying
-    pp_SR_vec_ = new VectorXf*[n_CV_];
+    y_ref_ = new VectorXd[n_CV_];
+    pp_SR_vec_ = new VectorXd*[n_CV_];
     for (int i = 0; i < n_CV_; ++i) {
-        pp_SR_vec_[i] = new VectorXf[n_MV_];
+        y_ref_[i] = rhs.y_ref_[i];
+        pp_SR_vec_[i] = new VectorXd[n_MV_];
     }
     for (int row = 0; row < n_CV_; row++) {
         for (int col = 0; col < n_MV_; col++) {
@@ -79,26 +88,16 @@ CVData& CVData::operator=(const CVData& rhs) {
     return *this;
 }
 
-void FillReference(const json& ref_data, VectorXf& ref, int start_index, int interval) {
-    for (int i = start_index; i < start_index+interval; i++) {
-            ref[i] = ref_data.at(i);
-    }  
-}
-
 void CVData::FillSR(const json& s_data) {
     for (int i = 0; i < n_CV_; i++) {
         for (int j = 0; j < n_MV_; j++) {
-            VectorXf vec = VectorXf::Zero(N_);
+            VectorXd vec = VectorXd::Zero(N_);
             for (int k = 0; k < N_; k++) {
                 vec(k) = s_data.at(i).at(k);
             }
             pp_SR_vec_[i][j] = vec;
         }
     }       
-}
-
-VectorXf CVData::getYRef(int P, int k) {
-    return y_ref_(Eigen::seq(k, P+k));
 }
 
 MVData::MVData() {}

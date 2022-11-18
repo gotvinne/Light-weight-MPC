@@ -44,13 +44,14 @@ int main() {
     // Parse scenario:
     std::string system; 
     MPCConfig conf; //Default initializer
-    Eigen::VectorXf z_max; // These constraints can be used directly in solver
-    Eigen::VectorXf z_min; 
+    Eigen::VectorXd z_max; // These constraints can be used directly in solver
+    Eigen::VectorXd z_min; 
     ParseScenarioData(sce_data, system, conf, z_max, z_min, m_param[kN_CV], m_param[kN_MV]);
     
-    FSRModel fsr(sd.getSR(), m_param[kN_CV], m_param[kN_MV], m_param[kN], conf.P, conf.M, conf.W);
+    FSRModel fsr(sd.getSR(), m_param[kN_CV], m_param[kN_MV], m_param[kN], conf.P, conf.M,
+                conf.W, id.Inits, sd.getInits());
+    sr_solver(T, fsr, conf, z_min, z_max, sd.getYRef());
 
-    sr_solver(T, fsr, conf);
     // Eigen::MatrixXf dt_opt; // Optimal actuation 
     Eigen::MatrixXf du; // n_CV x T
 

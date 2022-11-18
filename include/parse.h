@@ -17,7 +17,7 @@
 #include <Eigen/Dense>
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
-using VectorXf = Eigen::VectorXf;
+using VectorXd = Eigen::VectorXd;
 
 /**
  * @brief Reads a json file using nlohmann::json
@@ -54,7 +54,7 @@ void ParseSystemData(const json& sys_data, std::map<std::string, int>& model_par
  * @param arr Eigen::VectorXf to hold the constraints [dU, U, Y]
  * @param upper bool indicating if upper constraints are returned, upper = false: lower constraints are returnd 
  */
-void ConstraintData(const json& sce_data, VectorXf& arr, bool upper);
+void ConstraintData(const json& sce_data, VectorXd& arr, bool upper);
 
 /**
  * @brief High-level function parsing a scenario file
@@ -68,7 +68,7 @@ void ConstraintData(const json& sce_data, VectorXf& arr, bool upper);
  * @param n_MV number of manipulated variables
  */
 void ParseScenarioData(const json& sce_data, std::string& system, MPCConfig& mpc_conf, 
-                        VectorXf& z_max, VectorXf& z_min, int n_CV, int n_MV);
+                        VectorXd& z_max, VectorXd& z_min, int n_CV, int n_MV);
 
 
 void PrintContainer(std::map<std::string, int> container);
