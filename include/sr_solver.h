@@ -20,7 +20,7 @@
  * @param conf MPCConfig
  */
 void sr_solver(const int& T, const FSRModel& fsr, const MPCConfig& conf,
-                const Eigen::VectorXd& z_min, const Eigen::VectorXd& z_max);
+                const Eigen::VectorXd& z_min, const Eigen::VectorXd& z_max, Eigen::VectorXd* y_ref);
 
 /**
  * @brief Set the Weight Matrices object
@@ -67,7 +67,10 @@ void setConstraintMatrix(Eigen::SparseMatrix<double>& A, const FSRModel& fsr, co
 
 void setGamma(Eigen::SparseMatrix<double>& gamma, int M, int n_MV); 
 
-//void setYRef(const Eigen::Ve)
+void setTau(Eigen::VectorXd& tau, Eigen::VectorXd* y_ref, const int& P, const int& W, const int& n_CV);
+
+void setGradientVector(Eigen::VectorXd& q, const Eigen::VectorXd& lambda, const Eigen::MatrixXd& theta, const Eigen::SparseMatrix<double>& Q_bar,
+                        Eigen::VectorXd* y_ref, const int& P, const int& W, const int& n_CV);
 
 /**
  * @brief Helper function. Implementing block diagonal

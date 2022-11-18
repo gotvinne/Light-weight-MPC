@@ -98,8 +98,23 @@ void setConstrainVectors(Eigen::VectorXd& l, Eigen::VectorXd& u, const Eigen::Ve
     u = z_max - c;
 }
 
+
+void setTau(Eigen::VectorXd& tau, Eigen::VectorXd* y_ref, const int& P, const int& W, const int& n_CV) {
+    tau.resize(n_CV * P);
+    for (int i = 0; i < n_CV; i++) {
+        tau.block(i * n_CV, 0, P, 1) = y_ref[i](Eigen::seq(0, P-1)); // Bit unsure on how to do time delay
+    }
+}
+
+void setGradientVector(Eigen::VectorXd& q, const Eigen::VectorXd& lambda, const Eigen::MatrixXd& theta, const Eigen::SparseMatrix<double>& Q_bar,
+                        Eigen::VectorXd* y_ref, const int& P, const int& W, const int& n_CV) {
+    Eigen::VectorXd tau;
+    setTau(tau, y_ref, P, W, n_CV);
+    q = 2 * theta.transpose() * Q_bar * (lambda - tau);
+}
+
 void sr_solver(const int& T, const FSRModel& fsr, const MPCConfig& conf, const Eigen::VectorXd& z_min, 
-                const Eigen::VectorXd& z_max) { // Might consider only feeding R and Q
+                const Eigen::VectorXd& z_max, Eigen::VectorXd* y_ref) { // Might consider only feeding R and Q
 
     OsqpEigen::Solver solver;
     solver.settings()->setWarmStart(true); // Starts primal and dual variables from previous QP
@@ -122,6 +137,7 @@ void sr_solver(const int& T, const FSRModel& fsr, const MPCConfig& conf, const E
 
     setWeightMatrices(Q_bar, R_bar, conf);
     setHessianMatrix(G, fsr.getTheta(), Q_bar, R_bar, fsr.getN_MV(), fsr.getM());
+    setGradientVector(q, fsr.getLambda(), fsr.getTheta(), Q_bar, y_ref, fsr.getP(), fsr.getW(), fsr.getN_CV());
     setConstraintMatrix(A, fsr, m, n);
     setConstrainVectors(l, u, z_min, z_max, fsr.getLambda(), fsr.getUK(), fsr.getM(), fsr.getN_MV(), m);
 

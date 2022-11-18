@@ -74,7 +74,7 @@ class CVData {
 
     // Get functions
     VectorXd** getSR() const { return pp_SR_vec_; }
-    VectorXd getYRef(int row) const { return y_ref_[0]; }
+    VectorXd* getYRef() const { return y_ref_; }
     std::vector<std::string> getOutputs() const { return outputs_; }
     std::vector<double> getInits() const { return inits_; }
     std::vector<std::string> getUnits() const { return units_; }

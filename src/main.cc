@@ -48,8 +48,9 @@ int main() {
     Eigen::VectorXd z_min; 
     ParseScenarioData(sce_data, system, conf, z_max, z_min, m_param[kN_CV], m_param[kN_MV]);
     
-    FSRModel fsr(sd.getSR(), m_param[kN_CV], m_param[kN_MV], m_param[kN], conf.P, conf.M, conf.W, id.Inits, sd.getInits());
-    sr_solver(T, fsr, conf, z_min, z_max);
+    FSRModel fsr(sd.getSR(), m_param[kN_CV], m_param[kN_MV], m_param[kN], conf.P, conf.M,
+                conf.W, id.Inits, sd.getInits());
+    sr_solver(T, fsr, conf, z_min, z_max, sd.getYRef());
 
     // Eigen::MatrixXf dt_opt; // Optimal actuation 
     Eigen::MatrixXf du; // n_CV x T
