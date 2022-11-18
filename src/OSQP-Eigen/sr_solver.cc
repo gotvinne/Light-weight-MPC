@@ -19,7 +19,6 @@ void setWeightMatrices(Eigen::SparseMatrix<double>& Q_bar, Eigen::SparseMatrix<d
                         const MPCConfig& mpc_config) { // Consider making Q_bar, R_bar SparseMatrix
     Eigen::MatrixXd Q = Eigen::MatrixXd::Zero(mpc_config.P - mpc_config.W, mpc_config.P - mpc_config.W);
     Eigen::MatrixXd R = Eigen::MatrixXd::Zero(mpc_config.M, mpc_config.M);
-
     Q = mpc_config.Q.asDiagonal();
     R = mpc_config.R.asDiagonal();
 
@@ -77,18 +76,17 @@ void setConstraintMatrix(Eigen::SparseMatrix<double>& A, const FSRModel& fsr, co
     A = dense.sparseView();
 }
 
-void setConstrainVectors(Eigen::VectorXd& l, Eigen::VectorXd& u, const Eigen::VectorXd& z_max, const Eigen::VectorXd& z_min,
+void setConstrainVectors(Eigen::VectorXd& l, Eigen::VectorXd& u, const Eigen::VectorXd& z_min, const Eigen::VectorXd& z_max,
                         const Eigen::VectorXd& lambda, const Eigen::VectorXd& u_k, const int& M, const int& n_MV, const int& m) {
+    int n = M * n_MV; 
     l.resize(z_min.rows());
     u.resize(z_max.rows());
     
     Eigen::MatrixXd K_inv;
     setKInv(K_inv, M);
-
     Eigen::SparseMatrix<double> gamma; 
     setGamma(gamma, M, n_MV);
 
-    int n = M * n_MV; 
     Eigen::VectorXd c(m);
     c.block(0, 0, n, 1) = Eigen::VectorXd::Zero(n);
     c.block(n, 0, n, 1) = K_inv * gamma * u_k;
@@ -97,7 +95,6 @@ void setConstrainVectors(Eigen::VectorXd& l, Eigen::VectorXd& u, const Eigen::Ve
     l = z_min - c;
     u = z_max - c;
 }
-
 
 void setTau(Eigen::VectorXd& tau, Eigen::VectorXd* y_ref, const int& P, const int& W, const int& n_CV) {
     tau.resize(n_CV * P);
@@ -142,14 +139,12 @@ void sr_solver(const int& T, const FSRModel& fsr, const MPCConfig& conf, const E
     setConstrainVectors(l, u, z_min, z_max, fsr.getLambda(), fsr.getUK(), fsr.getM(), fsr.getN_MV(), m);
 
     if (!solver.data()->setHessianMatrix(G)) { throw std::runtime_error("Cannot initialize Hessian"); }
-    // if (!solver.data()->setGradient(q)) { throw std::runtime_error("Cannot initialize Gradient"); }
-    if(!solver.data()->setLinearConstraintsMatrix(A)) { throw std::runtime_error("Cannot initialize constraint matrix"); }
+    if (!solver.data()->setGradient(q)) { throw std::runtime_error("Cannot initialize Gradient"); }
+    if (!solver.data()->setLinearConstraintsMatrix(A)) { throw std::runtime_error("Cannot initialize constraint matrix"); }
     if (!solver.data()->setLowerBound(l)) { throw std::runtime_error("Cannot initialize lower bound"); }
     if (!solver.data()->setUpperBound(u)) { throw std::runtime_error("Cannot initialize upper bound"); }
 
-    // if (!solver.initSolver()) { // If solver cannot be initialized
-    //     throw std::runtime_error("Cannot initialize solver");
-    // }
+    if (!solver.initSolver()) { throw std::runtime_error("Cannot initialize solver"); }
 
     // controller input and QPSolution vector
     Eigen::MatrixXd du = Eigen::MatrixXd::Zero(fsr.getN_MV(), T);
