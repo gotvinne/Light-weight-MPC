@@ -30,6 +30,7 @@ CVData::CVData(const json& cv_data, int n_MV, int n_CV, int N, int T) : n_CV_{n_
     // Allocate matrix of Eigen::VectorXd
     pp_SR_vec_ = new VectorXd*[n_CV_];
     for (int i = 0; i < n_CV_; ++i) {
+        y_ref_[i] = VectorXd::Zero(T);
         pp_SR_vec_[i] = new VectorXd[n_MV_];
     }
     for (int row = 0; row < n_CV_; row++) {
@@ -47,8 +48,7 @@ CVData::CVData(const json& cv_data, int n_MV, int n_CV, int N, int T) : n_CV_{n_
             throw std::invalid_argument("Too few input data for the horizon");
         }
         std::vector<double> ref = output_data.at(kY_Ref).get<std::vector<double>>();
-        y_ref_[outputs](ref.data());
-        //FillReference(ref, outputs);
+        y_ref_[outputs] = VectorXd::Map(&ref[0], ref.size()); // Fill one vector
         FillSR(output_data.at(kS));
     }                          
 }
@@ -68,11 +68,12 @@ CVData& CVData::operator=(const CVData& rhs) {
     outputs_ = rhs.outputs_;
     inits_ = rhs.inits_;
     units_ = rhs.units_;
-    y_ref_ = rhs.y_ref_;
 
     // Deep copying
+    y_ref_ = new VectorXd[n_CV_];
     pp_SR_vec_ = new VectorXd*[n_CV_];
     for (int i = 0; i < n_CV_; ++i) {
+        y_ref_[i] = rhs.y_ref_[i];
         pp_SR_vec_[i] = new VectorXd[n_MV_];
     }
     for (int row = 0; row < n_CV_; row++) {
@@ -81,10 +82,6 @@ CVData& CVData::operator=(const CVData& rhs) {
         }
     }
     return *this;
-}
-
-void CVData::FillReference(const json& ref, const int& output) {
-    //y_ref_[output](ref.data());
 }
 
 void CVData::FillSR(const json& s_data) {

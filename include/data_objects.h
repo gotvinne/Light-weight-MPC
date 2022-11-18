@@ -31,7 +31,7 @@ class CVData {
     std::vector<std::string> units_; /** vector of corresponding state units */
 
     VectorXd** pp_SR_vec_; /** Matrix of Eigen::VectorXd holding every n_CV * n_MV step response */
-    VectorXd* y_ref_; /** Matrix of state reference values (n_CV * T)*/
+    VectorXd* y_ref_; /** Matrix of state reference values (n_CV * T) */
 
     public:
     /**
@@ -62,16 +62,6 @@ class CVData {
      */
     void FillSR(const json& s_data);
 
-        /**
-     * @brief Assigns reference values to the Eigen::VectorXd passed by reference
-     * 
-     * @param ref_data json object holding input reference data
-     * @param ref Eigen::VectorXd
-     * @param start_index index to start to fill from
-
-    */
-    void FillReference(const json& ref, const int& output);
-
     /**
      * @brief Operator assignment, performing deep copying
      * 
@@ -82,6 +72,7 @@ class CVData {
 
     // Get functions
     VectorXd** getSR() const { return pp_SR_vec_; }
+    VectorXd getYRef(int row) const { return y_ref_[0]; }
     std::vector<std::string> getOutputs() const { return outputs_; }
     std::vector<double> getInits() const { return inits_; }
     std::vector<std::string> getUnits() const { return units_; }
