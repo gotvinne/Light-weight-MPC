@@ -31,7 +31,7 @@ class CVData {
     std::vector<std::string> units_; /** vector of corresponding state units */
 
     VectorXd** pp_SR_vec_; /** Matrix of Eigen::VectorXd holding every n_CV * n_MV step response */
-    VectorXd y_ref_; /** Vector of state reference values */
+    VectorXd* y_ref_; /** Matrix of state reference values (n_CV * T)*/
 
     public:
     /**
@@ -56,11 +56,21 @@ class CVData {
     ~CVData();
 
     /**
-     * @brief 
+     * @brief Filling the dobbel linked VectorXd
      * 
      * @param s_data 
      */
     void FillSR(const json& s_data);
+
+        /**
+     * @brief Assigns reference values to the Eigen::VectorXd passed by reference
+     * 
+     * @param ref_data json object holding input reference data
+     * @param ref Eigen::VectorXd
+     * @param start_index index to start to fill from
+
+    */
+    void FillReference(const json& ref, const int& output);
 
     /**
      * @brief Operator assignment, performing deep copying
@@ -72,7 +82,6 @@ class CVData {
 
     // Get functions
     VectorXd** getSR() const { return pp_SR_vec_; }
-    VectorXd getYRef(int P, int k);
     std::vector<std::string> getOutputs() const { return outputs_; }
     std::vector<double> getInits() const { return inits_; }
     std::vector<std::string> getUnits() const { return units_; }
@@ -127,15 +136,5 @@ struct MPCConfig {
      */
     MPCConfig(const json& sce_data, int n_CV, int n_MV); 
 };
-
-/**
- * @brief Assigns reference values to the Eigen::VectorXd passed by reference
- * 
- * @param ref_data json object holding input reference data
- * @param ref Eigen::VectorXd
- * @param start_index index to start to fill from
- * @param interval number of values to be filled
- */
-void FillReference(const json& ref_data, VectorXd& ref, int start_index, int interval);
 
 #endif // DATA_OBJECTS_H

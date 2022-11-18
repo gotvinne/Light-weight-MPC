@@ -25,7 +25,8 @@ CVData::CVData(const json& cv_data, int n_MV, int n_CV, int N, int T) : n_CV_{n_
     if (n_outputs != n_CV) {
         throw std::invalid_argument("n_CV does not coincide with CV");
     }
-    y_ref_.resize(T*n_MV);
+    // Allocate vector of Eigen::VectorXd
+    y_ref_ = new VectorXd[n_CV_];
     // Allocate matrix of Eigen::VectorXd
     pp_SR_vec_ = new VectorXd*[n_CV_];
     for (int i = 0; i < n_CV_; ++i) {
@@ -45,7 +46,9 @@ CVData::CVData(const json& cv_data, int n_MV, int n_CV, int N, int T) : n_CV_{n_
         if (output_data.at(kY_Ref).size() < T) {
             throw std::invalid_argument("Too few input data for the horizon");
         }
-        FillReference(output_data.at(kY_Ref), y_ref_, T*outputs, T);
+        std::vector<double> ref = output_data.at(kY_Ref).get<std::vector<double>>();
+        y_ref_[outputs](ref.data());
+        //FillReference(ref, outputs);
         FillSR(output_data.at(kS));
     }                          
 }
@@ -54,6 +57,7 @@ CVData::~CVData() {
     for (int i = 0 ; i < n_CV_; i++) {
         delete[] pp_SR_vec_[i];
     }
+    delete[] y_ref_;
     delete[] pp_SR_vec_;
 }
 
@@ -79,10 +83,8 @@ CVData& CVData::operator=(const CVData& rhs) {
     return *this;
 }
 
-void FillReference(const json& ref_data, VectorXd& ref, int start_index, int interval) {
-    for (int i = start_index; i < start_index+interval; i++) {
-            ref[i] = ref_data.at(i);
-    }  
+void CVData::FillReference(const json& ref, const int& output) {
+    //y_ref_[output](ref.data());
 }
 
 void CVData::FillSR(const json& s_data) {
@@ -95,10 +97,6 @@ void CVData::FillSR(const json& s_data) {
             pp_SR_vec_[i][j] = vec;
         }
     }       
-}
-
-VectorXd CVData::getYRef(int P, int k) {
-    return y_ref_(Eigen::seq(k, P+k));
 }
 
 MVData::MVData() {}
