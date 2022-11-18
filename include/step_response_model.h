@@ -39,8 +39,6 @@ float StepResponse(float k, float tau, float theta, float dt, int i);
  */
 std::vector<float> StepCoefficients(float k, float tau, float theta, int N);
 
-float FRSM_SISO_Prediction(Eigen::ArrayXf theta, Eigen::ArrayXf du, float offset);
-
 void PrintCoefficients(const std::vector<float> &vec);
 
 #endif  // STEP_RESPONSE_MODEL_H
