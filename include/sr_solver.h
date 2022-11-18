@@ -12,6 +12,11 @@
 #include "FSRModel.h"
 
 #include <Eigen/Eigen>
+
+using VectorXd = Eigen::VectorXd;
+using MatrixXd = Eigen::MatrixXd;
+using SparseXd = Eigen::SparseMatrix<double>;
+
 /**
  * @brief solving the condensed optimalization problem using OSQP-Eigen
  * 
@@ -19,8 +24,8 @@
  * @param fsr FSRModel of scenario file
  * @param conf MPCConfig
  */
-void sr_solver(const int& T, const FSRModel& fsr, const MPCConfig& conf,
-                const Eigen::VectorXd& z_min, const Eigen::VectorXd& z_max, Eigen::VectorXd* y_ref);
+void sr_solver(int T, const FSRModel& fsr, const MPCConfig& conf,
+                const VectorXd& z_min, const VectorXd& z_max, VectorXd* y_ref);
 
 /**
  * @brief Set the Weight Matrices object
@@ -29,7 +34,7 @@ void sr_solver(const int& T, const FSRModel& fsr, const MPCConfig& conf,
  * @param R_bar Eigen::SparseMatrix<double> to be filled by change of input tuning
  * @param mpc_config 
  */
-void setWeightMatrices(Eigen::SparseMatrix<double>& Q_bar, Eigen::SparseMatrix<double>& R_bar, const MPCConfig& mpc_config);
+void setWeightMatrices(SparseXd& Q_bar, SparseXd& R_bar, const MPCConfig& mpc_config);
 
 /**
  * @brief Set the Hessian Matrix object
@@ -41,7 +46,7 @@ void setWeightMatrices(Eigen::SparseMatrix<double>& Q_bar, Eigen::SparseMatrix<d
  * @param n_MV number of manipualated variables
  * @param M control horizon
  */
-void setHessianMatrix(Eigen::SparseMatrix<double>& G, const Eigen::MatrixXd& theta, const Eigen::MatrixXd& Q_bar, const Eigen::MatrixXd& R_bar, int n_MV, int M); 
+void setHessianMatrix(SparseXd& G, const Eigen::MatrixXd& theta, const MatrixXd& Q_bar, const MatrixXd& R_bar, int n_MV, int M); 
 
 /**
  * @brief Calculate K matrix
@@ -50,27 +55,70 @@ void setHessianMatrix(Eigen::SparseMatrix<double>& G, const Eigen::MatrixXd& the
  * @param M Control horizon
  * @param n_MV number of manupulated variables
  */
-void setKmatrix(Eigen::SparseMatrix<double>& K, int M, int n_MV);
+void setKmatrix(SparseXd& K, int M, int n_MV);
 
 /**
- * @brief Calculate K inverse
+ * @brief 
  * 
- * @param K_inv Eigen::MatrixXd to be filled
- * @param M control horizon
+ * @param K_inv 
+ * @param n 
  */
-void setKInv(Eigen::MatrixXd& K_inv, int M);
+void setKInv(MatrixXd& K_inv, int n);
 
-void setConstrainVectors(Eigen::VectorXd& l, Eigen::VectorXd& u, const Eigen::VectorXd& z_min, const Eigen::VectorXd& z_max,
-                        const Eigen::VectorXd& lambda, const Eigen::VectorXd& u_k, const int& M, const int& n_MV, const int& m);
+/**
+ * @brief Set the Constraint Vectors object
+ * 
+ * @param l 
+ * @param u 
+ * @param z_min 
+ * @param z_max 
+ * @param fsr 
+ * @param m 
+ * @param n 
+ */
+void setConstraintVectors(VectorXd& l, VectorXd& u, const VectorXd& z_min, const VectorXd& z_max,
+                        const FSRModel& fsr, int m, int n);
 
-void setConstraintMatrix(Eigen::SparseMatrix<double>& A, const FSRModel& fsr, const int& m, const int& n);
+/**
+ * @brief Set the Constraint Matrix object
+ * 
+ * @param A 
+ * @param fsr 
+ * @param m 
+ * @param n 
+ */
+void setConstraintMatrix(SparseXd& A, const FSRModel& fsr, int m, int n);
 
-void setGamma(Eigen::SparseMatrix<double>& gamma, int M, int n_MV); 
+/**
+ * @brief Set the Gamma object
+ * 
+ * @param gamma 
+ * @param M 
+ * @param n_MV 
+ */
+void setGamma(SparseXd& gamma, int M, int n_MV); 
 
-void setTau(Eigen::VectorXd& tau, Eigen::VectorXd* y_ref, const int& P, const int& W, const int& n_CV);
+/**
+ * @brief Set the Tau object
+ * 
+ * @param tau 
+ * @param y_ref 
+ * @param P 
+ * @param W 
+ * @param n_CV 
+ */
+void setTau(VectorXd& tau, VectorXd* y_ref, int P, int W, int n_CV);
 
-void setGradientVector(Eigen::VectorXd& q, const Eigen::VectorXd& lambda, const Eigen::MatrixXd& theta, const Eigen::SparseMatrix<double>& Q_bar,
-                        Eigen::VectorXd* y_ref, const int& P, const int& W, const int& n_CV);
+/**
+ * @brief Set the Gradient Vector object
+ * 
+ * @param q 
+ * @param fsr 
+ * @param Q_bar 
+ * @param y_ref 
+ */
+void setGradientVector(VectorXd& q, const FSRModel& fsr, const SparseXd& Q_bar,
+                        VectorXd* y_ref);
 
 /**
  * @brief Helper function. Implementing block diagonal
@@ -79,6 +127,6 @@ void setGradientVector(Eigen::VectorXd& q, const Eigen::VectorXd& lambda, const 
  * @param arg block argument
  * @param count Number of blocks
  */
-void blkdiag(Eigen::SparseMatrix<double>& blk_mat, const Eigen::MatrixXd& arg, int count);
+void blkdiag(SparseXd& blk_mat, const MatrixXd& arg, int count);
 
 #endif // SR_SOLVER_H

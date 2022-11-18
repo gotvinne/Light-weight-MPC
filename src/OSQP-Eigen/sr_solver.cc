@@ -15,10 +15,9 @@
 #include <iostream>
 #include <stdexcept>
 
-void setWeightMatrices(Eigen::SparseMatrix<double>& Q_bar, Eigen::SparseMatrix<double>& R_bar, 
-                        const MPCConfig& mpc_config) { // Consider making Q_bar, R_bar SparseMatrix
-    Eigen::MatrixXd Q = Eigen::MatrixXd::Zero(mpc_config.P - mpc_config.W, mpc_config.P - mpc_config.W);
-    Eigen::MatrixXd R = Eigen::MatrixXd::Zero(mpc_config.M, mpc_config.M);
+void setWeightMatrices(SparseXd& Q_bar, SparseXd& R_bar, const MPCConfig& mpc_config) {
+    MatrixXd Q = MatrixXd::Zero(mpc_config.P - mpc_config.W, mpc_config.P - mpc_config.W);
+    MatrixXd R = MatrixXd::Zero(mpc_config.M, mpc_config.M);
     Q = mpc_config.Q.asDiagonal();
     R = mpc_config.R.asDiagonal();
 
@@ -26,14 +25,14 @@ void setWeightMatrices(Eigen::SparseMatrix<double>& Q_bar, Eigen::SparseMatrix<d
     R_bar = R.sparseView();
 }
 
-void setHessianMatrix(Eigen::SparseMatrix<double>& G, const Eigen::MatrixXd& theta, const Eigen::SparseMatrix<double>& Q_bar, 
-                        const Eigen::SparseMatrix<double>& R_bar, int n_MV, int M) {
-    G.resize(M*n_MV, M*n_MV);
-    G = 2*theta.transpose()*Q_bar*theta + 2*R_bar;
+void setHessianMatrix(SparseXd& G, const SparseXd& Q_bar, const SparseXd& R_bar, const FSRModel& fsr) {
+    int m = fsr.getM() * fsr.getN_MV();
+    G.resize(m, m);
+    G = 2 * fsr.getTheta().transpose() * Q_bar * fsr.getTheta() + 2 * R_bar;
 }
 
-void setKmatrix(Eigen::SparseMatrix<double>& K, int M, int n_MV) {
-    Eigen::MatrixXd K_arg = Eigen::MatrixXd::Zero(M, M);
+void setKmatrix(SparseXd& K, int M, int n_MV) {
+    MatrixXd K_arg = MatrixXd::Zero(M, M);
     std::array<double, 2> arr = {1.0, -1.0};
     for (int i = 0; i < M; i++) {
         for (int j = 0; j < arr.size(); j++) { // NB M > 2. 
@@ -46,72 +45,71 @@ void setKmatrix(Eigen::SparseMatrix<double>& K, int M, int n_MV) {
     blkdiag(K, K_arg, n_MV);
 }
 
-void blkdiag(Eigen::SparseMatrix<double>& blk_mat, const Eigen::MatrixXd& arg, int count) {
-    Eigen::MatrixXd mat = Eigen::MatrixXd::Zero(arg.rows() * count, arg.cols() * count);
+void blkdiag(SparseXd& blk_mat, const MatrixXd& arg, int count) {
+    MatrixXd mat = MatrixXd::Zero(arg.rows() * count, arg.cols() * count);
     for (int i = 0; i < count; i++) {
         mat.block(i * arg.rows(), i * arg.cols(), arg.rows(), arg.cols()) = arg;
     }
     blk_mat = mat.sparseView();
 }
 
-void setKInv(Eigen::MatrixXd& K_inv, int M) {
-    K_inv = Eigen::MatrixXd::Constant(M, M, 1);
+void setKInv(MatrixXd& K_inv, int n) { 
+    K_inv = MatrixXd::Constant(n, n, 1);
     K_inv = K_inv.triangularView<Eigen::Lower>();
 }
 
-void setGamma(Eigen::SparseMatrix<double>& gamma, int M, int n_MV) {
-    Eigen::MatrixXd gamma_arg = Eigen::MatrixXd::Zero(M, 1);
+void setGamma(SparseXd& gamma, int M, int n_MV) {
+    MatrixXd gamma_arg = MatrixXd::Zero(M, 1);
     gamma_arg(0, 0) = 1.0;
     blkdiag(gamma, gamma_arg, n_MV);
 }
 
-void setConstraintMatrix(Eigen::SparseMatrix<double>& A, const FSRModel& fsr, const int& m, const int& n) {
+void setConstraintMatrix(SparseXd& A, const FSRModel& fsr, int m, int n) {
     A.resize(m, n);
-    Eigen::MatrixXd dense = Eigen::MatrixXd::Zero(m, n); 
-    Eigen::MatrixXd K_inv;
-    setKInv(K_inv, fsr.getM());
+    MatrixXd dense = MatrixXd::Zero(m, n); 
+    MatrixXd K_inv;
+    setKInv(K_inv, n);
 
     dense.block(n, 0, n, n) = K_inv;
     dense.block(2 * n, 0, fsr.getP() * fsr.getN_CV(), n) = fsr.getTheta();
     A = dense.sparseView();
 }
 
-void setConstrainVectors(Eigen::VectorXd& l, Eigen::VectorXd& u, const Eigen::VectorXd& z_min, const Eigen::VectorXd& z_max,
-                        const Eigen::VectorXd& lambda, const Eigen::VectorXd& u_k, const int& M, const int& n_MV, const int& m) {
-    int n = M * n_MV; 
+void setConstraintVectors(VectorXd& l, VectorXd& u, const VectorXd& z_min, const VectorXd& z_max,
+                        const FSRModel& fsr, int m, int n) {
     l.resize(z_min.rows());
     u.resize(z_max.rows());
     
-    Eigen::MatrixXd K_inv;
-    setKInv(K_inv, M);
-    Eigen::SparseMatrix<double> gamma; 
-    setGamma(gamma, M, n_MV);
+    MatrixXd K_inv;
+    setKInv(K_inv, n);
+    SparseXd gamma; 
+    setGamma(gamma, fsr.getM(), fsr.getN_MV());
 
-    Eigen::VectorXd c(m);
-    c.block(0, 0, n, 1) = Eigen::VectorXd::Zero(n);
-    c.block(n, 0, n, 1) = K_inv * gamma * u_k;
-    c.block(2 * n, 0, m - 2 * n , 1) = lambda; // m - 2n = P * n_{CV}
+    VectorXd c(m);
+    c.block(0, 0, n, 1) = VectorXd::Zero(n);
+    c.block(n, 0, n, 1) = K_inv * gamma * fsr.getUK();
+    c.block(2 * n, 0, m - 2 * n , 1) = fsr.getLambda(); // m - 2n = P * n_{CV}
 
     l = z_min - c;
     u = z_max - c;
 }
 
-void setTau(Eigen::VectorXd& tau, Eigen::VectorXd* y_ref, const int& P, const int& W, const int& n_CV) {
+void setTau(VectorXd& tau, VectorXd* y_ref, int P, int W, int n_CV) {
     tau.resize(n_CV * P);
     for (int i = 0; i < n_CV; i++) {
         tau.block(i * n_CV, 0, P, 1) = y_ref[i](Eigen::seq(0, P-1)); // Bit unsure on how to do time delay
     }
 }
 
-void setGradientVector(Eigen::VectorXd& q, const Eigen::VectorXd& lambda, const Eigen::MatrixXd& theta, const Eigen::SparseMatrix<double>& Q_bar,
-                        Eigen::VectorXd* y_ref, const int& P, const int& W, const int& n_CV) {
-    Eigen::VectorXd tau;
-    setTau(tau, y_ref, P, W, n_CV);
-    q = 2 * theta.transpose() * Q_bar * (lambda - tau);
+void setGradientVector(VectorXd& q, const FSRModel& fsr, const SparseXd& Q_bar,
+                        VectorXd* y_ref) {
+    VectorXd tau;
+    setTau(tau, y_ref, fsr.getP(), fsr.getW(), fsr.getN_CV());
+    q = 2 * fsr.getTheta().transpose() * Q_bar * (fsr.getLambda() - tau);
 }
 
-void sr_solver(const int& T, const FSRModel& fsr, const MPCConfig& conf, const Eigen::VectorXd& z_min, 
-                const Eigen::VectorXd& z_max, Eigen::VectorXd* y_ref) { // Might consider only feeding R and Q
+void sr_solver(int T, const FSRModel& fsr, const MPCConfig& conf, const VectorXd& z_min, 
+                const VectorXd& z_max, VectorXd* y_ref) { // Might consider only feeding R and Q
 
     OsqpEigen::Solver solver;
     solver.settings()->setWarmStart(true); // Starts primal and dual variables from previous QP
@@ -123,39 +121,40 @@ void sr_solver(const int& T, const FSRModel& fsr, const MPCConfig& conf, const E
     solver.data()->setNumberOfVariables(n);
     solver.data()->setNumberOfConstraints(m);
 
-    Eigen::SparseMatrix<double> Q_bar; 
-    Eigen::SparseMatrix<double> R_bar; 
-    Eigen::SparseMatrix<double> G;
-    Eigen::SparseMatrix<double> A;
+    // Define Cost function variables: 
+    SparseXd Q_bar; 
+    SparseXd R_bar; 
+    SparseXd G;
+    SparseXd A;
 
-    Eigen::VectorXd q;
-    Eigen::VectorXd l;
-    Eigen::VectorXd u; 
+    VectorXd q;
+    VectorXd l;
+    VectorXd u; 
 
     setWeightMatrices(Q_bar, R_bar, conf);
-    setHessianMatrix(G, fsr.getTheta(), Q_bar, R_bar, fsr.getN_MV(), fsr.getM());
-    setGradientVector(q, fsr.getLambda(), fsr.getTheta(), Q_bar, y_ref, fsr.getP(), fsr.getW(), fsr.getN_CV());
+    setHessianMatrix(G, Q_bar, R_bar, fsr);
+    setGradientVector(q, fsr, Q_bar, y_ref);
     setConstraintMatrix(A, fsr, m, n);
-    setConstrainVectors(l, u, z_min, z_max, fsr.getLambda(), fsr.getUK(), fsr.getM(), fsr.getN_MV(), m);
+    setConstraintVectors(l, u, z_min, z_max, fsr, m, n);
 
     if (!solver.data()->setHessianMatrix(G)) { throw std::runtime_error("Cannot initialize Hessian"); }
     if (!solver.data()->setGradient(q)) { throw std::runtime_error("Cannot initialize Gradient"); }
     if (!solver.data()->setLinearConstraintsMatrix(A)) { throw std::runtime_error("Cannot initialize constraint matrix"); }
     if (!solver.data()->setLowerBound(l)) { throw std::runtime_error("Cannot initialize lower bound"); }
     if (!solver.data()->setUpperBound(u)) { throw std::runtime_error("Cannot initialize upper bound"); }
-
     if (!solver.initSolver()) { throw std::runtime_error("Cannot initialize solver"); }
 
     // controller input and QPSolution vector
-    Eigen::MatrixXd du = Eigen::MatrixXd::Zero(fsr.getN_MV(), T);
+    MatrixXd du = MatrixXd::Zero(fsr.getN_MV(), T);
+    VectorXd z;
 
-    // for (int i = 0; i < T; i++) {
+    //for (int i = 0; i < T; i++) {
 
-    //     // solve the QP problem
-    //     if(solver.solveProblem() != OsqpEigen::ErrorExitFlag::NoError) { throw std::runtime_error("Cannot solve problem"); }
+    // solve the QP problem
+    //if (solver.solveProblem() != OsqpEigen::ErrorExitFlag::NoError) { throw std::runtime_error("Cannot solve problem"); }
 
-    //     // Claim solution
-    //     du = solver.getSolution();
+    // Claim solution
+    //z = solver.getSolution();
 
     //     // save data into file
     //     auto x0Data = x0.data();
@@ -166,7 +165,7 @@ void sr_solver(const int& T, const FSRModel& fsr, const MPCConfig& conf, const E
     //     // update the constraint bound
     //     updateConstraintVectors(x0, lowerBound, upperBound);
     //     if (!solver.updateBounds(lowerBound, upperBound)) { throw std::runtime_error("Cannot update problem"); }
-    // }
+    //}
 
     // Save data to file
 }
