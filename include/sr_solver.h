@@ -58,23 +58,23 @@ void setHessianMatrix(SparseXd& G, const Eigen::MatrixXd& theta, const MatrixXd&
 void setKmatrix(SparseXd& K, int M, int n_MV);
 
 /**
- * @brief 
+ * @brief Calculate K inv matrix, this is a lower triangular matrix
  * 
- * @param K_inv 
- * @param n 
+ * @param K_inv Eigen::MatrixXd passed by reference
+ * @param n size of K_inv
  */
 void setKInv(MatrixXd& K_inv, int n);
 
 /**
  * @brief Set the Constraint Vectors object
  * 
- * @param l 
- * @param u 
- * @param z_min 
- * @param z_max 
- * @param fsr 
- * @param m 
- * @param n 
+ * @param l Eigen::VectorXd lower constraint vector 
+ * @param u Eigen::VectorXd upper constraint vector
+ * @param z_min lower constraints, du, u, y
+ * @param z_max upper constraints, du, u, y
+ * @param fsr Finite step response model
+ * @param m Number of constraints
+ * @param n Number of optimization variables
  */
 void setConstraintVectors(VectorXd& l, VectorXd& u, const VectorXd& z_min, const VectorXd& z_max,
                         const FSRModel& fsr, int m, int n);
@@ -82,10 +82,10 @@ void setConstraintVectors(VectorXd& l, VectorXd& u, const VectorXd& z_min, const
 /**
  * @brief Set the Constraint Matrix object
  * 
- * @param A 
- * @param fsr 
- * @param m 
- * @param n 
+ * @param A Eigen::SparseMatrix<double>
+ * @param fsr Finite step response model
+ * @param m Number of constraints
+ * @param n Number of optimization variables
  */
 void setConstraintMatrix(SparseXd& A, const FSRModel& fsr, int m, int n);
 
@@ -93,8 +93,8 @@ void setConstraintMatrix(SparseXd& A, const FSRModel& fsr, int m, int n);
  * @brief Set the Gamma object
  * 
  * @param gamma 
- * @param M 
- * @param n_MV 
+ * @param M Control horizon
+ * @param n_MV number of manipulated variables
  */
 void setGamma(SparseXd& gamma, int M, int n_MV); 
 
@@ -103,9 +103,9 @@ void setGamma(SparseXd& gamma, int M, int n_MV);
  * 
  * @param tau 
  * @param y_ref 
- * @param P 
- * @param W 
- * @param n_CV 
+ * @param P Prediction horizon
+ * @param W Time delay horizon
+ * @param n_CV Number of controlled variables
  */
 void setTau(VectorXd& tau, VectorXd* y_ref, int P, int W, int n_CV);
 
@@ -113,8 +113,8 @@ void setTau(VectorXd& tau, VectorXd* y_ref, int P, int W, int n_CV);
  * @brief Set the Gradient Vector object
  * 
  * @param q 
- * @param fsr 
- * @param Q_bar 
+ * @param fsr Finite step response model
+ * @param Q_bar output tuning
  * @param y_ref 
  */
 void setGradientVector(VectorXd& q, const FSRModel& fsr, const SparseXd& Q_bar,
