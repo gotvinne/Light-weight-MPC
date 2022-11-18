@@ -24,7 +24,7 @@ using SparseXd = Eigen::SparseMatrix<double>;
  * @param fsr FSRModel of scenario file
  * @param conf MPCConfig
  */
-void sr_solver(int T, const FSRModel& fsr, const MPCConfig& conf,
+void sr_solver(int T, FSRModel& fsr, const MPCConfig& conf,
                 const VectorXd& z_min, const VectorXd& z_max, VectorXd* y_ref);
 
 /**
@@ -129,6 +129,9 @@ void setGradientVector(VectorXd& q, const FSRModel& fsr, const SparseXd& Q_bar,
  */
 void blkdiag(SparseXd& blk_mat, const MatrixXd& arg, int count);
 
-void StoreDU(MatrixXd& du, const VectorXd& z, int n_MV, int M, int k);
+void setDelta(SparseXd delta, int M, int n_MV);
+
+void UpdateBounds();
+void UpdateGradient(); 
 
 #endif // SR_SOLVER_H

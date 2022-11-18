@@ -124,7 +124,6 @@ public:
     VectorXd getLambda() const { return phi_ * du_tilde_ + psi_ * u_; }
 
     /** Print functions */
-    void PrintPPSR(int i, int j);
     void PrintTheta();
     void PrintPhi();
     void PrintPsi();

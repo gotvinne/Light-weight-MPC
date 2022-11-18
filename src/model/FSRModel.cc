@@ -134,19 +134,15 @@ void FSRModel::setPsi() {
 
 void FSRModel::UpdateU(const VectorXd& du, const MatrixXd& du_gamma) { //du_gamma = Gamma * du 
     u_K_ += du; // Update using first col
-    
+    // Updating U
+    VectorXd du_n = du_tilde_.col(N_-1);
+    u_ += du_n;
     // Update du_tilde by left shift, adding the optimized du
-    du_tilde_ << 
-        du_gamma, du_tilde_.leftCols(N_-2);
+    //du_tilde_ << 
+    //    du_gamma, du_tilde_.leftCols(N_-2);
 }
 
 // Print functions: 
-void FSRModel::PrintPPSR(int i, int j) {
-    std::cout << "SISO SRC matrix: " << "(" << P_-W_ << ", " << M_ << ")" << std::endl; 
-    std::cout << pp_SR_mat_[i][j] << std::endl;
-    std::cout << std::endl;
-}
-
 void FSRModel::PrintTheta() {
     std::cout << "Theta: " << "(" << theta_.rows() << ", " << theta_.cols() << ")" << std::endl; 
     std::cout << theta_ << std::endl; 

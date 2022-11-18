@@ -108,20 +108,27 @@ void setGradientVector(VectorXd& q, const FSRModel& fsr, const SparseXd& Q_bar,
     q = 2 * fsr.getTheta().transpose() * Q_bar * (fsr.getLambda() - tau);
 }
 
-void StoreDU(MatrixXd& du, const VectorXd& z, int n_MV, int M, int k) {
+void setDelta(SparseXd delta, int M, int n_MV) {
+    MatrixXd delta_dense = MatrixXd::Zero(n_MV, n_MV * M);
     for (int i = 0; i < n_MV; i++) {
-        du(i, k) = z(i * M);
+        delta_dense(i, i * M) = 1;
     }
+    delta = delta_dense.sparseView();
 }
 
-void sr_solver(int T, const FSRModel& fsr, const MPCConfig& conf, const VectorXd& z_min, 
+void sr_solver(int T, FSRModel& fsr, const MPCConfig& conf, const VectorXd& z_min, 
                 const VectorXd& z_max, VectorXd* y_ref) {
     OsqpEigen::Solver solver;
     solver.settings()->setWarmStart(true); // Starts primal and dual variables from previous QP
+    // MPC Scenario variables
+    int M = fsr.getM();
+    int P = fsr.getP();
+    int n_MV = fsr.getN_MV();
+    int n_CV = fsr.getN_CV();
 
     // Define QP
-    const int n = fsr.getM() * fsr.getN_MV(); // Optimization variables 
-    const int m = fsr.getP() * fsr.getN_CV() + 2 * n; // Constraints
+    const int n = M * n_MV; // Optimization variables 
+    const int m = P * n_CV + 2 * n; // Constraints
 
     solver.data()->setNumberOfVariables(n);
     solver.data()->setNumberOfConstraints(m);
@@ -149,25 +156,30 @@ void sr_solver(int T, const FSRModel& fsr, const MPCConfig& conf, const VectorXd
     if (!solver.data()->setUpperBound(u)) { throw std::runtime_error("Cannot initialize upper bound"); }
     if (!solver.initSolver()) { throw std::runtime_error("Cannot initialize solver"); }
 
-    // controller input and QPSolution vector
-    MatrixXd du = MatrixXd::Zero(fsr.getN_MV(), T);
+    MatrixXd du_mat = MatrixXd::Zero(n_MV, T);
+    SparseXd gamma;
+    setGamma(gamma, M, n_MV);
+    SparseXd delta;
+    setDelta(delta, M, n_MV);
 
-    for (int i = 0; i < T; i++) {
+    for (int k = 0; k < T; k++) {
         // solve the QP problem
         if (solver.solveProblem() != OsqpEigen::ErrorExitFlag::NoError) { throw std::runtime_error("Cannot solve problem"); }
 
         // Claim solution
-        VectorXd z = solver.getSolution();
-        std::cout << z << std::endl;
+        VectorXd z = solver.getSolution().transpose(); // row vector
+        VectorXd du = delta * z; 
 
         // Store optimal du
-        StoreDU(du, z, fsr.getN_MV(), fsr.getM(), i);
+        //du_mat(Eigen::seq(0, n_MV), k) = du(Eigen::seq(0, Eigen::last));
 
-        // propagate the model
-        //x0 = a * x0 + b * ctr;
+        // Propagate the model
+        //fsr.UpdateU(du, gamma * z);
 
-    //     // update the constraint bound
-    //     updateConstraintVectors(x0, lowerBound, upperBound);
-    //     if (!solver.updateBounds(lowerBound, upperBound)) { throw std::runtime_error("Cannot update problem"); }
+        // update MPC problem
+        // updateConstraintVectors(x0, lowerBound, upperBound);
+
+        // Check if bounds are valid:
+        // if (!solver.updateBounds(lowerBound, upperBound)) { throw std::runtime_error("Cannot update problem"); }
     }
 }
