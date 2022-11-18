@@ -78,7 +78,7 @@ void setConstraintMatrix(Eigen::SparseMatrix<float>& A, const FSRModel& fsr, con
 }
 
 void setConstrainVectors(Eigen::VectorXf& l, Eigen::VectorXf& u, const Eigen::VectorXf& z_max, const Eigen::VectorXf& z_min,
-                        const Eigen::VectorXf& lambda, const Eigen::VectorXf& u_k, int M, int n_MV, int n_CV) {
+                        const Eigen::VectorXf& lambda, const Eigen::VectorXf& u_k, const int& M, const int& n_MV, const int& m) {
     l.resize(z_min.rows());
     u.resize(z_max.rows());
     
@@ -88,10 +88,11 @@ void setConstrainVectors(Eigen::VectorXf& l, Eigen::VectorXf& u, const Eigen::Ve
     Eigen::SparseMatrix<float> gamma; 
     setGamma(gamma, M, n_MV);
 
-    Eigen::VectorXf c(2 * n_MV + n_CV);
-    c.block(0, 0, n_MV, 1) = Eigen::VectorXf::Zero(n_MV);
-    c.block(n_MV, 0, n_MV, 1) = K_inv * gamma * u_k; // You were here!
-    c.block(2 * n_MV, 0, 2 * n_MV + n_CV, 1) = lambda;
+    int n = M * n_MV; 
+    Eigen::VectorXf c(m);
+    c.block(0, 0, n, 1) = Eigen::VectorXf::Zero(n);
+    c.block(n, 0, n, 1) = K_inv * gamma * u_k;
+    c.block(2 * n, 0, m - 2 * n , 1) = lambda; // m - 2n = P * n_{CV}
 
     l = z_min - c;
     u = z_max - c;
@@ -122,9 +123,7 @@ void sr_solver(const int& T, const FSRModel& fsr, const MPCConfig& conf, const E
     setWeightMatrices(Q_bar, R_bar, conf);
     setHessianMatrix(G, fsr.getTheta(), Q_bar, R_bar, fsr.getN_MV(), fsr.getM());
     setConstraintMatrix(A, fsr, m, n);
-
-
-    setConstrainVectors(l, u, z_min, z_max, fsr.getLambda(), fsr.getUK(), fsr.getM(), fsr.getN_MV(), fsr.getN_CV());
+    setConstrainVectors(l, u, z_min, z_max, fsr.getLambda(), fsr.getUK(), fsr.getM(), fsr.getN_MV(), m);
 
     if (!solver.data()->setHessianMatrix(G)) { throw std::runtime_error("Cannot initialize Hessian"); }
     // if (!solver.data()->setGradient(q)) { throw std::runtime_error("Cannot initialize Gradient"); }

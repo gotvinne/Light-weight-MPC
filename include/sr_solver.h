@@ -61,7 +61,7 @@ void setKmatrix(Eigen::SparseMatrix<float>& K, int M, int n_MV);
 void setKInv(Eigen::MatrixXf& K_inv, int M);
 
 void setConstrainVectors(Eigen::VectorXf& l, Eigen::VectorXf& u, const Eigen::VectorXf& z_max, const Eigen::VectorXf& z_min,
-                        const Eigen::VectorXf& lambda, const Eigen::VectorXf& u_k, int M, int n_MV, int n_CV);
+                        const Eigen::VectorXf& lambda, const Eigen::VectorXf& u_k, const int& M, const int& n_MV, const int& m);
 
 void setConstraintMatrix(Eigen::SparseMatrix<float>& A, const FSRModel& fsr, const int& m, const int& n);
 
