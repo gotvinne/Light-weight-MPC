@@ -16,8 +16,10 @@
 
 #include <Eigen/Dense>
 #include <nlohmann/json.hpp>
+
 using json = nlohmann::json;
 using VectorXd = Eigen::VectorXd;
+using string = std::string;
 
 /**
  * @brief Reads a json file using nlohmann::json
@@ -25,7 +27,7 @@ using VectorXd = Eigen::VectorXd;
  * @param filepath file to be read
  * @return json object
  */
-json ReadJson(const std::string& filepath);
+json ReadJson(const string& filepath);
 
 /**
  * @brief function obtaining model data from system file
@@ -33,7 +35,7 @@ json ReadJson(const std::string& filepath);
  * @param sys_data json object of system file
  * @param map to be filled with model data
  */
-void ModelData(const json& sys_data, std::map<std::string,int>& map);
+void ModelData(const json& sys_data, std::map<string,int>& map);
 
 /**
  * @brief high-level function parsing system file
@@ -44,7 +46,7 @@ void ModelData(const json& sys_data, std::map<std::string,int>& map);
  * @param input_data MVData
  * @param T mpc horizon
  */
-void ParseSystemData(const json& sys_data, std::map<std::string, int>& model_param,
+void ParseSystemData(const json& sys_data, std::map<string, int>& model_param,
                     CVData& output_data, MVData& input_data, int T); 
 
 /**
@@ -67,10 +69,10 @@ void ConstraintData(const json& sce_data, VectorXd& arr, bool upper);
  * @param n_CV number of control variables 
  * @param n_MV number of manipulated variables
  */
-void ParseScenarioData(const json& sce_data, std::string& system, MPCConfig& mpc_conf, 
+void ParseScenarioData(const json& sce_data, string& system, MPCConfig& mpc_conf, 
                         VectorXd& z_max, VectorXd& z_min, int n_CV, int n_MV);
 
 
-void PrintContainer(std::map<std::string, int> container);
+void PrintContainer(std::map<string, int> container);
 
 #endif  // PARSE_H
