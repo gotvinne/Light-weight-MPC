@@ -73,9 +73,14 @@ int main() {
 
     // 2)
     // // Simulate scenario closed loop using reference model returning simulation
+        // SISO Simulation *
+        // Reference model
+        // MIMO Simulation
+        // Output feedback
+        // Slack variables
 
     // 3)
-    // // Write simulation to an output file
+    // // Write simulation to an output file 
 
     // 4)
     // // Call python script to read data and plot simulation. **
