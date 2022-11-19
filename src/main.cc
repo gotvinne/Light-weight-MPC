@@ -22,6 +22,7 @@
 using json = nlohmann::json; 
 using VectorXd = Eigen::VectorXd;
 using MatrixXd = Eigen::MatrixXd;
+using string = std::string;
 
 int main() {
 
@@ -32,19 +33,19 @@ int main() {
     //int N = 80;
 
     const int T = 80; // MPC horizon. 
-    std::string sys_filepath = "../data/systems/sr_siso_test.json";
-    std::string sce_filepath = "../data/scenarios/siso_test.json";
+    string sys_filepath = "../data/systems/sr_siso_test.json";
+    string sce_filepath = "../data/scenarios/siso_test.json";
     json sys_data = ReadJson(sys_filepath);
     json sce_data = ReadJson(sce_filepath);
 
     // Parse system
-    std::map<std::string, int> m_param; //Only used to create FSR
+    std::map<string, int> m_param; //Only used to create FSR
     CVData sd;
     MVData id;
     ParseSystemData(sys_data, m_param, sd, id, T);
     
     // Parse scenario:
-    std::string system; 
+    string system; 
     MPCConfig conf; //Default initializer
     VectorXd z_max; // These constraints can be used directly in solver
     VectorXd z_min; 
@@ -58,13 +59,13 @@ int main() {
 
     // Formatting: 
     json output_data;
-    std::string scenario = "sr_siso_test";
-    std::string sim_filepath = "../data/scenario/sim_" + scenario; 
+    string scenario = "sr_siso_test";
+    string sim_filepath = "../data/simulations/sim_" + scenario + ".json"; 
 
     FormatSimData(output_data, sim_filepath, scenario, T, fsr.getN_CV(), fsr.getN_MV());
     FormatSimCV(output_data, sd, y_pred, fsr.getN_CV());
-    //FormatSimMV(output_data, id, fsr.getN_MV());
-    //WriteJson(output_data, sim_filepath);
+    FormatSimMV(output_data, id, u_mat, fsr.getN_MV());
+    WriteJson(output_data, sim_filepath);
 
     // // Flow: 
     // 1)
