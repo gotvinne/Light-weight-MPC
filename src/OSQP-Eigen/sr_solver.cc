@@ -120,6 +120,7 @@ void sr_solver(int T, FSRModel& fsr, const MPCConfig& conf, const VectorXd& z_mi
                 const VectorXd& z_max, VectorXd* y_ref) {
     OsqpEigen::Solver solver;
     solver.settings()->setWarmStart(true); // Starts primal and dual variables from previous QP
+    solver.settings()->setVerbosity(false); // Disable printing
     // MPC Scenario variables
     int M = fsr.getM();
     int P = fsr.getP();
@@ -183,5 +184,6 @@ void sr_solver(int T, FSRModel& fsr, const MPCConfig& conf, const VectorXd& z_mi
         // Check if bounds are valid:
         // if (!solver.updateBounds(lowerBound, upperBound)) { throw std::runtime_error("Cannot update problem"); }
     }
+    fsr.PrintActuation();
 
 }

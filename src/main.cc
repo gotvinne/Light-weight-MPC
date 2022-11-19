@@ -29,7 +29,7 @@ int main() {
     //float theta = 3;
     //int N = 80;
 
-    const int T = 1; // MPC horizon. 
+    const int T = 10; // MPC horizon. 
     std::string sys_filepath = "../data/systems/sr_siso_test.json";
     std::string sce_filepath = "../data/scenarios/siso_test.json";
     json sys_data = ReadJson(sys_filepath);

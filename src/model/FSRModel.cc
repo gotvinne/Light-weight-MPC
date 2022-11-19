@@ -143,11 +143,12 @@ VectorXd FSRModel::getDuTilde() {
 void FSRModel::UpdateU(const VectorXd& du) { // du = delta * z
     u_K_ += du; 
     // Updating U(n)
-    VectorXd du_n = du_tilde_mat_.col(N_-W_-2);
+    VectorXd du_n = du_tilde_mat_.rightCols(1);
     u_ += du_n;
     // Update du_tilde by left shift, adding the optimized du
-    du_tilde_mat_ << 
-        du, du_tilde_mat_.leftCols(N_-2);
+    MatrixXd old_du = du_tilde_mat_.leftCols(N_-W_-2);
+    du_tilde_mat_.block(0, 0, n_MV_, 1) = du;
+    du_tilde_mat_.block(0, 1, n_MV_, N_-W_-2) = old_du;
 }
 
 // Print functions: 
@@ -167,4 +168,15 @@ void FSRModel::PrintPsi() {
     std::cout << "Psi : " << "(" << psi_.rows() << ", " << psi_.cols() << ")" << std::endl;
     std::cout << psi_ << std::endl; 
     std::cout << std::endl;
+}
+
+void FSRModel::PrintActuation() {
+    std::cout << "U(k-1):" << std::endl;
+    std::cout << u_K_ << std::endl;
+    std::cout << std::endl;
+    std::cout << "U_tilde:" << std::endl;
+    std::cout << du_tilde_mat_ << std::endl;
+    std::cout << std::endl;
+    std::cout << "U(k-N):" << std::endl;
+    std::cout << u_ << std::endl;
 }

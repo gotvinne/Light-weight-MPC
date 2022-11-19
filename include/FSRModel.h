@@ -31,7 +31,6 @@ private:
 
     VectorXd u_K_; /** Denotes U(k-1), n_MV */
     MatrixXd du_tilde_mat_; /** Post change in actuation matrix (n_MV, (N-W-1)) */
-    VectorXd du_tilde_; /** Post change in actuation (n_MV*(N-W-1)) */ // NB! Might not be neccesarry 
 
     VectorXd** pp_SR_vec_; /** Matrix of Eigen::VectorXd holding every n_CV * n_MV step response */
     MatrixXd** pp_SR_mat_; /** Tensor of Eigen::MatrixXd representing the SISO prediction (P-W,M) times (n_CV, n_MV) */
@@ -123,7 +122,7 @@ public:
     MatrixXd getPhi() const { return phi_; }
     VectorXd getUK() const { return u_K_; }
     
-    // Updateing functions
+    // Updating functions
     VectorXd getDuTilde();
     VectorXd getLambda() { return phi_ * getDuTilde() + psi_ * u_; }
 
@@ -131,6 +130,7 @@ public:
     void PrintTheta();
     void PrintPhi();
     void PrintPsi();
+    void PrintActuation();
 };
 
 #endif // FSR_MODEL_H
