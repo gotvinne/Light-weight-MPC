@@ -140,6 +140,7 @@ void sr_solver(int T, FSRModel& fsr, const MPCConfig& conf, const VectorXd& z_mi
     SparseXd G;
     SparseXd A;
 
+    // Dynamic variables
     VectorXd q;
     VectorXd l;
     VectorXd u; 
@@ -164,26 +165,25 @@ void sr_solver(int T, FSRModel& fsr, const MPCConfig& conf, const VectorXd& z_mi
     setDelta(delta, M, n_MV);
 
     for (int k = 0; k < T; k++) {
-        // solve the QP problem
+        // Optimize:
         if (solver.solveProblem() != OsqpEigen::ErrorExitFlag::NoError) { throw std::runtime_error("Cannot solve problem"); }
 
-        // Claim solution
+        // Claim solution:
         VectorXd z = solver.getSolution();
         VectorXd du = delta * z; 
 
-        // Store optimal du
+        // Store optimal du:
         du_mat(Eigen::seq(0, n_MV-1), k) = du(Eigen::seq(0, Eigen::last));
 
-        // Propagate the model
-        //std::cout << gamma.rows() << " " << gamma.cols() << std::endl;
+        // Propagate FSR model:
         fsr.UpdateU(du);
 
-        // update MPC problem
-        // updateConstraintVectors(x0, lowerBound, upperBound);
-
+        // Update MPC problem:
+        setConstraintVectors(l, u, z_min, z_max, fsr, m, n);
+        setGradientVector(q, fsr, Q_bar, y_ref); // NB not updating y_ref
         // Check if bounds are valid:
-        // if (!solver.updateBounds(lowerBound, upperBound)) { throw std::runtime_error("Cannot update problem"); }
+        if (!solver.updateBounds(l, u)) { throw std::runtime_error("Cannot update bounds"); }
+        if (!solver.updateGradient(q)) { throw std::runtime_error("Cannot update bounds"); }
     }
     fsr.PrintActuation();
-
 }
