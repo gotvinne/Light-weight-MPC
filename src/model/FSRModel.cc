@@ -18,7 +18,7 @@ FSRModel::FSRModel(VectorXd** SR, int n_CV, int n_MV, int N, int P, int M, int W
     theta_ = MatrixXd::Zero(n_CV*(P-W), n_MV*M);
     phi_.resize(n_CV*(P-W), n_MV*(N-W-1));
     psi_.resize(n_CV*(P-W), n_MV);
-    du_tilde_ = VectorXd::Zero(n_MV * (N-W-1));
+    du_tilde_mat_ = MatrixXd::Zero(n_MV, N-W-1);
 
     u_K_ = VectorXd::Map(init_u.data(), init_u.size());
     u_ = VectorXd::Map(init_u.data(), init_u.size());
@@ -132,14 +132,23 @@ void FSRModel::setPsi() {
     }
 }
 
-void FSRModel::UpdateU(const VectorXd& du, const MatrixXd& du_gamma) { //du_gamma = Gamma * du 
+VectorXd FSRModel::getDuTilde() {
+    VectorXd du_tilde = VectorXd::Zero(n_MV_*(N_-W_-1));
+    for (int i = 0; i < n_MV_; i++) {
+        du_tilde.block(i * (N_-W_-1), 0, N_-W_-1, 1) = du_tilde_mat_.row(i).transpose();
+    }
+    return du_tilde;
+}
+
+void FSRModel::UpdateU(const VectorXd& du) { // du = delta * z
     u_K_ += du; // Update using first col
-    // Updating U
-    VectorXd du_n = du_tilde_.col(N_-1);
-    u_ += du_n;
+    // Updating U(n)
+    std::cout << du_tilde_mat_.cols() << std::endl;
+    //VectorXd du_n = du_tilde_mat_.col(N_-W_-2);
+    //u_ += du_n;
     // Update du_tilde by left shift, adding the optimized du
-    //du_tilde_ << 
-    //    du_gamma, du_tilde_.leftCols(N_-2);
+    //du_tilde_mat_ << 
+        //du, du_tilde_mat_.leftCols(N_-2);
 }
 
 // Print functions: 

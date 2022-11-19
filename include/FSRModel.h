@@ -27,10 +27,11 @@ private:
     int W_; /** Time delay coefficient */
 
     VectorXd u_; /** Manipulated variables, U(k-N), n_MV */
-    VectorXd y_; /** Controlled variables n_CV */
+    VectorXd y_; /** Controlled variables n_CV */ 
 
     VectorXd u_K_; /** Denotes U(k-1), n_MV */
-    VectorXd du_tilde_; /** Post change in actuation (n_MV*(N-W-1)) */
+    MatrixXd du_tilde_mat_; /** Post change in actuation matrix (n_MV, (N-W-1)) */
+    VectorXd du_tilde_; /** Post change in actuation (n_MV*(N-W-1)) */ // NB! Might not be neccesarry 
 
     VectorXd** pp_SR_vec_; /** Matrix of Eigen::VectorXd holding every n_CV * n_MV step response */
     MatrixXd** pp_SR_mat_; /** Tensor of Eigen::MatrixXd representing the SISO prediction (P-W,M) times (n_CV, n_MV) */
@@ -108,7 +109,7 @@ public:
      * @param du Optimized actuation for next projection
      * @param du_gamma Optimized actuation scaled to fit phi
      */
-    void UpdateU(const VectorXd& du, const MatrixXd& du_gamma);
+    void UpdateU(const VectorXd& du);
 
     /** Get functions */
     int getP() const { return P_; }
@@ -121,7 +122,10 @@ public:
     MatrixXd getTheta() const { return theta_; }
     MatrixXd getPhi() const { return phi_; }
     VectorXd getUK() const { return u_K_; }
-    VectorXd getLambda() const { return phi_ * du_tilde_ + psi_ * u_; }
+    
+    // Updateing functions
+    VectorXd getDuTilde();
+    VectorXd getLambda() { return phi_ * getDuTilde() + psi_ * u_; }
 
     /** Print functions */
     void PrintTheta();

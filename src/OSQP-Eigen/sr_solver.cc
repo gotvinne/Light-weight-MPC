@@ -76,7 +76,7 @@ void setConstraintMatrix(SparseXd& A, const FSRModel& fsr, int m, int n) {
 }
 
 void setConstraintVectors(VectorXd& l, VectorXd& u, const VectorXd& z_min, const VectorXd& z_max,
-                        const FSRModel& fsr, int m, int n) {
+                         FSRModel& fsr, int m, int n) {
     l.resize(z_min.rows());
     u.resize(z_max.rows());
     
@@ -101,14 +101,14 @@ void setTau(VectorXd& tau, VectorXd* y_ref, int P, int W, int n_CV) {
     }
 }
 
-void setGradientVector(VectorXd& q, const FSRModel& fsr, const SparseXd& Q_bar,
+void setGradientVector(VectorXd& q, FSRModel& fsr, const SparseXd& Q_bar,
                         VectorXd* y_ref) {
     VectorXd tau;
     setTau(tau, y_ref, fsr.getP(), fsr.getW(), fsr.getN_CV());
     q = 2 * fsr.getTheta().transpose() * Q_bar * (fsr.getLambda() - tau);
 }
 
-void setDelta(SparseXd delta, int M, int n_MV) {
+void setDelta(SparseXd& delta, int M, int n_MV) {
     MatrixXd delta_dense = MatrixXd::Zero(n_MV, n_MV * M);
     for (int i = 0; i < n_MV; i++) {
         delta_dense(i, i * M) = 1;
@@ -167,14 +167,15 @@ void sr_solver(int T, FSRModel& fsr, const MPCConfig& conf, const VectorXd& z_mi
         if (solver.solveProblem() != OsqpEigen::ErrorExitFlag::NoError) { throw std::runtime_error("Cannot solve problem"); }
 
         // Claim solution
-        VectorXd z = solver.getSolution().transpose(); // row vector
+        VectorXd z = solver.getSolution();
         VectorXd du = delta * z; 
 
         // Store optimal du
-        //du_mat(Eigen::seq(0, n_MV), k) = du(Eigen::seq(0, Eigen::last));
+        du_mat(Eigen::seq(0, n_MV-1), k) = du(Eigen::seq(0, Eigen::last));
 
         // Propagate the model
-        //fsr.UpdateU(du, gamma * z);
+        //std::cout << gamma.rows() << " " << gamma.cols() << std::endl;
+        //fsr.UpdateU(du);
 
         // update MPC problem
         // updateConstraintVectors(x0, lowerBound, upperBound);
@@ -182,4 +183,5 @@ void sr_solver(int T, FSRModel& fsr, const MPCConfig& conf, const VectorXd& z_mi
         // Check if bounds are valid:
         // if (!solver.updateBounds(lowerBound, upperBound)) { throw std::runtime_error("Cannot update problem"); }
     }
+
 }

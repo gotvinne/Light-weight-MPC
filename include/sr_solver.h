@@ -66,7 +66,7 @@ void setKmatrix(SparseXd& K, int M, int n_MV);
 void setKInv(MatrixXd& K_inv, int n);
 
 /**
- * @brief Set the Constraint Vectors object
+ * @brief Set the Constraint Vectors object, NB! Dynamic output
  * 
  * @param l Eigen::VectorXd lower constraint vector 
  * @param u Eigen::VectorXd upper constraint vector
@@ -77,7 +77,7 @@ void setKInv(MatrixXd& K_inv, int n);
  * @param n Number of optimization variables
  */
 void setConstraintVectors(VectorXd& l, VectorXd& u, const VectorXd& z_min, const VectorXd& z_max,
-                        const FSRModel& fsr, int m, int n);
+                        FSRModel& fsr, int m, int n);
 
 /**
  * @brief Set the Constraint Matrix object
@@ -110,14 +110,14 @@ void setGamma(SparseXd& gamma, int M, int n_MV);
 void setTau(VectorXd& tau, VectorXd* y_ref, int P, int W, int n_CV);
 
 /**
- * @brief Set the Gradient Vector object
+ * @brief Set the Gradient Vector object, NB! Dynamic output
  * 
  * @param q 
  * @param fsr Finite step response model
  * @param Q_bar output tuning
  * @param y_ref 
  */
-void setGradientVector(VectorXd& q, const FSRModel& fsr, const SparseXd& Q_bar,
+void setGradientVector(VectorXd& q, FSRModel& fsr, const SparseXd& Q_bar,
                         VectorXd* y_ref);
 
 /**
@@ -129,7 +129,7 @@ void setGradientVector(VectorXd& q, const FSRModel& fsr, const SparseXd& Q_bar,
  */
 void blkdiag(SparseXd& blk_mat, const MatrixXd& arg, int count);
 
-void setDelta(SparseXd delta, int M, int n_MV);
+void setDelta(SparseXd& delta, int M, int n_MV);
 
 void UpdateBounds();
 void UpdateGradient(); 
