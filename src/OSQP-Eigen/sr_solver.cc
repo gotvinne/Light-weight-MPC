@@ -175,7 +175,7 @@ void sr_solver(int T, FSRModel& fsr, const MPCConfig& conf, const VectorXd& z_mi
 
         // Propagate the model
         //std::cout << gamma.rows() << " " << gamma.cols() << std::endl;
-        //fsr.UpdateU(du);
+        fsr.UpdateU(du);
 
         // update MPC problem
         // updateConstraintVectors(x0, lowerBound, upperBound);

@@ -141,14 +141,13 @@ VectorXd FSRModel::getDuTilde() {
 }
 
 void FSRModel::UpdateU(const VectorXd& du) { // du = delta * z
-    u_K_ += du; // Update using first col
+    u_K_ += du; 
     // Updating U(n)
-    std::cout << du_tilde_mat_.cols() << std::endl;
-    //VectorXd du_n = du_tilde_mat_.col(N_-W_-2);
-    //u_ += du_n;
+    VectorXd du_n = du_tilde_mat_.col(N_-W_-2);
+    u_ += du_n;
     // Update du_tilde by left shift, adding the optimized du
-    //du_tilde_mat_ << 
-        //du, du_tilde_mat_.leftCols(N_-2);
+    du_tilde_mat_ << 
+        du, du_tilde_mat_.leftCols(N_-2);
 }
 
 // Print functions: 
