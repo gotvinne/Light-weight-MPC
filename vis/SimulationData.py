@@ -16,7 +16,7 @@ INPUT = "input"
 UNIT = "unit"
 CONSTRAINT = "c"
 Y = "y"
-Y_HAT = "y_hat"
+Y_PRED = "y_pred"
 U = "u"
 
 
@@ -35,7 +35,7 @@ class SimulationData():
         self.n_MV = json_data[N_MV]
 
         self.y = np.empty([self.n_CV, self.T])
-        self.y_hat = np.empty([self.n_CV, self.T])
+        self.y_pred = np.empty([self.n_CV, self.T])
         self.u = np.ndarray([self.n_MV, self.T])
 
         self.ParseCVData(json_data)
@@ -60,11 +60,11 @@ class SimulationData():
         for index, elem in enumerate(cv_data):
             outputs.append(elem[OUTPUT])
             cv_units.append(elem[UNIT])
-            cv_constraints.append((elem[CONSTRAINT][0], elem[CONSTRAINT][1]))
+            # cv_constraints.append((elem[CONSTRAINT][0], elem[CONSTRAINT][1])) # Have not implemented constraint yet
 
             # Fill nparray
-            self.y.T[..., index] = elem[Y]
-            self.y_hat.T[..., index] = elem[Y_HAT]
+            # self.y.T[..., index] = elem[Y] # Have not implemented reference model yet
+            self.y_pred.T[..., index] = elem[Y_PRED]
         self.outputs, self.cv_units, self.cv_constraints = outputs, cv_units, cv_constraints
 
     def ParseMVData(self, json_data):
@@ -77,7 +77,7 @@ class SimulationData():
         for index, elem in enumerate(mv_data):
             inputs.append(elem[INPUT])
             mv_units.append(elem[UNIT])
-            mv_constraints.append((elem[CONSTRAINT][0], elem[CONSTRAINT][1]))
+            # mv_constraints.append((elem[CONSTRAINT][0], elem[CONSTRAINT][1]))
 
             self.u.T[..., index] = elem[U]
         self.inputs, self.mv_units, self.mv_constraints = inputs, mv_units, mv_constraints

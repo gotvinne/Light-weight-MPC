@@ -12,8 +12,8 @@ def PlotPrediction(sim_data, title):
     t = np.arange(0, sim_data.T, dtype=int)
     for i in range(sim_data.n_CV):
         plt.subplot(1, sim_data.n_CV, i + 1)
-        plt.plot(t, sim_data.y[i, :], "b", label="System output")
-        plt.plot(t, sim_data.y_hat[i, :], "m", label="Predicted output")
+        # plt.plot(t, sim_data.y[i, :], "b", label="System output")
+        plt.plot(t, sim_data.y_pred[i, :], "m", label="Predicted output")
 
         plt.xlabel("MPC horizon, t")
         plt.ylabel(sim_data.cv_units[i])
