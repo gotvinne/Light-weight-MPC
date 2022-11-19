@@ -96,6 +96,20 @@ private:
      */
     void setPsi();
 
+    /**
+     * @brief Get the Omega Y object
+     * 
+     * @return SparseXd 
+     */
+    SparseXd getOmegaY();
+
+    /**
+     * @brief Get the Du Tilde object
+     * 
+     * @return VectorXd 
+     */
+    VectorXd getDuTilde();
+
 public: 
     /**
      * @brief The constructor. Constructing the object allocating memory for the SISO prediction matric
@@ -115,18 +129,14 @@ public:
      */
     void UpdateU(const VectorXd& du);
 
-    SparseXd getOmegaY();
-
     /** Get functions */
     int getP() const { return P_; }
     int getM() const { return M_; }
     int getW() const { return W_; }
     int getN_CV() const { return n_CV_; }
     int getN_MV() const { return n_MV_; }
-    int getN() const { return N_; }
 
     MatrixXd getTheta() const { return theta_; }
-    MatrixXd getPhi() const { return phi_; }
     VectorXd getUK() const { return u_K_; }
 
     /**
@@ -138,7 +148,6 @@ public:
     VectorXd getY(const VectorXd& z) { return getOmegaY() * (theta_ * z + getLambda()); }
     
     // Updating functions
-    VectorXd getDuTilde();
 
     /**
      * @brief Get the Lambda object
