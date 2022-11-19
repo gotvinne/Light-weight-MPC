@@ -10,9 +10,10 @@
 
 #include <vector>
 
-#include <Eigen/Dense>
+#include <Eigen/Eigen>
+using VectorXd = Eigen::VectorXd;
 using MatrixXd = Eigen::MatrixXd;
-using VectorXd = Eigen::VectorXd; 
+using SparseXd = Eigen::SparseMatrix<double>;
 /**
  * @brief A Finite Step Response model object. C++ class object holding the FSR model given a spesific format of the step response coefficients.
  * A MPC configuration is also passed as input in order shape the system matrices for the MPC algorithm. 
@@ -110,6 +111,8 @@ public:
      */
     void UpdateU(const VectorXd& du);
 
+    SparseXd getOmegaY();
+
     /** Get functions */
     int getP() const { return P_; }
     int getM() const { return M_; }
@@ -121,9 +124,23 @@ public:
     MatrixXd getTheta() const { return theta_; }
     MatrixXd getPhi() const { return phi_; }
     VectorXd getUK() const { return u_K_; }
+
+    /**
+     * @brief 
+     * 
+     * @param z 
+     * @return VectorXd predicted output, one step, k+1 ahead. 
+     */
+    VectorXd getY(const VectorXd& z) { return getOmegaY() * (theta_ * z + getLambda()); }
     
     // Updating functions
     VectorXd getDuTilde();
+
+    /**
+     * @brief Get the Lambda object
+     * 
+     * @return VectorXd 
+     */
     VectorXd getLambda() { return phi_ * getDuTilde() + psi_ * u_; }
 
     /** Print functions */

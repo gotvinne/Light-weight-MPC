@@ -108,15 +108,15 @@ void setGradientVector(VectorXd& q, FSRModel& fsr, const SparseXd& Q_bar,
     q = 2 * fsr.getTheta().transpose() * Q_bar * (fsr.getLambda() - tau);
 }
 
-void setDelta(SparseXd& delta, int M, int n_MV) {
-    MatrixXd delta_dense = MatrixXd::Zero(n_MV, n_MV * M);
+void setOmegaU(SparseXd& omega, int M, int n_MV) {
+    MatrixXd omega_dense = MatrixXd::Zero(n_MV, n_MV * M);
     for (int i = 0; i < n_MV; i++) {
-        delta_dense(i, i * M) = 1;
+        omega_dense(i, i * M) = 1;
     }
-    delta = delta_dense.sparseView();
+    omega = omega_dense.sparseView();
 }
 
-void sr_solver(int T, FSRModel& fsr, const MPCConfig& conf, const VectorXd& z_min, 
+void sr_solver(int T, MatrixXd& du_mat, MatrixXd& y_pred, FSRModel& fsr, const MPCConfig& conf, const VectorXd& z_min, 
                 const VectorXd& z_max, VectorXd* y_ref) {
     OsqpEigen::Solver solver;
     solver.settings()->setWarmStart(true); // Starts primal and dual variables from previous QP
@@ -158,11 +158,11 @@ void sr_solver(int T, FSRModel& fsr, const MPCConfig& conf, const VectorXd& z_mi
     if (!solver.data()->setUpperBound(u)) { throw std::runtime_error("Cannot initialize upper bound"); }
     if (!solver.initSolver()) { throw std::runtime_error("Cannot initialize solver"); }
 
-    MatrixXd du_mat = MatrixXd::Zero(n_MV, T);
-    SparseXd gamma;
-    setGamma(gamma, M, n_MV);
-    SparseXd delta;
-    setDelta(delta, M, n_MV);
+    du_mat = MatrixXd::Zero(n_MV, T);
+    y_pred = MatrixXd::Zero(n_CV, T);
+
+    SparseXd omega_u;
+    setOmegaU(omega_u, M, n_MV);
 
     for (int k = 0; k < T; k++) {
         // Optimize:
@@ -170,10 +170,11 @@ void sr_solver(int T, FSRModel& fsr, const MPCConfig& conf, const VectorXd& z_mi
 
         // Claim solution:
         VectorXd z = solver.getSolution();
-        VectorXd du = delta * z; 
+        VectorXd du = omega_u * z; 
 
-        // Store optimal du:
+        // Store optimal du and y_pref:
         du_mat(Eigen::seq(0, n_MV-1), k) = du(Eigen::seq(0, Eigen::last));
+        y_pred(Eigen::seq(0, n_CV-1), k) = fsr.getY(z);
 
         // Propagate FSR model:
         fsr.UpdateU(du);

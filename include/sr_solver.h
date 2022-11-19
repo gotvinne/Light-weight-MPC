@@ -24,7 +24,7 @@ using SparseXd = Eigen::SparseMatrix<double>;
  * @param fsr FSRModel of scenario file
  * @param conf MPCConfig
  */
-void sr_solver(int T, FSRModel& fsr, const MPCConfig& conf,
+void sr_solver(int T, MatrixXd& du_mat, MatrixXd& y_pred, FSRModel& fsr, const MPCConfig& conf,
                 const VectorXd& z_min, const VectorXd& z_max, VectorXd* y_ref);
 
 /**
@@ -99,6 +99,24 @@ void setConstraintMatrix(SparseXd& A, const FSRModel& fsr, int m, int n);
 void setGamma(SparseXd& gamma, int M, int n_MV); 
 
 /**
+ * @brief Set the Omega U object
+ * 
+ * @param Omega_u
+ * @param M 
+ * @param n_MV 
+ */
+void setOmegaU(SparseXd& omega, int M, int n_MV);
+
+/**
+ * @brief Set the Omega y object
+ * 
+ * @param Omega_y
+ * @param P
+ * @param n_CV 
+ */
+void setOmegaY(SparseXd& omega, int P, int n_CV);
+
+/**
  * @brief Set the Tau object
  * 
  * @param tau 
@@ -128,10 +146,5 @@ void setGradientVector(VectorXd& q, FSRModel& fsr, const SparseXd& Q_bar,
  * @param count Number of blocks
  */
 void blkdiag(SparseXd& blk_mat, const MatrixXd& arg, int count);
-
-void setDelta(SparseXd& delta, int M, int n_MV);
-
-void UpdateBounds();
-void UpdateGradient(); 
 
 #endif // SR_SOLVER_H

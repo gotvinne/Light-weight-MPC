@@ -8,9 +8,7 @@
 #include <iostream>
 #include <vector>
 
-#include <Eigen/Dense>
-using MatrixXd = Eigen::MatrixXd;
-using VectorXd = Eigen::VectorXd; 
+#include <Eigen/Eigen>
 
 FSRModel::FSRModel(VectorXd** SR, int n_CV, int n_MV, int N, int P, int M, int W,
                    const std::vector<double>& init_u, const std::vector<double>& init_y) :
@@ -150,6 +148,14 @@ void FSRModel::UpdateU(const VectorXd& du) { // du = delta * z
     du_tilde_mat_.block(0, 0, n_MV_, 1) = du;
     du_tilde_mat_.block(0, 1, n_MV_, N_-W_-2) = old_du;
 }
+
+SparseXd FSRModel::getOmegaY() {
+    MatrixXd omega_dense = MatrixXd::Zero(n_CV_, n_CV_ * P_);
+    for (int i = 0; i < n_CV_; i++) {
+        omega_dense(i, i * P_) = 1;
+    }
+    return omega_dense.sparseView();
+}  
 
 // Print functions: 
 void FSRModel::PrintTheta() {
