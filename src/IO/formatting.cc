@@ -53,14 +53,19 @@ void FormatSimCV(json& data, const CVData& cv_data, const MatrixXd& y_pred, int 
     data[kCV] = arr;
 }
 
-void FormatSimMV(json& data, const MVData& mv_data, int n_MV) {
+void FormatSimMV(json& data, const MVData& mv_data, const MatrixXd& u, int n_MV) {
     json arr = json::array(); 
 
     for (int i = 0; i < n_MV; i++) {
         json obj = json::object();
         obj[kInput] = mv_data.Inputs[i];
         obj[kUnit] = mv_data.Units[i];
-        // Fill inn c, u
+        
+        // Fill inn c
+        json u_vec = json::array();
+        FillVector(u_vec, u, i);
+        obj[kU] = u_vec;
+
         arr.push_back(obj);
     }
     data[kMV] = arr;
