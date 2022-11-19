@@ -145,7 +145,8 @@ VectorXd FSRModel::getDuTilde() {
     return du_tilde;
 }
 
-void FSRModel::UpdateU(const VectorXd& du) { // du = delta * z
+void FSRModel::UpdateU(const VectorXd& du) { // du = omega_u * z
+    // Updating U(k-1)
     u_K_ += du; 
     // Updating U(n)
     VectorXd du_n = du_tilde_mat_.rightCols(1);

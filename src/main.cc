@@ -52,9 +52,9 @@ int main() {
     
     FSRModel fsr(sd.getSR(), m_param, conf.P, conf.M, conf.W, id.Inits, sd.getInits());
 
-    MatrixXd du_mat; // Optimized actuation
+    MatrixXd u_mat; // Optimized actuation
     MatrixXd y_pred;
-    sr_solver(T, du_mat, y_pred, fsr, conf, z_min, z_max, sd.getYRef());
+    sr_solver(T, u_mat, y_pred, fsr, conf, z_min, z_max, sd.getYRef());
 
     // Formatting: 
     json output_data;

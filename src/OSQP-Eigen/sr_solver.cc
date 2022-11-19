@@ -15,7 +15,7 @@
 
 #include <stdexcept>
 
-void sr_solver(int T, MatrixXd& du_mat, MatrixXd& y_pred, FSRModel& fsr, const MPCConfig& conf, const VectorXd& z_min, 
+void sr_solver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPCConfig& conf, const VectorXd& z_min, 
                 const VectorXd& z_max, VectorXd* y_ref) {
     OsqpEigen::Solver solver;
     solver.settings()->setWarmStart(true); // Starts primal and dual variables from previous QP
@@ -57,7 +57,7 @@ void sr_solver(int T, MatrixXd& du_mat, MatrixXd& y_pred, FSRModel& fsr, const M
     if (!solver.data()->setUpperBound(u)) { throw std::runtime_error("Cannot initialize upper bound"); }
     if (!solver.initSolver()) { throw std::runtime_error("Cannot initialize solver"); }
 
-    du_mat = MatrixXd::Zero(n_MV, T);
+    u_mat = MatrixXd::Zero(n_MV, T);
     y_pred = MatrixXd::Zero(n_CV, T);
 
     SparseXd omega_u;
@@ -71,8 +71,8 @@ void sr_solver(int T, MatrixXd& du_mat, MatrixXd& y_pred, FSRModel& fsr, const M
         VectorXd z = solver.getSolution();
         VectorXd du = omega_u * z; 
 
-        // Store optimal du and y_pref:
-        du_mat(Eigen::seq(0, n_MV-1), k) = du(Eigen::seq(0, Eigen::last));
+        // Store optimal du and y_pref: Before update!
+        u_mat(Eigen::seq(0, n_MV-1), k) = fsr.getUK();
         y_pred(Eigen::seq(0, n_CV-1), k) = fsr.getY(z);
 
         // Propagate FSR model:

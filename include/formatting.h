@@ -57,7 +57,7 @@ void FormatSimCV(json& data, const CVData& cv_data, const MatrixXd& y_pred, int 
  * @param mv_data MVData object
  * @param n_MV Number of manipulated variables
  */
-void FormatSimMV(json& data, const MVData& mv_data, int n_MV);
+void FormatSimMV(json& data, const MVData& mv_data, const MatrixXd& u, int n_MV);
 
 void FillVector(json& vector, const MatrixXd& mat, int row);
 

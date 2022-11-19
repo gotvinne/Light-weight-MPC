@@ -142,7 +142,7 @@ public:
     /**
      * @brief 
      * 
-     * @param z 
+     * @param z n_CV
      * @return VectorXd predicted output, one step, k+1 ahead. 
      */
     VectorXd getY(const VectorXd& z) { return getOmegaY() * (theta_ * z + getLambda()); }
