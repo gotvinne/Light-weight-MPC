@@ -62,6 +62,11 @@ class CVData {
      */
     void FillSR(const json& s_data);
 
+    /**
+     * @brief Helper function, allocating Eigen::VectorXd in constuctor
+     * 
+     * @param T MPC horizon, used to allocate y_ref
+     */
     void AllocateVectors(const int& T);
 
     /**

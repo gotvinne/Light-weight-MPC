@@ -20,6 +20,9 @@
 #include "nlohmann/json.hpp"
 #include <Eigen/Dense>
 using json = nlohmann::json; 
+using VectorXd = Eigen::VectorXd;
+using MatrixXd = Eigen::MatrixXd;
+using string = std::string;
 
 int main() {
 
@@ -29,42 +32,40 @@ int main() {
     //float theta = 3;
     //int N = 80;
 
-    const int T = 80; // THIS is an input variable, MPC horizon. 
-    std::string sys_filepath = "../data/systems/sr_siso_test.json";
-    std::string sce_filepath = "../data/scenarios/siso_test.json";
+    const int T = 80; // MPC horizon. 
+    string sys_filepath = "../data/systems/sr_siso_test.json";
+    string sce_filepath = "../data/scenarios/siso_test.json";
     json sys_data = ReadJson(sys_filepath);
     json sce_data = ReadJson(sce_filepath);
 
     // Parse system
-    std::map<std::string, int> m_param; //Only used to create FSR
+    std::map<string, int> m_param; //Only used to create FSR
     CVData sd;
     MVData id;
     ParseSystemData(sys_data, m_param, sd, id, T);
     
     // Parse scenario:
-    std::string system; 
+    string system; 
     MPCConfig conf; //Default initializer
-    Eigen::VectorXd z_max; // These constraints can be used directly in solver
-    Eigen::VectorXd z_min; 
+    VectorXd z_max; // These constraints can be used directly in solver
+    VectorXd z_min; 
     ParseScenarioData(sce_data, system, conf, z_max, z_min, m_param[kN_CV], m_param[kN_MV]);
     
-    FSRModel fsr(sd.getSR(), m_param[kN_CV], m_param[kN_MV], m_param[kN], conf.P, conf.M,
-                conf.W, id.Inits, sd.getInits());
-    sr_solver(T, fsr, conf, z_min, z_max, sd.getYRef());
+    FSRModel fsr(sd.getSR(), m_param, conf.P, conf.M, conf.W, id.Inits, sd.getInits());
 
-    // Eigen::MatrixXf dt_opt; // Optimal actuation 
-    Eigen::MatrixXf du; // n_CV x T
+    MatrixXd u_mat; // Optimized actuation
+    MatrixXd y_pred;
+    sr_solver(T, u_mat, y_pred, fsr, conf, z_min, z_max, sd.getYRef());
 
     // Formatting: 
     json output_data;
-    std::string scenario = "sr_siso_test";
-    std::string sim_filepath = "../data/scenario/sim_" + scenario; 
+    string scenario = "sr_siso_test";
+    string sim_filepath = "../data/simulations/sim_" + scenario + ".json"; 
 
-
-    //FormatSimData(output_data, sim_filepath, scenario, T, fsr.getN_CV(), fsr.getN_MV());
-    //FormatSimCV(output_data, sd, fsr.getN_CV());
-    //FormatSimMV(output_data, id, fsr.getN_MV());
-    //WriteJson(output_data, sim_filepath);
+    FormatSimData(output_data, sim_filepath, scenario, T, fsr.getN_CV(), fsr.getN_MV());
+    FormatSimCV(output_data, sd, y_pred, fsr.getN_CV());
+    FormatSimMV(output_data, id, u_mat, fsr.getN_MV());
+    WriteJson(output_data, sim_filepath);
 
     // // Flow: 
     // 1)
@@ -72,9 +73,14 @@ int main() {
 
     // 2)
     // // Simulate scenario closed loop using reference model returning simulation
+        // SISO Simulation *
+        // Reference model
+        // MIMO Simulation
+        // Output feedback
+        // Slack variables
 
     // 3)
-    // // Write simulation to an output file
+    // // Write simulation to an output file 
 
     // 4)
     // // Call python script to read data and plot simulation. **

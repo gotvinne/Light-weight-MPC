@@ -73,7 +73,7 @@ The [nlohmann/json](https://json.nlohmann.me/api/basic_json/) library is used in
    "bias update": bool
  },
 
- "c_i": [
+ "c": [ // Consider only take inn one constraint on du, u, y
    {"du[1]": [low, high]}, (double)
    ...,
    {"du[M * n_MV]": [low, high]}, (double)
@@ -114,7 +114,7 @@ The [nlohmann/json](https://json.nlohmann.me/api/basic_json/) library is used in
          "unit": string, 
          "c": [low, high] (double),
          "y": [y1, y2, y3, ... , yT], (Reference model simulation)
-         "y_hat": [y1, y2, y3, ... , yT] (Predicted model simulation)
+         "y_pred": [y1, y2, y3, ... , yT] (Predicted model simulation)
       }, 
          ... , 
       { 
@@ -122,7 +122,7 @@ The [nlohmann/json](https://json.nlohmann.me/api/basic_json/) library is used in
          "unit": string, 
          "c": [low, high] (double),
          "y": [y1, y2, y3, ... , yT], (Reference model simulation)
-         "y_hat": [y1, y2, y3, ... , yT] (Predicted model simulation)
+         "y_pred": [y1, y2, y3, ... , yT] (Predicted model simulation)
       }
    ],
 

@@ -5,20 +5,25 @@
  * @date 2022
  */
 #include "FSRModel.h"
+
 #include <iostream>
 #include <vector>
+#include <map>
+#include <string>
 
-#include <Eigen/Dense>
-using MatrixXd = Eigen::MatrixXd;
-using VectorXd = Eigen::VectorXd; 
+#include <Eigen/Eigen>
 
-FSRModel::FSRModel(VectorXd** SR, int n_CV, int n_MV, int N, int P, int M, int W,
+FSRModel::FSRModel(VectorXd** SR, std::map<std::string, int> m_param, int P, int M, int W,
                    const std::vector<double>& init_u, const std::vector<double>& init_y) :
-                     n_CV_{n_CV}, n_MV_{n_MV}, N_{N}, P_{P}, M_{M}, W_{W} {
-    theta_ = MatrixXd::Zero(n_CV*(P-W), n_MV*M);
-    phi_.resize(n_CV*(P-W), n_MV*(N-W-1));
-    psi_.resize(n_CV*(P-W), n_MV);
-    du_tilde_ = VectorXd::Zero(n_MV * (N-W-1));
+                      P_{P}, M_{M}, W_{W} {
+    n_CV_ = m_param[kN_CV];
+    n_MV_ = m_param[kN_MV];  
+    N_ = m_param[kN];
+
+    theta_ = MatrixXd::Zero(n_CV_*(P-W), n_MV_*M);
+    phi_.resize(n_CV_*(P-W), n_MV_*(N_-W-1));
+    psi_.resize(n_CV_*(P-W), n_MV_);
+    du_tilde_mat_ = MatrixXd::Zero(n_MV_, N_-W-1);
 
     u_K_ = VectorXd::Map(init_u.data(), init_u.size());
     u_ = VectorXd::Map(init_u.data(), init_u.size());
@@ -132,21 +137,35 @@ void FSRModel::setPsi() {
     }
 }
 
-void FSRModel::UpdateU(const VectorXd& du, const MatrixXd& du_gamma) { //du_gamma = Gamma * du 
-    u_K_ += du; // Update using first col
-    
-    // Update du_tilde by left shift, adding the optimized du
-    du_tilde_ << 
-        du_gamma, du_tilde_.leftCols(N_-2);
+VectorXd FSRModel::getDuTilde() {
+    VectorXd du_tilde = VectorXd::Zero(n_MV_*(N_-W_-1));
+    for (int i = 0; i < n_MV_; i++) {
+        du_tilde.block(i * (N_-W_-1), 0, N_-W_-1, 1) = du_tilde_mat_.row(i).transpose();
+    }
+    return du_tilde;
 }
+
+void FSRModel::UpdateU(const VectorXd& du) { // du = omega_u * z
+    // Updating U(k-1)
+    u_K_ += du; 
+    // Updating U(n)
+    VectorXd du_n = du_tilde_mat_.rightCols(1);
+    u_ += du_n;
+    // Update du_tilde by left shift, adding the optimized du
+    MatrixXd old_du = du_tilde_mat_.leftCols(N_-W_-2);
+    du_tilde_mat_.block(0, 0, n_MV_, 1) = du;
+    du_tilde_mat_.block(0, 1, n_MV_, N_-W_-2) = old_du;
+}
+
+SparseXd FSRModel::getOmegaY() {
+    MatrixXd omega_dense = MatrixXd::Zero(n_CV_, n_CV_ * P_);
+    for (int i = 0; i < n_CV_; i++) {
+        omega_dense(i, i * P_) = 1;
+    }
+    return omega_dense.sparseView();
+}  
 
 // Print functions: 
-void FSRModel::PrintPPSR(int i, int j) {
-    std::cout << "SISO SRC matrix: " << "(" << P_-W_ << ", " << M_ << ")" << std::endl; 
-    std::cout << pp_SR_mat_[i][j] << std::endl;
-    std::cout << std::endl;
-}
-
 void FSRModel::PrintTheta() {
     std::cout << "Theta: " << "(" << theta_.rows() << ", " << theta_.cols() << ")" << std::endl; 
     std::cout << theta_ << std::endl; 
@@ -163,4 +182,15 @@ void FSRModel::PrintPsi() {
     std::cout << "Psi : " << "(" << psi_.rows() << ", " << psi_.cols() << ")" << std::endl;
     std::cout << psi_ << std::endl; 
     std::cout << std::endl;
+}
+
+void FSRModel::PrintActuation() {
+    std::cout << "U(k-1):" << std::endl;
+    std::cout << u_K_ << std::endl;
+    std::cout << std::endl;
+    std::cout << "U_tilde:" << std::endl;
+    std::cout << du_tilde_mat_ << std::endl;
+    std::cout << std::endl;
+    std::cout << "U(k-N):" << std::endl;
+    std::cout << u_ << std::endl;
 }

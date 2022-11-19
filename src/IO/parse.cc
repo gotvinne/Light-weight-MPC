@@ -19,19 +19,21 @@
 #include <stdexcept>
 
 using json = nlohmann::json; 
+using VectorXd = Eigen::VectorXd;
+using string = std::string;
 
-json ReadJson(const std::string& filepath) {
+json ReadJson(const string& filepath) {
     try {
         std::ifstream file(filepath);
         return json::parse(file);
     }
     catch (std::exception& e) {
-        std::cout << e.what() << std::endl; 
+        std::cerr << e.what() << std::endl; 
         return 1;
     }
 }
 
-void ModelData(const json& sys_data, std::map<std::string,int>& map) {
+void ModelData(const json& sys_data, std::map<string,int>& map) {
     try {
         json model_data = sys_data.at(kModel);
         map[kN_CV] = model_data.at(kN_CV);
@@ -39,7 +41,7 @@ void ModelData(const json& sys_data, std::map<std::string,int>& map) {
         map[kN] = model_data.at(kN);
     }
     catch(json::exception& e) {
-        std::cout << e.what() << std::endl; 
+        std::cerr << e.what() << std::endl; 
     }    
 }
 
@@ -55,7 +57,7 @@ void ConstraintData(const json& sce_data, VectorXd& arr, bool upper) {
     }
 }
 
-void ParseScenarioData(const json& sce_data, std::string& system, MPCConfig& mpc_config, 
+void ParseScenarioData(const json& sce_data, string& system, MPCConfig& mpc_config, 
                         VectorXd& z_max, VectorXd& z_min, int n_CV, int n_MV) {
     try {                     
         system = sce_data.at(kSystem);
@@ -68,7 +70,7 @@ void ParseScenarioData(const json& sce_data, std::string& system, MPCConfig& mpc
     } 
 }
 
-void ParseSystemData(const json& sys_data, std::map<std::string, int>& model_param,
+void ParseSystemData(const json& sys_data, std::map<string, int>& model_param,
                     CVData& output_data, MVData& input_data, int T) {
     try {
         ModelData(sys_data, model_param);
@@ -86,7 +88,7 @@ void ParseSystemData(const json& sys_data, std::map<std::string, int>& model_par
     }
 }
 
-void PrintContainer(std::map<std::string,int> container) {
+void PrintContainer(std::map<string,int> container) {
     for (auto ptr = container.begin(); ptr != container.end(); ptr++) {
         std::cout << ptr->first << ", " << ptr->second << std::endl;
     }
