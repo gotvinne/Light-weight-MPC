@@ -20,6 +20,8 @@
 #include "nlohmann/json.hpp"
 #include <Eigen/Dense>
 using json = nlohmann::json; 
+using VectorXd = Eigen::VectorXd;
+using MatrixXd = Eigen::MatrixXd;
 
 int main() {
 
@@ -44,12 +46,11 @@ int main() {
     // Parse scenario:
     std::string system; 
     MPCConfig conf; //Default initializer
-    Eigen::VectorXd z_max; // These constraints can be used directly in solver
-    Eigen::VectorXd z_min; 
+    VectorXd z_max; // These constraints can be used directly in solver
+    VectorXd z_min; 
     ParseScenarioData(sce_data, system, conf, z_max, z_min, m_param[kN_CV], m_param[kN_MV]);
     
-    FSRModel fsr(sd.getSR(), m_param[kN_CV], m_param[kN_MV], m_param[kN], conf.P, conf.M,
-                conf.W, id.Inits, sd.getInits());
+    FSRModel fsr(sd.getSR(), m_param, conf.P, conf.M, conf.W, id.Inits, sd.getInits());
 
     MatrixXd du_mat; // Optimized actuation
     MatrixXd y_pred;

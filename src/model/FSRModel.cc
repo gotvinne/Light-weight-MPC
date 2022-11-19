@@ -5,18 +5,25 @@
  * @date 2022
  */
 #include "FSRModel.h"
+
 #include <iostream>
 #include <vector>
+#include <map>
+#include <string>
 
 #include <Eigen/Eigen>
 
-FSRModel::FSRModel(VectorXd** SR, int n_CV, int n_MV, int N, int P, int M, int W,
+FSRModel::FSRModel(VectorXd** SR, std::map<std::string, int> m_param, int P, int M, int W,
                    const std::vector<double>& init_u, const std::vector<double>& init_y) :
-                     n_CV_{n_CV}, n_MV_{n_MV}, N_{N}, P_{P}, M_{M}, W_{W} {
-    theta_ = MatrixXd::Zero(n_CV*(P-W), n_MV*M);
-    phi_.resize(n_CV*(P-W), n_MV*(N-W-1));
-    psi_.resize(n_CV*(P-W), n_MV);
-    du_tilde_mat_ = MatrixXd::Zero(n_MV, N-W-1);
+                      P_{P}, M_{M}, W_{W} {
+    n_CV_ = m_param[kN_CV];
+    n_MV_ = m_param[kN_MV];  
+    N_ = m_param[kN];
+
+    theta_ = MatrixXd::Zero(n_CV_*(P-W), n_MV_*M);
+    phi_.resize(n_CV_*(P-W), n_MV_*(N_-W-1));
+    psi_.resize(n_CV_*(P-W), n_MV_);
+    du_tilde_mat_ = MatrixXd::Zero(n_MV_, N_-W-1);
 
     u_K_ = VectorXd::Map(init_u.data(), init_u.size());
     u_ = VectorXd::Map(init_u.data(), init_u.size());

@@ -11,8 +11,6 @@
 #include "data_objects.h"
 #include "FSRModel.h"
 
-#include <string>
-
 #include <Eigen/Eigen>
 using VectorXd = Eigen::VectorXd;
 using MatrixXd = Eigen::MatrixXd;

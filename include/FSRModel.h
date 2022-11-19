@@ -8,7 +8,11 @@
 #ifndef FSR_MODEL_H
 #define FSR_MODEL_H
 
+#include "json_specifiers.h"
+
 #include <vector>
+#include <map>
+#include <string>
 
 #include <Eigen/Eigen>
 using VectorXd = Eigen::VectorXd;
@@ -96,7 +100,7 @@ public:
     /**
      * @brief The constructor. Constructing the object allocating memory for the SISO prediction matric
      */
-    FSRModel(VectorXd** SR, int n_CV, int n_MV, int N, int P, int M, int W, 
+    FSRModel(VectorXd** SR, std::map<std::string, int> m_param, int P, int M, int W,
             const std::vector<double>& init_u, const std::vector<double>& init_y);
     /**
      * @brief The destructor. Freeing the memory allocated in the constructor
