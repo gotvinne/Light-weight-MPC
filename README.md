@@ -20,6 +20,7 @@ Operating system: Linux
 - [model](src/model/README.md): Generating a FSRM model.
 - [data](data/README.md): System and scenario files defining the simulation.
 - [IO](src/IO/README.md): Parsing and formatting respectively input and output data.
+- [Vis](vis/README.md): Visualizing simulations in jupyter notebook
 
 ### Dependancies:
 This software is developed using a environment and package manager [Anaconda](https://www.anaconda.com/products/distribution) and builded using [CMake](https://cmake.org/)
@@ -30,7 +31,7 @@ Other libraries used:
 - [nlohmann/json](https://json.nlohmann.me/api/basic_json/), Json parser
 - [Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page), Template library for linear algebra
 - [boost/odeint](http://headmyshoulder.github.io/odeint-v2/), Numerical ODE solver
-
+- [CLI11](https://github.com/CLIUtils/CLI11), Command line parser
 
 ### Run Light-weight-MPC: 
 *From project root:* 
@@ -46,6 +47,7 @@ conda install -n env -c anaconda cmake
 conda install -n env -c conda-forge osqp-eigen
 conda install -n env -c conda-forge nlohmann_json
 conda install -n env -c conda-forge boost
+conda install -n env -c anaconda jupyter
 ```
 
 - Build and run program
