@@ -359,5 +359,5 @@ cython_debug/
 # End of https://www.toptal.com/developers/gitignore/api/pycharm,c++,python,visualstudiocode,jupyternotebooks,cmake
 
 \.vscode
-#data/
+data/
 \.idea
