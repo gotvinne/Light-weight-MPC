@@ -114,7 +114,7 @@ MVData::MVData(const json& mv_data, int n_MV) {
     }             
 }
 
-MPCConfig::MPCConfig() : P(), M(), W(), Ro(), bias_update() {}
+MPCConfig::MPCConfig() : P(), M(), W(), RoU(), RoL(), bias_update() {}
 MPCConfig::MPCConfig(const json& sce_data, int n_CV, int n_MV) {
     json mpc_data = sce_data.at(kMPC);
     P = mpc_data.at(kP);
@@ -129,6 +129,7 @@ MPCConfig::MPCConfig(const json& sce_data, int n_CV, int n_MV) {
     for (int i = 0; i < M*n_MV; i++) {
         R[i] = mpc_data.at(kR).at(i);
     }
-    Ro = mpc_data.at(kRo);
+    RoU = mpc_data.at(kRoU);
+    RoL = mpc_data.at(kRoL);
     bias_update = mpc_data.at(kBu);
 }

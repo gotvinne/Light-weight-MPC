@@ -35,7 +35,8 @@ const string kM = "M";
 const string kW = "W";
 const string kQ = "Q";
 const string kR = "R";
-const string kRo = "Ro";
+const string kRoU = "Ro_u";
+const string kRoL = "Ro_l";
 const string kBu = "bias update";
 
 const string kC = "c"; 
