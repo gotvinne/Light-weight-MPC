@@ -27,8 +27,7 @@ using string = std::string;
 
 int main(int argc, char **argv) {
     CLI::App app{"Light Weight MPC"};
-
-    // Define options
+    // Parse CLI
     int T = 1;
     app.add_option("-T", T, "MPC horizon");
 
@@ -45,7 +44,7 @@ int main(int argc, char **argv) {
     json sce_data = ReadJson(sce_filepath);
 
     // Parse system
-    std::map<string, int> m_param; //Only used to create FSR
+    std::map<string, int> m_param;
     CVData sd;
     MVData id;
     ParseSystemData(sys_data, m_param, sd, id, T);

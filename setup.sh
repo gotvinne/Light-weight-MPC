@@ -5,7 +5,6 @@ while getopts ':T:h' opt; do
   case "$opt" in
     T)
       arg="$OPTARG"
-      echo "Processing option 'c' with '${OPTARG}' argument"
       ;;
 
     ?|h)
