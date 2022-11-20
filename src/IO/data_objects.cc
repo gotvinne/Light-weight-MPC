@@ -5,8 +5,8 @@
  * @date 2022
  */
 
-#include "data_objects.h"
-#include "json_specifiers.h"
+#include "IO/data_objects.h"
+#include "IO/json_specifiers.h"
 
 #include <vector>
 #include <stdexcept>

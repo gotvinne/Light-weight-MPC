@@ -9,8 +9,6 @@
 #define STEP_RESPONSE_MODEL_H
 
 #include <vector>
-#include "Eigen/Dense"
-#include "parse.h"
 
 /* Module creating finite step response model for a first order system */
 

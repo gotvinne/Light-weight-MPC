@@ -4,6 +4,7 @@
  * @copyright  Geir Ola Tvinnereim 
  * @date 2022
  */
+#include "OSQP-Eigen/ss_solver.h"
 
 #include "OsqpEigen/OsqpEigen.h"
 #include <Eigen/Dense>

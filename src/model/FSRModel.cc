@@ -4,7 +4,8 @@
  * @copyright  Geir Ola Tvinnereim 
  * @date 2022
  */
-#include "FSRModel.h"
+#include "model/FSRModel.h"
+#include "IO/json_specifiers.h"
 
 #include <iostream>
 #include <vector>

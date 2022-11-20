@@ -8,8 +8,8 @@
 #ifndef CONDENSED_QP_H
 #define CONDENSED_QP_H
 
-#include "data_objects.h"
-#include "FSRModel.h"
+#include "IO/data_objects.h"
+#include "model/FSRModel.h"
 
 #include <Eigen/Eigen>
 using VectorXd = Eigen::VectorXd;

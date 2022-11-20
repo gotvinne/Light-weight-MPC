@@ -8,8 +8,6 @@
 #ifndef FSR_MODEL_H
 #define FSR_MODEL_H
 
-#include "json_specifiers.h"
-
 #include <vector>
 #include <map>
 #include <string>

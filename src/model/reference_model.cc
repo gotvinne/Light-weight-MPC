@@ -5,7 +5,7 @@
  * @date 2022
  */
 
-#include "reference_model.h"
+#include "model/reference_model.h"
 #include <random>
 
 float WhiteNoise(float sigma) {

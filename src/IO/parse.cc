@@ -5,9 +5,9 @@
  * @date 2022
  */
 
-#include "parse.h"
-#include "json_specifiers.h"
-#include "data_objects.h"
+#include "IO/parse.h"
+#include "IO/json_specifiers.h"
+#include "IO/data_objects.h"
 
 #include <nlohmann/json.hpp>
 #include <Eigen/Dense>

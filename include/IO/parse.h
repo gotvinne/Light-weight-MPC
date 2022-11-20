@@ -9,7 +9,7 @@
 #ifndef PARSE_H
 #define PARSE_H
 
-#include "data_objects.h"
+#include "IO/data_objects.h"
 
 #include <string>
 #include <map>

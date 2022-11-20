@@ -5,12 +5,12 @@
  * @date 2022
  */
 
-#include "formatting.h"
-#include "step_response_model.h"
-#include "sr_solver.h"
-#include "parse.h"
-#include "FSRModel.h"
-#include "data_objects.h"
+#include "IO/formatting.h"
+#include "IO/parse.h"
+#include "IO/data_objects.h"
+#include "OSQP-Eigen/sr_solver.h"
+#include "model/step_response_model.h"
+#include "model/FSRModel.h"
 
 #include <map>
 #include <iostream>

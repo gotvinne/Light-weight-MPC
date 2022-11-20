@@ -4,15 +4,12 @@
  * @copyright  Geir Ola Tvinnereim 
  * @date 2022
  */
-
-#include "step_response_model.h"
+#include "model/step_response_model.h"
 
 #include <iostream>
 #include <vector>
 #include <cmath>
 #include <string> 
-
-#include <Eigen/Dense>
 
 float StepResponse(float k, float tau, float theta, float dt, int i) {
     return k * (1 - exp(-(i * dt - theta) / tau));

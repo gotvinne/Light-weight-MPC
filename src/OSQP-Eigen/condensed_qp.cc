@@ -5,10 +5,9 @@
  * @date 2022
  */
 
-#include "condensed_qp.h"
-
-#include "data_objects.h"
-#include "FSRModel.h"
+#include "OSQP-Eigen/condensed_qp.h"
+#include "IO/data_objects.h"
+#include "model/FSRModel.h"
 
 #include <string>
 

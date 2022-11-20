@@ -4,11 +4,10 @@
  * @copyright  Geir Ola Tvinnereim 
  * @date 2022
  */
-#include "sr_solver.h"
-
-#include "data_objects.h"
-#include "FSRModel.h"
-#include "condensed_qp.h"
+#include "OSQP-Eigen/sr_solver.h"
+#include "OSQP-Eigen/condensed_qp.h"
+#include "IO/data_objects.h"
+#include "model/FSRModel.h"
 
 #include "OsqpEigen/OsqpEigen.h"
 #include <Eigen/Eigen>
