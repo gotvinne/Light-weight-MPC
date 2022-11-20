@@ -16,9 +16,11 @@ Operating system: Linux
 - Prof. Gisle Otto Eikrem (Equinor) gise@equinor.com
 
 ### Modules
+
+- [data](data/README.md): System and scenario files defining the simulation.
+  
 - [OSQP-Eigen](src/OSQP-Eigen/README.md): Solving the MPC problems. 
 - [model](src/model/README.md): Generating a FSRM model.
-- [data](data/README.md): System and scenario files defining the simulation.
 - [IO](src/IO/README.md): Parsing and formatting respectively input and output data.
 - [Vis](vis/README.md): Visualizing simulations in jupyter notebook
 
@@ -36,12 +38,12 @@ Other libraries used:
 ### Run Light-weight-MPC: 
 *From project root:* 
 
-- Use Anaconda in order to create environment:
+- Use Anaconda in order to create environment *light_weight*:
 ```console
 conda env create -f env.yml
 ```
 
-or make a new environment, *env*, and install conda packages: 
+or make a new environment, *light_weight*, and install conda packages: 
 ```console
 conda install -n env -c anaconda cmake
 conda install -n env -c conda-forge osqp-eigen
@@ -51,7 +53,7 @@ conda install -n env -c anaconda jupyter
 conda install -n env -c conda-forge cli11
 ```
 
-- Build and run program
+- Build and run program, NB! setup.sh calls binary ./light_weight
 ```console
 sh setup.sh
 ```
