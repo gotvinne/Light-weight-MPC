@@ -9,26 +9,30 @@
 #include "IO/data_objects.h"
 #include "model/FSRModel.h"
 
+#include <stdexcept>
+
 #include "OsqpEigen/OsqpEigen.h"
 #include <Eigen/Eigen>
-
-#include <stdexcept>
+using VectorXd = Eigen::VectorXd;
+using MatrixXd = Eigen::MatrixXd;
+using SparseXd = Eigen::SparseMatrix<double>;
 
 void sr_solver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPCConfig& conf, const VectorXd& z_min, 
              const VectorXd& z_max, VectorXd* y_ref) {
+    // Setup solver:
     OsqpEigen::Solver solver;
     solver.settings()->setWarmStart(true); // Starts primal and dual variables from previous QP
     solver.settings()->setVerbosity(false); // Disable printing
-    // MPC Scenario variables
+
+    // MPC Scenario variables:
     int M = fsr.getM();
     int P = fsr.getP();
     int n_MV = fsr.getN_MV();
     int n_CV = fsr.getN_CV();
 
-    // Define QP
-    const int n = M * n_MV; // Optimization variables 
-    const int m = P * n_CV + 2 * n; // Constraints
-
+    // Define QP:
+    const int n = M * n_MV; // #Optimization variables 
+    const int m = P * n_CV + 2 * n; // #Constraints
     const VectorXd z_max_pop = PopulateConstraints(z_max, m, n);
     const VectorXd z_min_pop = PopulateConstraints(z_min, m, n);
 
@@ -41,7 +45,7 @@ void sr_solver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MP
     SparseXd G;
     SparseXd A;
 
-    // Dynamic variables
+    // Dynamic variables:
     VectorXd q;
     VectorXd l;
     VectorXd u; 
@@ -65,6 +69,7 @@ void sr_solver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MP
     SparseXd omega_u;
     setOmegaU(omega_u, M, n_MV);
 
+    // MPC loop:
     for (int k = 0; k < T; k++) {
         // Optimize:
         if (solver.solveProblem() != OsqpEigen::ErrorExitFlag::NoError) { throw std::runtime_error("Cannot solve problem"); }
@@ -83,9 +88,10 @@ void sr_solver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MP
         // Update MPC problem:
         setConstraintVectors(l, u, z_min_pop, z_max_pop, fsr, m, n);
         setGradientVector(q, fsr, Q_bar, y_ref); // NB! not updating y_ref
+        
         // Check if bounds are valid:
         if (!solver.updateBounds(l, u)) { throw std::runtime_error("Cannot update bounds"); }
-        if (!solver.updateGradient(q)) { throw std::runtime_error("Cannot update bounds"); }
+        if (!solver.updateGradient(q)) { throw std::runtime_error("Cannot update gradient"); }
     }
     //fsr.PrintActuation();
 }

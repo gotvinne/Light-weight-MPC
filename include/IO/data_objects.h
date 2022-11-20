@@ -13,7 +13,6 @@
 
 #include <nlohmann/json.hpp>
 #include <Eigen/Dense>
-
 using json = nlohmann::json; 
 using VectorXd = Eigen::VectorXd;
 

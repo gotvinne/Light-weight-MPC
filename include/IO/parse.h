@@ -16,7 +16,6 @@
 
 #include <Eigen/Dense>
 #include <nlohmann/json.hpp>
-
 using json = nlohmann::json;
 using VectorXd = Eigen::VectorXd;
 using string = std::string;
@@ -56,18 +55,18 @@ void ParseScenarioData(const json& sce_data, string& system, MPCConfig& mpc_conf
                         VectorXd& z_min, VectorXd& z_max, int n_CV, int n_MV);
 
 /**
- * @brief 
+ * @brief Combines all parse functionality, parsing system and scenario file
  * 
- * @param sys_filepath 
- * @param sce_filepath 
- * @param model_param 
- * @param output_data 
- * @param input_data 
- * @param system 
- * @param mpc_config 
- * @param z_min 
- * @param z_max 
- * @param T 
+ * @param sys_filepath system filepath 
+ * @param sce_filepath scenario filepath
+ * @param model_param map of model parameters
+ * @param output_data CV system data  
+ * @param input_data MV system data
+ * @param system Corresponding system in scenario file
+ * @param mpc_config MPC configuration data
+ * @param z_min lower constraints 
+ * @param z_max upper constraints
+ * @param T MPC horizon
  */
 void Parse(const string& sys_filepath, const string& sce_filepath, std::map<string, int>& model_param,
                     CVData& output_data, MVData& input_data, string& system, MPCConfig& mpc_config, 

@@ -4,7 +4,6 @@
  * @copyright  Geir Ola Tvinnereim 
  * @date 2022
  */
-
 #include "OSQP-Eigen/condensed_qp.h"
 #include "IO/data_objects.h"
 #include "model/FSRModel.h"
@@ -17,7 +16,7 @@ using MatrixXd = Eigen::MatrixXd;
 using SparseXd = Eigen::SparseMatrix<double>;
 
 /**
- * @brief Helper function. Implementing block diagonal
+ * @brief Helper function. Implementing block diagonal matrix
  * 
  * @param blk_mat Eigen::SparseMatrix<double> to be block diagonalized
  * @param arg block argument
@@ -66,7 +65,7 @@ static void setKInv(MatrixXd& K_inv, int n) {
 /**
  * @brief Set the Gamma object
  * 
- * @param gamma 
+ * @param gamma SparseMatrix accessing the first du for every MV, du_k = gamma * z
  * @param M Control horizon
  * @param n_MV number of manipulated variables
  */
@@ -77,10 +76,10 @@ static void setGamma(SparseXd& gamma, int M, int n_MV) {
 }
 
 /**
- * @brief Set the Tau object
+ * @brief Set the Tau object, sliced from @param y_ref
  * 
- * @param tau 
- * @param y_ref 
+ * @param tau Reference vector on output
+ * @param y_ref Reference data
  * @param P Prediction horizon
  * @param W Time delay horizon
  * @param n_CV Number of controlled variables
@@ -153,11 +152,11 @@ void setOmegaU(SparseXd& omega, int M, int n_MV) {
     omega = omega_dense.sparseView();
 }
 
-VectorXd PopulateConstraints(const VectorXd& z, int m, int n) {
+VectorXd PopulateConstraints(const VectorXd& c, int m, int n) {
     VectorXd populated(m);
-    populated.block(0, 0, n, 1) = VectorXd::Constant(n, z(0));
-    populated.block(n, 0, n, 1) = VectorXd::Constant(n, z(1));
-    populated.block(2 * n, 0, m - 2 * n, 1) = VectorXd::Constant(m - 2 * n, z(2)); // m - 2n = P * n_CV
-
+    // Accessing the constraints for du, u and y, given in respectively 1st, 2nd and 3rd position
+    populated.block(0, 0, n, 1) = VectorXd::Constant(n, c(0));
+    populated.block(n, 0, n, 1) = VectorXd::Constant(n, c(1));
+    populated.block(2 * n, 0, m - 2 * n, 1) = VectorXd::Constant(m - 2 * n, z(c)); // m - 2n = P * n_CV
     return populated;
 } 

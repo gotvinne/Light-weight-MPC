@@ -4,15 +4,13 @@
  * @copyright  Geir Ola Tvinnereim 
  * @date 2022
  */
-
 #ifndef STEP_RESPONSE_MODEL_H
 #define STEP_RESPONSE_MODEL_H
 
 #include <vector>
-
 /* Module creating finite step response model for a first order system */
 
-const int SETTLING_COEFFICIENT = 5;
+static const int SETTLING_COEFFICIENT = 5;
 
 /**
  * @brief Calculating step response for a first order system given parameters.
@@ -20,8 +18,8 @@ const int SETTLING_COEFFICIENT = 5;
  * @param k transfer function gain
  * @param tau time constant
  * @param theta time delay
- * @param dt 
- * @param i 
+ * @param dt time step
+ * @param i index
  * @return float 
  */
 float StepResponse(float k, float tau, float theta, float dt, int i);

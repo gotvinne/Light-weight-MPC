@@ -14,6 +14,8 @@
 
 #include <nlohmann/json.hpp>
 #include <Eigen/Dense>
+using json = nlohmann::json; 
+using VectorXd = Eigen::VectorXd;
 
 /* Error handling:
     Check that S is correct with N_MV and N_CV

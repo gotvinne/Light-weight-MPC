@@ -59,6 +59,21 @@ void FormatSimCV(json& data, const CVData& cv_data, const MatrixXd& y_pred, int 
  */
 void FormatSimMV(json& data, const MVData& mv_data, const MatrixXd& u, int n_MV);
 
+/**
+ * @brief 
+ * 
+ * @param data 
+ * @param write_path 
+ * @param system 
+ * @param scenario 
+ * @param cv_data 
+ * @param mv_data 
+ * @param y_pred 
+ * @param u_mat 
+ * @param n_CV 
+ * @param n_MV 
+ * @param T 
+ */
 void FormatScenario(json& data, const string& write_path, const string & system, const string& scenario, const CVData& cv_data, const MVData& mv_data, 
                     const MatrixXd& y_pred, const MatrixXd& u_mat, int n_CV, int n_MV, int T);
 

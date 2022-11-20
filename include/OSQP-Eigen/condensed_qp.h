@@ -4,7 +4,6 @@
  * @copyright  Geir Ola Tvinnereim 
  * @date 2022
  */
-
 #ifndef CONDENSED_QP_H
 #define CONDENSED_QP_H
 
@@ -71,23 +70,22 @@ void setConstraintVectors(VectorXd& l, VectorXd& u, const VectorXd& z_min_pop, c
                          FSRModel& fsr, int m, int n);
 
 /**
- * @brief Set the Omega U object
+ * @brief Set the Omega U object, such that du = omega_u * z
  * 
- * @param Omega_u
- * @param M 
- * @param n_MV 
+ * @param Omega_u Sparse Matrix decomposing z
+ * @param M Control horizon
+ * @param n_MV number of manipulated variables
  */
 void setOmegaU(SparseXd& omega, int M, int n_MV);
 
-
 /**
- * @brief 
+ * @brief Populate constraint data, enabling dynamic constraints
  * 
- * @param z 
- * @param m 
- * @param n 
- * @return VectorXd 
+ * @param c Constrain vector data
+ * @param m Number of constraints 
+ * @param n Number of optimalization variables
+ * @return VectorXd, populated vector
  */
-VectorXd PopulateConstraints(const VectorXd& z, int m, int n);
+VectorXd PopulateConstraints(const VectorXd& c, int m, int n);
 
 #endif // CONDENSED_QP_H

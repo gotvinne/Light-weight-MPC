@@ -8,7 +8,7 @@
 #ifndef REFERENCE_MODEL_H
 #define REFERENCE_MODEL_H
 
-const float WHITE_NOISE_MEAN = 0.0;
+static const float WHITE_NOISE_MEAN = 0.0;
 
 /**
  * @brief Calculate white noise based on a random generator

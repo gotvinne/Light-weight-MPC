@@ -22,13 +22,11 @@ const string kOutput = "output";
 const string kInput = "input";
 const string kInit = "init";
 const string kUnit = "unit";
-
 const string kY_Ref = "y_ref";
 const string kS = "S"; 
 
 // ------- Scenario file specifiers ------- //
 const string kSystem = "system";
-
 const string kMPC = "MPC";
 const string kP = "P";
 const string kM = "M";
@@ -38,7 +36,6 @@ const string kR = "R";
 const string kRoU = "Ro_u";
 const string kRoL = "Ro_l";
 const string kBu = "bias update";
-
 const string kC = "c"; 
 
 // ------- Simulation file specifiers ------- //
