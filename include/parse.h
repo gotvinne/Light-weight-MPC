@@ -30,14 +30,6 @@ using string = std::string;
 json ReadJson(const string& filepath);
 
 /**
- * @brief function obtaining model data from system file
- * 
- * @param sys_data json object of system file
- * @param map to be filled with model data
- */
-void ModelData(const json& sys_data, std::map<string,int>& map);
-
-/**
  * @brief high-level function parsing system file
  * 
  * @param sys_data json object of system file
@@ -50,29 +42,35 @@ void ParseSystemData(const json& sys_data, std::map<string, int>& model_param,
                     CVData& output_data, MVData& input_data, int T); 
 
 /**
- * @brief Fills an Eigen::VectorXf with the corresponding constraint data from system file
- * 
- * @param sce_data json object of scenario file
- * @param arr Eigen::VectorXf to hold the constraints [dU, U, Y]
- * @param upper bool indicating if upper constraints are returned, upper = false: lower constraints are returnd 
- */
-void ConstraintData(const json& sce_data, VectorXd& arr, bool upper);
-
-/**
  * @brief High-level function parsing a scenario file
  * 
  * @param sce_data json object of scenario file
  * @param system corresponding system file
  * @param mpc_conf MPCConfig object
- * @param z_max Eigen::VectorXf
  * @param z_min Eigen::VectorXF 
+ * @param z_max Eigen::VectorXf
  * @param n_CV number of control variables 
  * @param n_MV number of manipulated variables
  */
 void ParseScenarioData(const json& sce_data, string& system, MPCConfig& mpc_conf, 
-                        VectorXd& z_max, VectorXd& z_min, int n_CV, int n_MV);
+                        VectorXd& z_min, VectorXd& z_max, int n_CV, int n_MV);
 
-
-void PrintContainer(std::map<string, int> container);
+/**
+ * @brief 
+ * 
+ * @param sys_filepath 
+ * @param sce_filepath 
+ * @param model_param 
+ * @param output_data 
+ * @param input_data 
+ * @param system 
+ * @param mpc_config 
+ * @param z_min 
+ * @param z_max 
+ * @param T 
+ */
+void Parse(const string& sys_filepath, const string& sce_filepath, std::map<string, int>& model_param,
+                    CVData& output_data, MVData& input_data, string& system, MPCConfig& mpc_config, 
+                        VectorXd& z_min, VectorXd& z_max, int T);
 
 #endif  // PARSE_H

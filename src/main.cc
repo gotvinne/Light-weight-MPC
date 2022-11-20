@@ -7,7 +7,6 @@
 
 #include "formatting.h"
 #include "step_response_model.h"
-#include "json_specifiers.h"
 #include "sr_solver.h"
 #include "parse.h"
 #include "FSRModel.h"
@@ -30,33 +29,28 @@ int main(int argc, char **argv) {
     // Parse CLI
     int T = 1;
     app.add_option("-T", T, "MPC horizon");
-
     CLI11_PARSE(app, argc, argv);
+
     // Testing step model:
     //float k = 5;
     //float tau = 15;
     //float theta = 3;
     //int N = 80;
  
-    string sys_filepath = "../data/systems/sr_siso_test.json";
-    string sce_filepath = "../data/scenarios/siso_test.json";
-    json sys_data = ReadJson(sys_filepath);
-    json sce_data = ReadJson(sce_filepath);
-
-    // Parse system
-    std::map<string, int> m_param;
+    string sys_path = "../data/systems/sr_siso_test.json";
+    string sce_path = "../data/scenarios/siso_test.json";
+    // System variables
+    std::map<string, int> m_map;
     CVData sd;
     MVData id;
-    ParseSystemData(sys_data, m_param, sd, id, T);
-    
-    // Parse scenario:
-    string system; 
+    // Scenario variables:
+    string sys; 
     MPCConfig conf; //Default initializer
-    VectorXd z_max; // These constraints can be used directly in solver
+    VectorXd z_max;
     VectorXd z_min; 
-    ParseScenarioData(sce_data, system, conf, z_max, z_min, m_param[kN_CV], m_param[kN_MV]);
+    Parse(sys_path, sce_path, m_map, sd, id, sys, conf, z_min, z_max, T);
     
-    FSRModel fsr(sd.getSR(), m_param, conf.P, conf.M, conf.W, id.Inits, sd.getInits());
+    FSRModel fsr(sd.getSR(), m_map, conf.P, conf.M, conf.W, id.Inits, sd.getInits());
     //fsr.PrintPsi();
     MatrixXd u_mat; // Optimized actuation
     MatrixXd y_pred;

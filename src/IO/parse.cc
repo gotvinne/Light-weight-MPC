@@ -22,18 +22,13 @@ using json = nlohmann::json;
 using VectorXd = Eigen::VectorXd;
 using string = std::string;
 
-json ReadJson(const string& filepath) {
-    try {
-        std::ifstream file(filepath);
-        return json::parse(file);
-    }
-    catch (std::exception& e) {
-        std::cerr << e.what() << std::endl; 
-        return 1;
-    }
-}
-
-void ModelData(const json& sys_data, std::map<string,int>& map) {
+/**
+ * @brief function obtaining model data from system file
+ * 
+ * @param sys_data json object of system file
+ * @param map to be filled with model data
+ */
+static void ModelData(const json& sys_data, std::map<string,int>& map) {
     try {
         json model_data = sys_data.at(kModel);
         map[kN_CV] = model_data.at(kN_CV);
@@ -45,7 +40,14 @@ void ModelData(const json& sys_data, std::map<string,int>& map) {
     }    
 }
 
-void ConstraintData(const json& sce_data, VectorXd& arr, bool upper) {
+/**
+ * @brief Fills an Eigen::VectorXf with the corresponding constraint data from system file
+ * 
+ * @param sce_data json object of scenario file
+ * @param arr Eigen::VectorXf to hold the constraints [dU, U, Y]
+ * @param upper bool indicating if upper constraints are returned, upper = false: lower constraints are returnd 
+ */
+static void ConstraintData(const json& sce_data, VectorXd& arr, bool upper) {
     json j_arr(sce_data.at(kC));
     int size = j_arr.size();
     
@@ -57,17 +59,15 @@ void ConstraintData(const json& sce_data, VectorXd& arr, bool upper) {
     }
 }
 
-void ParseScenarioData(const json& sce_data, string& system, MPCConfig& mpc_config, 
-                        VectorXd& z_max, VectorXd& z_min, int n_CV, int n_MV) {
-    try {                     
-        system = sce_data.at(kSystem);
-        mpc_config = MPCConfig(sce_data, n_CV, n_MV);
-        ConstraintData(sce_data, z_max, true); 
-        ConstraintData(sce_data, z_min, false);
+json ReadJson(const string& filepath) {
+    try {
+        std::ifstream file(filepath);
+        return json::parse(file);
     }
-    catch(json::exception& e) {
-        std::cerr << "ERROR! " << e.what() << std::endl; 
-    } 
+    catch (std::exception& e) {
+        std::cerr << e.what() << std::endl; 
+        return 1;
+    }
 }
 
 void ParseSystemData(const json& sys_data, std::map<string, int>& model_param,
@@ -88,8 +88,25 @@ void ParseSystemData(const json& sys_data, std::map<string, int>& model_param,
     }
 }
 
-void PrintContainer(std::map<string,int> container) {
-    for (auto ptr = container.begin(); ptr != container.end(); ptr++) {
-        std::cout << ptr->first << ", " << ptr->second << std::endl;
+void ParseScenarioData(const json& sce_data, string& system, MPCConfig& mpc_config, 
+                        VectorXd& z_min, VectorXd& z_max, int n_CV, int n_MV) {
+    try {                     
+        system = sce_data.at(kSystem);
+        mpc_config = MPCConfig(sce_data, n_CV, n_MV);
+        ConstraintData(sce_data, z_max, true); 
+        ConstraintData(sce_data, z_min, false);
     }
+    catch(json::exception& e) {
+        std::cerr << "ERROR! " << e.what() << std::endl; 
+    } 
+}
+
+void Parse(const string& sys_filepath, const string& sce_filepath, std::map<string, int>& model_param,
+                    CVData& output_data, MVData& input_data, string& system, MPCConfig& mpc_config, 
+                        VectorXd& z_min, VectorXd& z_max, int T) {
+    json sys_data = ReadJson(sys_filepath);
+    json sce_data = ReadJson(sce_filepath);
+
+    ParseSystemData(sys_data, model_param, output_data, input_data, T);
+    ParseScenarioData(sce_data, system, mpc_config, z_min, z_max, model_param[kN_CV], model_param[kN_MV]);
 }
