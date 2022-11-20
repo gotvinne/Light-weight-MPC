@@ -13,6 +13,18 @@
 #include <string>
 
 #include <Eigen/Eigen>
+using VectorXd = Eigen::VectorXd;
+using MatrixXd = Eigen::MatrixXd;
+using SparseXd = Eigen::SparseMatrix<double>;
+
+VectorXd PopulateConstraints(const VectorXd& z, int m, int n) {
+    VectorXd populated(m);
+    populated.block(0, 0, n, 1) = VectorXd::Constant(n, z(0));
+    populated.block(n, 0, n, 1) = VectorXd::Constant(n, z(1));
+    populated.block(2 * n, 0, m - 2 * n, 1) = VectorXd::Constant(m - 2 * n, z(2)); // m - 2n = P * n_CV
+
+    return populated;
+} 
 
 void setWeightMatrices(SparseXd& Q_bar, SparseXd& R_bar, const MPCConfig& mpc_config) {
     MatrixXd Q = MatrixXd::Zero(mpc_config.P - mpc_config.W, mpc_config.P - mpc_config.W);
@@ -74,10 +86,10 @@ void setConstraintMatrix(SparseXd& A, const FSRModel& fsr, int m, int n) {
     A = dense.sparseView();
 }
 
-void setConstraintVectors(VectorXd& l, VectorXd& u, const VectorXd& z_min, const VectorXd& z_max,
+void setConstraintVectors(VectorXd& l, VectorXd& u, const VectorXd& z_min_pop, const VectorXd& z_max_pop,
                          FSRModel& fsr, int m, int n) {
-    l.resize(z_min.rows());
-    u.resize(z_max.rows());
+    l.resize(m);
+    u.resize(m);
     
     MatrixXd K_inv;
     setKInv(K_inv, n);
@@ -87,10 +99,10 @@ void setConstraintVectors(VectorXd& l, VectorXd& u, const VectorXd& z_min, const
     VectorXd c(m);
     c.block(0, 0, n, 1) = VectorXd::Zero(n);
     c.block(n, 0, n, 1) = K_inv * gamma * fsr.getUK();
-    c.block(2 * n, 0, m - 2 * n , 1) = fsr.getLambda(); // m - 2n = P * n_{CV}
+    c.block(2 * n, 0, m - 2 * n , 1) = fsr.getLambda(); // m - 2n = P * n_CV
 
-    l = z_min - c;
-    u = z_max - c;
+    l = z_min_pop - c;
+    u = z_max_pop - c;
 }
 
 void setTau(VectorXd& tau, VectorXd* y_ref, int P, int W, int n_CV) {

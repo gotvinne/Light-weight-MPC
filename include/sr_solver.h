@@ -25,6 +25,6 @@ using SparseXd = Eigen::SparseMatrix<double>;
  * @param conf MPCConfig
  */
 void sr_solver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPCConfig& conf,
-                const VectorXd& z_min, const VectorXd& z_max, VectorXd* y_ref);
+            const VectorXd& z_min, const VectorXd& z_max, VectorXd* y_ref);
 
 #endif // SR_SOLVER_H

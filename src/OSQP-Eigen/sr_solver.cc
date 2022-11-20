@@ -16,7 +16,7 @@
 #include <stdexcept>
 
 void sr_solver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPCConfig& conf, const VectorXd& z_min, 
-                const VectorXd& z_max, VectorXd* y_ref) {
+             const VectorXd& z_max, VectorXd* y_ref) {
     OsqpEigen::Solver solver;
     solver.settings()->setWarmStart(true); // Starts primal and dual variables from previous QP
     solver.settings()->setVerbosity(false); // Disable printing
@@ -29,6 +29,9 @@ void sr_solver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MP
     // Define QP
     const int n = M * n_MV; // Optimization variables 
     const int m = P * n_CV + 2 * n; // Constraints
+
+    const VectorXd z_max_pop = PopulateConstraints(z_max, m, n);
+    const VectorXd z_min_pop = PopulateConstraints(z_min, m, n);
 
     solver.data()->setNumberOfVariables(n);
     solver.data()->setNumberOfConstraints(m);
@@ -48,7 +51,7 @@ void sr_solver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MP
     setHessianMatrix(G, Q_bar, R_bar, fsr);
     setGradientVector(q, fsr, Q_bar, y_ref);
     setConstraintMatrix(A, fsr, m, n);
-    setConstraintVectors(l, u, z_min, z_max, fsr, m, n);
+    setConstraintVectors(l, u, z_min_pop, z_max_pop, fsr, m, n);
 
     if (!solver.data()->setHessianMatrix(G)) { throw std::runtime_error("Cannot initialize Hessian"); }
     if (!solver.data()->setGradient(q)) { throw std::runtime_error("Cannot initialize Gradient"); }
@@ -79,8 +82,8 @@ void sr_solver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MP
         fsr.UpdateU(du);
 
         // Update MPC problem:
-        setConstraintVectors(l, u, z_min, z_max, fsr, m, n);
-        setGradientVector(q, fsr, Q_bar, y_ref); // NB not updating y_ref
+        setConstraintVectors(l, u, z_min_pop, z_max_pop, fsr, m, n);
+        setGradientVector(q, fsr, Q_bar, y_ref); // NB! not updating y_ref
         // Check if bounds are valid:
         if (!solver.updateBounds(l, u)) { throw std::runtime_error("Cannot update bounds"); }
         if (!solver.updateGradient(q)) { throw std::runtime_error("Cannot update bounds"); }

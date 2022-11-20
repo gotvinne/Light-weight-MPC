@@ -48,7 +48,7 @@ void ModelData(const json& sys_data, std::map<string,int>& map) {
 void ConstraintData(const json& sce_data, VectorXd& arr, bool upper) {
     json j_arr(sce_data.at(kC));
     int size = j_arr.size();
-    // Implement size check
+    
     arr.resize(size);
     for (int i = 0; i < size; i++) {
         for (auto& elem : j_arr.at(i).items()) {
@@ -62,8 +62,8 @@ void ParseScenarioData(const json& sce_data, string& system, MPCConfig& mpc_conf
     try {                     
         system = sce_data.at(kSystem);
         mpc_config = MPCConfig(sce_data, n_CV, n_MV);
-        ConstraintData(sce_data, z_max, true); // NB! Size check
-        ConstraintData(sce_data, z_min, false); //NB size check
+        ConstraintData(sce_data, z_max, true); 
+        ConstraintData(sce_data, z_min, false);
     }
     catch(json::exception& e) {
         std::cerr << "ERROR! " << e.what() << std::endl; 

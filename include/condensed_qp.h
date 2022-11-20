@@ -63,8 +63,8 @@ void setKInv(MatrixXd& K_inv, int n);
  * @param m Number of constraints
  * @param n Number of optimization variables
  */
-void setConstraintVectors(VectorXd& l, VectorXd& u, const VectorXd& z_min, const VectorXd& z_max,
-                        FSRModel& fsr, int m, int n);
+void setConstraintVectors(VectorXd& l, VectorXd& u, const VectorXd& z_min_pop, const VectorXd& z_max_pop,
+                         FSRModel& fsr, int m, int n);
 
 /**
  * @brief Set the Constraint Matrix object
@@ -133,5 +133,7 @@ void setGradientVector(VectorXd& q, FSRModel& fsr, const SparseXd& Q_bar,
  * @param count Number of blocks
  */
 void blkdiag(SparseXd& blk_mat, const MatrixXd& arg, int count);
+
+VectorXd PopulateConstraints(const VectorXd& z, int m, int n);
 
 #endif // CONDENSED_QP_H

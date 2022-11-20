@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
     ParseScenarioData(sce_data, system, conf, z_max, z_min, m_param[kN_CV], m_param[kN_MV]);
     
     FSRModel fsr(sd.getSR(), m_param, conf.P, conf.M, conf.W, id.Inits, sd.getInits());
-
+    //fsr.PrintPsi();
     MatrixXd u_mat; // Optimized actuation
     MatrixXd y_pred;
     sr_solver(T, u_mat, y_pred, fsr, conf, z_min, z_max, sd.getYRef());
@@ -67,10 +67,10 @@ int main(int argc, char **argv) {
     string scenario = "sr_siso_test";
     string sim_filepath = "../data/simulations/sim_" + scenario + ".json"; 
 
-    FormatSimData(output_data, sim_filepath, scenario, T, fsr.getN_CV(), fsr.getN_MV());
-    FormatSimCV(output_data, sd, y_pred, fsr.getN_CV());
-    FormatSimMV(output_data, id, u_mat, fsr.getN_MV());
-    WriteJson(output_data, sim_filepath);
+    //FormatSimData(output_data, sim_filepath, scenario, T, fsr.getN_CV(), fsr.getN_MV());
+    //FormatSimCV(output_data, sd, y_pred, fsr.getN_CV());
+    //FormatSimMV(output_data, id, u_mat, fsr.getN_MV());
+    //WriteJson(output_data, sim_filepath);
 
     // // Flow: 
     // 1)
