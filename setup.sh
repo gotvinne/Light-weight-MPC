@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Check if the folder exists
+if [[ ! -d "/build" ]]
+then
+    mkdir build
+fi
+
 # CLI parser
 while getopts ':T:h' opt; do
   case "$opt" in
@@ -14,12 +20,6 @@ while getopts ':T:h' opt; do
   esac
 done
 shift "$(($OPTIND -1))"
-
-# Check if the folder exists
-if [[ ! -d "/build" ]]
-then
-    mkdir build
-fi
 
 cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX

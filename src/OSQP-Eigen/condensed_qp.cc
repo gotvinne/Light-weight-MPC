@@ -17,14 +17,81 @@ using VectorXd = Eigen::VectorXd;
 using MatrixXd = Eigen::MatrixXd;
 using SparseXd = Eigen::SparseMatrix<double>;
 
-VectorXd PopulateConstraints(const VectorXd& z, int m, int n) {
-    VectorXd populated(m);
-    populated.block(0, 0, n, 1) = VectorXd::Constant(n, z(0));
-    populated.block(n, 0, n, 1) = VectorXd::Constant(n, z(1));
-    populated.block(2 * n, 0, m - 2 * n, 1) = VectorXd::Constant(m - 2 * n, z(2)); // m - 2n = P * n_CV
+/**
+ * @brief Helper function. Implementing block diagonal
+ * 
+ * @param blk_mat Eigen::SparseMatrix<double> to be block diagonalized
+ * @param arg block argument
+ * @param count Number of blocks
+ */
+static void blkdiag(SparseXd& blk_mat, const MatrixXd& arg, int count) {
+    MatrixXd mat = MatrixXd::Zero(arg.rows() * count, arg.cols() * count);
+    for (int i = 0; i < count; i++) {
+        mat.block(i * arg.rows(), i * arg.cols(), arg.rows(), arg.cols()) = arg;
+    }
+    blk_mat = mat.sparseView();
+}
 
-    return populated;
-} 
+/**
+ * @brief Calculate K matrix
+ * 
+ * @param K Eigen::SparseMatrix<double> to be filled 
+ * @param M Control horizon
+ * @param n_MV number of manupulated variables
+ */
+static void setKmatrix(SparseXd& K, int M, int n_MV) {
+    MatrixXd K_arg = MatrixXd::Zero(M, M);
+    std::array<double, 2> arr = {1.0, -1.0};
+    for (int i = 0; i < M; i++) {
+        for (int j = 0; j < arr.size(); j++) { // NB M > 2. 
+            if (i == M-1 && j == 1) {
+                break;
+            }
+            K_arg(i+j, i) = arr[j];
+        }
+    }
+    blkdiag(K, K_arg, n_MV);
+}
+
+/**
+ * @brief Calculate K inv matrix, this is a lower triangular matrix
+ * 
+ * @param K_inv Eigen::MatrixXd passed by reference
+ * @param n size of K_inv
+ */
+static void setKInv(MatrixXd& K_inv, int n) { 
+    K_inv = MatrixXd::Constant(n, n, 1);
+    K_inv = K_inv.triangularView<Eigen::Lower>();
+}
+
+/**
+ * @brief Set the Gamma object
+ * 
+ * @param gamma 
+ * @param M Control horizon
+ * @param n_MV number of manipulated variables
+ */
+static void setGamma(SparseXd& gamma, int M, int n_MV) {
+    MatrixXd gamma_arg = MatrixXd::Zero(M, 1);
+    gamma_arg(0, 0) = 1.0;
+    blkdiag(gamma, gamma_arg, n_MV);
+}
+
+/**
+ * @brief Set the Tau object
+ * 
+ * @param tau 
+ * @param y_ref 
+ * @param P Prediction horizon
+ * @param W Time delay horizon
+ * @param n_CV Number of controlled variables
+ */
+static void setTau(VectorXd& tau, VectorXd* y_ref, int P, int W, int n_CV) {
+    tau.resize(n_CV * P);
+    for (int i = 0; i < n_CV; i++) {
+        tau.block(i * n_CV, 0, P, 1) = y_ref[i](Eigen::seq(0, P-1)); // Bit unsure on how to do time delay
+    }
+}
 
 void setWeightMatrices(SparseXd& Q_bar, SparseXd& R_bar, const MPCConfig& mpc_config) {
     MatrixXd Q = MatrixXd::Zero(mpc_config.P - mpc_config.W, mpc_config.P - mpc_config.W);
@@ -42,37 +109,11 @@ void setHessianMatrix(SparseXd& G, const SparseXd& Q_bar, const SparseXd& R_bar,
     G = 2 * fsr.getTheta().transpose() * Q_bar * fsr.getTheta() + 2 * R_bar;
 }
 
-void setKmatrix(SparseXd& K, int M, int n_MV) {
-    MatrixXd K_arg = MatrixXd::Zero(M, M);
-    std::array<double, 2> arr = {1.0, -1.0};
-    for (int i = 0; i < M; i++) {
-        for (int j = 0; j < arr.size(); j++) { // NB M > 2. 
-            if (i == M-1 && j == 1) {
-                break;
-            }
-            K_arg(i+j, i) = arr[j];
-        }
-    }
-    blkdiag(K, K_arg, n_MV);
-}
-
-void blkdiag(SparseXd& blk_mat, const MatrixXd& arg, int count) {
-    MatrixXd mat = MatrixXd::Zero(arg.rows() * count, arg.cols() * count);
-    for (int i = 0; i < count; i++) {
-        mat.block(i * arg.rows(), i * arg.cols(), arg.rows(), arg.cols()) = arg;
-    }
-    blk_mat = mat.sparseView();
-}
-
-void setKInv(MatrixXd& K_inv, int n) { 
-    K_inv = MatrixXd::Constant(n, n, 1);
-    K_inv = K_inv.triangularView<Eigen::Lower>();
-}
-
-void setGamma(SparseXd& gamma, int M, int n_MV) {
-    MatrixXd gamma_arg = MatrixXd::Zero(M, 1);
-    gamma_arg(0, 0) = 1.0;
-    blkdiag(gamma, gamma_arg, n_MV);
+void setGradientVector(VectorXd& q, FSRModel& fsr, const SparseXd& Q_bar,
+                        VectorXd* y_ref) {
+    VectorXd tau;
+    setTau(tau, y_ref, fsr.getP(), fsr.getW(), fsr.getN_CV());
+    q = 2 * fsr.getTheta().transpose() * Q_bar * (fsr.getLambda() - tau);
 }
 
 void setConstraintMatrix(SparseXd& A, const FSRModel& fsr, int m, int n) {
@@ -105,20 +146,6 @@ void setConstraintVectors(VectorXd& l, VectorXd& u, const VectorXd& z_min_pop, c
     u = z_max_pop - c;
 }
 
-void setTau(VectorXd& tau, VectorXd* y_ref, int P, int W, int n_CV) {
-    tau.resize(n_CV * P);
-    for (int i = 0; i < n_CV; i++) {
-        tau.block(i * n_CV, 0, P, 1) = y_ref[i](Eigen::seq(0, P-1)); // Bit unsure on how to do time delay
-    }
-}
-
-void setGradientVector(VectorXd& q, FSRModel& fsr, const SparseXd& Q_bar,
-                        VectorXd* y_ref) {
-    VectorXd tau;
-    setTau(tau, y_ref, fsr.getP(), fsr.getW(), fsr.getN_CV());
-    q = 2 * fsr.getTheta().transpose() * Q_bar * (fsr.getLambda() - tau);
-}
-
 void setOmegaU(SparseXd& omega, int M, int n_MV) {
     MatrixXd omega_dense = MatrixXd::Zero(n_MV, n_MV * M);
     for (int i = 0; i < n_MV; i++) {
@@ -126,3 +153,12 @@ void setOmegaU(SparseXd& omega, int M, int n_MV) {
     }
     omega = omega_dense.sparseView();
 }
+
+VectorXd PopulateConstraints(const VectorXd& z, int m, int n) {
+    VectorXd populated(m);
+    populated.block(0, 0, n, 1) = VectorXd::Constant(n, z(0));
+    populated.block(n, 0, n, 1) = VectorXd::Constant(n, z(1));
+    populated.block(2 * n, 0, m - 2 * n, 1) = VectorXd::Constant(m - 2 * n, z(2)); // m - 2n = P * n_CV
+
+    return populated;
+} 

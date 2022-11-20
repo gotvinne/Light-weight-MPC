@@ -36,21 +36,25 @@ void setWeightMatrices(SparseXd& Q_bar, SparseXd& R_bar, const MPCConfig& mpc_co
 void setHessianMatrix(SparseXd& G, const SparseXd& Q_bar, const SparseXd& R_bar, const FSRModel& fsr); 
 
 /**
- * @brief Calculate K matrix
+ * @brief Set the Gradient Vector object, NB! Dynamic output
  * 
- * @param K Eigen::SparseMatrix<double> to be filled 
- * @param M Control horizon
- * @param n_MV number of manupulated variables
+ * @param q 
+ * @param fsr Finite step response model
+ * @param Q_bar output tuning
+ * @param y_ref 
  */
-void setKmatrix(SparseXd& K, int M, int n_MV);
+void setGradientVector(VectorXd& q, FSRModel& fsr, const SparseXd& Q_bar,
+                        VectorXd* y_ref);
 
 /**
- * @brief Calculate K inv matrix, this is a lower triangular matrix
+ * @brief Set the Constraint Matrix object
  * 
- * @param K_inv Eigen::MatrixXd passed by reference
- * @param n size of K_inv
+ * @param A Eigen::SparseMatrix<double>
+ * @param fsr Finite step response model
+ * @param m Number of constraints
+ * @param n Number of optimization variables
  */
-void setKInv(MatrixXd& K_inv, int n);
+void setConstraintMatrix(SparseXd& A, const FSRModel& fsr, int m, int n);
 
 /**
  * @brief Set the Constraint Vectors object, NB! Dynamic output
@@ -67,25 +71,6 @@ void setConstraintVectors(VectorXd& l, VectorXd& u, const VectorXd& z_min_pop, c
                          FSRModel& fsr, int m, int n);
 
 /**
- * @brief Set the Constraint Matrix object
- * 
- * @param A Eigen::SparseMatrix<double>
- * @param fsr Finite step response model
- * @param m Number of constraints
- * @param n Number of optimization variables
- */
-void setConstraintMatrix(SparseXd& A, const FSRModel& fsr, int m, int n);
-
-/**
- * @brief Set the Gamma object
- * 
- * @param gamma 
- * @param M Control horizon
- * @param n_MV number of manipulated variables
- */
-void setGamma(SparseXd& gamma, int M, int n_MV); 
-
-/**
  * @brief Set the Omega U object
  * 
  * @param Omega_u
@@ -94,46 +79,15 @@ void setGamma(SparseXd& gamma, int M, int n_MV);
  */
 void setOmegaU(SparseXd& omega, int M, int n_MV);
 
-/**
- * @brief Set the Omega y object
- * 
- * @param Omega_y
- * @param P
- * @param n_CV 
- */
-void setOmegaY(SparseXd& omega, int P, int n_CV);
 
 /**
- * @brief Set the Tau object
+ * @brief 
  * 
- * @param tau 
- * @param y_ref 
- * @param P Prediction horizon
- * @param W Time delay horizon
- * @param n_CV Number of controlled variables
+ * @param z 
+ * @param m 
+ * @param n 
+ * @return VectorXd 
  */
-void setTau(VectorXd& tau, VectorXd* y_ref, int P, int W, int n_CV);
-
-/**
- * @brief Set the Gradient Vector object, NB! Dynamic output
- * 
- * @param q 
- * @param fsr Finite step response model
- * @param Q_bar output tuning
- * @param y_ref 
- */
-void setGradientVector(VectorXd& q, FSRModel& fsr, const SparseXd& Q_bar,
-                        VectorXd* y_ref);
-
-/**
- * @brief Helper function. Implementing block diagonal
- * 
- * @param blk_mat Eigen::SparseMatrix<double> to be block diagonalized
- * @param arg block argument
- * @param count Number of blocks
- */
-void blkdiag(SparseXd& blk_mat, const MatrixXd& arg, int count);
-
 VectorXd PopulateConstraints(const VectorXd& z, int m, int n);
 
 #endif // CONDENSED_QP_H
