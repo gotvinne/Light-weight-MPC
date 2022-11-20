@@ -1,4 +1,21 @@
 #!/bin/bash
+
+# CLI parser
+while getopts ':T:h' opt; do
+  case "$opt" in
+    T)
+      arg="$OPTARG"
+      echo "Processing option 'c' with '${OPTARG}' argument"
+      ;;
+
+    ?|h)
+      echo "Usage: $(basename $0) [-T int]"
+      exit 1
+      ;;
+  esac
+done
+shift "$(($OPTIND -1))"
+
 # Check if the folder exists
 if [[ ! -d "/build" ]]
 then
@@ -12,7 +29,7 @@ make
 # $? denote exit code
 if [ $? -eq 0 ]; then #Build successful
     echo 
-    ./light_weight
+    ./light_weight -T $arg
     if [ $? -eq 0 ]; then #Running successfull
         echo
     else

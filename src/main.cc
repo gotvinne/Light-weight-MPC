@@ -12,12 +12,12 @@
 #include "parse.h"
 #include "FSRModel.h"
 #include "data_objects.h"
-#include "CLI11.hpp"
 
 #include <map>
 #include <iostream>
 #include <string>
 
+#include <CLI/CLI.hpp>
 #include "nlohmann/json.hpp"
 #include <Eigen/Dense>
 using json = nlohmann::json; 
@@ -29,11 +29,10 @@ int main(int argc, char **argv) {
     CLI::App app{"Light Weight MPC"};
 
     // Define options
-    const int T = 0;
+    int T = 1;
     app.add_option("-T", T, "MPC horizon");
 
     CLI11_PARSE(app, argc, argv);
-
     // Testing step model:
     //float k = 5;
     //float tau = 15;
