@@ -69,20 +69,15 @@ The [nlohmann/json](https://json.nlohmann.me/api/basic_json/) library is used in
    "W": int, (Time delay)
    "Q": [Q1, Q2, ... , QP], (Positive definite)
    "R": [R1, R2, ... , RM], (Positive definite)
-   "Ro": double, (Slack variable)
+   "Ro_u": double, (Slack variable)
+   "Ro_l": double,
    "bias update": bool
  },
 
  "c": [ // Consider only take inn one constraint on du, u, y
-   {"du[1]": [low, high]}, (double)
-   ...,
-   {"du[M * n_MV]": [low, high]}, (double)
-   {"u[1]": [low, high]}, (double)
-   ...,
-   {"u[M * n_MV]": [low, high]}, (double)
-   {"y[1]": [low, high]}, (double)
-   ...,
-   {"y[P * n_CV]": [low, high]} (double)
+   {"du": [low, high]}, (double)
+   {"u": [low, high]}, (double)
+   {"y": [low, high]}, (double)
  ]
 }
 ``` 
