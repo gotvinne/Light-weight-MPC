@@ -48,23 +48,27 @@ int main(int argc, char **argv) {
     MPCConfig conf; //Default initializer
     VectorXd z_max;
     VectorXd z_min; 
-    Parse(sys_path, sce_path, m_map, sd, id, sys, conf, z_min, z_max, T);
-    
-    FSRModel fsr(sd.getSR(), m_map, conf.P, conf.M, conf.W, id.Inits, sd.getInits());
+    Parse(sys_path, sce_path, m_map, sd, id, sys, 
+            conf, z_min, z_max, T);
+
+    FSRModel fsr(sd.getSR(), m_map, conf.P, conf.M, 
+                conf.W, id.Inits, sd.getInits());
     //fsr.PrintPsi();
     MatrixXd u_mat; // Optimized actuation
     MatrixXd y_pred;
     sr_solver(T, u_mat, y_pred, fsr, conf, z_min, z_max, sd.getYRef());
 
     // Formatting: 
-    json output_data;
+    json write_data;
     string scenario = "sr_siso_test";
     string sim_filepath = "../data/simulations/sim_" + scenario + ".json"; 
 
-    //FormatSimData(output_data, sim_filepath, scenario, T, fsr.getN_CV(), fsr.getN_MV());
-    //FormatSimCV(output_data, sd, y_pred, fsr.getN_CV());
-    //FormatSimMV(output_data, id, u_mat, fsr.getN_MV());
-    //WriteJson(output_data, sim_filepath);
+    //FormatSimData(write_data, sim_filepath, scenario, T, fsr.getN_CV(), fsr.getN_MV());
+    //FormatSimCV(write_data, sd, y_pred, fsr.getN_CV());
+    //FormatSimMV(write_data, id, u_mat, fsr.getN_MV());
+    //WriteJson(write_data, sim_filepath);
+    FormatScenario(write_data, sim_filepath, scenario, sd, id, 
+                y_pred, u_mat, fsr.getN_CV(), fsr.getN_MV(), T);
 
     // // Flow: 
     // 1)

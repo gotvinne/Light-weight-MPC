@@ -18,6 +18,19 @@ using json = nlohmann::json;
 using MatrixXd = Eigen::MatrixXd;
 using string = std::string; 
 
+/**
+ * @brief 
+ * 
+ * @param vector 
+ * @param mat 
+ * @param row 
+ */
+static void FillVector(json& vector, const MatrixXd& mat, int row) {
+    for (int i = 0; i < mat.cols(); i++) {
+        vector.push_back(mat(row, i));
+    }
+}
+
 void WriteJson(const json& data, const string& filepath) {
     std::ofstream ofs(filepath);
     ofs << data.dump(4) << std::endl;
@@ -25,7 +38,7 @@ void WriteJson(const json& data, const string& filepath) {
 }
 
 void FormatSimData(json& data, const string& filepath, const string& scenario,
-                    int T, int n_CV, int n_MV) {
+                 int n_CV, int n_MV, int T) {
     data[kScenario] = scenario;
     data[kT] = T;
     data[kN_CV] = n_CV;
@@ -71,8 +84,11 @@ void FormatSimMV(json& data, const MVData& mv_data, const MatrixXd& u, int n_MV)
     data[kMV] = arr;
 }
 
-void FillVector(json& vector, const MatrixXd& mat, int row) {
-    for (int i = 0; i < mat.cols(); i++) {
-        vector.push_back(mat(row, i));
-    }
+void FormatScenario(json& data, const string& write_path, const string& scenario, const CVData& cv_data, const MVData& mv_data, 
+                    const MatrixXd& y_pred, const MatrixXd& u_mat, int n_CV, int n_MV, int T) {
+    FormatSimMV(data, mv_data, u_mat, n_MV);
+    FormatSimCV(data, cv_data, y_pred, n_CV);
+    FormatSimData(data, write_path, scenario, T, n_CV, n_MV);
+    WriteJson(data, write_path);
 }
+
