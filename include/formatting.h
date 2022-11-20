@@ -30,13 +30,13 @@ void WriteJson(const json& data, const string& filepath);
  * @brief Formats the plain data in simulation file
  * 
  * @param data 
- * @param filepath 
+ * @param system
  * @param scenario 
  * @param n_CV Number of controlled variables
  * @param n_MV Number of manipulated variables 
  * @param T MPC horizon
  */
-void FormatSimData(json& data, const string& filepath, const string& scenario, 
+void FormatSimData(json& data, const string& system, const string& scenario, 
                 int n_CV, int n_MV, int T);
 
 /**
@@ -59,7 +59,7 @@ void FormatSimCV(json& data, const CVData& cv_data, const MatrixXd& y_pred, int 
  */
 void FormatSimMV(json& data, const MVData& mv_data, const MatrixXd& u, int n_MV);
 
-void FormatScenario(json& data, const string& write_path, const string& scenario, const CVData& cv_data, const MVData& mv_data, 
+void FormatScenario(json& data, const string& write_path, const string & system, const string& scenario, const CVData& cv_data, const MVData& mv_data, 
                     const MatrixXd& y_pred, const MatrixXd& u_mat, int n_CV, int n_MV, int T);
 
 #endif  // FORMATTING_H

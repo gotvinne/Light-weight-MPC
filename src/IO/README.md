@@ -74,7 +74,7 @@ The [nlohmann/json](https://json.nlohmann.me/api/basic_json/) library is used in
    "bias update": bool
  },
 
- "c": [ // Consider only take inn one constraint on du, u, y
+ "c": [
    {"du": [low, high]}, (double)
    {"u": [low, high]}, (double)
    {"y": [low, high]}, (double)
@@ -99,12 +99,13 @@ The [nlohmann/json](https://json.nlohmann.me/api/basic_json/) library is used in
 ```json  
 {
  "scenario": "scenario_name", 
+ "system": "system_name",
  "T": int,
  "n_CV": int,
  "n_MV": int, 
  
  "CV": [ 
-      {  // This is only the predicted states, the simulation uses a model.
+      {  
          "output": "output_name",
          "unit": string, 
          "c": [low, high] (double),

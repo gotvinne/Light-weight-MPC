@@ -37,9 +37,10 @@ void WriteJson(const json& data, const string& filepath) {
     ofs.close();
 }
 
-void FormatSimData(json& data, const string& filepath, const string& scenario,
+void FormatSimData(json& data, const string& system, const string& scenario,
                  int n_CV, int n_MV, int T) {
     data[kScenario] = scenario;
+    data[kSystem] = system;
     data[kT] = T;
     data[kN_CV] = n_CV;
     data[kN_MV] = n_MV; 
@@ -84,11 +85,11 @@ void FormatSimMV(json& data, const MVData& mv_data, const MatrixXd& u, int n_MV)
     data[kMV] = arr;
 }
 
-void FormatScenario(json& data, const string& write_path, const string& scenario, const CVData& cv_data, const MVData& mv_data, 
+void FormatScenario(json& data, const string& write_path, const string& system, const string& scenario, const CVData& cv_data, const MVData& mv_data, 
                     const MatrixXd& y_pred, const MatrixXd& u_mat, int n_CV, int n_MV, int T) {
     FormatSimMV(data, mv_data, u_mat, n_MV);
     FormatSimCV(data, cv_data, y_pred, n_CV);
-    FormatSimData(data, write_path, scenario, T, n_CV, n_MV);
+    FormatSimData(data, system, scenario, T, n_CV, n_MV);
     WriteJson(data, write_path);
 }
 

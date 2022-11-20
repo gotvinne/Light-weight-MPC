@@ -67,7 +67,7 @@ int main(int argc, char **argv) {
     //FormatSimCV(write_data, sd, y_pred, fsr.getN_CV());
     //FormatSimMV(write_data, id, u_mat, fsr.getN_MV());
     //WriteJson(write_data, sim_filepath);
-    FormatScenario(write_data, sim_filepath, scenario, sd, id, 
+    FormatScenario(write_data, sim_filepath, sys, scenario, sd, id, 
                 y_pred, u_mat, fsr.getN_CV(), fsr.getN_MV(), T);
 
     // // Flow: 

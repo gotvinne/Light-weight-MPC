@@ -138,5 +138,6 @@
     "T": 1,
     "n_CV": 60,
     "n_MV": 1,
-    "scenario": "sr_siso_test"
+    "scenario": "sr_siso_test",
+    "system": "sr_siso_test"
 }
