@@ -5,6 +5,7 @@ from pathlib import Path
 
 # Simulation file specifiers
 SCENARIO = "scenario"
+SYSTEM = "system"
 T = "T"
 N_CV = "n_CV"
 N_MV = "n_MV"
@@ -30,6 +31,7 @@ class SimulationData():
         json_data = self.ReadSimulation(simulation_filepath)
 
         self.scenario = json_data[SCENARIO]
+        self.system = json_data[SYSTEM]
         self.T = json_data[T]
         self.n_CV = json_data[N_CV]
         self.n_MV = json_data[N_MV]
