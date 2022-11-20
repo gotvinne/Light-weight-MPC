@@ -12,6 +12,7 @@
 #include "parse.h"
 #include "FSRModel.h"
 #include "data_objects.h"
+#include "CLI11.hpp"
 
 #include <map>
 #include <iostream>
@@ -24,15 +25,21 @@ using VectorXd = Eigen::VectorXd;
 using MatrixXd = Eigen::MatrixXd;
 using string = std::string;
 
-int main() {
+int main(int argc, char **argv) {
+    CLI::App app{"Light Weight MPC"};
+
+    // Define options
+    const int T = 0;
+    app.add_option("-T", T, "MPC horizon");
+
+    CLI11_PARSE(app, argc, argv);
 
     // Testing step model:
     //float k = 5;
     //float tau = 15;
     //float theta = 3;
     //int N = 80;
-
-    const int T = 80; // MPC horizon. 
+ 
     string sys_filepath = "../data/systems/sr_siso_test.json";
     string sce_filepath = "../data/scenarios/siso_test.json";
     json sys_data = ReadJson(sys_filepath);

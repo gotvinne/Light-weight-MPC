@@ -48,6 +48,7 @@ conda install -n env -c conda-forge osqp-eigen
 conda install -n env -c conda-forge nlohmann_json
 conda install -n env -c conda-forge boost
 conda install -n env -c anaconda jupyter
+conda install -n env -c conda-forge cli11
 ```
 
 - Build and run program
