@@ -30,12 +30,6 @@ int main(int argc, char **argv) {
     int T = 1;
     app.add_option("-T", T, "MPC horizon");
     CLI11_PARSE(app, argc, argv);
-
-    // Testing step model:
-    //float k = 5;
-    //float tau = 15;
-    //float theta = 3;
-    //int N = 80;
  
     string sys_path = "../data/systems/sr_siso_test.json";
     string sce_path = "../data/scenarios/siso_test.json";
@@ -53,7 +47,7 @@ int main(int argc, char **argv) {
 
     FSRModel fsr(sd.getSR(), m_map, conf.P, conf.M, 
                 conf.W, id.Inits, sd.getInits());
-    //fsr.PrintPsi();
+    
     MatrixXd u_mat; // Optimized actuation
     MatrixXd y_pred;
     sr_solver(T, u_mat, y_pred, fsr, conf, z_min, z_max, sd.getYRef());
@@ -63,12 +57,8 @@ int main(int argc, char **argv) {
     string scenario = "sr_siso_test";
     string sim_filepath = "../data/simulations/sim_" + scenario + ".json"; 
 
-    //FormatSimData(write_data, sim_filepath, scenario, T, fsr.getN_CV(), fsr.getN_MV());
-    //FormatSimCV(write_data, sd, y_pred, fsr.getN_CV());
-    //FormatSimMV(write_data, id, u_mat, fsr.getN_MV());
-    //WriteJson(write_data, sim_filepath);
     FormatScenario(write_data, sim_filepath, sys, scenario, sd, id, 
-                y_pred, u_mat, fsr.getN_CV(), fsr.getN_MV(), T);
+                y_pred, u_mat, z_min, z_max, fsr.getN_CV(), fsr.getN_MV(), T);
 
     // // Flow: 
     // 1)
@@ -87,6 +77,5 @@ int main(int argc, char **argv) {
 
     // 4)
     // // Call python script to read data and plot simulation. **
-  
     return 0;
 }

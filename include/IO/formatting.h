@@ -11,6 +11,8 @@
 #include "IO/data_objects.h"
 
 #include <string>
+#include <vector>
+#include <map>
 
 #include "Eigen/Dense"
 #include <nlohmann/json.hpp>
@@ -44,20 +46,24 @@ void FormatSimData(json& data, const string& system, const string& scenario,
  * 
  * @param data 
  * @param cv_data CDData object
- * @param n_CV Number of controlled variables
- * @param z_min 
+ * @param z_min
  * @param z_max
+ * @param n_CV Number of controlled variables
+ * @param n_MV 
  */
-void FormatSimCV(json& data, const CVData& cv_data, const MatrixXd& y_pred, int n_CV);
+void FormatSimCV(json& data, const CVData& cv_data, const MatrixXd& y_pred, const MatrixXd& z_min,
+                 const MatrixXd& z_max, int n_CV, int n_MV);
 
 /**
  * @brief Formats the MV data in the simulation file
  * 
  * @param data 
  * @param mv_data MVData object
+ * @param z_min
+ * @param z_max
  * @param n_MV Number of manipulated variables
  */
-void FormatSimMV(json& data, const MVData& mv_data, const MatrixXd& u, int n_MV);
+void FormatSimMV(json& data, const MVData& mv_data, const MatrixXd& u, const VectorXd& z_min, const VectorXd& z_max, int n_MV);
 
 /**
  * @brief 
@@ -70,11 +76,13 @@ void FormatSimMV(json& data, const MVData& mv_data, const MatrixXd& u, int n_MV)
  * @param mv_data 
  * @param y_pred 
  * @param u_mat 
+ * @param z_min
+ * @param z_max
  * @param n_CV 
  * @param n_MV 
  * @param T 
  */
-void FormatScenario(json& data, const string& write_path, const string & system, const string& scenario, const CVData& cv_data, const MVData& mv_data, 
-                    const MatrixXd& y_pred, const MatrixXd& u_mat, int n_CV, int n_MV, int T);
-
+void FormatScenario(json& data, const string& write_path, const string& system, const string& scenario, const CVData& cv_data, const MVData& mv_data, 
+                    const MatrixXd& y_pred, const MatrixXd& u_mat, const VectorXd& z_min, const VectorXd& z_max, int n_CV, int n_MV, int T);
+                    
 #endif  // FORMATTING_H

@@ -34,7 +34,7 @@ CVData::CVData(const json& cv_data, int n_MV, int n_CV, int N, int T) : n_CV_{n_
         inits_.push_back(output_data.at(kInit));
         units_.push_back(output_data.at(kUnit));
 
-        if (output_data.at(kY_Ref).size() < T) {
+        if (int(output_data.at(kY_Ref).size()) < T) {
             throw std::invalid_argument("Too few input data for the horizon");
         }
         std::vector<double> ref = output_data.at(kY_Ref).get<std::vector<double>>();

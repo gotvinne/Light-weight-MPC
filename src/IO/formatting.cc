@@ -12,6 +12,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <map>
 
 #include <nlohmann/json.hpp>
 using json = nlohmann::json; 
@@ -46,7 +47,8 @@ void FormatSimData(json& data, const string& system, const string& scenario,
     data[kN_MV] = n_MV; 
 }
 
-void FormatSimCV(json& data, const CVData& cv_data, const MatrixXd& y_pred, int n_CV) {
+void FormatSimCV(json& data, const CVData& cv_data, const MatrixXd& y_pred, const MatrixXd& z_min,
+                 const MatrixXd& z_max, int n_CV, int n_MV) {
     json arr = json::array(); 
     
     std::vector<std::string> outputs = cv_data.getOutputs();
@@ -57,7 +59,9 @@ void FormatSimCV(json& data, const CVData& cv_data, const MatrixXd& y_pred, int 
         obj[kOutput] = outputs[i];
         obj[kUnit] = units[i];
 
-        // Fill inn c, y
+        obj[kC] = json::array({z_min(2 * n_MV + i), z_max(2 * n_MV + i)}); // Y constraints
+
+        // Fill inn y
         json y_pred_vec = json::array();
         FillVector(y_pred_vec, y_pred, i);
         obj[kY_pred] = y_pred_vec;
@@ -67,15 +71,16 @@ void FormatSimCV(json& data, const CVData& cv_data, const MatrixXd& y_pred, int 
     data[kCV] = arr;
 }
 
-void FormatSimMV(json& data, const MVData& mv_data, const MatrixXd& u, int n_MV) {
+void FormatSimMV(json& data, const MVData& mv_data, const MatrixXd& u, const VectorXd& z_min, const VectorXd& z_max, int n_MV) {
     json arr = json::array(); 
 
     for (int i = 0; i < n_MV; i++) {
         json obj = json::object();
         obj[kInput] = mv_data.Inputs[i];
         obj[kUnit] = mv_data.Units[i];
+
+        obj[kC] = json::array({z_min(n_MV + i), z_max(n_MV + i)}); // U constraints
         
-        // Fill inn c
         json u_vec = json::array();
         FillVector(u_vec, u, i);
         obj[kU] = u_vec;
@@ -86,10 +91,10 @@ void FormatSimMV(json& data, const MVData& mv_data, const MatrixXd& u, int n_MV)
 }
 
 void FormatScenario(json& data, const string& write_path, const string& system, const string& scenario, const CVData& cv_data, const MVData& mv_data, 
-                    const MatrixXd& y_pred, const MatrixXd& u_mat, int n_CV, int n_MV, int T) {
-    FormatSimMV(data, mv_data, u_mat, n_MV);
-    FormatSimCV(data, cv_data, y_pred, n_CV);
+                    const MatrixXd& y_pred, const MatrixXd& u_mat, const VectorXd& z_min, const VectorXd& z_max, int n_CV, int n_MV, int T) {
     FormatSimData(data, system, scenario, n_CV, n_MV, T);
+    FormatSimCV(data, cv_data, y_pred, z_min, z_max, n_CV, n_MV);
+    FormatSimMV(data, mv_data, u_mat, z_min, z_max, n_MV);
     WriteJson(data, write_path);
 }
 

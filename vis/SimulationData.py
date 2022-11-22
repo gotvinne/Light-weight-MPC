@@ -62,7 +62,7 @@ class SimulationData():
         for index, elem in enumerate(cv_data):
             outputs.append(elem[OUTPUT])
             cv_units.append(elem[UNIT])
-            # cv_constraints.append((elem[CONSTRAINT][0], elem[CONSTRAINT][1])) # Have not implemented constraint yet
+            cv_constraints.append((elem[CONSTRAINT][0], elem[CONSTRAINT][1])) # Constraints are stored as python tuples
 
             # Fill nparray
             # self.y.T[..., index] = elem[Y] # Have not implemented reference model yet
@@ -79,7 +79,7 @@ class SimulationData():
         for index, elem in enumerate(mv_data):
             inputs.append(elem[INPUT])
             mv_units.append(elem[UNIT])
-            # mv_constraints.append((elem[CONSTRAINT][0], elem[CONSTRAINT][1]))
+            mv_constraints.append((elem[CONSTRAINT][0], elem[CONSTRAINT][1]))
 
             self.u.T[..., index] = elem[U]
         self.inputs, self.mv_units, self.mv_constraints = inputs, mv_units, mv_constraints
