@@ -40,10 +40,11 @@ void setHessianMatrix(SparseXd& G, const SparseXd& Q_bar, const SparseXd& R_bar,
  * @param q 
  * @param fsr Finite step response model
  * @param Q_bar output tuning
- * @param y_ref 
+ * @param y_ref Reference vector 
+ * @param k MPC simulation step, concatinating y_ref
  */
 void setGradientVector(VectorXd& q, FSRModel& fsr, const SparseXd& Q_bar,
-                        VectorXd* y_ref);
+                        VectorXd* y_ref, int k);
 
 /**
  * @brief Set the Constraint Matrix object

@@ -52,7 +52,7 @@ void sr_solver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MP
 
     setWeightMatrices(Q_bar, R_bar, conf);
     setHessianMatrix(G, Q_bar, R_bar, fsr);
-    setGradientVector(q, fsr, Q_bar, y_ref);
+    setGradientVector(q, fsr, Q_bar, y_ref, 0); // Initial gradient
     setConstraintMatrix(A, fsr, m, n);
     setConstraintVectors(l, u, z_min_pop, z_max_pop, fsr, m, n);
 
@@ -87,7 +87,7 @@ void sr_solver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MP
 
         // Update MPC problem:
         setConstraintVectors(l, u, z_min_pop, z_max_pop, fsr, m, n);
-        setGradientVector(q, fsr, Q_bar, y_ref); // NB! not updating y_ref
+        setGradientVector(q, fsr, Q_bar, y_ref, k); 
         
         // Check if bounds are valid:
         if (!solver.updateBounds(l, u)) { throw std::runtime_error("Cannot update bounds"); }

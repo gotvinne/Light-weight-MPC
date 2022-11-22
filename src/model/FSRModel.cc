@@ -103,7 +103,7 @@ void FSRModel::setPhiMatrix() {
     for (int i = 0; i < n_CV_; i++) {
         for (int j = 0; j < n_MV_; j++) { 
             VectorXd vec = pp_SR_vec_[i][j](Eigen::seq(P_+j+1,Eigen::last)); // Accessing [S(P), ..., S(N-1)]
-            // Wrong here
+
             int pad = P_+j;
             VectorXd pad_vec = PadVec(vec, pad); // pad_vec.rows() == N-1 
             FillRowPhi(pad_vec, i);

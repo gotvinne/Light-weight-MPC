@@ -81,13 +81,13 @@ static void setGamma(SparseXd& gamma, int M, int n_MV) {
  * @param tau Reference vector on output
  * @param y_ref Reference data
  * @param P Prediction horizon
- * @param W Time delay horizon
  * @param n_CV Number of controlled variables
+ * @param k MPC simulation step
  */
-static void setTau(VectorXd& tau, VectorXd* y_ref, int P, int n_CV) { // Might need W
+static void setTau(VectorXd& tau, VectorXd* y_ref, int P, int n_CV, int k) { // Might need W
     tau.resize(n_CV * P);
     for (int i = 0; i < n_CV; i++) {
-        tau.block(i * n_CV, 0, P, 1) = y_ref[i](Eigen::seq(0, P-1)); // Bit unsure on how to do time delay
+        tau.block(i * n_CV, 0, P, 1) = y_ref[i](Eigen::seq(k, k + (P-1))); // Bit unsure on how to do time delay
     }
 }
 
@@ -108,9 +108,9 @@ void setHessianMatrix(SparseXd& G, const SparseXd& Q_bar, const SparseXd& R_bar,
 }
 
 void setGradientVector(VectorXd& q, FSRModel& fsr, const SparseXd& Q_bar,
-                        VectorXd* y_ref) {
+                        VectorXd* y_ref, int k) {
     VectorXd tau;
-    setTau(tau, y_ref, fsr.getP(), fsr.getN_CV());
+    setTau(tau, y_ref, fsr.getP(), fsr.getN_CV(), k);
     q = 2 * fsr.getTheta().transpose() * Q_bar * (fsr.getLambda() - tau);
 }
 
