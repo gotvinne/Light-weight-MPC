@@ -157,6 +157,6 @@ VectorXd PopulateConstraints(const VectorXd& c, int m, int n) {
     // Accessing the constraints for du, u and y, given in respectively 1st, 2nd and 3rd position
     populated.block(0, 0, n, 1) = VectorXd::Constant(n, c(0));
     populated.block(n, 0, n, 1) = VectorXd::Constant(n, c(1));
-    populated.block(2 * n, 0, m - 2 * n, 1) = VectorXd::Constant(m - 2 * n, z(c)); // m - 2n = P * n_CV
+    populated.block(2 * n, 0, m - 2 * n, 1) = VectorXd::Constant(m - 2 * n, c(2)); // m - 2n = P * n_CV
     return populated;
 } 

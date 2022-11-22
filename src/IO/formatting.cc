@@ -89,7 +89,7 @@ void FormatScenario(json& data, const string& write_path, const string& system, 
                     const MatrixXd& y_pred, const MatrixXd& u_mat, int n_CV, int n_MV, int T) {
     FormatSimMV(data, mv_data, u_mat, n_MV);
     FormatSimCV(data, cv_data, y_pred, n_CV);
-    FormatSimData(data, system, scenario, T, n_CV, n_MV);
+    FormatSimData(data, system, scenario, n_CV, n_MV, T);
     WriteJson(data, write_path);
 }
 
