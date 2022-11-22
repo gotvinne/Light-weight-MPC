@@ -22,7 +22,7 @@ done
 shift "$(($OPTIND -1))"
 
 cd build
-cmake .. -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX
+cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX
 make
 
 # $? denote exit code
