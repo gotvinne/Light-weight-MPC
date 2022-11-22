@@ -37,19 +37,19 @@ static void blkdiag(SparseXd& blk_mat, const MatrixXd& arg, int count) {
  * @param M Control horizon
  * @param n_MV number of manupulated variables
  */
-static void setKmatrix(SparseXd& K, int M, int n_MV) {
-    MatrixXd K_arg = MatrixXd::Zero(M, M);
-    std::array<double, 2> arr = {1.0, -1.0};
-    for (int i = 0; i < M; i++) {
-        for (int j = 0; j < arr.size(); j++) { // NB M > 2. 
-            if (i == M-1 && j == 1) {
-                break;
-            }
-            K_arg(i+j, i) = arr[j];
-        }
-    }
-    blkdiag(K, K_arg, n_MV);
-}
+// static void setKmatrix(SparseXd& K, int M, int n_MV) {
+//     MatrixXd K_arg = MatrixXd::Zero(M, M);
+//     std::array<double, 2> arr = {1.0, -1.0};
+//     for (int i = 0; i < M; i++) {
+//         for (int j = 0; j < int(arr.size()); j++) { // NB M > 2. 
+//             if (i == M-1 && j == 1) {
+//                 break;
+//             }
+//             K_arg(i+j, i) = arr[j];
+//         }
+//     }
+//     blkdiag(K, K_arg, n_MV);
+// }
 
 /**
  * @brief Calculate K inv matrix, this is a lower triangular matrix
@@ -84,7 +84,7 @@ static void setGamma(SparseXd& gamma, int M, int n_MV) {
  * @param W Time delay horizon
  * @param n_CV Number of controlled variables
  */
-static void setTau(VectorXd& tau, VectorXd* y_ref, int P, int W, int n_CV) {
+static void setTau(VectorXd& tau, VectorXd* y_ref, int P, int n_CV) { // Might need W
     tau.resize(n_CV * P);
     for (int i = 0; i < n_CV; i++) {
         tau.block(i * n_CV, 0, P, 1) = y_ref[i](Eigen::seq(0, P-1)); // Bit unsure on how to do time delay
@@ -110,7 +110,7 @@ void setHessianMatrix(SparseXd& G, const SparseXd& Q_bar, const SparseXd& R_bar,
 void setGradientVector(VectorXd& q, FSRModel& fsr, const SparseXd& Q_bar,
                         VectorXd* y_ref) {
     VectorXd tau;
-    setTau(tau, y_ref, fsr.getP(), fsr.getW(), fsr.getN_CV());
+    setTau(tau, y_ref, fsr.getP(), fsr.getN_CV());
     q = 2 * fsr.getTheta().transpose() * Q_bar * (fsr.getLambda() - tau);
 }
 

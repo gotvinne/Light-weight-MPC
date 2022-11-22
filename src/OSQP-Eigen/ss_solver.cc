@@ -11,6 +11,6 @@
 
 void ss_solver() {
 
-    OsqpEigen::Solver solver;
-    int sim_steps; 
+    //OsqpEigen::Solver solver;
+    //int sim_steps; 
 }

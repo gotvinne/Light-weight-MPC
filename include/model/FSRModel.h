@@ -77,7 +77,7 @@ private:
      * @param vec Vector to be filled n_MV times into phi
      * @param row row indicator
      */
-    void FillRowPhi(const VectorXd& vec, const int& row);
+    void FillRowPhi(const VectorXd& vec, int row);
 
     /**
      * @brief Pad the vector, by appending Sn (last element of vec) pad times
@@ -136,6 +136,7 @@ public:
 
     MatrixXd getTheta() const { return theta_; }
     VectorXd getUK() const { return u_K_; }
+    VectorXd getU() const { return u_; }
 
     /**
      * @brief 
@@ -156,7 +157,7 @@ public:
 
     /** Print functions */
     void PrintTheta();
-    void PrintPhi();
+    void PrintPhi(int P);
     void PrintPsi();
     void PrintActuation();
 };

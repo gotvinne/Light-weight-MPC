@@ -102,29 +102,31 @@ void FSRModel::setPhiMatrix() {
     // NB: Need supervision for padding Sn 
     for (int i = 0; i < n_CV_; i++) {
         for (int j = 0; j < n_MV_; j++) { 
-            VectorXd vec = pp_SR_vec_[i][j](Eigen::seq(P_-W_+j,Eigen::last));
-            if (vec.size() != N_-P_) { // Pad vector
-                int pad = vec.size() - (N_-W_-1);
-                VectorXd vec = PadVec(vec, pad);
-            }
-            FillRowPhi(vec, i);
+            VectorXd vec = pp_SR_vec_[i][j](Eigen::seq(P_+j+1,Eigen::last)); // Accessing [S(P), ..., S(N-1)]
+            // Wrong here
+            int pad = P_+j;
+            VectorXd pad_vec = PadVec(vec, pad); // pad_vec.rows() == N-1 
+            FillRowPhi(pad_vec, i);
+            
         }
     }
 }
 
 VectorXd FSRModel::PadVec(VectorXd& vec, int pad) {
-    double num = vec(Eigen::last); // Accessing Sn
-    VectorXd num_vec = VectorXd::Constant(pad, num);
-    VectorXd padded_vec(vec.size() + num_vec.size());
-    padded_vec << vec; // Concatinating two Eigen::VectorXd
-    padded_vec << num_vec;
+    double sn = vec(Eigen::last); // Accessing Sn
+    VectorXd sn_vec = VectorXd::Constant(pad, sn);
+
+    VectorXd padded_vec(vec.size() + sn_vec.size());
+    padded_vec << 
+        vec, sn_vec; // Concatinating two Eigen::VectorXd
     return padded_vec; 
 }
 
-void FSRModel::FillRowPhi(const VectorXd& pad_vec, const int& row) {
+void FSRModel::FillRowPhi(const VectorXd& pad_vec, int row) {
     for (int i = 0; i < n_MV_; i++) { // Might need to be tested
         for (int j = row; j < P_; j++) {
-            phi_(j, Eigen::seq(i*(N_-P_-1), (i+1)*(N_-P_-1))) = pad_vec(Eigen::seq(0, Eigen::last));
+            // Accessing phi by rows, pad_vec is a colum vector
+            phi_(j, Eigen::seq(i*(N_-2), (i+1)*(N_-2))) = pad_vec(Eigen::seq(0, Eigen::last)).transpose();
         } 
     }
 }
@@ -173,9 +175,9 @@ void FSRModel::PrintTheta() {
     std::cout << std::endl;
 }
 
-void FSRModel::PrintPhi() {
+void FSRModel::PrintPhi(int P) {
     std::cout << "Phi : " << "(" << phi_.rows() << ", " << phi_.cols() << ")" << std::endl;
-    std::cout << phi_ << std::endl; 
+    std::cout << phi_(P, Eigen::seq(0, Eigen::last)) << std::endl; 
     std::cout << std::endl;
 }
 
