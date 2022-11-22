@@ -74,10 +74,17 @@ The [nlohmann/json](https://json.nlohmann.me/api/basic_json/) library is used in
    "bias update": bool
  },
 
- "c": 
-   "du": [low, high], (double)
-   "u": [low, high], (double)
-   "y": [low, high], (double)
+ "c": [ // Assumin 1-1 relation
+   {"du[1]": [low, high]}, (double)
+   ...,
+   {"du[n_MV]": [low, high]}, (double)
+   {"u[1]": [low, high]}, (double)
+   ..., 
+   {"u[n_MV]": [low, high]}, (double)
+   {"y[1]": [low, high]}, (double)
+   ..., 
+   {"y[n_CV]": [low, high]}, (double)
+]
 }
 ``` 
 
