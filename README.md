@@ -54,8 +54,10 @@ conda install -n env -c conda-forge cli11
 ```
 
 - Build and run program, NB! setup.sh calls binary ./light_weight
+Arguments:
+- -T mpc_horizon: Simulate scenario for the given mpc_horizon
 ```console
-sh setup.sh
+sh setup.sh -T mpc_horizon
 ```
 
 ### LICENCE:
