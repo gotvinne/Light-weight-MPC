@@ -13,7 +13,7 @@ Operating system: Linux
 
 #### Supervisors:
 - Prof. Lars Struen Imsland (ITK) lars.imsland@ntnu.no
-- Prof. Gisle Otto Eikrem (Equinor) gise@equinor.com
+- Dr. Gisle Otto Eikrem (Equinor) gise@equinor.com
 
 ### Modules
 
@@ -25,7 +25,7 @@ Operating system: Linux
 - [Vis](vis/README.md): Visualizing simulations in jupyter notebook
 
 ### Dependancies:
-This software is developed using a environment and package manager [Anaconda](https://www.anaconda.com/products/distribution) and builded using [CMake](https://cmake.org/)
+This software is developed using a environment and package manager [conda][(https://docs.conda.io/en/latest/#)] and builded using [CMake](https://cmake.org/)
 
 Other libraries used: 
 - [OSQP](https://osqp.org/), Operator Splitting Quadratic program (Source code)
@@ -38,7 +38,7 @@ Other libraries used:
 ### Run Light-weight-MPC: 
 *From project root:* 
 
-- Use Anaconda in order to create environment *light_weight*:
+- Use conda in order to create environment *light_weight*:
 ```console
 conda env create -f env.yml
 ```
