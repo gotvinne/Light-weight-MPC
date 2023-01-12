@@ -29,3 +29,7 @@ $$ \Lambda(k) =  $$
 
 This solver solves the QP defining the MPC problem for a state-space model in reduced from. 
 
+
+## Known bugs
+- When setting du constaints to +-1 the algorihm bugs
+
