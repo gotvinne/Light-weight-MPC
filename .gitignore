@@ -361,3 +361,5 @@ cython_debug/
 \.vscode
 data/
 \.idea
+
+*.DS_Store
