@@ -9,26 +9,35 @@
  * 
  */
 
-#include <map>
-
-#include "IO/data_objects.h"
 #include "IO/update.h"
 #include "IO/parse.h"
+#include "IO/serialize.h"
+#include "IO/json_specifiers.h"
 
-void update_reference(json& arr, double value, int T) {
+#include <iostream>
+
+/**
+ * @brief Get the Reference object
+ * 
+ * @param arr 
+ * @param value 
+ * @param T 
+ */
+static void getReference(json& arr, double value, int T) {
     for (int i = 0; i < T; i++) {
         arr.push_back(value);
     }
 }
 
-void update_system(string& sys_path, double ref, int T) {
+void UpdateReference(const std::string& sys_path, double ref, int T) {
     json sys_data = ReadJson(sys_path);
+    json arr = json::array();
 
-    // System variables
-    std::map<string, int> m_map;
-    CVData sd;
-    MVData id;
+    getReference(arr, ref, T);
+    for (auto& elem : sys_data.at(kCV)) {
+        std::cout << elem[kOutput] << std::endl; 
+        elem[kY_Ref] = arr;
+    }
 
-    // Fetching data
-    ParseSystemData(sys_data, m_map, sd, id, T);
+    WriteJson(sys_data, sys_path);
 }

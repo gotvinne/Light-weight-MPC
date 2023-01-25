@@ -14,14 +14,16 @@
 
 #include <string>
 
-#include "nlohmann/json"
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
 
-
-using json = nhlomann::json;
-
-void update_reference(json& arr, double value, int T);
-
-void update_system(string sys_path, double ref, int T);
-
+/**
+ * @brief 
+ * 
+ * @param sys_path 
+ * @param ref 
+ * @param T 
+ */
+void UpdateReference(const std::string& sys_path, double ref, int T);
 
 #endif // UPDATE_H
