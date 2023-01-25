@@ -19,8 +19,8 @@ int main(int argc, char **argv) {
     CLI11_PARSE(app, argc, argv);
  
     //LightWeightMPC(T);
-    double value = 2;
-    UpdateSystem("../data/systems/sr_SingleWell.json", value, T);
+    double value = 1;
+    UpdateReference("../data/systems/sr_SingleWell.json", value, T);
 
 
     return 0;

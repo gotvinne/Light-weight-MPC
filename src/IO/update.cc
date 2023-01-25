@@ -14,8 +14,6 @@
 #include "IO/serialize.h"
 #include "IO/json_specifiers.h"
 
-#include <iostream>
-
 /**
  * @brief Get the Reference object
  * 
@@ -35,7 +33,6 @@ void UpdateReference(const std::string& sys_path, double ref, int T) {
 
     getReference(arr, ref, T);
     for (auto& elem : sys_data.at(kCV)) {
-        std::cout << elem[kOutput] << std::endl; 
         elem[kY_Ref] = arr;
     }
 
