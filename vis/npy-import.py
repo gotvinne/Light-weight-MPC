@@ -5,7 +5,7 @@ def PrintNpy(filepath):
     print(X)
     print(X.shape)
 
-PrintNpy("vis/S_11_data.npy")
-PrintNpy("vis/S_12_data.npy")
-PrintNpy("vis/S_21_data.npy")
-PrintNpy("vis/S_22_data.npy")
+PrintNpy("vis/S11_data.npy")
+PrintNpy("vis/S12_data.npy")
+PrintNpy("vis/S21_data.npy")
+PrintNpy("vis/S22_data.npy")
