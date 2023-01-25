@@ -97,6 +97,8 @@ The [nlohmann/json](https://json.nlohmann.me/api/basic_json/) library is used in
 "bias update": false 
 ```
 
+NB! The indicator for the constraints is only used for readability and is not parsed directly by the software. Hence, as long as the constraints are lined up in the format [dU, u, y], the simulation will be correct. 
+
 ### Output format
 
 - **The simulation file** contains every variable needed in order to assess the performance of the MPC configuration by plotting the data. 
