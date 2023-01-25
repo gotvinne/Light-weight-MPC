@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2022-12-17T12:45:26.691Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.1 Safari/605.1.15" etag="iYHHQoMaD7BvEfzgoDAa" version="20.7.4" type="github">
+<mxfile host="app.diagrams.net" modified="2023-01-13T23:06:48.923Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.1 Safari/605.1.15" etag="-R7aq2XvZ-N08sXn_CEu" version="20.8.5" type="github">
   <diagram id="cTGldeqNeF3A95PK3O-C" name="Page-1">
     <mxGraphModel dx="1194" dy="797" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -28,10 +28,10 @@
         <mxCell id="ZYnMo41hrXBqOUrwqI8F-10" value="" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#56517e;fillColor=#d0cee2;rotation=-90;" parent="1" vertex="1">
           <mxGeometry x="273.8" y="324.29" width="160.8" height="143.65" as="geometry" />
         </mxCell>
-        <mxCell id="M0u8ejIow3Axr5twfxeR-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="ZYnMo41hrXBqOUrwqI8F-12" target="ZYnMo41hrXBqOUrwqI8F-6">
+        <mxCell id="M0u8ejIow3Axr5twfxeR-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="ZYnMo41hrXBqOUrwqI8F-12" target="ZYnMo41hrXBqOUrwqI8F-6" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="ZYnMo41hrXBqOUrwqI8F-12" value="&lt;b&gt;Anaconda&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;movable=1;resizable=1;rotatable=1;deletable=1;editable=1;connectable=1;" parent="1" vertex="1">
+        <mxCell id="ZYnMo41hrXBqOUrwqI8F-12" value="&lt;b&gt;Conda&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;movable=1;resizable=1;rotatable=1;deletable=1;editable=1;connectable=1;" parent="1" vertex="1">
           <mxGeometry x="306.83" y="348.92" width="94.75" height="50" as="geometry" />
         </mxCell>
         <mxCell id="ZYnMo41hrXBqOUrwqI8F-14" value="Package Manager" style="text;html=1;strokeColor=#56517E;fillColor=#d0cee2;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#61177c;opacity=0;" parent="1" vertex="1">
@@ -58,7 +58,7 @@
         <mxCell id="ZYnMo41hrXBqOUrwqI8F-26" value="Compile setup" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontColor=#000000;fontStyle=2" parent="1" vertex="1">
           <mxGeometry x="499" y="370" width="104.99" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="M0u8ejIow3Axr5twfxeR-2" value="Packages" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontColor=#000000;fontStyle=2" vertex="1" parent="1">
+        <mxCell id="M0u8ejIow3Axr5twfxeR-2" value="Packages" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontColor=#000000;fontStyle=2" parent="1" vertex="1">
           <mxGeometry x="364.2" y="270" width="60" height="30" as="geometry" />
         </mxCell>
       </root>
