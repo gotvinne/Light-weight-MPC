@@ -1,11 +1,11 @@
 /**
- * @file reference_model.cc
+ * @file plant_model.cc
  * @author Geir Ola Tvinnereim
  * @copyright  Geir Ola Tvinnereim 
  * @date 2022
  */
 
-#include "model/reference_model.h"
+#include "model/plant_model.h"
 #include <random>
 
 float WhiteNoise(float sigma) {
