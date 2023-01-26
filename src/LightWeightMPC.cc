@@ -1,5 +1,5 @@
 /**
- * @file light_weight_MPC.cc
+ * @file LightWeightMPC.cc
  * @author your name (you@domain.com)
  * @brief 
  * @version 0.1
@@ -9,29 +9,13 @@
  * 
  */
 
-#include "IO/serialize.h"
-#include "IO/parse.h"
-#include "IO/data_objects.h"
-#include "OSQP-Eigen/sr_solver.h"
-#include "model/step_response_model.h"
-#include "model/FSRModel.h"
+#include "LightWeightMPC.h"
 
-#include <map>
-#include <iostream>
-#include <string>
-
-#include <nlohmann/json.hpp>
-#include <Eigen/Dense>
-using json = nlohmann::json; 
-using VectorXd = Eigen::VectorXd;
-using MatrixXd = Eigen::MatrixXd;
-using string = std::string;
-
-void LightWeightMPC(const string& sce, int T) {
+LightWeightMPC::LightWeightMPC(const string& sce, int T) {
 
     const string sim = "sim_" + sce;
     const string sys_path = "../data/systems/sr_siso_test.json";
-    const string sce_path = "../data/scenarios/" + sce + ".json";
+    const string sce_path = "../data/scenarios/sce_" + sce + ".json";
     const string sim_path = "../data/simulations/" + sim + ".json"; 
 
     // System variables
@@ -65,6 +49,4 @@ void LightWeightMPC(const string& sce, int T) {
     catch(std::exception& e) {
         std::cerr << "ERROR! " << e.what() << std::endl; 
     }
-    
-    
 }

@@ -5,8 +5,7 @@
  * @date 2022
  */
 
-#include "lightweight_MPC.h"
-
+#include "LightWeightMPC.h"
 #include "IO/update.h"
 
 #include <CLI/CLI.hpp>
@@ -19,9 +18,8 @@ int main(int argc, char **argv) {
     CLI11_PARSE(app, argc, argv);
  
     LightWeightMPC("siso_test",T);
+
     //double value = 1;
     //UpdateReference("../data/systems/sr_SingleWell.json", value, T);
-
-
     return 0;
 }
