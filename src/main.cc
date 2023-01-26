@@ -18,7 +18,7 @@ int main(int argc, char **argv) {
     app.add_option("-T", T, "MPC horizon");
     CLI11_PARSE(app, argc, argv);
  
-    LightWeightMPC(T);
+    LightWeightMPC("siso_test",T);
     //double value = 1;
     //UpdateReference("../data/systems/sr_SingleWell.json", value, T);
 

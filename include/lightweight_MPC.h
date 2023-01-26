@@ -12,8 +12,9 @@
 #ifndef LIGHTWEIGHT_MPC_H
 #define LIGHTWEIGHT_MPC_H
 
+#include <string>
+using string = std::string; 
 
-void LightWeightMPC(int T);
-
+void LightWeightMPC(const string& sce, int T);
 
 #endif // LIGHTWEIGHT_MPC_H

@@ -27,12 +27,12 @@ using VectorXd = Eigen::VectorXd;
 using MatrixXd = Eigen::MatrixXd;
 using string = std::string;
 
-void LightWeightMPC(int T) {
+void LightWeightMPC(const string& sce, int T) {
 
-    string sce = "siso_test";
-    string sys_path = "../data/systems/sr_siso_test.json";
-    string sce_path = "../data/scenarios/" + sce + ".json";
-    string sim_path = "../data/simulations/sim_siso_test.json"; 
+    const string sim = "sim_" + sce;
+    const string sys_path = "../data/systems/sr_siso_test.json";
+    const string sce_path = "../data/scenarios/" + sce + ".json";
+    const string sim_path = "../data/simulations/" + sim + ".json"; 
 
     // System variables
     std::map<string, int> m_map;
