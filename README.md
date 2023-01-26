@@ -55,9 +55,10 @@ conda install -n env -c conda-forge cli11
 
 - Build and run program, NB! setup.sh calls binary ./light_weight
 Arguments:
-- -T mpc_horizon: Simulate scenario for the given mpc_horizon
+- [-T int] mpc_horizon: Simulate scenario for the given mpc_horizon
+- [-s string] scenario_name: Scenario file to be simulated
 ```console
-sh setup.sh -T mpc_horizon
+sh setup.sh -T mpc_horizon -s sce
 ```
 
 ### LICENCE:
