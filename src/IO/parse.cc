@@ -89,10 +89,10 @@ void ParseSystemData(const json& sys_data, std::map<string, int>& model_param,
 }
 
 void ParseScenarioData(const json& sce_data, string& system, MPCConfig& mpc_config, 
-                        VectorXd& z_min, VectorXd& z_max, int n_CV, int n_MV) {
+                        VectorXd& z_min, VectorXd& z_max) {
     try {                     
         system = sce_data.at(kSystem);
-        mpc_config = MPCConfig(sce_data, n_CV, n_MV);
+        mpc_config = MPCConfig(sce_data);
         ConstraintData(sce_data, z_max, true); 
         ConstraintData(sce_data, z_min, false);
     }
@@ -101,12 +101,23 @@ void ParseScenarioData(const json& sce_data, string& system, MPCConfig& mpc_conf
     } 
 }
 
-void Parse(const string& sys_filepath, const string& sce_filepath, std::map<string, int>& model_param,
-                    CVData& output_data, MVData& input_data, string& system, MPCConfig& mpc_config, 
+void Parse(const string& sce_filepath, std::map<string, int>& model_param,
+                    CVData& output_data, MVData& input_data, MPCConfig& mpc_config, 
                         VectorXd& z_min, VectorXd& z_max, int T) {
-    json sys_data = ReadJson(sys_filepath);
+    // Parse scenario
     json sce_data = ReadJson(sce_filepath);
-
+    string system;
+    ParseScenarioData(sce_data, system, mpc_config, z_min, z_max);
+   
+    // Parse system
+    string sys_filepath = "../data/systems/" + system + ".json";
+    json sys_data = ReadJson(sys_filepath);
     ParseSystemData(sys_data, model_param, output_data, input_data, T);
-    ParseScenarioData(sce_data, system, mpc_config, z_min, z_max, model_param[kN_CV], model_param[kN_MV]);
+
+    if (model_param[kN_CV] != mpc_config.Q.cols()) {
+        throw std::invalid_argument("Q matrix dimension does not match system description");
+    }
+    if (model_param[kN_MV] != mpc_config.R.cols()) {
+        throw std::invalid_argument("R matrix dimension does not match system description");
+    }
 }

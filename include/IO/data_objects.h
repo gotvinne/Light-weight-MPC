@@ -129,10 +129,8 @@ struct MPCConfig {
      * @brief Construct a new MPCConfig object
      * 
      * @param sce_data nlohmann::json object holding scenario data
-     * @param n_CV number of controlled variables
-     * @param n_MV number of manipulated variables
      */
-    MPCConfig(const json& sce_data, int n_CV, int n_MV); 
+    MPCConfig(const json& sce_data); 
 };
 
 #endif // DATA_OBJECTS_H

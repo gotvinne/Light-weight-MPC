@@ -117,18 +117,22 @@ MVData::MVData(const json& mv_data, int n_MV) {
 }
 
 MPCConfig::MPCConfig() : P(), M(), W(), RoU(), RoL(), bias_update() {}
-MPCConfig::MPCConfig(const json& sce_data, int n_CV, int n_MV) {
+MPCConfig::MPCConfig(const json& sce_data) {
     json mpc_data = sce_data.at(kMPC);
     P = mpc_data.at(kP);
     M = mpc_data.at(kM);
     W = mpc_data.at(kW);
-    Q.resize((P-W)*n_CV); 
-    R.resize(M*n_MV);
+
+    int q_size = mpc_data.at(kQ).size();
+    int p_size = mpc_data.at(kR).size();
+    Q.resize(q_size); 
+    R.resize(p_size);
+
     // Implement size check
-    for (int i = 0; i < ((P-W)*n_CV); i++) {
+    for (int i = 0; i < q_size; i++) { //!!!! 
         Q[i] = mpc_data.at(kQ).at(i);
     }
-    for (int i = 0; i < M*n_MV; i++) {
+    for (int i = 0; i < p_size; i++) {
         R[i] = mpc_data.at(kR).at(i);
     }
     RoU = mpc_data.at(kRoU);

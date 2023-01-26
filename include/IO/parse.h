@@ -48,28 +48,24 @@ void ParseSystemData(const json& sys_data, std::map<string, int>& model_param,
  * @param mpc_conf MPCConfig object
  * @param z_min Eigen::VectorXF 
  * @param z_max Eigen::VectorXf
- * @param n_CV number of control variables 
- * @param n_MV number of manipulated variables
  */
 void ParseScenarioData(const json& sce_data, string& system, MPCConfig& mpc_conf, 
-                        VectorXd& z_min, VectorXd& z_max, int n_CV, int n_MV);
+                        VectorXd& z_min, VectorXd& z_max);
 
 /**
  * @brief Combines all parse functionality, parsing system and scenario file
  * 
- * @param sys_filepath system filepath 
  * @param sce_filepath scenario filepath
  * @param model_param map of model parameters
  * @param output_data CV system data  
  * @param input_data MV system data
- * @param system Corresponding system in scenario file
  * @param mpc_config MPC configuration data
  * @param z_min lower constraints 
  * @param z_max upper constraints
  * @param T MPC horizon
  */
-void Parse(const string& sys_filepath, const string& sce_filepath, std::map<string, int>& model_param,
-                    CVData& output_data, MVData& input_data, string& system, MPCConfig& mpc_config, 
+void Parse(const string& sce_filepath, std::map<string, int>& model_param,
+                    CVData& output_data, MVData& input_data, MPCConfig& mpc_config, 
                         VectorXd& z_min, VectorXd& z_max, int T);
 
 #endif  // PARSE_H
