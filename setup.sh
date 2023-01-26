@@ -7,28 +7,30 @@ then
 fi
 
 # CLI parser
-while getopts ':T:h' opt; do
-  case "$opt" in
+while getopts "s:T:h" flag; 
+do
+  case ${flag} in
     T)
-      arg="$OPTARG"
-      ;;
+      argT=${OPTARG};;
+
+    s) 
+      argS=${OPTARG};;
 
     ?|h)
-      echo "Usage: $(basename $0) [-T int]"
-      exit 1
-      ;;
+      echo "Usage: $(basename $0) [-T int] [-s string]"
+      exit 1;;
   esac
 done
-shift "$(($OPTIND -1))"
 
 cd build
+# Building Release
 cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX
 make
 
 # $? denote exit code
 if [ $? -eq 0 ]; then #Build successful
     echo 
-    ./light_weight -T $arg
+    ./light_weight -T $argT -s $argS
     if [ $? -eq 0 ]; then #Running successfull
         echo
     else
