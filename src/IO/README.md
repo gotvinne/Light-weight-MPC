@@ -107,7 +107,6 @@ NB! The indicator for the constraints is only used for readability and is not pa
 ```json  
 {
  "scenario": "scenario_name", 
- "system": "system_name",
  "T": int,
  "n_CV": int,
  "n_MV": int, 
