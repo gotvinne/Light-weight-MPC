@@ -34,9 +34,9 @@ class CVData {
 
     public:
     /**
-     * @brief Empty Constructor. Construct a new CVData object.
+     * @brief Empty Constructor. Construct an empty object only allocating data.
      */
-    CVData();
+    CVData(int T);
 
     /**
      * @brief Constructor. Construct a new CVData object. Allocating memory for pp_SR_vec

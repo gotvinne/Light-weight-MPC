@@ -21,7 +21,10 @@ using VectorXd = Eigen::VectorXd;
     Check that S is correct with N_MV and N_CV
     Check that number of S is correct with n_CV
 */
-CVData::CVData() {}
+CVData::CVData(int T) {
+    AllocateVectors(T);
+}
+
 CVData::CVData(const json& cv_data, int n_MV, int n_CV, int N, int T) : n_CV_{n_CV}, n_MV_{n_MV}, N_{N} {
     int n_outputs = cv_data.size();
     if (n_outputs != n_CV) {
@@ -123,18 +126,26 @@ MPCConfig::MPCConfig(const json& sce_data) {
     M = mpc_data.at(kM);
     W = mpc_data.at(kW);
 
-    int q_size = mpc_data.at(kQ).size();
-    int p_size = mpc_data.at(kR).size();
-    Q.resize(q_size); 
-    R.resize(p_size);
+    Q.resize(P-W); 
+    R.resize(M);
+    try {
+        for (int i = 0; i < (P-W); i++) { 
+            Q[i] = mpc_data.at(kQ).at(i);
+        }
+    }
+    catch(std::out_of_range& e) {
+        std::cerr << "ERROR! " << "Q matrix dimension does not match system description" << std::endl;
+    }
+    
+    try {
+        for (int i = 0; i < M; i++) {
+            R[i] = mpc_data.at(kR).at(i);
+        }
+    }
+    catch(std::out_of_range& e) {
+        std::cerr << "ERROR! " << "R matrix dimension does not match system description" << std::endl;
+    }
 
-    // Implement size check
-    for (int i = 0; i < q_size; i++) { //!!!! 
-        Q[i] = mpc_data.at(kQ).at(i);
-    }
-    for (int i = 0; i < p_size; i++) {
-        R[i] = mpc_data.at(kR).at(i);
-    }
     RoU = mpc_data.at(kRoU);
     RoL = mpc_data.at(kRoL);
     bias_update = mpc_data.at(kBu);
