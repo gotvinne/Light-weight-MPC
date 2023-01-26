@@ -42,10 +42,8 @@ void WriteJson(const json& data, const string& filepath) {
     ofs.close();
 }
 
-void SerializeSimData(json& data, const string& system, const string& scenario,
-                 int n_CV, int n_MV, int T) {
+void SerializeSimData(json& data, const string& scenario, int n_CV, int n_MV, int T) {
     data[kScenario] = scenario;
-    data[kSystem] = system;
     data[kT] = T;
     data[kN_CV] = n_CV;
     data[kN_MV] = n_MV; 
@@ -94,9 +92,9 @@ void SerializeSimMV(json& data, const MVData& mv_data, const MatrixXd& u, const 
     data[kMV] = arr;
 }
 
-void SerializeSimulation(json& data, const string& write_path, const string& system, const string& scenario, const CVData& cv_data, const MVData& mv_data, 
+void SerializeSimulation(json& data, const string& write_path, const string& scenario, const CVData& cv_data, const MVData& mv_data, 
                     const MatrixXd& y_pred, const MatrixXd& u_mat, const VectorXd& z_min, const VectorXd& z_max, int n_CV, int n_MV, int T) {
-    SerializeSimData(data, system, scenario, n_CV, n_MV, T);
+    SerializeSimData(data, scenario, n_CV, n_MV, T);
     SerializeSimCV(data, cv_data, y_pred, z_min, z_max, n_CV, n_MV);
     SerializeSimMV(data, mv_data, u_mat, z_min, z_max, n_MV);
     WriteJson(data, write_path);

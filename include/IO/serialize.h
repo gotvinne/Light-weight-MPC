@@ -36,13 +36,12 @@ void WriteJson(const json& data, const string& filepath);
  * @brief Formats the plain data in simulation file
  * 
  * @param data 
- * @param system
  * @param scenario 
  * @param n_CV Number of controlled variables
  * @param n_MV Number of manipulated variables 
  * @param T MPC horizon
  */
-void SerializeSimData(json& data, const string& system, const string& scenario, 
+void SerializeSimData(json& data, const string& scenario, 
                 int n_CV, int n_MV, int T);
 
 /**
@@ -74,7 +73,6 @@ void SerializeSimMV(json& data, const MVData& mv_data, const MatrixXd& u, const 
  * 
  * @param data 
  * @param write_path 
- * @param system 
  * @param scenario 
  * @param cv_data 
  * @param mv_data 
@@ -86,7 +84,7 @@ void SerializeSimMV(json& data, const MVData& mv_data, const MatrixXd& u, const 
  * @param n_MV 
  * @param T 
  */
-void SerializeSimulation(json& data, const string& write_path, const string& system, const string& scenario, const CVData& cv_data, const MVData& mv_data, 
+void SerializeSimulation(json& data, const string& write_path, const string& scenario, const CVData& cv_data, const MVData& mv_data, 
                     const MatrixXd& y_pred, const MatrixXd& u_mat, const VectorXd& z_min, const VectorXd& z_max, int n_CV, int n_MV, int T);    
 
 
