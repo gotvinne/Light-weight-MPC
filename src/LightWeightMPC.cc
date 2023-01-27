@@ -12,7 +12,6 @@
 #include "LightWeightMPC.h"
 
 LightWeightMPC::LightWeightMPC(const string& sce, int T) {
-
     const string sim = "sim_" + sce;
     const string sys_path = "../data/systems/sr_siso_test.json";
     const string sce_path = "../data/scenarios/sce_" + sce + ".json";
@@ -20,7 +19,7 @@ LightWeightMPC::LightWeightMPC(const string& sce, int T) {
 
     // System variables
     std::map<string, int> m_map;
-    CVData sd;
+    CVData sd(T);
     MVData id;
 
     // Scenario variables:
@@ -29,24 +28,20 @@ LightWeightMPC::LightWeightMPC(const string& sce, int T) {
     VectorXd z_min; 
 
     // Parse
-    try {
-        Parse(sce_path, m_map, sd, id, 
-            conf, z_min, z_max, T);
-        
-        // Model setup
-        FSRModel fsr(sd.getSR(), m_map, conf.P, conf.M, 
-                    conf.W, id.Inits, sd.getInits());
-        
-        MatrixXd u_mat; // Optimized actuation
-        MatrixXd y_pred;
-        sr_solver(T, u_mat, y_pred, fsr, conf, z_min, z_max, sd.getYRef());
+    Parse(sce_path, m_map, sd, id, 
+        conf, z_min, z_max, T);
+    
+    // Model setup
+    FSRModel fsr(sd.getSR(), m_map, conf.P, conf.M, 
+                 conf.W, id.Inits, sd.getInits());
+    
+    // MatrixXd u_mat; // Optimized actuation
+    // MatrixXd y_pred;
+    // sr_solver(T, u_mat, y_pred, fsr, conf, z_min, z_max, sd.getYRef());
 
-        // // Serializing: 
-        json write_data;
-        SerializeSimulation(write_data, sim_path, sce, sd, id, 
-                     y_pred, u_mat, z_min, z_max, fsr.getN_CV(), fsr.getN_MV(), T);
-    }
-    catch(std::exception& e) {
-        std::cerr << "ERROR! " << e.what() << std::endl; 
-    }
+    // // // Serializing: 
+    // json write_data;
+    // SerializeSimulation(write_data, sim_path, sce, sd, id, 
+    //              y_pred, u_mat, z_min, z_max, fsr.getN_CV(), fsr.getN_MV(), T);
+
 }

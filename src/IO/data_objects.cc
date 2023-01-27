@@ -17,6 +17,19 @@
 using json = nlohmann::json; 
 using VectorXd = Eigen::VectorXd;
 
+/**
+ * @brief Convert a nlohmann::json::array to Eigen::VectorXd
+ * 
+ * @param vec Eigen::VectorXD
+ * @param arr nlohmann::json::array
+ */
+static void EigenFromJson(VectorXd& vec, const json& arr) {
+    size_t i = 0;
+    for (const auto& elem : arr) {
+        vec(i++) = (double) elem;
+    }
+}
+
 /* Error handling:
     Check that S is correct with N_MV and N_CV
     Check that number of S is correct with n_CV
@@ -31,18 +44,21 @@ CVData::CVData(const json& cv_data, int n_MV, int n_CV, int N, int T) : n_CV_{n_
         throw std::invalid_argument("n_CV does not coincide with CV");
     }
     AllocateVectors(T);
-    for (int outputs = 0; outputs < n_CV; outputs++) {
-        json output_data = cv_data.at(outputs); //Selecting one output
-        outputs_.push_back(output_data.at(kOutput));
-        inits_.push_back(output_data.at(kInit));
-        units_.push_back(output_data.at(kUnit));
+    
+    int i = 0;
+    for (auto& cv : cv_data) {
+        outputs_.push_back(cv.at(kOutput));
+        inits_.push_back(cv.at(kInit));
+        units_.push_back(cv.at(kUnit));
 
-        if (int(output_data.at(kY_Ref).size()) < T) {
-            throw std::invalid_argument("Too few input data for the horizon");
+        if (int(cv.at(kY_Ref).size()) != T) {
+            throw std::invalid_argument("Wrong number of reference data for the horizon");
         }
-        std::vector<double> ref = output_data.at(kY_Ref).get<std::vector<double>>();
-        y_ref_[outputs] = VectorXd::Map(&ref[0], ref.size()); // Fill one vector
-        FillSR(output_data.at(kS));
+        EigenFromJson(y_ref_[i], cv.at(kY_Ref)); // Fill one vector
+        for (int mv = 0; mv < n_MV_; mv++) {
+            FillSR(cv.at(kS), i, mv);
+        }
+        i++;
     }                          
 }
 
@@ -54,7 +70,7 @@ CVData::~CVData() {
     delete[] pp_SR_vec_;
 }
 
-void CVData::AllocateVectors(const int& T) {
+void CVData::AllocateVectors(int T) {
     // Allocate vector of Eigen::VectorXd
     y_ref_ = new VectorXd[n_CV_];
     // Allocate matrix of Eigen::VectorXd
@@ -93,16 +109,10 @@ CVData& CVData::operator=(const CVData& rhs) {
     return *this;
 }
 
-void CVData::FillSR(const json& s_data) {
-    for (int i = 0; i < n_CV_; i++) {
-        for (int j = 0; j < n_MV_; j++) {
-            VectorXd vec = VectorXd::Zero(N_);
-            for (int k = 0; k < N_; k++) {
-                vec(k) = s_data.at(i).at(k);
-            }
-            pp_SR_vec_[i][j] = vec;
-        }
-    }       
+void CVData::FillSR(const json& s_data, int cv, int mv) {
+    VectorXd vec = VectorXd::Zero(N_);
+    EigenFromJson(vec, s_data.at(mv));
+    pp_SR_vec_[cv][mv] = vec;    
 }
 
 MVData::MVData() {}

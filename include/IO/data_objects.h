@@ -58,15 +58,17 @@ class CVData {
      * @brief Filling the dobbel linked VectorXd
      * 
      * @param s_data 
+     * @param cv 
+     * @param mv
      */
-    void FillSR(const json& s_data);
+    void FillSR(const json& s_data, int cv, int mv);
 
     /**
      * @brief Helper function, allocating Eigen::VectorXd in constuctor
      * 
      * @param T MPC horizon, used to allocate y_ref
      */
-    void AllocateVectors(const int& T);
+    void AllocateVectors(int T);
 
     /**
      * @brief Operator assignment, performing deep copying

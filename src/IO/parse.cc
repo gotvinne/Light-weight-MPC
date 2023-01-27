@@ -113,11 +113,4 @@ void Parse(const string& sce_filepath, std::map<string, int>& model_param,
     string sys_filepath = "../data/systems/" + system + ".json";
     json sys_data = ReadJson(sys_filepath);
     ParseSystemData(sys_data, model_param, output_data, input_data, T);
-
-    if (model_param[kN_CV] != mpc_config.Q.cols()) {
-        throw std::invalid_argument("Q matrix dimension does not match system description");
-    }
-    if (model_param[kN_MV] != mpc_config.R.cols()) {
-        throw std::invalid_argument("R matrix dimension does not match system description");
-    }
 }

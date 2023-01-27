@@ -1,8 +1,12 @@
 /**
  * @file main.cc
  * @author Geir Ola Tvinnereim
- * @copyright  Geir Ola Tvinnereim 
- * @date 2022
+ * @brief 
+ * @version 0.1
+ * @date 2023-01-26
+ * 
+ * @copyright Copyright (c) 2023
+ * 
  */
 
 #include "LightWeightMPC.h"
@@ -15,7 +19,7 @@ using string = std::string;
 
 int main(int argc, char **argv) {
     CLI::App app{"Light Weight MPC"};
-    // ---- Parse CLI -----
+    // ---- Parse CLI ---- //
 
     // Default
     int T = 1;
@@ -25,8 +29,8 @@ int main(int argc, char **argv) {
     app.add_option("-s", sce, "Scenario name");
     CLI11_PARSE(app, argc, argv);
  
-    std::cout << sce << std::endl;
-    //LightWeightMPC("siso_test",T);
+    // ---- Light-weight MPC ---- //
+    LightWeightMPC(sce, T);
 
     //double value = 1;
     //UpdateReference("../data/systems/sr_SingleWell.json", value, T);
