@@ -35,9 +35,9 @@ LightWeightMPC::LightWeightMPC(const string& sce, int T) {
     FSRModel fsr(sd.getSR(), m_map, conf.P, conf.M, 
                  conf.W, id.Inits, sd.getInits());
     
-    // MatrixXd u_mat; // Optimized actuation
-    // MatrixXd y_pred;
-    // sr_solver(T, u_mat, y_pred, fsr, conf, z_min, z_max, sd.getYRef());
+    MatrixXd u_mat; // Optimized actuation
+    MatrixXd y_pred;
+    SRSolver(T, u_mat, y_pred, fsr, conf, z_min, z_max, sd.getYRef());
 
     // // // Serializing: 
     // json write_data;
