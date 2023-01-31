@@ -20,15 +20,15 @@ using SparseXd = Eigen::SparseMatrix<double>;
 void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPCConfig& conf, const VectorXd& z_min, 
              const VectorXd& z_max, VectorXd* y_ref) {
     // Setup solver:
-    // OsqpEigen::Solver solver;
-    // solver.settings()->setWarmStart(true); // Starts primal and dual variables from previous QP
-    // solver.settings()->setVerbosity(false); // Disable printing
+    OsqpEigen::Solver solver;
+    solver.settings()->setWarmStart(true); // Starts primal and dual variables from previous QP
+    solver.settings()->setVerbosity(false); // Disable printing
 
     // MPC Scenario variables:
-    // int M = fsr.getM();
-    // int P = fsr.getP();
-    // int n_MV = fsr.getN_MV();
-    // int n_CV = fsr.getN_CV();
+    int M = fsr.getM();
+    int P = fsr.getP();
+    int n_MV = fsr.getN_MV();
+    int n_CV = fsr.getN_CV();
 
     // // Define QP:
     // const int n = M * n_MV; // #Optimization variables 

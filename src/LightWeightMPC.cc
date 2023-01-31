@@ -10,17 +10,19 @@
  */
 
 #include "LightWeightMPC.h"
+#include "OSQP-Eigen/sr_solver.h"
+#include <iostream>
 
-LightWeightMPC::LightWeightMPC(const string& sce, int T) {
-    const string sim = "sim_" + sce;
+LightWeightMPC::LightWeightMPC(const string& sce, int T) : sce_{sce}, T_{T} {
+    const string sim = "sim_" + sce_;
     const string sys_path = "../data/systems/sr_siso_test.json";
     const string sce_path = "../data/scenarios/sce_" + sce + ".json";
     const string sim_path = "../data/simulations/" + sim + ".json"; 
 
     // System variables
     std::map<string, int> m_map;
-    CVData sd(T);
-    MVData id;
+    CVData cvd(T_);
+    MVData mvd;
 
     // Scenario variables:
     MPCConfig conf; //Default initializer
@@ -28,16 +30,29 @@ LightWeightMPC::LightWeightMPC(const string& sce, int T) {
     VectorXd z_min; 
 
     // Parse
-    Parse(sce_path, m_map, sd, id, 
-        conf, z_min, z_max, T);
+    Parse(sce_path, m_map, cvd, mvd, 
+        conf, z_min, z_max, T_);
+
+    //std::cout << cvd.getYRef() << std::endl;
     
-    // Model setup
-    FSRModel fsr(sd.getSR(), m_map, conf.P, conf.M, 
-                 conf.W, id.Inits, sd.getInits());
+    // // Model setup
+    // FSRModel fsr(sd.getSR(), m_map, conf.P, conf.M, 
+    //              conf.W, mvd.Inits, cvd.getInits());
     
-    MatrixXd u_mat; // Optimized actuation
-    MatrixXd y_pred;
-    SRSolver(T, u_mat, y_pred, fsr, conf, z_min, z_max, sd.getYRef());
+    // MatrixXd u_mat; // Optimized actuation
+    // MatrixXd y_pred;
+
+    // std::cout << fsr.getN_CV() << std::endl;
+    // std::cout << fsr.getN_MV() << std::endl;
+    // std::cout << fsr.getP() << std::endl;
+    // std::cout << fsr.getM() << std::endl;
+    // std::cout << sd.getYRef() << std::endl;
+
+    // fsr.PrintTheta();
+    // fsr.PrintPhi(0);
+    // fsr.PrintPsi();
+    
+    //SRSolver(T_, u_mat, y_pred, fsr, conf, z_min, z_max, cvd.getYRef());
 
     // // // Serializing: 
     // json write_data;

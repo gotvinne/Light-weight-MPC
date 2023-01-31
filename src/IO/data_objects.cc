@@ -24,8 +24,8 @@ using VectorXd = Eigen::VectorXd;
  * @param arr nlohmann::json::array
  */
 static void EigenFromJson(VectorXd& vec, const json& arr) {
-    size_t i = 0;
-    for (const auto& elem : arr) {
+    int i = 0;
+    for (auto& elem : arr) {
         vec(i++) = (double) elem;
     }
 }
@@ -35,7 +35,7 @@ static void EigenFromJson(VectorXd& vec, const json& arr) {
     Check that number of S is correct with n_CV
 */
 CVData::CVData(int T) {
-    AllocateVectors(T);
+    AllocateVectors(T); // Since destructor is called. 
 }
 
 CVData::CVData(const json& cv_data, int n_MV, int n_CV, int N, int T) : n_CV_{n_CV}, n_MV_{n_MV}, N_{N} {
@@ -87,6 +87,7 @@ void CVData::AllocateVectors(int T) {
 }
 
 CVData& CVData::operator=(const CVData& rhs) {
+    // Implemented without deep-copying. Since we assume default constructor is called first. 
     n_CV_ = rhs.n_CV_;
     n_MV_ = rhs.n_MV_;
     N_ = rhs.N_;
@@ -97,11 +98,12 @@ CVData& CVData::operator=(const CVData& rhs) {
     // Deep copying
     y_ref_ = new VectorXd[n_CV_];
     pp_SR_vec_ = new VectorXd*[n_CV_];
-    for (int i = 0; i < n_CV_; ++i) {
-        y_ref_[i] = rhs.y_ref_[i];
-        pp_SR_vec_[i] = new VectorXd[n_MV_];
+    for (int cv = 0; cv < n_CV_; cv++) {
+        y_ref_[cv] = VectorXd::Zero(rhs.y_ref_[cv].rows()); // rhs.y_ref_[cv].rows() = T
+        pp_SR_vec_[cv] = new VectorXd[n_MV_];
     }
     for (int row = 0; row < n_CV_; row++) {
+        y_ref_[row](Eigen::seq(0, Eigen::last)) = rhs.y_ref_[row](Eigen::seq(0, Eigen::last));
         for (int col = 0; col < n_MV_; col++) {
             pp_SR_vec_[row][col] = rhs.pp_SR_vec_[row][col];
         }

@@ -31,9 +31,11 @@ using MatrixXd = Eigen::MatrixXd;
 using string = std::string;
 
 class LightWeightMPC {
+private:
+    string sce_;
+    int T_;
 public:
     LightWeightMPC(const string& sce, int T);
-
 };
 
 #endif // LIGHTWEIGHT_MPC_H
