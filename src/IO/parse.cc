@@ -78,13 +78,7 @@ void ParseSystemData(const json& sys_data, std::map<string, int>& model_param,
         json mv_data = sys_data.at(kMV);
 
         output_data = CVData(cv_data, model_param[kN_MV], model_param[kN_CV], model_param[kN], T);
-        
-        VectorXd vec = output_data.getYRef()[0];
-        for (int i = 0; i < vec.rows(); i++) {
-            std::cout << vec(i) << std::endl;
-        }
-        
-        //input_data = MVData(mv_data, model_param[kN_MV]); 
+        input_data = MVData(mv_data, model_param[kN_MV]); 
     }
     catch(json::exception& e) {
         std::cerr << "ERROR! " << e.what() << std::endl; 

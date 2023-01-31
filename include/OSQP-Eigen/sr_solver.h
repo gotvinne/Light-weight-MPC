@@ -27,7 +27,7 @@ using SparseXd = Eigen::SparseMatrix<double>;
  * @param z_max upper constraint vector
  * @param y_ref Output reference data
  */
-void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPCConfig& conf,
-            const VectorXd& z_min, const VectorXd& z_max, VectorXd* y_ref);
+void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPCConfig& conf, const VectorXd& z_min, 
+             const VectorXd& z_max, VectorXd* y_ref);
 
 #endif // SR_SOLVER_H

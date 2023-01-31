@@ -12,47 +12,43 @@
 #include <stdexcept>
 
 #include "OsqpEigen/OsqpEigen.h"
-#include <Eigen/Eigen>
-using VectorXd = Eigen::VectorXd;
-using MatrixXd = Eigen::MatrixXd;
-using SparseXd = Eigen::SparseMatrix<double>;
 
 void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPCConfig& conf, const VectorXd& z_min, 
              const VectorXd& z_max, VectorXd* y_ref) {
     // Setup solver:
     OsqpEigen::Solver solver;
-    solver.settings()->setWarmStart(true); // Starts primal and dual variables from previous QP
-    solver.settings()->setVerbosity(false); // Disable printing
+    //solver.settings()->setWarmStart(true); // Starts primal and dual variables from previous QP
+    //solver.settings()->setVerbosity(false); // Disable printing
 
     // MPC Scenario variables:
-    int M = fsr.getM();
-    int P = fsr.getP();
+    int P = fsr.getP(); // Prediction Horizon
+    int M = fsr.getM(); // Control Horizon
     int n_MV = fsr.getN_MV();
     int n_CV = fsr.getN_CV();
 
-    // // Define QP:
-    // const int n = M * n_MV; // #Optimization variables 
-    // const int m = P * n_CV + 2 * n; // #Constraints
-    //const VectorXd z_max_pop = PopulateConstraints(z_max, m, n);
-    //const VectorXd z_min_pop = PopulateConstraints(z_min, m, n);
+    // Define QP:
+    const int n = M * n_MV; // #Optimization variables 
+    const int m = P * n_CV + 2 * n; // #Constraints
+    const VectorXd z_max_pop = PopulateConstraints(z_max, m, n);
+    const VectorXd z_min_pop = PopulateConstraints(z_min, m, n);
 
-    // solver.data()->setNumberOfVariables(n);
-    // solver.data()->setNumberOfConstraints(m);
+    solver.data()->setNumberOfVariables(n);
+    solver.data()->setNumberOfConstraints(m);
 
-    // // Define Cost function variables: 
-    // SparseXd Q_bar; 
-    // SparseXd R_bar; 
-    // SparseXd G;
-    // SparseXd A;
+    // Define Cost function variables: 
+    SparseXd Q_bar; 
+    SparseXd R_bar; 
+    SparseXd G;
+    SparseXd A;
 
-    // // Dynamic variables:
-    // VectorXd q;
-    // VectorXd l;
-    //VectorXd u; 
+    // Dynamic variables:
+    VectorXd q;
+    VectorXd l;
+    VectorXd u; 
 
     //setWeightMatrices(Q_bar, R_bar, conf);
     // setHessianMatrix(G, Q_bar, R_bar, fsr);
-    // setGradientVector(q, fsr, Q_bar, y_ref, 0); // Initial gradient
+    // setGradientVector(q, fsr, Q_bar, y_ref, 0); // Initial gradient, NEED TO BE CHANGED!
     // setConstraintMatrix(A, fsr, m, n);
     // setConstraintVectors(l, u, z_min_pop, z_max_pop, fsr, m, n);
 

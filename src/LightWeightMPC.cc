@@ -10,7 +10,6 @@
  */
 
 #include "LightWeightMPC.h"
-#include "OSQP-Eigen/sr_solver.h"
 #include <iostream>
 
 LightWeightMPC::LightWeightMPC(const string& sce, int T) : sce_{sce}, T_{T} {
@@ -32,27 +31,18 @@ LightWeightMPC::LightWeightMPC(const string& sce, int T) : sce_{sce}, T_{T} {
     // Parse
     Parse(sce_path, m_map, cvd, mvd, 
         conf, z_min, z_max, T_);
-
-    //std::cout << cvd.getYRef() << std::endl;
     
-    // // Model setup
-    // FSRModel fsr(sd.getSR(), m_map, conf.P, conf.M, 
-    //              conf.W, mvd.Inits, cvd.getInits());
+    // Model setup
+    FSRModel fsr(cvd.getSR(), m_map, conf.P, conf.M, 
+                 conf.W, mvd.Inits, cvd.getInits());
     
-    // MatrixXd u_mat; // Optimized actuation
-    // MatrixXd y_pred;
+    MatrixXd u_mat; // Optimized actuation
+    MatrixXd y_pred;
 
-    // std::cout << fsr.getN_CV() << std::endl;
-    // std::cout << fsr.getN_MV() << std::endl;
-    // std::cout << fsr.getP() << std::endl;
-    // std::cout << fsr.getM() << std::endl;
-    // std::cout << sd.getYRef() << std::endl;
-
-    // fsr.PrintTheta();
-    // fsr.PrintPhi(0);
-    // fsr.PrintPsi();
+    VectorXd ex = cvd.getYRef()[1];
+    std::cout << ex.rows() << std::endl;
     
-    //SRSolver(T_, u_mat, y_pred, fsr, conf, z_min, z_max, cvd.getYRef());
+    SRSolver(T_, u_mat, y_pred, fsr, conf, z_min, z_max, cvd.getYRef());
 
     // // // Serializing: 
     // json write_data;
