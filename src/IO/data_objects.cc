@@ -30,20 +30,22 @@ static void EigenFromJson(VectorXd& vec, const json& arr) {
     }
 }
 
+static void EigenFromJson(VectorXd& vec, const json& arr, int num) {
+    for (int i = 0; i < num; i++) {
+        vec(i) = (double) arr[i];
+    }
+}
+
 /* Error handling:
     Check that S is correct with N_MV and N_CV
     Check that number of S is correct with n_CV
 */
-CVData::CVData(int T) {
-    AllocateVectors(T); // Since destructor is called. 
-}
-
-CVData::CVData(const json& cv_data, int n_MV, int n_CV, int N, int T) : n_CV_{n_CV}, n_MV_{n_MV}, N_{N} {
+CVData::CVData(const json& cv_data, int n_MV, int n_CV, int N, int T, int P) : n_CV_{n_CV}, n_MV_{n_MV}, N_{N} {
     int n_outputs = cv_data.size();
     if (n_outputs != n_CV) {
         throw std::invalid_argument("n_CV does not coincide with CV");
     }
-    AllocateVectors(T);
+    AllocateVectors(T + P);
     
     int i = 0;
     for (auto& cv : cv_data) {
@@ -51,10 +53,11 @@ CVData::CVData(const json& cv_data, int n_MV, int n_CV, int N, int T) : n_CV_{n_
         inits_.push_back(cv.at(kInit));
         units_.push_back(cv.at(kUnit));
 
-        if (int(cv.at(kY_Ref).size()) != T) {
-            throw std::invalid_argument("Wrong number of reference data for the horizon");
+        if (int(cv.at(kY_Ref).size()) < T) { // We need T + P reference points
+            throw std::invalid_argument("Too few reference data samples for the horizon");
         }
-        EigenFromJson(y_ref_[i], cv.at(kY_Ref)); // Fill one vector
+        EigenFromJson(y_ref_[i], cv.at(kY_Ref), T); // Fill one vector, We take all reference data avaliable
+        PopulateRef(P, T);
         for (int mv = 0; mv < n_MV_; mv++) {
             FillSR(cv.at(kS), i, mv);
         }
@@ -63,20 +66,22 @@ CVData::CVData(const json& cv_data, int n_MV, int n_CV, int N, int T) : n_CV_{n_
 }
 
 CVData::~CVData() {
-    for (int i = 0 ; i < n_CV_; i++) {
-        delete[] pp_SR_vec_[i];
+    if (n_CV_ != 0 && n_MV_ != 0) {
+        for (int i = 0 ; i < n_CV_; i++) {
+            delete[] pp_SR_vec_[i];
+        }
+        delete[] y_ref_;
+        delete[] pp_SR_vec_;
     }
-    delete[] y_ref_;
-    delete[] pp_SR_vec_;
 }
 
-void CVData::AllocateVectors(int T) {
+void CVData::AllocateVectors(int size) {
     // Allocate vector of Eigen::VectorXd
     y_ref_ = new VectorXd[n_CV_];
     // Allocate matrix of Eigen::VectorXd
     pp_SR_vec_ = new VectorXd*[n_CV_];
-    for (int i = 0; i < n_CV_; ++i) {
-        y_ref_[i] = VectorXd::Zero(T);
+    for (int i = 0; i < n_CV_; i++) {
+        y_ref_[i] = VectorXd::Zero(size);
         pp_SR_vec_[i] = new VectorXd[n_MV_];
     }
     for (int row = 0; row < n_CV_; row++) {
@@ -117,6 +122,21 @@ void CVData::FillSR(const json& s_data, int cv, int mv) {
     pp_SR_vec_[cv][mv] = vec;    
 }
 
+void CVData::PopulateRef(int P, int T) {
+
+    for (int i = 0; i < n_CV_; i++) {
+        double last_ref = y_ref_[i](T-1);
+        y_ref_[i].block(T, 0, P, 1) = VectorXd::Constant(P, last_ref);
+    }
+}
+
+void CVData::PrintYRef() {
+    std::cout << "Length " << y_ref_[0].rows() << std::endl; 
+    for (int i = 0; i < n_CV_; i++) {
+        std::cout << y_ref_[i] << std::endl; 
+    }
+}
+
 MVData::MVData() {}
 MVData::MVData(const json& mv_data, int n_MV) {
     int n_inputs = mv_data.size();
@@ -138,26 +158,20 @@ MPCConfig::MPCConfig(const json& sce_data) {
     M = mpc_data.at(kM);
     W = mpc_data.at(kW);
 
-    Q.resize(P-W); 
-    R.resize(M);
-    try {
-        for (int i = 0; i < (P-W); i++) { 
-            Q[i] = mpc_data.at(kQ).at(i);
-        }
+    int n_CV = int(mpc_data.at(kQ).size());
+    int n_MV = int(mpc_data.at(kR).size());
+
+    Q.resize(n_CV); 
+    R.resize(n_MV);
+    
+    for (int i = 0; i < n_CV; i++) { 
+        Q[i] = mpc_data.at(kQ).at(i);
     }
-    catch(std::out_of_range& e) {
-        std::cerr << "ERROR! " << "Q matrix dimension does not match system description" << std::endl;
+   
+    for (int i = 0; i < n_MV; i++) {
+        R[i] = mpc_data.at(kR).at(i);
     }
     
-    try {
-        for (int i = 0; i < M; i++) {
-            R[i] = mpc_data.at(kR).at(i);
-        }
-    }
-    catch(std::out_of_range& e) {
-        std::cerr << "ERROR! " << "R matrix dimension does not match system description" << std::endl;
-    }
-
     RoU = mpc_data.at(kRoU);
     RoL = mpc_data.at(kRoL);
     bias_update = mpc_data.at(kBu);

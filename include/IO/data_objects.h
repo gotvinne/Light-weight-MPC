@@ -20,7 +20,7 @@ using VectorXd = Eigen::VectorXd;
  * @brief C++ class representing state data described in system file
  */
 class CVData {
-    private:
+private:
     int n_CV_; /** Number of controlled variables */
     int n_MV_; /** Number of manipulated variables */
     int N_; /** Number of step response coefficients */
@@ -30,13 +30,13 @@ class CVData {
     std::vector<std::string> units_; /** vector of corresponding state units */
 
     VectorXd** pp_SR_vec_; /** Matrix of Eigen::VectorXd holding every n_CV * n_MV step response */
-    VectorXd* y_ref_; /** Matrix of state reference values (n_CV * T) */
+    VectorXd* y_ref_; /** Matrix of state reference values (n_CV * T), the vector is Populated P times*/
 
-    public:
+public:
     /**
      * @brief Empty Constructor. Construct an empty object only allocating data.
      */
-    CVData(int T);
+    CVData() : n_CV_{0}, n_MV_{0} {}
 
     /**
      * @brief Constructor. Construct a new CVData object. Allocating memory for pp_SR_vec
@@ -46,8 +46,9 @@ class CVData {
      * @param n_CV number of controlled variables
      * @param N number of step coefficients
      * @param T mpc horizon
+     * @param P Predition horizon
      */
-    CVData(const json& cv_data, int n_MV, int n_CV, int N, int T);
+    CVData(const json& cv_data, int n_MV, int n_CV, int N, int T, int P);
 
     /**
      * @brief Destructor. Destroy the CVData object. Free memory of pp_SR_vec
@@ -66,9 +67,9 @@ class CVData {
     /**
      * @brief Helper function, allocating Eigen::VectorXd in constuctor
      * 
-     * @param T MPC horizon, used to allocate y_ref
+     * @param size used to allocate y_ref
      */
-    void AllocateVectors(int T);
+    void AllocateVectors(int size);
 
     /**
      * @brief Operator assignment, performing deep copying
@@ -78,12 +79,16 @@ class CVData {
      */
     CVData& operator=(const CVData& rhs);
 
+    void PopulateRef(int P, int T);
+
     // Get functions
     VectorXd** getSR() const { return pp_SR_vec_; }
     VectorXd* getYRef() const { return y_ref_; }
     std::vector<std::string> getOutputs() const { return outputs_; }
     std::vector<double> getInits() const { return inits_; }
     std::vector<std::string> getUnits() const { return units_; }
+
+    void PrintYRef();
 };
 
 /**
