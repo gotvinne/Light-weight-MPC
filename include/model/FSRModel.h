@@ -109,6 +109,8 @@ private:
     VectorXd getDuTilde();
 
 public: 
+
+    FSRModel() : n_CV_{0}, n_MV_{0} {}
     /**
      * @brief The constructor. Constructing the object allocating memory for the SISO prediction matric
      */
@@ -126,6 +128,8 @@ public:
      * @param du_gamma Optimized actuation scaled to fit phi
      */
     void UpdateU(const VectorXd& du);
+
+    //FSRModel& operator=(const FSRModel& rhs);
 
     /** Get functions */
     int getP() const { return P_; }
@@ -156,10 +160,10 @@ public:
     VectorXd getLambda() { return phi_ * getDuTilde() + psi_ * u_; }
 
     /** Print functions */
-    void PrintTheta();
-    void PrintPhi(int P);
-    void PrintPsi();
-    void PrintActuation();
+    void PrintTheta() const;
+    void PrintPhi(int P) const;
+    void PrintPsi() const;
+    void PrintActuation() const;
 };
 
 #endif // FSR_MODEL_H
