@@ -67,14 +67,14 @@ The [nlohmann/json](https://json.nlohmann.me/api/basic_json/) library is used in
    "P": int, (Prediction horizon)
    "M": int, (Control horizon)
    "W": int, (Time delay)
-   "Q": [Q1, Q2, ... , QP], (Positive definite)
-   "R": [R1, R2, ... , RM], (Positive definite)
+   "Q": [Q1, Q2, ... , Qn_CV], (Positive definite)
+   "R": [R1, R2, ... , Rn_MV], (Positive definite)
    "Ro_u": double, (Slack variable)
    "Ro_l": double,
    "bias update": bool
  },
 
- "c": [ // Assumin 1-1 relation
+ "c": [ 
    {"du[1]": [low, high]}, (double)
    ...,
    {"du[n_MV]": [low, high]}, (double)
