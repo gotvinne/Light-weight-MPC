@@ -22,7 +22,7 @@ FSRModel::FSRModel(VectorXd** SR, std::map<std::string, int> m_param, int P, int
     N_ = m_param[kN];
 
     theta_ = MatrixXd::Zero(n_CV_*(P-W), n_MV_*M);
-    phi_.resize(n_CV_*(P-W), n_MV_*(N_-W-1));
+    phi_.resize(n_CV_*(P-W), n_MV_*(N_-W_-2));
     psi_.resize(n_CV_*(P-W), n_MV_);
     du_tilde_mat_ = MatrixXd::Zero(n_MV_, N_-W-1);
 
@@ -141,36 +141,34 @@ void FSRModel::setThetaMatrix() {
 }
 
 void FSRModel::setPhiMatrix() {
-    // NB: Need supervision for padding Sn 
     for (int i = 0; i < n_CV_; i++) {
         for (int j = 0; j < n_MV_; j++) { 
-            VectorXd vec = pp_SR_vec_[i][j](Eigen::seq(P_+j+1,Eigen::last)); // Accessing [S(P), ..., S(N-1)]
-
-            int pad = P_+j;
-            VectorXd pad_vec = PadVec(vec, pad); // pad_vec.rows() == N-1 
-            FillRowPhi(pad_vec, i);
+            double sn = pp_SR_vec_[i][j](Eigen::last); // S(N)
             
+            for (int pad = 0; pad < P_; pad++) {
+                // Extract S-coefficients
+                VectorXd vec = pp_SR_vec_[i][j](Eigen::seq(W_ + 1 + pad, Eigen::last - 1)); // Accessing [S(W+1+k), ..., S(N-1)]
+                
+                VectorXd pad_vec = PadVec(vec, pad, sn); // pad_vec.rows() = N-W-2
+                int size = pad_vec.rows(); 
+                // Write to phi-matrix
+                phi_((i * P_) + pad, Eigen::seq(j * size, (j+1) * size - 1)) = pad_vec(Eigen::seq(0, Eigen::last)).transpose();
+            }
         }
     }
 }
 
-VectorXd FSRModel::PadVec(VectorXd& vec, int pad) {
-    double sn = vec(Eigen::last); // Accessing Sn
-    VectorXd sn_vec = VectorXd::Constant(pad, sn);
-
-    VectorXd padded_vec(vec.size() + sn_vec.size());
-    padded_vec << 
-        vec, sn_vec; // Concatinating two Eigen::VectorXd
-    return padded_vec; 
-}
-
-void FSRModel::FillRowPhi(const VectorXd& pad_vec, int row) {
-    for (int i = 0; i < n_MV_; i++) { // Might need to be tested
-        for (int j = row; j < P_; j++) {
-            // Accessing phi by rows, pad_vec is a colum vector
-            phi_(j, Eigen::seq(i*(N_-2), (i+1)*(N_-2))) = pad_vec(Eigen::seq(0, Eigen::last)).transpose();
-        } 
+VectorXd FSRModel::PadVec(VectorXd& vec, int pad, double sn) {
+    
+    if (pad == 0) {
+        return vec;
     }
+
+    VectorXd sn_vec = VectorXd::Constant(pad, sn);
+    VectorXd pad_vec(vec.size() + sn_vec.size());
+    pad_vec << 
+        vec, sn_vec; // Concatinating two Eigen::VectorXd
+    return pad_vec; 
 }
 
 void FSRModel::setPsi() {
@@ -205,7 +203,7 @@ void FSRModel::UpdateU(const VectorXd& du) { // du = omega_u * z
 SparseXd FSRModel::getOmegaY() {
     MatrixXd omega_dense = MatrixXd::Zero(n_CV_, n_CV_ * P_);
     for (int i = 0; i < n_CV_; i++) {
-        omega_dense(i, i * P_) = 1;
+        omega_dense(i, i * n_CV_) = 1;
     }
     return omega_dense.sparseView();
 }  
@@ -217,10 +215,18 @@ void FSRModel::PrintTheta() const {
     std::cout << std::endl;
 }
 
-void FSRModel::PrintPhi(int P) const {
+void FSRModel::PrintPhi() const {
     std::cout << "Phi : " << "(" << phi_.rows() << ", " << phi_.cols() << ")" << std::endl;
-    std::cout << phi_(P, Eigen::seq(0, Eigen::last)) << std::endl; 
-    std::cout << std::endl;
+    
+    for (int i = 0; i < phi_.rows(); i++) {
+        std::cout << "Row = pad: " << i << std::endl;
+        //VectorXd vec = phi_(i, Eigen::seq(0, N_-W_-2-1));
+        std::cout << phi_(i, Eigen::seq(0, N_-W_-2-1)) << std::endl;
+        std::cout << std::endl;
+        //VectorXd second = phi_(i, Eigen::seq(N_-W_-2, Eigen::last));
+        std::cout << phi_(i, Eigen::seq(N_-W_-2, Eigen::last)) << std::endl;
+        std::cout << std::endl;
+    }
 }
 
 void FSRModel::PrintPsi() const {
