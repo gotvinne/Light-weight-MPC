@@ -14,14 +14,17 @@ dependencies:
   - babel=2.11.0=py310h06a4308_0
   - backcall=0.2.0=pyhd3eb1b0_0
   - beautifulsoup4=4.11.1=py310h06a4308_0
+  - binutils_impl_linux-64=2.40=hf600244_0
   - bleach=4.1.0=pyhd3eb1b0_0
   - brotlipy=0.7.0=py310h7f8727e_1002
   - bzip2=1.0.8=h7b6447c_0
+  - c-ares=1.18.1=h7f8727e_0
   - ca-certificates=2022.12.7=ha878542_0
   - certifi=2022.12.7=pyhd8ed1ab_0
   - cffi=1.15.1=py310h5eee18b_3
   - charset-normalizer=2.0.4=pyhd3eb1b0_0
   - cli11=2.3.2=hcb278e6_0
+  - cmake=3.22.1=h1fce559_0
   - comm=0.1.2=py310h06a4308_0
   - cryptography=38.0.4=py310h9ce1e76_0
   - dbus=1.13.18=hb2f20db_0
@@ -35,6 +38,8 @@ dependencies:
   - flit-core=3.6.0=pyhd3eb1b0_0
   - fontconfig=2.14.1=h52c9d5c_1
   - freetype=2.12.1=h4a9f257_0
+  - gcc=12.2.0=h26027b1_11
+  - gcc_impl_linux-64=12.2.0=hcc96c02_19
   - giflib=5.2.1=h5eee18b_1
   - glib=2.69.1=he621ea3_2
   - gst-plugins-base=1.14.0=h8213a91_2
@@ -59,24 +64,33 @@ dependencies:
   - jupyterlab_pygments=0.1.2=py_0
   - jupyterlab_server=2.16.5=py310h06a4308_0
   - jupyterlab_widgets=1.0.0=pyhd3eb1b0_1
+  - kernel-headers_linux-64=2.6.32=he073ed8_15
   - krb5=1.19.4=h568e23c_0
-  - ld_impl_linux-64=2.38=h1181459_1
+  - ld_impl_linux-64=2.40=h41732ed_0
   - lerc=3.0=h295c915_0
   - libclang=10.0.1=default_hb85057a_2
+  - libcurl=7.87.0=h91b91d3_0
   - libdeflate=1.8=h7f8727e_5
   - libedit=3.1.20221030=h5eee18b_0
+  - libev=4.33=h7f8727e_1
   - libevent=2.1.12=h8f2d780_0
   - libffi=3.4.2=h6a678d5_6
+  - libgcc-devel_linux-64=12.2.0=h3b97bd3_19
   - libgcc-ng=12.2.0=h65d4601_19
+  - libgomp=12.2.0=h65d4601_19
   - libllvm10=10.0.1=hbcb73fb_5
+  - libnghttp2=1.46.0=hce63b2e_0
   - libosqp=0.6.2=hcb278e6_4
   - libpng=1.6.37=hbc83047_0
   - libpq=12.9=h16c4e8d_3
   - libqdldl=0.1.5=h27087fc_1
+  - libsanitizer=12.2.0=h46fd767_19
   - libsodium=1.0.18=h7b6447c_0
+  - libssh2=1.10.0=h8f2d780_0
   - libstdcxx-ng=12.2.0=h46fd767_19
   - libtiff=4.5.0=h6a678d5_1
   - libuuid=1.41.5=h5eee18b_0
+  - libuv=1.40.0=h7b6447c_0
   - libwebp=1.2.4=h11a3e52_0
   - libwebp-base=1.2.4=h5eee18b_0
   - libxcb=1.15=h7f8727e_0
@@ -136,6 +150,7 @@ dependencies:
   - qtwebkit=5.212=h4eab89a_4
   - readline=8.2=h5eee18b_0
   - requests=2.28.1=py310h06a4308_0
+  - rhash=1.4.1=h3c74f83_1
   - send2trash=1.8.0=pyhd3eb1b0_1
   - setuptools=65.6.3=py310h06a4308_0
   - sip=6.6.2=py310h6a678d5_0
@@ -144,6 +159,7 @@ dependencies:
   - soupsieve=2.3.2.post1=py310h06a4308_0
   - sqlite=3.40.1=h5082296_0
   - stack_data=0.2.0=pyhd3eb1b0_0
+  - sysroot_linux-64=2.12=he073ed8_15
   - terminado=0.17.1=py310h06a4308_0
   - tinycss2=1.2.1=py310h06a4308_0
   - tk=8.6.12=h1ccaba5_0
