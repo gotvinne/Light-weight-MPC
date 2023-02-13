@@ -27,6 +27,10 @@ Operating system: Linux
 ### Dependancies:
 This software is developed using a environment and package manager [conda](https://docs.conda.io/en/latest/#), builded using [CMake](https://cmake.org/) and compiled using [GCC](https://gcc.gnu.org/).
 
+```console
+sudo apt-get install g++
+```
+
 Other libraries used: 
 - [OSQP](https://osqp.org/), Operator Splitting Quadratic program (Source code)
 - [osqp-eigen](https://github.com/robotology/osqp-eigen), C++ wrapper for OSQP 
@@ -50,7 +54,6 @@ conda create --name new_environment
 ```console
 conda install -n env -c anaconda cmake
 conda install -n env -c anaconda jupyter
-conda install -n env -c conda-forge gcc
 conda install -n env -c conda-forge osqp-eigen
 conda install -n env -c conda-forge nlohmann_json
 conda install -n env -c conda-forge cli11
