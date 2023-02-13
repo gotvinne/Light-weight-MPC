@@ -56,7 +56,7 @@ conda install -n env -c conda-forge cli11
 conda install -n env -c conda-forge boost
 ```
 ```console
-conda env create -f env.yml
+conda env export > env.yml
 ```
 
 - Build and run program, NB! setup.sh calls binary ./light_weight
@@ -64,6 +64,7 @@ Arguments:
 - [-T int] mpc_horizon: Simulate scenario for the given mpc_horizon
 - [-s string] scenario_name: Scenario file to be simulated
 ```console
+chmod +x setup.sh                       // Set execute permission
 sh setup.sh -T mpc_horizon -s sce
 ```
 
