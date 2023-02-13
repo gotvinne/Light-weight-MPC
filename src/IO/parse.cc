@@ -71,13 +71,13 @@ json ReadJson(const string& filepath) {
 }
 
 void ParseSystemData(const json& sys_data, std::map<string, int>& model_param,
-                    CVData& output_data, MVData& input_data, int T) {
+                    CVData& output_data, MVData& input_data, int T, int P) {
     try {
         ModelData(sys_data, model_param);
         json cv_data = sys_data.at(kCV);
         json mv_data = sys_data.at(kMV);
 
-        output_data = CVData(cv_data, model_param[kN_MV], model_param[kN_CV], model_param[kN], T);
+        output_data = CVData(cv_data, model_param[kN_MV], model_param[kN_CV], model_param[kN], T, P);
         input_data = MVData(mv_data, model_param[kN_MV]); 
     }
     catch(json::exception& e) {
@@ -112,12 +112,12 @@ void Parse(const string& sce_filepath, std::map<string, int>& model_param,
     // Parse system
     string sys_filepath = "../data/systems/" + system + ".json";
     json sys_data = ReadJson(sys_filepath);
-    ParseSystemData(sys_data, model_param, output_data, input_data, T);
+    ParseSystemData(sys_data, model_param, output_data, input_data, T, mpc_config.P);
 
-    if (model_param[kN_CV] != mpc_config.Q.cols()) {
-        throw std::invalid_argument("Q matrix dimension does not match system description");
+    if (mpc_config.Q.rows() != model_param[kN_CV]) {
+        throw std::out_of_range("Q matrix dimension does not match system description");
     }
-    if (model_param[kN_MV] != mpc_config.R.cols()) {
-        throw std::invalid_argument("R matrix dimension does not match system description");
+    if (mpc_config.R.rows() != model_param[kN_MV]) {
+        throw std::out_of_range("R matrix dimension does not match system description");
     }
 }

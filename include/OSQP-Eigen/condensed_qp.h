@@ -20,9 +20,9 @@ using SparseXd = Eigen::SparseMatrix<double>;
  * 
  * @param Q_bar Eigen::SparseMatrix<double> to be filled by output tuning
  * @param R_bar Eigen::SparseMatrix<double> to be filled by change of input tuning
- * @param mpc_config 
+ * @param conf MPCConfig
  */
-void setWeightMatrices(SparseXd& Q_bar, SparseXd& R_bar, const MPCConfig& mpc_config);
+void setWeightMatrices(SparseXd& Q_bar, SparseXd& R_bar, const MPCConfig& conf);
 
 /**
  * @brief Set the Hessian Matrix object

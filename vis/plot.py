@@ -2,9 +2,7 @@ from matplotlib import pyplot as plt
 
 from SimulationData import *
 
-FIG_SIZE = 8
-
-def PlotPrediction(sim_data, title):
+def PlotPrediction(sim_data, title, FIG_SIZE = 14):
     """
     Plotting the n_CV different predicted outputs along with the reference model output
     :param sim_data: SimulationData object holding the simulation information
@@ -33,7 +31,7 @@ def PlotPrediction(sim_data, title):
     plt.show()
 
 
-def PlotInput(sim_data, title):
+def PlotInput(sim_data, title, FIG_SIZE = 14):
     """
     Plotting the n_MV different optimized inputs
     :param sim_data: SimulationData object holding the simulation information

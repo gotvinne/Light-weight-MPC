@@ -38,7 +38,7 @@ private:
     VectorXd** pp_SR_vec_; /** Matrix of Eigen::VectorXd holding every n_CV * n_MV step response */
     MatrixXd** pp_SR_mat_; /** Tensor of Eigen::MatrixXd representing the SISO prediction (P-W,M) times (n_CV, n_MV) */
     MatrixXd theta_; /** Matrix of all SISO predictions (n_CV*(P-W), n_MV*M) */
-    MatrixXd phi_; /** Past step coefficients (n_CV*P-W, n_MV*(N-W-1)) */
+    MatrixXd phi_; /** Past step coefficients (n_CV*(P-W+1), n_MV*(N-W-2)) */
     MatrixXd psi_; /** Last step coefficient matrix, (n_CV (P-W), n_MV)*/
 
     /**
@@ -72,21 +72,14 @@ private:
     void setPhiMatrix();
 
     /**
-     * @brief Filling one row of phi
-     * 
-     * @param vec Vector to be filled n_MV times into phi
-     * @param row row indicator
-     */
-    void FillRowPhi(const VectorXd& vec, int row);
-
-    /**
      * @brief Pad the vector, by appending Sn (last element of vec) pad times
      * 
      * @param vec Eigen::VectorXd to be padded
      * @param pad Number of pads
+     * @param sn Last S-coefficient
      * @return Eigen::VectorXd Padded vector 
      */
-    VectorXd PadVec(VectorXd& vec, int pad);
+    VectorXd PadVec(VectorXd& vec, int pad, double sn);
 
     /**
      * @brief Set the Psi object
@@ -109,6 +102,8 @@ private:
     VectorXd getDuTilde();
 
 public: 
+
+    FSRModel() : n_CV_{0}, n_MV_{0} {}
     /**
      * @brief The constructor. Constructing the object allocating memory for the SISO prediction matric
      */
@@ -127,6 +122,8 @@ public:
      */
     void UpdateU(const VectorXd& du);
 
+    //FSRModel& operator=(const FSRModel& rhs);
+
     /** Get functions */
     int getP() const { return P_; }
     int getM() const { return M_; }
@@ -144,7 +141,7 @@ public:
      * @param z n_CV
      * @return VectorXd predicted output, one step, k+1 ahead. 
      */
-    VectorXd getY(const VectorXd& z) { return getOmegaY() * (theta_ * z + getLambda()); }
+    VectorXd getY(const VectorXd& z) { return getOmegaY() * (theta_ * z + getLambda()); } // Must be changed for soft constraint!
     
     // Updating functions
 
@@ -156,10 +153,10 @@ public:
     VectorXd getLambda() { return phi_ * getDuTilde() + psi_ * u_; }
 
     /** Print functions */
-    void PrintTheta();
-    void PrintPhi(int P);
-    void PrintPsi();
-    void PrintActuation();
+    void PrintTheta() const;
+    void PrintPhi() const;
+    void PrintPsi() const;
+    void PrintActuation() const;
 };
 
 #endif // FSR_MODEL_H

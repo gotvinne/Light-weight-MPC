@@ -9,6 +9,7 @@
 #include "model/FSRModel.h"
 
 #include <string>
+#include <iostream>
 
 #include <Eigen/Eigen>
 using VectorXd = Eigen::VectorXd;
@@ -23,6 +24,15 @@ using SparseXd = Eigen::SparseMatrix<double>;
  * @param count Number of blocks
  */
 static void blkdiag(SparseXd& blk_mat, const MatrixXd& arg, int count) {
+    MatrixXd mat = MatrixXd::Zero(arg.rows() * count, arg.cols() * count);
+    for (int i = 0; i < count; i++) {
+        mat.block(i * arg.rows(), i * arg.cols(), arg.rows(), arg.cols()) = arg;
+    }
+    blk_mat = mat.sparseView();
+}
+
+static void blkdiag(SparseXd& blk_mat, const VectorXd& vec, int count) {
+    MatrixXd arg = vec.asDiagonal();
     MatrixXd mat = MatrixXd::Zero(arg.rows() * count, arg.cols() * count);
     for (int i = 0; i < count; i++) {
         mat.block(i * arg.rows(), i * arg.cols(), arg.rows(), arg.cols()) = arg;
@@ -87,18 +97,13 @@ static void setGamma(SparseXd& gamma, int M, int n_MV) {
 static void setTau(VectorXd& tau, VectorXd* y_ref, int P, int n_CV, int k) { // Might need W
     tau.resize(n_CV * P);
     for (int i = 0; i < n_CV; i++) {
-        tau.block(i * n_CV, 0, P, 1) = y_ref[i](Eigen::seq(k, k + (P-1))); // Bit unsure on how to do time delay
+        tau.block(i * P, 0, P, 1) = y_ref[i](Eigen::seq(k, k + (P-1))); // Bit unsure on how to do time delay
     }
 }
 
-void setWeightMatrices(SparseXd& Q_bar, SparseXd& R_bar, const MPCConfig& mpc_config) {
-    MatrixXd Q = MatrixXd::Zero(mpc_config.P - mpc_config.W, mpc_config.P - mpc_config.W);
-    MatrixXd R = MatrixXd::Zero(mpc_config.M, mpc_config.M);
-    Q = mpc_config.Q.asDiagonal();
-    R = mpc_config.R.asDiagonal();
-
-    Q_bar = Q.sparseView();
-    R_bar = R.sparseView();
+void setWeightMatrices(SparseXd& Q_bar, SparseXd& R_bar, const MPCConfig& conf) {
+    blkdiag(Q_bar, conf.Q, conf.P);
+    blkdiag(R_bar, conf.R, conf.M);
 }
 
 void setHessianMatrix(SparseXd& G, const SparseXd& Q_bar, const SparseXd& R_bar, const FSRModel& fsr) {

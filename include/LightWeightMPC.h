@@ -15,7 +15,6 @@
 #include "IO/serialize.h"
 #include "IO/parse.h"
 #include "IO/data_objects.h"
-#include "OSQP-Eigen/sr_solver.h"
 #include "model/step_response_model.h"
 #include "model/FSRModel.h"
 
@@ -30,10 +29,21 @@ using VectorXd = Eigen::VectorXd;
 using MatrixXd = Eigen::MatrixXd;
 using string = std::string;
 
-class LightWeightMPC {
-public:
-    LightWeightMPC(const string& sce, int T);
+void LightWeightMPC(const string& sce, int T);
 
-};
+/**
+ * @brief Solving the condensed optimalization problem using OSQP-Eigen
+ * 
+ * @param T MPC horizon
+ * @param u_mat Optimized u, filled by reference
+ * @param y_pred Predicted y, filled by reference
+ * @param fsr FSRModel, finite step response model 
+ * @param conf MPC configuration
+ * @param z_min lower constraint vector
+ * @param z_max upper constraint vector
+ * @param y_ref Output reference data
+ */
+void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPCConfig& conf, const VectorXd& z_min, 
+             const VectorXd& z_max, VectorXd* y_ref);
 
 #endif // LIGHTWEIGHT_MPC_H

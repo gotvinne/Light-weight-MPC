@@ -34,9 +34,9 @@ if [ $? -eq 0 ]; then #Build successful
     if [ $? -eq 0 ]; then #Running successfull
         echo
     else
-        RED='\033[0;31m'
-        NC='\033[0m' 
-        echo "${RED}RUNTIME ERROR! ${NC}\n"
+       RED='\033[0;31m'
+       NC='\033[0m' 
+       echo "${RED}RUNTIME ERROR! ${NC}\n"
     fi
 else
     RED='\033[0;31m'
