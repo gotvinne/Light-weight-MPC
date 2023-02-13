@@ -15,12 +15,13 @@ dependencies:
   - backcall=0.2.0=pyhd3eb1b0_0
   - beautifulsoup4=4.11.1=py310h06a4308_0
   - binutils_impl_linux-64=2.40=hf600244_0
+  - blas=1.0=mkl
   - bleach=4.1.0=pyhd3eb1b0_0
   - brotlipy=0.7.0=py310h7f8727e_1002
   - bzip2=1.0.8=h7b6447c_0
   - c-ares=1.18.1=h7f8727e_0
-  - ca-certificates=2022.12.7=ha878542_0
-  - certifi=2022.12.7=pyhd8ed1ab_0
+  - ca-certificates=2023.01.10=h06a4308_0
+  - certifi=2022.12.7=py310h06a4308_0
   - cffi=1.15.1=py310h5eee18b_3
   - charset-normalizer=2.0.4=pyhd3eb1b0_0
   - cli11=2.3.2=hcb278e6_0
@@ -46,6 +47,7 @@ dependencies:
   - gstreamer=1.14.0=h28cd5cc_2
   - icu=58.2=he6710b0_3
   - idna=3.4=py310h06a4308_0
+  - intel-openmp=2021.4.0=h06a4308_3561
   - ipykernel=6.19.2=py310h2f386ee_0
   - ipython=8.8.0=py310h06a4308_0
   - ipython_genutils=0.2.0=pyhd3eb1b0_1
@@ -104,6 +106,10 @@ dependencies:
   - markupsafe=2.1.1=py310h7f8727e_0
   - matplotlib-inline=0.1.6=py310h06a4308_0
   - mistune=0.8.4=py310h7f8727e_1000
+  - mkl=2021.4.0=h06a4308_640
+  - mkl-service=2.4.0=py310h7f8727e_0
+  - mkl_fft=1.3.1=py310hd6ae3a3_0
+  - mkl_random=1.2.2=py310h00e6091_0
   - nbclassic=0.4.8=py310h06a4308_0
   - nbclient=0.5.13=py310h06a4308_0
   - nbconvert=6.5.4=py310h06a4308_0
@@ -115,7 +121,9 @@ dependencies:
   - notebook-shim=0.2.2=py310h06a4308_0
   - nspr=4.33=h295c915_0
   - nss=3.74=h0370c37_0
-  - openssl=1.1.1t=h0b41bf4_0
+  - numpy=1.23.5=py310hd5efca6_0
+  - numpy-base=1.23.5=py310h8e6c178_0
+  - openssl=1.1.1s=h7f8727e_0
   - osqp-eigen=0.8.0=h27087fc_0
   - packaging=22.0=py310h06a4308_0
   - pandocfilters=1.5.0=pyhd3eb1b0_0

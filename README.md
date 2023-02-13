@@ -53,11 +53,13 @@ conda create --name new_environment
 ```
 ```console
 conda install -n env -c anaconda cmake
-conda install -n env -c anaconda jupyter
 conda install -n env -c conda-forge osqp-eigen
 conda install -n env -c conda-forge nlohmann_json
 conda install -n env -c conda-forge cli11
 conda install -n env -c conda-forge boost
+
+conda install -n env -c anaconda jupyter
+conda install -n env -c anaconda numpy
 ```
 ```console
 conda env export > env.yml
