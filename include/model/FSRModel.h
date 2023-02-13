@@ -38,7 +38,7 @@ private:
     VectorXd** pp_SR_vec_; /** Matrix of Eigen::VectorXd holding every n_CV * n_MV step response */
     MatrixXd** pp_SR_mat_; /** Tensor of Eigen::MatrixXd representing the SISO prediction (P-W,M) times (n_CV, n_MV) */
     MatrixXd theta_; /** Matrix of all SISO predictions (n_CV*(P-W), n_MV*M) */
-    MatrixXd phi_; /** Past step coefficients (n_CV*(P-W+1), n_MV*(N-W-2)) */
+    MatrixXd phi_; /** Past step coefficients (n_CV*(P-W+1), n_MV*(N-W-1)) */
     MatrixXd psi_; /** Last step coefficient matrix, (n_CV (P-W), n_MV)*/
 
     /**

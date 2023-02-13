@@ -51,9 +51,9 @@ void LightWeightMPC(const string& sce, int T) {
     }
 
     // Serializing: 
-    // json write_data;
-    // SerializeSimulation(write_data, sim_path, sce, sd, id, 
-    //              y_pred, u_mat, z_min, z_max, fsr.getN_CV(), fsr.getN_MV(), T);
+    json write_data;
+    SerializeSimulation(write_data, sim_path, sce, cvd, mvd, 
+                 y_pred, u_mat, z_min, z_max, fsr.getN_CV(), fsr.getN_MV(), T);
 
 }
 

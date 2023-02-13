@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Check if the folder exists
-if [[ ! -d "/build" ]]
+if [ ! -d "/build" ]
 then
     mkdir build
 fi
