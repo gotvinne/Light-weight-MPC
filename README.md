@@ -25,7 +25,7 @@ Operating system: Linux
 - [Vis](vis/README.md): Visualizing simulations in jupyter notebook
 
 ### Dependancies:
-This software is developed using a environment and package manager [conda][(https://docs.conda.io/en/latest/#)] and builded using [CMake](https://cmake.org/)
+This software is developed using a environment and package manager [conda](https://docs.conda.io/en/latest/#) and builded using [CMake](https://cmake.org/)
 
 Other libraries used: 
 - [OSQP](https://osqp.org/), Operator Splitting Quadratic program (Source code)
@@ -44,6 +44,9 @@ conda env create -f env.yml
 ```
 
 or make a new environment, *light_weight*, and install conda packages: 
+```console
+conda create --name new_environment
+```
 ```console
 conda install -n env -c anaconda cmake
 conda install -n env -c conda-forge osqp-eigen
