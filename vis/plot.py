@@ -9,9 +9,9 @@ def PlotPrediction(sim_data, title, FIG_SIZE = 14):
     :param title: The main title of the plots
     """
     t = np.arange(0, sim_data.T, dtype=int)
-    plt.figure(figsize=(FIG_SIZE, FIG_SIZE)) 
+    fig = plt.figure(num = 1, figsize=(FIG_SIZE, FIG_SIZE)) 
     for i in range(sim_data.n_CV):
-        plt.subplot(1, sim_data.n_CV, i + 1)
+        fig.add_subplot(1, sim_data.n_CV, i + 1)
         # plt.plot(t, sim_data.y[i, :], "b", label="System output")
         plt.plot(t, sim_data.y_pred[i, :], "m", label="Predicted output") # m is magneta color
         
@@ -28,7 +28,7 @@ def PlotPrediction(sim_data, title, FIG_SIZE = 14):
         plt.title(sim_data.outputs[i])
         plt.grid()
     plt.suptitle(title)
-    plt.show()
+    plt.show(block=False) # Avoid blocking 
 
 
 def PlotInput(sim_data, title, FIG_SIZE = 14):
@@ -38,9 +38,9 @@ def PlotInput(sim_data, title, FIG_SIZE = 14):
     :param title: The main title of the plots
     """
     t = np.arange(0, sim_data.T, dtype=int)
-    plt.figure(figsize=(FIG_SIZE, FIG_SIZE)) 
+    fig = plt.figure(num = 2, figsize=(FIG_SIZE, FIG_SIZE)) 
     for i in range(sim_data.n_MV):
-        plt.subplot(1, sim_data.n_MV, i + 1)
+        fig.add_subplot(1, sim_data.n_MV, i + 1)
         plt.step(t, sim_data.u[i, :], "b", label="Optimized actuation")
 
         upper = sim_data.mv_constraints[i][1] * np.ones(sim_data.T)
@@ -55,4 +55,16 @@ def PlotInput(sim_data, title, FIG_SIZE = 14):
         plt.title(sim_data.inputs[i])
         plt.grid()
     plt.suptitle(title)
-    plt.show()
+    plt.show(block=False) # Avoid blocking
+
+scenario = "SingleWell"
+simulation_name = "/data/simulations/sim_" + scenario + ".json"
+Data = SimulationData(simulation_name)
+
+fontsize = 10
+figsize = 12
+plt.rcParams.update({'font.size': fontsize})
+
+PlotPrediction(Data, "Controlled Variables", figsize)
+PlotInput(Data, "Manupulated Variables", figsize)
+input("")
