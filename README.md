@@ -60,6 +60,7 @@ conda install -n env -c conda-forge boost
 
 conda install -n env -c anaconda jupyter
 conda install -n env -c anaconda numpy
+conda install -n env -c conda-forge matplotlib
 ```
 ```console
 conda env export > env.yml
