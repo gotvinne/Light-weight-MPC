@@ -13,6 +13,7 @@
 #define UPDATE_H
 
 #include <string>
+#include <vector>
 
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
@@ -24,6 +25,6 @@ using json = nlohmann::json;
  * @param ref 
  * @param T 
  */
-void UpdateReference(const std::string& sys_path, double ref, int T);
+void UpdateReference(const std::string& sys_path, std::vector<double>& vec, int T);
 
 #endif // UPDATE_H

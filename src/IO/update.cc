@@ -14,6 +14,8 @@
 #include "IO/serialize.h"
 #include "IO/json_specifiers.h"
 
+#include <exception>
+
 /**
  * @brief Get the Reference object
  * 
@@ -27,13 +29,21 @@ static void getReference(json& arr, double value, int T) {
     }
 }
 
-void UpdateReference(const std::string& sys_path, double ref, int T) {
+void UpdateReference(const std::string& sys, std::vector<double>& vec, int T) {
+    const string sys_path = "../data/systems/"+ sys + ".json";
     json sys_data = ReadJson(sys_path);
-    json arr = json::array();
+    
+    if (sys_data.at(kCV).size() != vec.size()) {
+        throw std::runtime_error("Not enough references to update system");
+    }
 
-    getReference(arr, ref, T);
+    int cv = 0;
     for (auto& elem : sys_data.at(kCV)) {
-        elem[kY_Ref] = arr;
+        json new_ref = json::array();
+        getReference(new_ref, vec[cv], T);
+
+        elem[kY_Ref] = new_ref; // Set new reference
+        cv++;
     }
 
     WriteJson(sys_data, sys_path);
