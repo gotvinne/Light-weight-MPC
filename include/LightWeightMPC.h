@@ -29,6 +29,12 @@ using VectorXd = Eigen::VectorXd;
 using MatrixXd = Eigen::MatrixXd;
 using string = std::string;
 
+/**
+ * @brief Simulation software function
+ * 
+ * @param sce [std::string] Scenario to be simulated 
+ * @param T [int] MPC horizon
+ */
 void LightWeightMPC(const string& sce, int T);
 
 /**

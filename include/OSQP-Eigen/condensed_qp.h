@@ -30,14 +30,14 @@ void setWeightMatrices(SparseXd& Q_bar, SparseXd& R_bar, const MPCConfig& conf);
  * @param G Positive definite optimization matrix
  * @param Q_bar Positive definite Eigen::MatrixXd output tuning matrix
  * @param R_bar Positive definite Eigen::MatrixXd change of input tuning matrix
- * @param fsr 
+ * @param fsr FSRModel Finite step response model
  */
 void setHessianMatrix(SparseXd& G, const SparseXd& Q_bar, const SparseXd& R_bar, const FSRModel& fsr); 
 
 /**
  * @brief Set the Gradient Vector object, NB! Dynamic output
  * 
- * @param q 
+ * @param q Eigen::VectorXd gradient vector
  * @param fsr Finite step response model
  * @param Q_bar output tuning
  * @param y_ref Reference vector 

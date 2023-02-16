@@ -136,7 +136,8 @@ public:
     VectorXd getU() const { return u_; }
 
     /**
-     * @brief 
+     * @brief Return model output, Y = Theta * Delta U + Phi * Delta U_tilde + Psi * U
+     *                               = Theta * Delta U + Lambda
      * 
      * @param z n_CV
      * @return VectorXd predicted output, one step, k+1 ahead. 

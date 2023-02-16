@@ -31,6 +31,13 @@ static void blkdiag(SparseXd& blk_mat, const MatrixXd& arg, int count) {
     blk_mat = mat.sparseView();
 }
 
+/**
+ * @brief Helper function. Implementing block diagonal matrix
+ * 
+ * @param blk_mat Eigen::SparseMatrix<double> to be block diagonalized
+ * @param vec Diagonal vector
+ * @param count Number of blocks
+ */
 static void blkdiag(SparseXd& blk_mat, const VectorXd& vec, int count) {
     MatrixXd arg = vec.asDiagonal();
     MatrixXd mat = MatrixXd::Zero(arg.rows() * count, arg.cols() * count);
@@ -73,7 +80,7 @@ static void setKInv(MatrixXd& K_inv, int n) {
 }
 
 /**
- * @brief Set the Gamma object
+ * @brief Set the Gamma object, to select the prior actuation.
  * 
  * @param gamma SparseMatrix accessing the first du for every MV, du_k = gamma * z
  * @param M Control horizon
@@ -104,11 +111,11 @@ static void setTau(VectorXd& tau, VectorXd* y_ref, int P, int n_CV, int k) { // 
 /**
  * @brief Set the Bounds object
  * 
- * @param bound 
- * @param z_pop 
- * @param fsr 
- * @param K_inv 
- * @param Gamma 
+ * @param bound Eigen::VectorXd representing a bound constraint
+ * @param z_pop Eigen::VectorXd constraint vector
+ * @param fsr FSRModel Finite step response model
+ * @param K_inv Eigen::MatrixXd lower triangular matrix
+ * @param Gamma Eigen::SparseXd 
  * @param m 
  * @param n 
  */
@@ -169,7 +176,7 @@ void setConstraintVectors(VectorXd& l, VectorXd& u, const VectorXd& z_min_pop, c
     MatrixXd K_inv;
     setKInv(K_inv, n);
     SparseXd Gamma; 
-    setGamma(Gamma, fsr.getM(), fsr.getN_MV());     
+    setGamma(Gamma, fsr.getM(), fsr.getN_MV());
 
     setBounds(l, z_min_pop, fsr, K_inv, Gamma, m, n);
     setBounds(u, z_max_pop, fsr, K_inv, Gamma, m, n);
