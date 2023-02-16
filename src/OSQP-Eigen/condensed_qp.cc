@@ -101,13 +101,24 @@ static void setTau(VectorXd& tau, VectorXd* y_ref, int P, int n_CV, int k) { // 
     }
 }
 
+/**
+ * @brief Set the Bounds object
+ * 
+ * @param bound 
+ * @param z_pop 
+ * @param fsr 
+ * @param K_inv 
+ * @param Gamma 
+ * @param m 
+ * @param n 
+ */
 static void setBounds(VectorXd& bound, const VectorXd& z_pop, FSRModel& fsr, const MatrixXd& K_inv, 
                 const SparseXd& Gamma, int m, int n) {
     bound.resize(m);
     VectorXd c(m);
 
     // c = [ O (n, n),
-    //       K⁽⁻¹⁾ Gamma Uk,
+    //       K⁽⁻¹⁾ Gamma U(k-N),
     //       Lambda]
 
     c.block(0, 0, n, 1) = VectorXd::Zero(n);
@@ -174,9 +185,6 @@ void setOmegaU(SparseXd& omega, int M, int n_MV) {
 
 VectorXd PopulateConstraints(const VectorXd& c, int m, int n, int n_MV, int n_CV, int M, int P) { 
     VectorXd populated(m);
-
-    // n = M * N_CV = 10
-    // m = 2 * n + P * N_CV = 40 
 
     // z_pop = [ Delta U (M * N_MV),
     //           U (M * N_MV),
