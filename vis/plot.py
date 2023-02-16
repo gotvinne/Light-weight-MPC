@@ -25,7 +25,7 @@ def PlotPrediction(sim_data, title, FIG_SIZE = 14):
         plt.ylabel(sim_data.cv_units[i])
         plt.legend(loc='upper right')
 
-        plt.title(sim_data.outputs[i])
+        plt.title(sim_data.outputs[i]+ ": " + str(sim_data.y_pred[i, sim_data.T-1]))
         plt.grid()
     plt.suptitle(title)
     plt.show(block=False) # Avoid blocking 
