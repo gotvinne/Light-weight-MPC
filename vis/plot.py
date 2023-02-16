@@ -1,5 +1,5 @@
 from matplotlib import pyplot as plt
-
+import argparse
 from SimulationData import *
 
 def PlotPrediction(sim_data, title, FIG_SIZE = 14):
@@ -57,8 +57,12 @@ def PlotInput(sim_data, title, FIG_SIZE = 14):
     plt.suptitle(title)
     plt.show(block=False) # Avoid blocking
 
-scenario = "SingleWell"
-simulation_name = "/data/simulations/sim_" + scenario + ".json"
+parser = argparse.ArgumentParser(description="MPC plot")
+parser.add_argument("-s", "--scenario", type=str, help="Scenario file", dest="scenario")
+
+args = parser.parse_args()
+
+simulation_name = "/data/simulations/sim_" + args.scenario + ".json"
 Data = SimulationData(simulation_name)
 
 fontsize = 10
@@ -66,5 +70,5 @@ figsize = 12
 plt.rcParams.update({'font.size': fontsize})
 
 PlotPrediction(Data, "Controlled Variables", figsize)
-PlotInput(Data, "Manupulated Variables", figsize)
+PlotInput(Data, "Manipulated Variables", figsize)
 input("")
