@@ -101,6 +101,22 @@ static void setTau(VectorXd& tau, VectorXd* y_ref, int P, int n_CV, int k) { // 
     }
 }
 
+static void setBounds(VectorXd& bound, const VectorXd& z_pop, FSRModel& fsr, const MatrixXd& K_inv, 
+                const SparseXd& Gamma, int m, int n) {
+    bound.resize(m);
+    VectorXd c(m);
+
+    // c = [ O (n, n),
+    //       K⁽⁻¹⁾ Gamma Uk,
+    //       Lambda]
+
+    c.block(0, 0, n, 1) = VectorXd::Zero(n);
+    c.block(n, 0, n, 1) = K_inv * Gamma * fsr.getUK();
+    c.block(2 * n, 0, m - 2 * n , 1) = fsr.getLambda(); // m - 2n = P * n_CV
+
+    bound = z_pop - c;
+}
+
 void setWeightMatrices(SparseXd& Q_bar, SparseXd& R_bar, const MPCConfig& conf) {
     blkdiag(Q_bar, conf.Q, conf.P);
     blkdiag(R_bar, conf.R, conf.M);
@@ -122,9 +138,16 @@ void setGradientVector(VectorXd& q, FSRModel& fsr, const SparseXd& Q_bar,
 void setConstraintMatrix(SparseXd& A, const FSRModel& fsr, int m, int n) {
     A.resize(m, n);
     MatrixXd dense = MatrixXd::Zero(m, n); 
+
+    // A = [ I_nxn,
+    //       K⁽⁻¹⁾,
+    //       Theta]; 
+
+    MatrixXd I = MatrixXd::Identity(n, n); 
     MatrixXd K_inv;
     setKInv(K_inv, n);
 
+    dense.block(0, 0, n, n) = I;
     dense.block(n, 0, n, n) = K_inv;
     dense.block(2 * n, 0, fsr.getP() * fsr.getN_CV(), n) = fsr.getTheta();
     A = dense.sparseView();
@@ -132,21 +155,13 @@ void setConstraintMatrix(SparseXd& A, const FSRModel& fsr, int m, int n) {
 
 void setConstraintVectors(VectorXd& l, VectorXd& u, const VectorXd& z_min_pop, const VectorXd& z_max_pop,
                          FSRModel& fsr, int m, int n) {
-    l.resize(m);
-    u.resize(m);
-    
     MatrixXd K_inv;
     setKInv(K_inv, n);
-    SparseXd gamma; 
-    setGamma(gamma, fsr.getM(), fsr.getN_MV());
+    SparseXd Gamma; 
+    setGamma(Gamma, fsr.getM(), fsr.getN_MV());     
 
-    VectorXd c(m);
-    c.block(0, 0, n, 1) = VectorXd::Zero(n);
-    c.block(n, 0, n, 1) = K_inv * gamma * fsr.getUK();
-    c.block(2 * n, 0, m - 2 * n , 1) = fsr.getLambda(); // m - 2n = P * n_CV
-
-    l = z_min_pop - c;
-    u = z_max_pop - c;
+    setBounds(l, z_min_pop, fsr, K_inv, Gamma, m, n);
+    setBounds(u, z_max_pop, fsr, K_inv, Gamma, m, n);
 }
 
 void setOmegaU(SparseXd& omega, int M, int n_MV) {
@@ -162,6 +177,10 @@ VectorXd PopulateConstraints(const VectorXd& c, int m, int n, int n_MV, int n_CV
 
     // n = M * N_CV = 10
     // m = 2 * n + P * N_CV = 40 
+
+    // z_pop = [ Delta U (M * N_MV),
+    //           U (M * N_MV),
+    //           Y (P * N_CV)]
 
     for (int var = 0; var < 2 * n_MV; var++) { // Assuming same constraining, u, du if n_MV < n_CV
         populated.block(var * M, 0, M, 1) = VectorXd::Constant(M, c(var));
