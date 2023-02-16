@@ -157,11 +157,18 @@ void setOmegaU(SparseXd& omega, int M, int n_MV) {
     omega = omega_dense.sparseView();
 }
 
-VectorXd PopulateConstraints(const VectorXd& c, int m, int n) { // Wrong implementation for new scenario format
+VectorXd PopulateConstraints(const VectorXd& c, int m, int n, int n_MV, int n_CV, int M, int P) { 
     VectorXd populated(m);
-    // Accessing the constraints for du, u and y, given in respectively 1st, 2nd and 3rd position
-    populated.block(0, 0, n, 1) = VectorXd::Constant(n, c(0));
-    populated.block(n, 0, n, 1) = VectorXd::Constant(n, c(1));
-    populated.block(2 * n, 0, m - 2 * n, 1) = VectorXd::Constant(m - 2 * n, c(2)); // m - 2n = P * n_CV
+
+    // n = M * N_CV = 10
+    // m = 2 * n + P * N_CV = 40 
+
+    for (int var = 0; var < 2 * n_MV; var++) { // Assuming same constraining, u, du if n_MV < n_CV
+        populated.block(var * M, 0, M, 1) = VectorXd::Constant(M, c(var));
+    } // Fill n first constraints, du and u, 2 * M * N_MV
+
+    for (int var = 0; var < n_CV; var++) {
+        populated.block(2 * n + (var * P), 0, P, 1) = VectorXd::Constant(P, c(2 * n_MV + var));
+    } // Fill remaining constraints, y, P * N_CV
     return populated;
 } 

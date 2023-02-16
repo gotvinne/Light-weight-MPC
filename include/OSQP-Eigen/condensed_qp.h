@@ -87,6 +87,6 @@ void setOmegaU(SparseXd& omega, int M, int n_MV);
  * @param n Number of optimalization variables
  * @return VectorXd, populated vector
  */
-VectorXd PopulateConstraints(const VectorXd& c, int m, int n);
+VectorXd PopulateConstraints(const VectorXd& c, int m, int n, int n_MV, int n_CV, int M, int P);
 
 #endif // CONDENSED_QP_H
