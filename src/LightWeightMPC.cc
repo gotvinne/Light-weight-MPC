@@ -18,12 +18,11 @@
 
 void LightWeightMPC(const string& sce, int T) {
     const string sim = "sim_" + sce;
-    const string sys_path = "../data/systems/sr_siso_test.json";
     const string sce_path = "../data/scenarios/sce_" + sce + ".json";
     const string sim_path = "../data/simulations/" + sim + ".json";
 
     // System variables
-    CVData cvd;
+    CVData cvd; 
     MVData mvd;
     std::map<string, int> m_map;
 
@@ -39,8 +38,8 @@ void LightWeightMPC(const string& sce, int T) {
     FSRModel fsr(cvd.getSR(), m_map, conf.P, conf.M, conf.W, mvd.Inits, cvd.getInits());
     
     // MPC variables:
-    MatrixXd u_mat; // Optimized actuation
-    MatrixXd y_pred;
+    MatrixXd u_mat; /** Optimized actuation, (n_MV, T) */
+    MatrixXd y_pred; /** Predicted output (n_CV, T)*/
 
     // Solver: 
     try {
@@ -73,8 +72,9 @@ void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPC
     // Define QP:
     const int n = M * n_MV; // #Optimization variables 
     const int m = P * n_CV + 2 * n; // #Constraints
-    const VectorXd z_max_pop = PopulateConstraints(z_max, m, n);
-    const VectorXd z_min_pop = PopulateConstraints(z_min, m, n);
+   
+    const VectorXd z_max_pop = PopulateConstraints(z_max, m, n, n_MV, n_CV, M, P);
+    const VectorXd z_min_pop = PopulateConstraints(z_min, m, n, n_MV, n_CV, M, P);
 
     solver.data()->setNumberOfVariables(n);
     solver.data()->setNumberOfConstraints(m);
@@ -92,6 +92,7 @@ void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPC
 
     setWeightMatrices(Q_bar, R_bar, conf);
     setHessianMatrix(G, Q_bar, R_bar, fsr);
+
     setGradientVector(q, fsr, Q_bar, y_ref, 0); // Initial gradient
     setConstraintMatrix(A, fsr, m, n);
     setConstraintVectors(l, u, z_min_pop, z_max_pop, fsr, m, n);
@@ -119,12 +120,12 @@ void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPC
         VectorXd du = omega_u * z; 
 
         // Store optimal du and y_pref: Before update!
-        u_mat(Eigen::seq(0, n_MV-1), k) = fsr.getUK();
-        y_pred(Eigen::seq(0, n_CV-1), k) = fsr.getY(z);
+        u_mat(Eigen::seq(0, Eigen::last), k) = fsr.getUK();
+        y_pred(Eigen::seq(0, Eigen::last), k) = fsr.getY(z);
 
         // Propagate FSR model:
         fsr.UpdateU(du);
-        
+
         // Update MPC problem:
         setConstraintVectors(l, u, z_min_pop, z_max_pop, fsr, m, n);
         setGradientVector(q, fsr, Q_bar, y_ref, k); 
