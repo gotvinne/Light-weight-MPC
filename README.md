@@ -27,8 +27,11 @@ Operating system: Linux
 ### Dependancies:
 This software is developed using a environment and package manager [conda](https://docs.conda.io/en/latest/#), builded using [CMake](https://cmake.org/) and compiled using [GCC](https://gcc.gnu.org/).
 
+Other C/C++ compilers needed:
 ```console
 sudo apt-get install g++
+sudo apt install libexpat1-dev
+sudo apt install libxml2-dev
 ```
 
 Other libraries used: 
@@ -38,6 +41,12 @@ Other libraries used:
 - [Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page), Template library for linear algebra
 - [boost/odeint](http://headmyshoulder.github.io/odeint-v2/), Numerical ODE solver
 - [CLI11](https://github.com/CLIUtils/CLI11), Command line parser
+
+
+### Functional Mock-up Interface (FMI)
+This is an industrial standard for simulating dynamical systems, while simultaneously perserve the confidensiality of the model. 
+
+[FMI](https://fmi-standard.org/)
 
 ### Run Light-weight-MPC: 
 *From project root:* 
