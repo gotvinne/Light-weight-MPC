@@ -108,7 +108,11 @@ NB! The indicator for the constraints is only used for readability and is not pa
  "T": int,
  "n_CV": int,
  "n_MV": int, 
- 
+ "du" : [[du11, du12, du13, ... , du1(N-1)],
+         [du21, du22, du23, ... , du2(N-1)], 
+         ... , 
+         [du n_MV, ... , du n_MV (N-1)]],
+
  "CV": [ 
       {  
          "output": "output_name",
