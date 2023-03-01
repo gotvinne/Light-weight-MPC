@@ -66,10 +66,6 @@ conda install -n env -c conda-forge osqp-eigen
 conda install -n env -c conda-forge nlohmann_json
 conda install -n env -c conda-forge cli11
 conda install -n env -c conda-forge boost
-
-conda install -n env -c anaconda jupyter
-conda install -n env -c anaconda numpy
-conda install -n env -c conda-forge matplotlib
 ```
 ```console
 conda env export > env.yml
@@ -82,6 +78,22 @@ Arguments:
 ```console
 chmod +x setup.sh                       // Set execute permission
 sh setup.sh -T mpc_horizon -s sce
+```
+
+### Plot 
+
+For the **Light-weight MPC** software there are build in additional tools for plotting the simulation data. This software is developed in Python, and can be installed using [conda](https://docs.conda.io/en/latest/#). The visualization tool is found in the folder named */vis*
+
+```console
+conda install -n env -c anaconda jupyter
+conda install -n env -c anaconda numpy
+conda install -n env -c conda-forge matplotlib
+```
+
+One can choose to either open Jupyter-Notebook and run *vis.ipynb*. Alternatively, can the plots be produced in by a terminal command from root:
+
+```console
+python3 vis/plot.py -s "Simulation"
 ```
 
 ### LICENCE:
