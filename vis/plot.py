@@ -1,4 +1,4 @@
-from matplotlib import pyplot as plt
+import matplotlib.pyplot as plt
 import argparse
 from SimulationData import *
 
@@ -58,11 +58,11 @@ def PlotInput(sim_data, title, FIG_SIZE = 14):
     plt.show(block=False) # Avoid blocking
 
 parser = argparse.ArgumentParser(description="MPC plot")
-parser.add_argument("-s", "--scenario", type=str, help="Scenario file", dest="scenario")
+parser.add_argument("-s", "--simulation", type=str, help="Simulation file", dest="simulation")
 
 args = parser.parse_args()
 
-simulation_name = "/data/simulations/sim_" + args.scenario + ".json"
+simulation_name = "/data/simulations/sim_" + args.simulation + ".json"
 Data = SimulationData(simulation_name)
 
 fontsize = 10
