@@ -27,9 +27,11 @@ int main(int argc, char **argv) {
     // Default
     int T = 1;
     string sce = "";
+    bool new_sim = false; 
 
     app.add_option("-T", T, "MPC horizon");
     app.add_option("-s", sce, "Scenario name");
+    app.add_flag("-n", new_sim, "New simulation");
     CLI11_PARSE(app, argc, argv);
 
     // Reference

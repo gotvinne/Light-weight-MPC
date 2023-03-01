@@ -7,7 +7,8 @@ then
 fi
 
 # CLI parser
-while getopts "s:T:h" flag; 
+argN=false
+while getopts "ns:T:h" flag; 
 do
   case ${flag} in
     T)
@@ -16,8 +17,11 @@ do
     s) 
       argS=${OPTARG};;
 
+    n) 
+      argN=true;;
+
     ?|h)
-      echo "Usage: $(basename $0) [-T int] [-s string]"
+      echo "Usage: $(basename $0) [-T int] [-s string] [-n]"
       exit 1;;
   esac
 done
@@ -30,7 +34,13 @@ make
 # $? denote exit code
 if [ $? -eq 0 ]; then #Build successful
     echo 
-    ./light_weight -T $argT -s $argS
+
+    if $argN; then # If flag is found
+      ./light_weight -T $argT -s $argS -n
+    else 
+      ./light_weight -T $argT -s $argS
+    fi
+
     if [ $? -eq 0 ]; then #Running successfull
         echo
     else
