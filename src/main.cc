@@ -32,11 +32,13 @@ int main(int argc, char **argv) {
     app.add_option("-T", T, "MPC horizon");
     app.add_option("-s", sce, "Scenario name");
     CLI11_PARSE(app, argc, argv);
+
+    // Reference
+    std::vector<double> ref_vec{GAS_RATE_REF, OIL_RATE_REF};
  
     // ---- Light-weight MPC ---- //
-    LightWeightMPC(sce, T);
+    LightWeightMPC(sce, ref_vec, T);
 
-    //std::vector<double> vec{GAS_RATE_REF, OIL_RATE_REF};
     //UpdateReference("sr_SingleWell", vec, T);
     return 0;
 }

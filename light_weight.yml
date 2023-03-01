@@ -43,8 +43,8 @@ dependencies:
   - brunsli=0.1=h23ab428_0
   - bzip2=1.0.8=h1de35cc_0
   - c-ares=1.18.1=hca72f7f_0
-  - ca-certificates=2023.01.10=hecd8cb5_0
-  - certifi=2022.12.7=py310hecd8cb5_0
+  - ca-certificates=2022.12.7=h033912b_0
+  - certifi=2022.12.7=pyhd8ed1ab_0
   - cffi=1.15.1=py310hc55c11b_0
   - cfitsio=3.470=hbd21bf8_7
   - chardet=4.0.0=py310hecd8cb5_1003
@@ -80,7 +80,7 @@ dependencies:
   - dill=0.3.6=py310hecd8cb5_0
   - distributed=2022.2.1=pyhd3eb1b0_0
   - docutils=0.18.1=py310hecd8cb5_3
-  - eigen=3.3.7=haf03e11_1
+  - eigen=3.4.0=h940c156_0
   - entrypoints=0.4=py310hecd8cb5_0
   - et_xmlfile=1.1.0=py310hecd8cb5_0
   - expat=2.4.9=he9d5cce_0
@@ -235,8 +235,8 @@ dependencies:
   - oniguruma=6.9.7.1=h9ed2024_0
   - openjpeg=2.4.0=h66ea3da_0
   - openpyxl=3.0.10=py310hca72f7f_0
-  - openssl=1.1.1t=hca72f7f_0
-  - osqp-eigen=0.7.0=he49afe7_0
+  - openssl=1.1.1t=hfd90126_0
+  - osqp-eigen=0.8.0=hf0c8a7f_0
   - packaging=22.0=py310hecd8cb5_0
   - pandas=1.5.2=py310h3ea8b11_0
   - pandocfilters=1.5.0=pyhd3eb1b0_0

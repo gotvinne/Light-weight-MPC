@@ -14,14 +14,32 @@
 #include "IO/json_specifiers.h"
 
 #include <OsqpEigen/OsqpEigen.h>
+#include <Eigen/Dense>
 #include <iostream>
+#include <vector>
 
-void LightWeightMPC(const string& sce, int T) {
+/**
+ * @brief Allocates and initialises reference
+ * 
+ * @param y_ref 
+ * @param ref_vec 
+ * @param T 
+ */
+static VectorXd* AllocateReference(const std::vector<double>& ref_vec, int T, int P) { // Cannot reinitialize pointer via pass-by-pointer
+    VectorXd* y_ref = new VectorXd[int(ref_vec.size())];
+
+    for (int i = 0; i < int(ref_vec.size()); i++) {
+        y_ref[i] = VectorXd::Constant(T + P, ref_vec.at(i)); // Takes predictions into account!
+    }
+    return y_ref;
+}
+
+void LightWeightMPC(const string& sce, const std::vector<double>& ref_vec, int T) {
     const string sim = "sim_" + sce;
     const string sce_path = "../data/scenarios/sce_" + sce + ".json";
     const string sim_path = "../data/simulations/" + sim + ".json";
 
-    // System variables
+    // System variables:
     CVData cvd; 
     MVData mvd;
     std::map<string, int> m_map;
@@ -41,18 +59,25 @@ void LightWeightMPC(const string& sce, int T) {
     MatrixXd u_mat; /** Optimized actuation, (n_MV, T) */
     MatrixXd y_pred; /** Predicted output (n_CV, T)*/
 
+    // Reference: 
+    if (int(ref_vec.size()) != m_map[kN_CV]) {
+        throw std::invalid_argument("Number of references do not coincide with constrained variables");
+    }
+    VectorXd* y_ref = AllocateReference(ref_vec, T, conf.P);
+
     // Solver: 
     try {
-        SRSolver(T, u_mat, y_pred, fsr, conf, z_min, z_max, cvd.getYRef());
+        SRSolver(T, u_mat, y_pred, fsr, conf, z_min, z_max, y_ref);
+        delete[] y_ref;
     }
     catch(std::runtime_error& e) {
         std::cout << e.what() << std::endl;
     }
 
     // Serializing: 
-    json write_data;
-    SerializeSimulation(write_data, sim_path, sce, cvd, mvd, 
-                 y_pred, u_mat, z_min, z_max, fsr.getN_CV(), fsr.getN_MV(), T);
+    // json write_data;
+    //SerializeSimulation(write_data, sim_path, sce, cvd, mvd, 
+     //            y_pred, u_mat, z_min, z_max, fsr.getN_CV(), fsr.getN_MV(), T);
 
 }
 

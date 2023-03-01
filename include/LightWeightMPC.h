@@ -18,7 +18,7 @@
 #include "model/step_response_model.h"
 #include "model/FSRModel.h"
 
-#include <map>
+#include <vector>
 #include <iostream>
 #include <string>
 
@@ -33,9 +33,10 @@ using string = std::string;
  * @brief Simulation software function
  * 
  * @param sce [std::string] Scenario to be simulated 
+ * @param ref_vec 
  * @param T [int] MPC horizon
  */
-void LightWeightMPC(const string& sce, int T);
+void LightWeightMPC(const string& sce, const std::vector<double>& ref_vec, int T);
 
 /**
  * @brief Solving the condensed optimalization problem using OSQP-Eigen
