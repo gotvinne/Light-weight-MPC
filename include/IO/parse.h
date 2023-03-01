@@ -35,11 +35,9 @@ json ReadJson(const string& filepath);
  * @param model_param std::map holding model parameters
  * @param output_data CVData 
  * @param input_data MVData
- * @param T mpc horizon
- * @param P Prediction horizon
  */
 void ParseSystemData(const json& sys_data, std::map<string, int>& model_param,
-                    CVData& output_data, MVData& input_data, int T, int P); 
+                    CVData& output_data, MVData& input_data); 
 
 /**
  * @brief High-level function parsing a scenario file
@@ -63,10 +61,9 @@ void ParseScenarioData(const json& sce_data, string& system, MPCConfig& mpc_conf
  * @param mpc_config MPC configuration data
  * @param z_min lower constraints 
  * @param z_max upper constraints
- * @param T MPC horizon
  */
 void Parse(const string& sce_filepath, std::map<string, int>& model_param,
                     CVData& output_data, MVData& input_data, MPCConfig& mpc_config, 
-                        VectorXd& z_min, VectorXd& z_max, int T);
+                        VectorXd& z_min, VectorXd& z_max);
 
 #endif  // PARSE_H

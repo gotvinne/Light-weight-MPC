@@ -30,7 +30,21 @@ private:
     std::vector<std::string> units_; /** vector of corresponding state units */
 
     VectorXd** pp_SR_vec_; /** Matrix of Eigen::VectorXd holding every n_CV * n_MV step response */
-    VectorXd* y_ref_; /** Matrix of state reference values (n_CV * T), the vector is Populated P times*/
+    
+     /**
+     * @brief Filling the dobbel linked VectorXd
+     * 
+     * @param s_data 
+     * @param cv 
+     * @param mv
+     */
+    void FillSR(const json& s_data, int cv, int mv);
+
+    /**
+     * @brief Helper function, allocating Eigen::VectorXd in constuctor
+     * 
+     */
+    void AllocateVectors();
 
 public:
     /**
@@ -45,31 +59,13 @@ public:
      * @param n_MV number of maipulated variables
      * @param n_CV number of controlled variables
      * @param N number of step coefficients
-     * @param T mpc horizon
-     * @param P Predition horizon
      */
-    CVData(const json& cv_data, int n_MV, int n_CV, int N, int T, int P);
+    CVData(const json& cv_data, int n_MV, int n_CV, int N);
 
     /**
      * @brief Destructor. Destroy the CVData object. Free memory of pp_SR_vec
      */
     ~CVData();
-
-    /**
-     * @brief Filling the dobbel linked VectorXd
-     * 
-     * @param s_data 
-     * @param cv 
-     * @param mv
-     */
-    void FillSR(const json& s_data, int cv, int mv);
-
-    /**
-     * @brief Helper function, allocating Eigen::VectorXd in constuctor
-     * 
-     * @param size used to allocate y_ref
-     */
-    void AllocateVectors(int size);
 
     /**
      * @brief Operator assignment, performing deep copying
@@ -79,16 +75,11 @@ public:
      */
     CVData& operator=(const CVData& rhs);
 
-    void PopulateRef(int P, int T);
-
     // Get functions
     VectorXd** getSR() const { return pp_SR_vec_; }
-    VectorXd* getYRef() const { return y_ref_; }
     std::vector<std::string> getOutputs() const { return outputs_; }
     std::vector<double> getInits() const { return inits_; }
     std::vector<std::string> getUnits() const { return units_; }
-
-    void PrintYRef();
 };
 
 /**

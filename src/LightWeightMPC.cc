@@ -50,7 +50,7 @@ void LightWeightMPC(const string& sce, const std::vector<double>& ref_vec, int T
     MPCConfig conf; /** MPC configuration */
 
     // Parse information:
-    Parse(sce_path, m_map, cvd, mvd, conf, z_min, z_max, T);
+    Parse(sce_path, m_map, cvd, mvd, conf, z_min, z_max);
 
     // Select dynamical model: 
     FSRModel fsr(cvd.getSR(), m_map, conf.P, conf.M, conf.W, mvd.Inits, cvd.getInits());

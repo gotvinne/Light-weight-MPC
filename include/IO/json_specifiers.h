@@ -22,7 +22,6 @@ const std::string kOutput = "output";
 const std::string kInput = "input";
 const std::string kInit = "init";
 const std::string kUnit = "unit";
-const std::string kY_Ref = "y_ref";
 const std::string kS = "S"; 
 
 // ------- Scenario file specifiers ------- //

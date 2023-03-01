@@ -23,7 +23,6 @@ The [nlohmann/json](https://json.nlohmann.me/api/basic_json/) library is used in
          "output": "output_name",
          "init": double,
          "unit": string,
-         "y_ref": [y1, y2, y3, ... , yT], (Setpoint trajectory)
          "S": [[S11, S12, S13, ... , S1N],
                [S21, S22, S23, ... , S2N], 
                ... , 
@@ -34,7 +33,6 @@ The [nlohmann/json](https://json.nlohmann.me/api/basic_json/) library is used in
          "output": "output_name",
          "init": double,
          "unit": string,
-         "y_ref": [y1, y2, y3, ... , yT], (Setpoint trajectory)
          "S": [[S11, S12, S13, ... , S1N],
                [S21, S22, S23, ... , S2N], 
                ... , 

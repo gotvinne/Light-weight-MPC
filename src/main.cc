@@ -10,7 +10,6 @@
  */
 
 #include "LightWeightMPC.h"
-#include "IO/update.h"
 
 #include <CLI/CLI.hpp>
 
@@ -38,7 +37,6 @@ int main(int argc, char **argv) {
  
     // ---- Light-weight MPC ---- //
     LightWeightMPC(sce, ref_vec, T);
-
-    //UpdateReference("sr_SingleWell", vec, T);
+    
     return 0;
 }

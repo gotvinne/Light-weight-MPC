@@ -71,13 +71,13 @@ json ReadJson(const string& filepath) {
 }
 
 void ParseSystemData(const json& sys_data, std::map<string, int>& model_param,
-                    CVData& output_data, MVData& input_data, int T, int P) {
+                    CVData& output_data, MVData& input_data) {
     try {
         ModelData(sys_data, model_param);
         json cv_data = sys_data.at(kCV);
         json mv_data = sys_data.at(kMV);
 
-        output_data = CVData(cv_data, model_param[kN_MV], model_param[kN_CV], model_param[kN], T, P);
+        output_data = CVData(cv_data, model_param[kN_MV], model_param[kN_CV], model_param[kN]);
         input_data = MVData(mv_data, model_param[kN_MV]); 
     }
     catch(json::exception& e) {
@@ -103,7 +103,7 @@ void ParseScenarioData(const json& sce_data, string& system, MPCConfig& mpc_conf
 
 void Parse(const string& sce_filepath, std::map<string, int>& model_param,
                     CVData& output_data, MVData& input_data, MPCConfig& mpc_config, 
-                        VectorXd& z_min, VectorXd& z_max, int T) {
+                        VectorXd& z_min, VectorXd& z_max) {
     // Parse scenario
     json sce_data = ReadJson(sce_filepath);
     string system;
@@ -112,7 +112,7 @@ void Parse(const string& sce_filepath, std::map<string, int>& model_param,
     // Parse system
     string sys_filepath = "../data/systems/" + system + ".json";
     json sys_data = ReadJson(sys_filepath);
-    ParseSystemData(sys_data, model_param, output_data, input_data, T, mpc_config.P);
+    ParseSystemData(sys_data, model_param, output_data, input_data);
 
     if (mpc_config.Q.rows() != model_param[kN_CV]) {
         throw std::out_of_range("Q matrix dimension does not match system description");
