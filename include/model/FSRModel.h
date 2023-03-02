@@ -87,18 +87,7 @@ private:
      */
     void setPsi();
 
-    /**
-     * @brief Get the Omega Y object
-     * 
-     * @return SparseXd 
-     */
     SparseXd getOmegaY();
-
-    /**
-     * @brief Get the Du Tilde object
-     * 
-     * @return VectorXd 
-     */
     VectorXd getDuTilde();
 
 public: 
@@ -122,8 +111,6 @@ public:
      */
     void UpdateU(const VectorXd& du);
 
-    //FSRModel& operator=(const FSRModel& rhs);
-
     /** Get functions */
     int getP() const { return P_; }
     int getM() const { return M_; }
@@ -132,6 +119,7 @@ public:
     int getN_MV() const { return n_MV_; }
 
     MatrixXd getTheta() const { return theta_; }
+    MatrixXd getDuTildeMat() const { return du_tilde_mat_; }
     VectorXd getUK() const { return u_K_; }
     VectorXd getU() const { return u_; }
 
@@ -143,8 +131,6 @@ public:
      * @return VectorXd predicted output, one step, k+1 ahead. 
      */
     VectorXd getY(const VectorXd& z) { return getOmegaY() * (theta_ * z + getLambda()); } // Must be changed for soft constraint!
-    
-    // Updating functions
 
     /**
      * @brief Get the Lambda object

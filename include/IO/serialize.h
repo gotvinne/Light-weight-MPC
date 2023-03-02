@@ -13,6 +13,7 @@
 #define SERIALIZE_H
 
 #include "IO/data_objects.h"
+#include "model/FSRModel.h"
 
 #include <string>
 #include <vector>
@@ -37,12 +38,11 @@ void WriteJson(const json& data, const string& filepath);
  * 
  * @param data 
  * @param scenario 
- * @param n_CV Number of controlled variables
- * @param n_MV Number of manipulated variables 
+ * @param fsr
  * @param T MPC horizon
  */
 void SerializeSimData(json& data, const string& scenario, 
-                int n_CV, int n_MV, int T);
+                const FSRModel& fsr, int T);
 
 /**
  * @brief Formats the CV data in the simulation file
@@ -80,12 +80,11 @@ void SerializeSimMV(json& data, const MVData& mv_data, const MatrixXd& u, const 
  * @param u_mat 
  * @param z_min
  * @param z_max
- * @param n_CV 
- * @param n_MV 
+ * @param fsr
  * @param T 
  */
 void SerializeSimulation(json& data, const string& write_path, const string& scenario, const CVData& cv_data, const MVData& mv_data, 
-                    const MatrixXd& y_pred, const MatrixXd& u_mat, const VectorXd& z_min, const VectorXd& z_max, int n_CV, int n_MV, int T);    
+                    const MatrixXd& y_pred, const MatrixXd& u_mat, const VectorXd& z_min, const VectorXd& z_max, const FSRModel& fsr, int T);    
 
 
 #endif  // SERIALIZE_H

@@ -11,6 +11,7 @@
 
 #include "IO/serialize.h"
 #include "IO/json_specifiers.h"
+#include "model/FSRModel.h"
 
 #include <iostream>
 #include <fstream>
@@ -42,11 +43,19 @@ void WriteJson(const json& data, const string& filepath) {
     ofs.close();
 }
 
-void SerializeSimData(json& data, const string& scenario, int n_CV, int n_MV, int T) {
+void SerializeSimData(json& data, const string& scenario, const FSRModel& fsr, int T) {
     data[kScenario] = scenario;
     data[kT] = T;
-    data[kN_CV] = n_CV;
-    data[kN_MV] = n_MV; 
+    data[kN_CV] = fsr.getN_CV();
+    data[kN_MV] = fsr.getN_MV(); 
+
+    json du_tilde = json::array();
+    for (int i = 0; i < fsr.getN_MV(); i++) {
+        json row_arr = json::array();
+        FillVector(row_arr, fsr.getDuTildeMat(), i);
+        du_tilde.push_back(row_arr);
+    }
+    data[kDuTilde] = du_tilde;
 }
 
 void SerializeSimCV(json& data, const CVData& cv_data, const MatrixXd& y_pred, const MatrixXd& z_min,
@@ -93,10 +102,10 @@ void SerializeSimMV(json& data, const MVData& mv_data, const MatrixXd& u, const 
 }
 
 void SerializeSimulation(json& data, const string& write_path, const string& scenario, const CVData& cv_data, const MVData& mv_data, 
-                    const MatrixXd& y_pred, const MatrixXd& u_mat, const VectorXd& z_min, const VectorXd& z_max, int n_CV, int n_MV, int T) {
-    SerializeSimData(data, scenario, n_CV, n_MV, T);
-    SerializeSimCV(data, cv_data, y_pred, z_min, z_max, n_CV, n_MV);
-    SerializeSimMV(data, mv_data, u_mat, z_min, z_max, n_MV);
+                    const MatrixXd& y_pred, const MatrixXd& u_mat, const VectorXd& z_min, const VectorXd& z_max, const FSRModel& fsr, int T) {
+    SerializeSimData(data, scenario, fsr, T);
+    SerializeSimCV(data, cv_data, y_pred, z_min, z_max, fsr.getN_CV(), fsr.getN_MV());
+    SerializeSimMV(data, mv_data, u_mat, z_min, z_max, fsr.getN_MV());
     WriteJson(data, write_path);
 }
 

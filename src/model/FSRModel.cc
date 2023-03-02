@@ -38,46 +38,6 @@ FSRModel::FSRModel(VectorXd** SR, std::map<std::string, int> m_param, int P, int
     setPsi();
 }
 
-// FSRModel& FSRModel::operator=(const FSRModel& rhs) {
-//     n_CV_ = rhs.n_CV_;
-//     n_MV_ = rhs.n_MV_;
-//     N_ = rhs.N_;
-//     P_ = rhs.P_;
-//     M_ = rhs.M_;
-//     W_ = rhs.W_;
-
-//     u_ = rhs.u_;
-//     y_ = rhs.y_;
-
-//     u_K_ = rhs.u_K_;
-//     du_tilde_mat_ = rhs.du_tilde_mat_;
-
-//     theta_ = rhs.theta_;
-//     phi_ = rhs.phi_;
-//     psi_ = rhs.psi_;
-
-//     pp_SR_mat_ = new MatrixXd*[n_CV_];
-//     for (int i = 0; i < n_CV_; ++i) {
-//         pp_SR_mat_[i] = new MatrixXd[n_MV_];
-//     }
-//     for (int row = 0; row < n_CV_; row++) {
-//         for (int col = 0; col < n_MV_; col++) {
-//             pp_SR_mat_[row][col] = rhs.pp_SR_mat_[row][col];
-//         }
-//     }
-//     // Deep copy SR into pp_SR_vec
-//     pp_SR_vec_ = new VectorXd*[n_CV_];
-//     for (int i = 0; i < n_CV_; ++i) {
-//         pp_SR_vec_[i] = new VectorXd[n_MV_];
-//     }
-//     for (int row = 0; row < n_CV_; row++) {
-//         for (int col = 0; col < n_MV_; col++) {
-//             pp_SR_vec_[row][col] = rhs.pp_SR_vec_[row][col];
-//         }
-//     }
-//     return *this;
-// }
-
 FSRModel::~FSRModel() {
     if (n_CV_ != 0 && n_MV_ != 0) {
         for (int i = 0 ; i < n_CV_; i++) {

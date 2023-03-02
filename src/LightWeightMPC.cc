@@ -34,54 +34,19 @@ static VectorXd* AllocateReference(const std::vector<double>& ref_vec, int T, in
     return y_ref;
 }
 
-void LightWeightMPC(const string& sce, const std::vector<double>& ref_vec, int T) {
-    const string sim = "sim_" + sce;
-    const string sce_path = "../data/scenarios/sce_" + sce + ".json";
-    const string sim_path = "../data/simulations/" + sim + ".json";
-
-    // System variables:
-    CVData cvd; 
-    MVData mvd;
-    std::map<string, int> m_map;
-
-    // Scenario variables:
-    VectorXd z_min; /** Lower constraint vector */
-    VectorXd z_max; /** Upper constraint vector */
-    MPCConfig conf; /** MPC configuration */
-
-    // Parse information:
-    Parse(sce_path, m_map, cvd, mvd, conf, z_min, z_max);
-
-    // Select dynamical model: 
-    FSRModel fsr(cvd.getSR(), m_map, conf.P, conf.M, conf.W, mvd.Inits, cvd.getInits());
-    
-    // MPC variables:
-    MatrixXd u_mat; /** Optimized actuation, (n_MV, T) */
-    MatrixXd y_pred; /** Predicted output (n_CV, T)*/
-
-    // Reference: 
-    if (int(ref_vec.size()) != m_map[kN_CV]) {
-        throw std::invalid_argument("Number of references do not coincide with constrained variables");
-    }
-    VectorXd* y_ref = AllocateReference(ref_vec, T, conf.P);
-
-    // Solver: 
-    try {
-        SRSolver(T, u_mat, y_pred, fsr, conf, z_min, z_max, y_ref);
-        delete[] y_ref;
-    }
-    catch(std::runtime_error& e) {
-        std::cout << e.what() << std::endl;
-    }
-
-    // Serializing: 
-    // json write_data;
-    //SerializeSimulation(write_data, sim_path, sce, cvd, mvd, 
-     //            y_pred, u_mat, z_min, z_max, fsr.getN_CV(), fsr.getN_MV(), T);
-
-}
-
-void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPCConfig& conf, const VectorXd& z_min, 
+/**
+ * @brief Solving the condensed optimalization problem using OSQP-Eigen
+ * 
+ * @param T MPC horizon
+ * @param u_mat Optimized u, filled by reference
+ * @param y_pred Predicted y, filled by reference
+ * @param fsr FSRModel, finite step response model 
+ * @param conf MPC configuration
+ * @param z_min lower constraint vector
+ * @param z_max upper constraint vector
+ * @param y_ref Output reference data
+ */
+static void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPCConfig& conf, const VectorXd& z_min, 
              const VectorXd& z_max, VectorXd* y_ref) {
     // Setup solver:
     OsqpEigen::Solver solver;
@@ -160,4 +125,51 @@ void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPC
         if (!solver.updateGradient(q)) { throw std::runtime_error("Cannot update gradient"); }    
     }
     //fsr.PrintActuation();
+}
+
+void LightWeightMPC(const string& sce, const std::vector<double>& ref_vec, int T) {
+    const string sim = "sim_" + sce;
+    const string sce_path = "../data/scenarios/sce_" + sce + ".json";
+    const string sim_path = "../data/simulations/" + sim + ".json";
+
+    // System variables:
+    CVData cvd; 
+    MVData mvd;
+    std::map<string, int> m_map;
+
+    // Scenario variables:
+    VectorXd z_min; /** Lower constraint vector */
+    VectorXd z_max; /** Upper constraint vector */
+    MPCConfig conf; /** MPC configuration */
+
+    // Parse information:
+    Parse(sce_path, m_map, cvd, mvd, conf, z_min, z_max);
+
+    // Select dynamical model: 
+    FSRModel fsr(cvd.getSR(), m_map, conf.P, conf.M, conf.W, mvd.Inits, cvd.getInits());
+    
+    // MPC variables:
+    MatrixXd u_mat; /** Optimized actuation, (n_MV, T) */
+    MatrixXd y_pred; /** Predicted output (n_CV, T)*/
+
+    // Reference: 
+    if (int(ref_vec.size()) != m_map[kN_CV]) {
+        throw std::invalid_argument("Number of references do not coincide with constrained variables");
+    }
+    VectorXd* y_ref = AllocateReference(ref_vec, T, conf.P);
+
+    // Solver: 
+    try {
+        SRSolver(T, u_mat, y_pred, fsr, conf, z_min, z_max, y_ref);
+        delete[] y_ref;
+    }
+    catch(std::runtime_error& e) {
+        std::cout << e.what() << std::endl;
+    }
+
+    // Serializing: 
+    json write_data;
+    SerializeSimulation(write_data, sim_path, sce, cvd, mvd, 
+               y_pred, u_mat, z_min, z_max, fsr, T);
+
 }
