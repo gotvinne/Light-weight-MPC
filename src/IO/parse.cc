@@ -107,6 +107,49 @@ static void ParseScenarioData(const json& sce_data, string& system, MPCConfig& m
     } 
 }
 
+/**
+ * @brief 
+ * 
+ * @param sim_data 
+ * @param du_tilde 
+ * @param cvd 
+ * @param mvd 
+ */
+static void ParseSimulationData(const json& sim_data, MatrixXd& du_tilde, CVData& cvd, MVData& mvd) {
+    try {               
+        // Read du_tilde and yT, dT
+        json du_tilde_data = sim_data.at(kDuTilde);
+        int row = du_tilde_data.size(); // = n_MV
+        int col = du_tilde_data.at(0).size(); // N-1 
+
+        du_tilde.resize(row, col);
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                du_tilde(i, j) = du_tilde_data.at(i).at(j);
+            }
+        }
+
+        json cv_data = sim_data.at(kCV);
+        int i = 0;
+        for (auto& cv : cv_data) {
+            json y_arr = cv.at(kY_pred); // Should be changed to "y"
+            cvd.setInits(y_arr.at(y_arr.size()-1), i);
+            i++;
+        }
+
+        json mv_data = sim_data.at(kMV);
+        i = 0;
+        for (auto& mv : mv_data) {
+            json u_arr = mv.at(kU);
+            mvd.setInits(u_arr.at(u_arr.size()-1), i);
+            i++;
+        }
+    }
+    catch(json::exception& e) {
+        std::cerr << "ERROR! " << e.what() << std::endl; 
+    } 
+}
+
 json ReadJson(const string& filepath) {
     try {
         std::ifstream file(filepath);
@@ -119,7 +162,7 @@ json ReadJson(const string& filepath) {
 }
 
 void ParseNew(const string& sce_filepath, std::map<string, int>& model_param,
-                    CVData& output_data, MVData& input_data, MPCConfig& mpc_config, 
+                    CVData& cvd, MVData& mvd, MPCConfig& mpc_config, 
                         VectorXd& z_min, VectorXd& z_max) {
     // Parse scenario file
     json sce_data = ReadJson(sce_filepath);
@@ -129,7 +172,7 @@ void ParseNew(const string& sce_filepath, std::map<string, int>& model_param,
     // Parse system file
     string sys_filepath = "../data/systems/" + system + ".json";
     json sys_data = ReadJson(sys_filepath);
-    ParseSystemData(sys_data, model_param, output_data, input_data);
+    ParseSystemData(sys_data, model_param, cvd, mvd);
 
     if (mpc_config.Q.rows() != model_param[kN_CV]) {
         throw std::out_of_range("Q matrix dimension does not match system description");
@@ -139,6 +182,13 @@ void ParseNew(const string& sce_filepath, std::map<string, int>& model_param,
     }
 }
 
-void Parse(const string& sce_filepath, std::map<string, int>& model_param,
-            CVData& output_data, MVData& input_data, MPCConfig& mpc_config, 
-                VectorXd& z_min, VectorXd& z_max, MatrixXd& du_tilde) {}
+void Parse(const string& sce_filepath, const string& sim_filepath, std::map<string, int>& model_param,
+            CVData& cvd, MVData& mvd, MPCConfig& mpc_config, 
+                VectorXd& z_min, VectorXd& z_max, MatrixXd& du_tilde) {
+    
+    ParseNew(sce_filepath, model_param, cvd, mvd, mpc_config, z_min, z_max);
+
+    // Parse simulation file:
+    json sim_data = ReadJson(sim_filepath);
+    ParseSimulationData(sim_data, du_tilde, cvd, mvd);
+}

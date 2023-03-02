@@ -147,7 +147,7 @@ void LightWeightMPC(const string& sce, const std::vector<double>& ref_vec, bool 
         ParseNew(sce_path, m_map, cvd, mvd, conf, z_min, z_max);
     } else {
         MatrixXd du_tilde; 
-        Parse(sce_path, m_map, cvd, mvd, conf, z_min, z_max, du_tilde);
+        Parse(sce_path, sim_path, m_map, cvd, mvd, conf, z_min, z_max, du_tilde);
     }
     
     // Select dynamical model: 

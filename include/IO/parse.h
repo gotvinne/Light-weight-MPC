@@ -34,18 +34,18 @@ json ReadJson(const string& filepath);
  * 
  * @param sce_filepath scenario filepath
  * @param model_param map of model parameters
- * @param output_data CV system data  
- * @param input_data MV system data
+ * @param cvd CV system data  
+ * @param mvd MV system data
  * @param mpc_config MPC configuration data
  * @param z_min lower constraints 
  * @param z_max upper constraints
  */
 void ParseNew(const string& sce_filepath, std::map<string, int>& model_param,
-                    CVData& output_data, MVData& input_data, MPCConfig& mpc_config, 
+                    CVData& cvd, MVData& mvd, MPCConfig& mpc_config, 
                         VectorXd& z_min, VectorXd& z_max);
 
-void Parse(const string& sce_filepath, std::map<string, int>& model_param,
-            CVData& output_data, MVData& input_data, MPCConfig& mpc_config, 
+void Parse(const string& sce_filepath, const string& sim_filepath, std::map<string, int>& model_param,
+            CVData& cvd, MVData& mvd, MPCConfig& mpc_config, 
                 VectorXd& z_min, VectorXd& z_max, MatrixXd& du_tilde);
 
 

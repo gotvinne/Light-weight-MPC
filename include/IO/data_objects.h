@@ -15,6 +15,7 @@
 #include <Eigen/Dense>
 using json = nlohmann::json; 
 using VectorXd = Eigen::VectorXd;
+using string = std::string;
 
 /**
  * @brief C++ class representing state data described in system file
@@ -25,9 +26,9 @@ private:
     int n_MV_; /** Number of manipulated variables */
     int N_; /** Number of step response coefficients */
     
-    std::vector<std::string> outputs_; /** vector of state specifiers */
+    std::vector<string> outputs_; /** vector of state specifiers */
     std::vector<double> inits_; /** vector of initial values */
-    std::vector<std::string> units_; /** vector of corresponding state units */
+    std::vector<string> units_; /** vector of corresponding state units */
 
     VectorXd** pp_SR_vec_; /** Matrix of Eigen::VectorXd holding every n_CV * n_MV step response */
     
@@ -75,20 +76,22 @@ public:
      */
     CVData& operator=(const CVData& rhs);
 
+    void setInits(double value, int index) { inits_.at(index) = value; }
+
     // Get functions
     VectorXd** getSR() const { return pp_SR_vec_; }
-    std::vector<std::string> getOutputs() const { return outputs_; }
+    std::vector<string> getOutputs() const { return outputs_; }
     std::vector<double> getInits() const { return inits_; }
-    std::vector<std::string> getUnits() const { return units_; }
+    std::vector<string> getUnits() const { return units_; }
 };
 
 /**
  * @brief C++ struct representing input data 
  */
 struct MVData {
-    std::vector<std::string> Inputs; /** Vector containing input spesifiers */
+    std::vector<string> Inputs; /** Vector containing input spesifiers */
     std::vector<double> Inits; /** Vector holding initial values */
-    std::vector<std::string> Units; /** Vector of corresponding input units */
+    std::vector<string> Units; /** Vector of corresponding input units */
 
     /**
      * @brief Empty constructor. Construct a new MVData object
@@ -102,6 +105,8 @@ struct MVData {
      * @param n_MV number of manipulated variables
      */
     MVData(const json& mv_data, int n_MV);
+
+    void setInits(double value, int index) { Inits.at(index) = value; }
 };
 
 /**
