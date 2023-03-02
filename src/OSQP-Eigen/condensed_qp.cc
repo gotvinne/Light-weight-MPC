@@ -48,27 +48,6 @@ static void blkdiag(SparseXd& blk_mat, const VectorXd& vec, int count) {
 }
 
 /**
- * @brief Calculate K matrix
- * 
- * @param K Eigen::SparseMatrix<double> to be filled 
- * @param M Control horizon
- * @param n_MV number of manupulated variables
- */
-// static void setKmatrix(SparseXd& K, int M, int n_MV) {
-//     MatrixXd K_arg = MatrixXd::Zero(M, M);
-//     std::array<double, 2> arr = {1.0, -1.0};
-//     for (int i = 0; i < M; i++) {
-//         for (int j = 0; j < int(arr.size()); j++) { // NB M > 2. 
-//             if (i == M-1 && j == 1) {
-//                 break;
-//             }
-//             K_arg(i+j, i) = arr[j];
-//         }
-//     }
-//     blkdiag(K, K_arg, n_MV);
-// }
-
-/**
  * @brief Calculate K inv matrix, this is a lower triangular matrix
  * 
  * @param K_inv Eigen::MatrixXd passed by reference
@@ -116,8 +95,8 @@ static void setTau(VectorXd& tau, VectorXd* y_ref, int P, int n_CV, int k) { // 
  * @param fsr FSRModel Finite step response model
  * @param K_inv Eigen::MatrixXd lower triangular matrix
  * @param Gamma Eigen::SparseXd 
- * @param m 
- * @param n 
+ * @param m Number of constraints 
+ * @param n Number of optimalization variables
  */
 static void setBounds(VectorXd& bound, const VectorXd& z_pop, FSRModel& fsr, const MatrixXd& K_inv, 
                 const SparseXd& Gamma, int m, int n) {

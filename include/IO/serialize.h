@@ -28,27 +28,26 @@ using string = std::string;
  * @brief Write json object to file file according to filepath
  * 
  * @param data json object to be written
- * @param filepath string file 
+ * @param filepath [string] filepath to be written 
  */
 void WriteJson(const json& data, const string& filepath);
 
 /**
- * @brief 
+ * @brief Serialize simulation data into simulation JSON data files
  * 
- * @param data 
- * @param write_path 
- * @param scenario 
- * @param cv_data 
- * @param mv_data 
- * @param y_pred 
- * @param u_mat 
- * @param z_min
- * @param z_max
- * @param fsr
- * @param T 
+ * @param data [json] object to write json data
+ * @param write_path [string] file path to write json file
+ * @param scenario [string] scenario name
+ * @param cvd CVData
+ * @param mvd MVData
+ * @param y_pred [Eigen::MatrixXd]
+ * @param u_mat [Eigen::MatrixXd]
+ * @param z_min [Eigen::VectorXd] lower constraints
+ * @param z_max [Eigen::VectorXd] upper constraints
+ * @param fsr [FSRModel] 
+ * @param T [int] MPC horizon
  */
-void SerializeSimulation(json& data, const string& write_path, const string& scenario, const CVData& cv_data, const MVData& mv_data, 
+void SerializeSimulation(json& data, const string& write_path, const string& scenario, const CVData& cvd, const MVData& mvd, 
                     const MatrixXd& y_pred, const MatrixXd& u_mat, const VectorXd& z_min, const VectorXd& z_max, const FSRModel& fsr, int T);    
-
 
 #endif  // SERIALIZE_H

@@ -44,9 +44,21 @@ void ParseNew(const string& sce_filepath, std::map<string, int>& model_param,
                     CVData& cvd, MVData& mvd, MPCConfig& mpc_config, 
                         VectorXd& z_min, VectorXd& z_max);
 
+/**
+ * @brief Parse function taking previous simulations into account
+ * 
+ * @param sce_filepath scenario filepath
+ * @param sim_filepath simulation filepath
+ * @param model_param map of model parameters
+ * @param cvd CV system data  
+ * @param mvd MV system data
+ * @param mpc_config MPC configuration data
+ * @param z_min lower constraints 
+ * @param z_max upper constraints
+ * @param du_tilde [Eigen::MatrixXd] Matrix of previous actuations
+ */
 void Parse(const string& sce_filepath, const string& sim_filepath, std::map<string, int>& model_param,
             CVData& cvd, MVData& mvd, MPCConfig& mpc_config, 
                 VectorXd& z_min, VectorXd& z_max, MatrixXd& du_tilde);
-
 
 #endif  // PARSE_H

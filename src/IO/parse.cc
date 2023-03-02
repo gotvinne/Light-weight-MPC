@@ -108,12 +108,12 @@ static void ParseScenarioData(const json& sce_data, string& system, MPCConfig& m
 }
 
 /**
- * @brief 
+ * @brief Parsing simulation data for further simulations
  * 
- * @param sim_data 
- * @param du_tilde 
- * @param cvd 
- * @param mvd 
+ * @param sim_data [json] object holding json data
+ * @param du_tilde [Eigen::MatrixXd] matrix holding previous actuations
+ * @param cvd CVData
+ * @param mvd MVData
  */
 static void ParseSimulationData(const json& sim_data, MatrixXd& du_tilde, CVData& cvd, MVData& mvd) {
     try {               

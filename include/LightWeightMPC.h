@@ -19,7 +19,6 @@
 #include "model/FSRModel.h"
 
 #include <vector>
-#include <iostream>
 #include <string>
 
 #include <nlohmann/json.hpp>
@@ -33,7 +32,7 @@ using string = std::string;
  * @brief Simulation software function
  * 
  * @param sce [std::string] Scenario to be simulated 
- * @param ref_vec 
+ * @param ref_vec [std::vector] vector holding reference values
  * @param new_sim [bool]
  * @param T [int] MPC horizon
  */

@@ -20,11 +20,11 @@
 #include <nlohmann/json.hpp>
 
 /**
- * @brief 
+ * @brief Fill json::array() object from Eigen::MatrixXd
  * 
- * @param vector 
- * @param mat 
- * @param row 
+ * @param vector [json::array()]
+ * @param mat [Eigen::MatrixXd]
+ * @param row [int] Row index
  */
 static void FillVector(json& vector, const MatrixXd& mat, int row) {
     for (int i = 0; i < mat.cols(); i++) {
@@ -35,9 +35,9 @@ static void FillVector(json& vector, const MatrixXd& mat, int row) {
 /**
  * @brief Formats the plain data in simulation file
  * 
- * @param data 
- * @param scenario 
- * @param fsr
+ * @param data [json] 
+ * @param scenario [string] scenario to serialize
+ * @param fsr [FSRModel]
  * @param T MPC horizon
  */
 static void SerializeSimData(json& data, const string& scenario, const FSRModel& fsr, int T) {
@@ -58,19 +58,19 @@ static void SerializeSimData(json& data, const string& scenario, const FSRModel&
 /**
  * @brief Formats the CV data in the simulation file
  * 
- * @param data 
- * @param cv_data CDData object
- * @param z_min
- * @param z_max
+ * @param data [json]
+ * @param cvd CDData object
+ * @param z_min [Eigen::VectorXd] lower constraints
+ * @param z_max [Eigen::VectorXd] upper constraints
  * @param n_CV Number of controlled variables
- * @param n_MV 
+ * @param n_MV Number of Manipulated variables
  */
-static void SerializeSimCV(json& data, const CVData& cv_data, const MatrixXd& y_pred, const MatrixXd& z_min,
+static void SerializeSimCV(json& data, const CVData& cvd, const MatrixXd& y_pred, const MatrixXd& z_min,
                  const MatrixXd& z_max, int n_CV, int n_MV) {
     json arr = json::array(); 
     
-    std::vector<string> outputs = cv_data.getOutputs();
-    std::vector<string> units = cv_data.getUnits();
+    std::vector<string> outputs = cvd.getOutputs();
+    std::vector<string> units = cvd.getUnits();
 
     for (int i = 0; i < n_CV; i++) {
         json obj = json::object();
@@ -92,19 +92,19 @@ static void SerializeSimCV(json& data, const CVData& cv_data, const MatrixXd& y_
 /**
  * @brief Formats the MV data in the simulation file
  * 
- * @param data 
- * @param mv_data MVData object
- * @param z_min
- * @param z_max
+ * @param data [json] 
+ * @param mvd MVData 
+ * @param z_min [Eigen::VectorXd] lower constraints
+ * @param z_max [Eigen::VectorXd] upper constraints
  * @param n_MV Number of manipulated variables
  */
-static void SerializeSimMV(json& data, const MVData& mv_data, const MatrixXd& u, const VectorXd& z_min, const VectorXd& z_max, int n_MV) {
+static void SerializeSimMV(json& data, const MVData& mvm, const MatrixXd& u, const VectorXd& z_min, const VectorXd& z_max, int n_MV) {
     json arr = json::array(); 
 
     for (int i = 0; i < n_MV; i++) {
         json obj = json::object();
-        obj[kInput] = mv_data.Inputs[i];
-        obj[kUnit] = mv_data.Units[i];
+        obj[kInput] = mvd.Inputs[i];
+        obj[kUnit] = mvd.Units[i];
 
         obj[kC] = json::array({z_min(n_MV + i), z_max(n_MV + i)}); // U constraints
         
@@ -117,11 +117,11 @@ static void SerializeSimMV(json& data, const MVData& mv_data, const MatrixXd& u,
     data[kMV] = arr;
 }
 
-void SerializeSimulation(json& data, const string& write_path, const string& scenario, const CVData& cv_data, const MVData& mv_data, 
+void SerializeSimulation(json& data, const string& write_path, const string& scenario, const CVData& cvd, const MVData& mvd, 
                     const MatrixXd& y_pred, const MatrixXd& u_mat, const VectorXd& z_min, const VectorXd& z_max, const FSRModel& fsr, int T) {
     SerializeSimData(data, scenario, fsr, T);
-    SerializeSimCV(data, cv_data, y_pred, z_min, z_max, fsr.getN_CV(), fsr.getN_MV());
-    SerializeSimMV(data, mv_data, u_mat, z_min, z_max, fsr.getN_MV());
+    SerializeSimCV(data, cvd, y_pred, z_min, z_max, fsr.getN_CV(), fsr.getN_MV());
+    SerializeSimMV(data, mvd, u_mat, z_min, z_max, fsr.getN_MV());
     WriteJson(data, write_path);
 }
 

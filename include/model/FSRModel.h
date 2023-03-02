@@ -135,7 +135,7 @@ public:
     VectorXd getY(const VectorXd& z) { return getOmegaY() * (theta_ * z + getLambda()); } // Must be changed for soft constraint!
 
     /**
-     * @brief Get the Lambda object
+     * @brief Get the Lambda object, Lambda = Phi * Delta U_tilde + Psi * U
      * 
      * @return VectorXd 
      */

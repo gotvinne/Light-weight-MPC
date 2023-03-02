@@ -21,9 +21,9 @@
 /**
  * @brief Allocates and initialises reference
  * 
- * @param y_ref 
- * @param ref_vec 
- * @param T 
+ * @param ref_vec [std::vector] Vector holding reference values
+ * @param T [int] MPC horizon
+ * @param P [int] Prediction horizon
  */
 static VectorXd* AllocateReference(const std::vector<double>& ref_vec, int T, int P) { // Cannot reinitialize pointer via pass-by-pointer
     VectorXd* y_ref = new VectorXd[int(ref_vec.size())];
