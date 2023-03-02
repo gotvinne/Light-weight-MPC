@@ -34,8 +34,9 @@ using string = std::string;
  * 
  * @param sce [std::string] Scenario to be simulated 
  * @param ref_vec 
+ * @param new_sim [bool]
  * @param T [int] MPC horizon
  */
-void LightWeightMPC(const string& sce, const std::vector<double>& ref_vec, int T);
+void LightWeightMPC(const string& sce, const std::vector<double>& ref_vec, bool new_sim, int T);
 
 #endif // LIGHTWEIGHT_MPC_H

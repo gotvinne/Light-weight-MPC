@@ -16,13 +16,12 @@
 #include "model/FSRModel.h"
 
 #include <string>
-#include <vector>
-#include <map>
 
 #include "Eigen/Dense"
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
 using MatrixXd = Eigen::MatrixXd;
+using VectorXd = Eigen::VectorXd;
 using string = std::string; 
 
 /**
@@ -32,41 +31,6 @@ using string = std::string;
  * @param filepath string file 
  */
 void WriteJson(const json& data, const string& filepath);
-
-/**
- * @brief Formats the plain data in simulation file
- * 
- * @param data 
- * @param scenario 
- * @param fsr
- * @param T MPC horizon
- */
-void SerializeSimData(json& data, const string& scenario, 
-                const FSRModel& fsr, int T);
-
-/**
- * @brief Formats the CV data in the simulation file
- * 
- * @param data 
- * @param cv_data CDData object
- * @param z_min
- * @param z_max
- * @param n_CV Number of controlled variables
- * @param n_MV 
- */
-void SerializeSimCV(json& data, const CVData& cv_data, const MatrixXd& y_pred, const MatrixXd& z_min,
-                 const MatrixXd& z_max, int n_CV, int n_MV);
-
-/**
- * @brief Formats the MV data in the simulation file
- * 
- * @param data 
- * @param mv_data MVData object
- * @param z_min
- * @param z_max
- * @param n_MV Number of manipulated variables
- */
-void SerializeSimMV(json& data, const MVData& mv_data, const MatrixXd& u, const VectorXd& z_min, const VectorXd& z_max, int n_MV);
 
 /**
  * @brief 

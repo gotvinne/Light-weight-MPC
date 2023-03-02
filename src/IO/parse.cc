@@ -59,18 +59,15 @@ static void ConstraintData(const json& sce_data, VectorXd& arr, bool upper) {
     }
 }
 
-json ReadJson(const string& filepath) {
-    try {
-        std::ifstream file(filepath);
-        return json::parse(file);
-    }
-    catch (std::exception& e) {
-        std::cerr << "ERROR! " << e.what() << std::endl; 
-        return 1;
-    }
-}
-
-void ParseSystemData(const json& sys_data, std::map<string, int>& model_param,
+/**
+ * @brief high-level function parsing system file
+ * 
+ * @param sys_data json object of system file
+ * @param model_param std::map holding model parameters
+ * @param output_data CVData 
+ * @param input_data MVData
+ */
+static void ParseSystemData(const json& sys_data, std::map<string, int>& model_param,
                     CVData& output_data, MVData& input_data) {
     try {
         ModelData(sys_data, model_param);
@@ -88,7 +85,16 @@ void ParseSystemData(const json& sys_data, std::map<string, int>& model_param,
     }
 }
 
-void ParseScenarioData(const json& sce_data, string& system, MPCConfig& mpc_config, 
+/**
+ * @brief High-level function parsing a scenario file
+ * 
+ * @param sce_data json object of scenario file
+ * @param system corresponding system file
+ * @param mpc_conf MPCConfig object
+ * @param z_min Eigen::VectorXF 
+ * @param z_max Eigen::VectorXf
+ */
+static void ParseScenarioData(const json& sce_data, string& system, MPCConfig& mpc_config, 
                         VectorXd& z_min, VectorXd& z_max) {
     try {                     
         system = sce_data.at(kSystem);
@@ -101,15 +107,26 @@ void ParseScenarioData(const json& sce_data, string& system, MPCConfig& mpc_conf
     } 
 }
 
-void Parse(const string& sce_filepath, std::map<string, int>& model_param,
+json ReadJson(const string& filepath) {
+    try {
+        std::ifstream file(filepath);
+        return json::parse(file);
+    }
+    catch (std::exception& e) {
+        std::cerr << "ERROR! " << e.what() << std::endl; 
+        return 1;
+    }
+}
+
+void ParseNew(const string& sce_filepath, std::map<string, int>& model_param,
                     CVData& output_data, MVData& input_data, MPCConfig& mpc_config, 
                         VectorXd& z_min, VectorXd& z_max) {
-    // Parse scenario
+    // Parse scenario file
     json sce_data = ReadJson(sce_filepath);
     string system;
     ParseScenarioData(sce_data, system, mpc_config, z_min, z_max);
    
-    // Parse system
+    // Parse system file
     string sys_filepath = "../data/systems/" + system + ".json";
     json sys_data = ReadJson(sys_filepath);
     ParseSystemData(sys_data, model_param, output_data, input_data);
@@ -121,3 +138,7 @@ void Parse(const string& sce_filepath, std::map<string, int>& model_param,
         throw std::out_of_range("R matrix dimension does not match system description");
     }
 }
+
+void Parse(const string& sce_filepath, std::map<string, int>& model_param,
+            CVData& output_data, MVData& input_data, MPCConfig& mpc_config, 
+                VectorXd& z_min, VectorXd& z_max, MatrixXd& du_tilde) {}

@@ -38,7 +38,7 @@ int main(int argc, char **argv) {
     std::vector<double> ref_vec{GAS_RATE_REF, OIL_RATE_REF};
  
     // ---- Light-weight MPC ---- //
-    LightWeightMPC(sce, ref_vec, T);
+    LightWeightMPC(sce, ref_vec, new_sim, T);
     
     return 0;
 }

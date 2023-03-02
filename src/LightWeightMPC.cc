@@ -127,7 +127,7 @@ static void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, co
     //fsr.PrintActuation();
 }
 
-void LightWeightMPC(const string& sce, const std::vector<double>& ref_vec, int T) {
+void LightWeightMPC(const string& sce, const std::vector<double>& ref_vec, bool new_sim, int T) {
     const string sim = "sim_" + sce;
     const string sce_path = "../data/scenarios/sce_" + sce + ".json";
     const string sim_path = "../data/simulations/" + sim + ".json";
@@ -143,8 +143,13 @@ void LightWeightMPC(const string& sce, const std::vector<double>& ref_vec, int T
     MPCConfig conf; /** MPC configuration */
 
     // Parse information:
-    Parse(sce_path, m_map, cvd, mvd, conf, z_min, z_max);
-
+    if (new_sim) {
+        ParseNew(sce_path, m_map, cvd, mvd, conf, z_min, z_max);
+    } else {
+        MatrixXd du_tilde; 
+        Parse(sce_path, m_map, cvd, mvd, conf, z_min, z_max, du_tilde);
+    }
+    
     // Select dynamical model: 
     FSRModel fsr(cvd.getSR(), m_map, conf.P, conf.M, conf.W, mvd.Inits, cvd.getInits());
     

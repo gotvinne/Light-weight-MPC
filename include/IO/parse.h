@@ -18,6 +18,7 @@
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
 using VectorXd = Eigen::VectorXd;
+using MatrixXd = Eigen::MatrixXd;
 using string = std::string;
 
 /**
@@ -27,29 +28,6 @@ using string = std::string;
  * @return json object
  */
 json ReadJson(const string& filepath);
-
-/**
- * @brief high-level function parsing system file
- * 
- * @param sys_data json object of system file
- * @param model_param std::map holding model parameters
- * @param output_data CVData 
- * @param input_data MVData
- */
-void ParseSystemData(const json& sys_data, std::map<string, int>& model_param,
-                    CVData& output_data, MVData& input_data); 
-
-/**
- * @brief High-level function parsing a scenario file
- * 
- * @param sce_data json object of scenario file
- * @param system corresponding system file
- * @param mpc_conf MPCConfig object
- * @param z_min Eigen::VectorXF 
- * @param z_max Eigen::VectorXf
- */
-void ParseScenarioData(const json& sce_data, string& system, MPCConfig& mpc_conf, 
-                        VectorXd& z_min, VectorXd& z_max);
 
 /**
  * @brief Combines all parse functionality, parsing system and scenario file
@@ -62,8 +40,13 @@ void ParseScenarioData(const json& sce_data, string& system, MPCConfig& mpc_conf
  * @param z_min lower constraints 
  * @param z_max upper constraints
  */
-void Parse(const string& sce_filepath, std::map<string, int>& model_param,
+void ParseNew(const string& sce_filepath, std::map<string, int>& model_param,
                     CVData& output_data, MVData& input_data, MPCConfig& mpc_config, 
                         VectorXd& z_min, VectorXd& z_max);
+
+void Parse(const string& sce_filepath, std::map<string, int>& model_param,
+            CVData& output_data, MVData& input_data, MPCConfig& mpc_config, 
+                VectorXd& z_min, VectorXd& z_max, MatrixXd& du_tilde);
+
 
 #endif  // PARSE_H
