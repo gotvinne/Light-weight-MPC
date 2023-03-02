@@ -124,7 +124,6 @@ static void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, co
         if (!solver.updateBounds(l, u)) { throw std::runtime_error("Cannot update bounds"); }
         if (!solver.updateGradient(q)) { throw std::runtime_error("Cannot update gradient"); }    
     }
-    //fsr.PrintActuation();
 }
 
 void LightWeightMPC(const string& sce, const std::vector<double>& ref_vec, bool new_sim, int T) {
@@ -141,18 +140,20 @@ void LightWeightMPC(const string& sce, const std::vector<double>& ref_vec, bool 
     VectorXd z_min; /** Lower constraint vector */
     VectorXd z_max; /** Upper constraint vector */
     MPCConfig conf; /** MPC configuration */
+    MatrixXd du_tilde; 
 
     // Parse information:
     if (new_sim) {
         ParseNew(sce_path, m_map, cvd, mvd, conf, z_min, z_max);
+        du_tilde = MatrixXd::Zero(m_map[kN_MV], m_map[kN]-conf.W-1);
     } else {
-        MatrixXd du_tilde; 
         Parse(sce_path, sim_path, m_map, cvd, mvd, conf, z_min, z_max, du_tilde);
     }
     
     // Select dynamical model: 
     FSRModel fsr(cvd.getSR(), m_map, conf.P, conf.M, conf.W, mvd.Inits, cvd.getInits());
-    
+    fsr.setDuTildeMat(du_tilde);
+
     // MPC variables:
     MatrixXd u_mat; /** Optimized actuation, (n_MV, T) */
     MatrixXd y_pred; /** Predicted output (n_CV, T)*/

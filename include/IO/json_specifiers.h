@@ -45,5 +45,5 @@ const string kDuTilde = "du_tilde";
 const string kY = "y";
 const string kY_pred = "y_pred";
 const string kU = "u";
-// ------- ------- ------- ------- ------- //
+
 #endif // JSON_SPECIFIERS_H

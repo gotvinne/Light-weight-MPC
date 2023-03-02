@@ -111,6 +111,8 @@ public:
      */
     void UpdateU(const VectorXd& du);
 
+    void setDuTildeMat(const MatrixXd& mat) { du_tilde_mat_ = mat; }
+
     /** Get functions */
     int getP() const { return P_; }
     int getM() const { return M_; }
