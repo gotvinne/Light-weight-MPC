@@ -12,6 +12,8 @@
 #include "LightWeightMPC.h"
 #include "OSQP-Eigen/condensed_qp.h"
 #include "IO/json_specifiers.h"
+#include "IO/parse.h"
+#include "IO/serialize.h"
 
 #include <OsqpEigen/OsqpEigen.h>
 #include <Eigen/Dense>
@@ -174,8 +176,11 @@ void LightWeightMPC(const string& sce, const std::vector<double>& ref_vec, bool 
     }
 
     // Serializing: 
-    json write_data;
-    SerializeSimulation(write_data, sim_path, sce, cvd, mvd, 
+    if (new_sim) {
+        SerializeSimulationNew(sim_path, sce, cvd, mvd, 
                y_pred, u_mat, z_min, z_max, fsr, T);
-
+    } else {
+        SerializeSimulation(sim_path, y_pred, u_mat, T);
+    }
+    
 }

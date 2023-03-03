@@ -1,5 +1,5 @@
 /**
- * @file lightweight_MPC.h
+ * @file LightWeightMPC.h
  * @author Geir Ola Tvinnereim
  * @brief 
  * @version 0.1
@@ -9,14 +9,8 @@
  * 
  */
 
-#ifndef LIGHTWEIGHT_MPC_H
-#define LIGHTWEIGHT_MPC_H
-
-#include "IO/serialize.h"
-#include "IO/parse.h"
-#include "IO/data_objects.h"
-#include "model/step_response_model.h"
-#include "model/FSRModel.h"
+#ifndef LIGHTWEIGHTMPC_H
+#define LIGHTWEIGHTMPC_H
 
 #include <vector>
 #include <string>
@@ -38,4 +32,4 @@ using string = std::string;
  */
 void LightWeightMPC(const string& sce, const std::vector<double>& ref_vec, bool new_sim, int T);
 
-#endif // LIGHTWEIGHT_MPC_H
+#endif // LIGHTWEIGHTMPC_H

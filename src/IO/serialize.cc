@@ -10,6 +10,7 @@
  */
 
 #include "IO/serialize.h"
+#include "IO/parse.h" 
 #include "IO/json_specifiers.h"
 #include "model/FSRModel.h"
 
@@ -98,7 +99,7 @@ static void SerializeSimCV(json& data, const CVData& cvd, const MatrixXd& y_pred
  * @param z_max [Eigen::VectorXd] upper constraints
  * @param n_MV Number of manipulated variables
  */
-static void SerializeSimMV(json& data, const MVData& mvm, const MatrixXd& u, const VectorXd& z_min, const VectorXd& z_max, int n_MV) {
+static void SerializeSimMV(json& data, const MVData& mvd, const MatrixXd& u, const VectorXd& z_min, const VectorXd& z_max, int n_MV) {
     json arr = json::array(); 
 
     for (int i = 0; i < n_MV; i++) {
@@ -117,8 +118,10 @@ static void SerializeSimMV(json& data, const MVData& mvm, const MatrixXd& u, con
     data[kMV] = arr;
 }
 
-void SerializeSimulation(json& data, const string& write_path, const string& scenario, const CVData& cvd, const MVData& mvd, 
+void SerializeSimulationNew(const string& write_path, const string& scenario, const CVData& cvd, const MVData& mvd, 
                     const MatrixXd& y_pred, const MatrixXd& u_mat, const VectorXd& z_min, const VectorXd& z_max, const FSRModel& fsr, int T) {
+    json data;
+    
     SerializeSimData(data, scenario, fsr, T);
     SerializeSimCV(data, cvd, y_pred, z_min, z_max, fsr.getN_CV(), fsr.getN_MV());
     SerializeSimMV(data, mvd, u_mat, z_min, z_max, fsr.getN_MV());
@@ -130,3 +133,29 @@ void WriteJson(const json& data, const string& filepath) {
     ofs << data.dump(4) << std::endl;
     ofs.close();
 }
+
+void SerializeSimulation(const string& write_path, const MatrixXd& y_pred, const MatrixXd& u_mat, int T) {
+
+    json sim_data = ReadJson(write_path); // Assume this file already exists.
+    sim_data[kT] = int(sim_data.at(kT)) + T; // Update MPC horizon
+
+    json cv_data = sim_data.at(kCV);
+    int i = 0;
+    for (auto& cv : cv_data) {
+        FillVector(cv[kY_pred], y_pred, i); // Update Y_pred
+        i++;
+    }
+
+    json mv_data = sim_data.at(kMV);
+    i = 0;
+    for (auto& mv : mv_data) {
+        FillVector(mv[kU], u_mat, i); // Update U
+        i++;
+    }
+
+    // Write updated variables back
+    sim_data[kCV] = cv_data;
+    sim_data[kMV] = mv_data;
+    WriteJson(sim_data, write_path);
+}
+

@@ -19,6 +19,7 @@
 
 #include "Eigen/Dense"
 #include <nlohmann/json.hpp>
+
 using json = nlohmann::json;
 using MatrixXd = Eigen::MatrixXd;
 using VectorXd = Eigen::VectorXd;
@@ -35,7 +36,6 @@ void WriteJson(const json& data, const string& filepath);
 /**
  * @brief Serialize simulation data into simulation JSON data files
  * 
- * @param data [json] object to write json data
  * @param write_path [string] file path to write json file
  * @param scenario [string] scenario name
  * @param cvd CVData
@@ -47,7 +47,17 @@ void WriteJson(const json& data, const string& filepath);
  * @param fsr [FSRModel] 
  * @param T [int] MPC horizon
  */
-void SerializeSimulation(json& data, const string& write_path, const string& scenario, const CVData& cvd, const MVData& mvd, 
+void SerializeSimulationNew(const string& write_path, const string& scenario, const CVData& cvd, const MVData& mvd, 
                     const MatrixXd& y_pred, const MatrixXd& u_mat, const VectorXd& z_min, const VectorXd& z_max, const FSRModel& fsr, int T);    
 
+/**
+ * @brief Serialize a simulation by appending data on previous simulations
+ *        Simply done by reading the json file, updating it, and writing it again
+ * 
+ * @param write_path [string]
+ * @param y_pred [M]
+ * @param u_mat [Eigen::MatrixXd]
+ * @param T [int] MPC horizon
+ */
+void SerializeSimulation(const string& write_path, const MatrixXd& y_pred, const MatrixXd& u_mat, int T);
 #endif  // SERIALIZE_H

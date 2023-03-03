@@ -20,6 +20,7 @@
 
 using json = nlohmann::json; 
 using VectorXd = Eigen::VectorXd;
+using MatrixXd = Eigen::MatrixXd;
 using string = std::string;
 
 /**

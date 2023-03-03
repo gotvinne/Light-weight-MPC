@@ -16,10 +16,6 @@
 
 #include <Eigen/Dense>
 #include <nlohmann/json.hpp>
-using json = nlohmann::json;
-using VectorXd = Eigen::VectorXd;
-using MatrixXd = Eigen::MatrixXd;
-using string = std::string;
 
 /**
  * @brief Reads a json file using nlohmann::json
@@ -27,7 +23,7 @@ using string = std::string;
  * @param filepath file to be read
  * @return json object
  */
-json ReadJson(const string& filepath);
+nlohmann::json ReadJson(const std::string& filepath);
 
 /**
  * @brief Combines all parse functionality, parsing system and scenario file
@@ -40,9 +36,9 @@ json ReadJson(const string& filepath);
  * @param z_min lower constraints 
  * @param z_max upper constraints
  */
-void ParseNew(const string& sce_filepath, std::map<string, int>& model_param,
+void ParseNew(const std::string& sce_filepath, std::map<std::string, int>& model_param,
                     CVData& cvd, MVData& mvd, MPCConfig& mpc_config, 
-                        VectorXd& z_min, VectorXd& z_max);
+                        Eigen::VectorXd& z_min, Eigen::VectorXd& z_max);
 
 /**
  * @brief Parse function taking previous simulations into account
@@ -57,8 +53,8 @@ void ParseNew(const string& sce_filepath, std::map<string, int>& model_param,
  * @param z_max upper constraints
  * @param du_tilde [Eigen::MatrixXd] Matrix of previous actuations
  */
-void Parse(const string& sce_filepath, const string& sim_filepath, std::map<string, int>& model_param,
+void Parse(const std::string& sce_filepath, const std::string& sim_filepath, std::map<std::string, int>& model_param,
             CVData& cvd, MVData& mvd, MPCConfig& mpc_config, 
-                VectorXd& z_min, VectorXd& z_max, MatrixXd& du_tilde);
+                Eigen::VectorXd& z_min, Eigen::VectorXd& z_max, Eigen::MatrixXd& du_tilde);
 
-#endif  // PARSE_H
+#endif // PARSE_H
