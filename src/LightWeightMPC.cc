@@ -128,6 +128,32 @@ static void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, co
     }
 }
 
+void OpenLoopSim(const string& system, const std::vector<double>& ref_vec, bool new_sim, int T) {
+    const string sim = "sim_open_loop_" + system;
+    const string sim_path = "../data/simulations/" + sim + ".json";
+
+    // System variables:
+    CVData cvd; 
+    MVData mvd;
+    std::map<string, int> m_map;
+
+    // Scenario variables:
+    VectorXd z_min; /** Lower constraint vector */
+    VectorXd z_max; /** Upper constraint vector */
+    MPCConfig conf; /** MPC configuration */
+
+    // Parse information:
+    ParseOpenLoop(system, m_map, cvd, mvd);
+
+    int P = 100;
+    int M = 50;
+    int W = 0
+
+    // Select dynamical model: 
+    FSRModel fsr(cvd.getSR(), m_map, P, M, W, mvd.Inits, cvd.getInits());
+
+}
+
 void LightWeightMPC(const string& sce, const std::vector<double>& ref_vec, bool new_sim, int T) {
     const string sim = "sim_" + sce;
     const string sce_path = "../data/scenarios/sce_" + sce + ".json";

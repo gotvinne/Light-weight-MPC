@@ -32,4 +32,6 @@ using string = std::string;
  */
 void LightWeightMPC(const string& sce, const std::vector<double>& ref_vec, bool new_sim, int T);
 
+void OpenLoopSim(const string& sce, const std::vector<double>& ref_vec, bool new_sim, int T);
+
 #endif // LIGHTWEIGHTMPC_H

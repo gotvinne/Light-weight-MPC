@@ -193,3 +193,10 @@ void Parse(const string& sce_filepath, const string& sim_filepath, std::map<stri
     json sim_data = ReadJson(sim_filepath);
     ParseSimulationData(sim_data, du_tilde, cvd, mvd);
 }
+
+void ParseOpenLoop(const string& system, std::map<string, int>& m_map, CVData& cvd, MVData& mvd) {
+    // Parse system file
+    string sys_filepath = "../data/systems/" + system + ".json";
+    json sys_data = ReadJson(sys_filepath);
+    ParseSystemData(sys_data, m_map, cvd, mvd);
+}

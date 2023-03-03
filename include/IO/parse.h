@@ -57,4 +57,13 @@ void Parse(const std::string& sce_filepath, const std::string& sim_filepath, std
             CVData& cvd, MVData& mvd, MPCConfig& mpc_config, 
                 Eigen::VectorXd& z_min, Eigen::VectorXd& z_max, Eigen::MatrixXd& du_tilde);
 
+/**
+ * @brief Parsing only the system in order to simulate open loop
+ * 
+ * @param system 
+ * @param m_map 
+ * @param cvd 
+ * @param mvd 
+ */
+void ParseOpenLoop(const string& system, std::map<string, int>& m_map, CVData& cvd, MVData& mvd);
 #endif // PARSE_H
