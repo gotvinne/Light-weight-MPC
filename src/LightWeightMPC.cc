@@ -36,6 +36,14 @@ static VectorXd* AllocateConstReference(const std::vector<double>& ref_vec, int 
     return y_ref;
 }
 
+/**
+ * @brief 
+ * 
+ * @param du 
+ * @param ref_vec 
+ * @param T 
+ * @param step 
+ */
 static void AllocateStepReference(MatrixXd& du, const std::vector<double>& ref_vec, int T, double step) { 
     du.resize(int(ref_vec.size()), T);
     for (int i = 0; i < du.rows(); i++) {
@@ -128,8 +136,8 @@ static void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, co
         VectorXd du = omega_u * z; 
 
         // Store optimal du and y_pref: Before update!
-        u_mat(Eigen::seq(0, Eigen::last), k) = fsr.getUK();
-        y_pred(Eigen::seq(0, Eigen::last), k) = fsr.getY(z);
+        u_mat.col(k) = fsr.getUK();
+        y_pred.col(k) = fsr.getY(z);
 
         // Propagate FSR model:
         fsr.UpdateU(du);
@@ -179,8 +187,9 @@ void OpenLoopSim(const string& system, const std::vector<double>& ref_vec, int T
         // Propagate FSR model:
         fsr.UpdateU(du.col(k));
     }
-    fsr.PrintActuation();
 
+    // Serialize:
+    SerializeOpenLoop(sim_path, system, cvd, mvd, y_pred, u_mat, fsr, T); 
 }
 
 void LightWeightMPC(const string& sce, const std::vector<double>& ref_vec, bool new_sim, int T) {

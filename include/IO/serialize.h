@@ -60,4 +60,8 @@ void SerializeSimulationNew(const string& write_path, const string& scenario, co
  * @param T [int] MPC horizon
  */
 void SerializeSimulation(const string& write_path, const MatrixXd& y_pred, const MatrixXd& u_mat, int T);
+
+void SerializeOpenLoop(const string& write_path, const string& scenario, const CVData& cvd, const MVData& mvd, 
+                    const MatrixXd& y_pred, const MatrixXd& u_mat, const FSRModel& fsr, int T);
+                    
 #endif  // SERIALIZE_H

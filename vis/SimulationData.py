@@ -34,6 +34,11 @@ class SimulationData():
         self.n_CV = json_data[N_CV]
         self.n_MV = json_data[N_MV]
 
+        if (json_data[CV][0].get(CONSTRAINT) is None): # Assume if this is correct for the first then the rest aswell
+            self.plot_constraint = False
+        else:
+            self.plot_constraint = True
+
         self.y = np.empty([self.n_CV, self.T])
         self.y_pred = np.empty([self.n_CV, self.T])
         self.u = np.ndarray([self.n_MV, self.T])
@@ -60,7 +65,9 @@ class SimulationData():
         for index, elem in enumerate(cv_data):
             outputs.append(elem[OUTPUT])
             cv_units.append(elem[UNIT])
-            cv_constraints.append((elem[CONSTRAINT][0], elem[CONSTRAINT][1])) # Constraints are stored as python tuples
+
+            if self.plot_constraint:
+                cv_constraints.append((elem[CONSTRAINT][0], elem[CONSTRAINT][1])) # Constraints are stored as python tuples
 
             # Fill nparray
             # self.y.T[..., index] = elem[Y] # Have not implemented reference model yet
@@ -77,7 +84,9 @@ class SimulationData():
         for index, elem in enumerate(mv_data):
             inputs.append(elem[INPUT])
             mv_units.append(elem[UNIT])
-            mv_constraints.append((elem[CONSTRAINT][0], elem[CONSTRAINT][1]))
+
+            if self.plot_constraint:
+                mv_constraints.append((elem[CONSTRAINT][0], elem[CONSTRAINT][1]))
 
             self.u.T[..., index] = elem[U]
         self.inputs, self.mv_units, self.mv_constraints = inputs, mv_units, mv_constraints

@@ -15,10 +15,11 @@ def PlotPrediction(sim_data, title, FIG_SIZE = 14):
         plt.plot(t, sim_data.y_pred[i, :], "m", label="Predicted output") # m is magneta color
         
         # Constraints 
-        upper = sim_data.cv_constraints[i][1] * np.ones(sim_data.T)
-        lower = sim_data.cv_constraints[i][0] * np.ones(sim_data.T)
-        plt.plot(t, upper, "k", linestyle="--", label="Upper constraint")
-        plt.plot(t, lower, "k", linestyle="--", label="Lower constraint")
+        if sim_data.plot_constraint:
+            upper = sim_data.cv_constraints[i][1] * np.ones(sim_data.T)
+            lower = sim_data.cv_constraints[i][0] * np.ones(sim_data.T)
+            plt.plot(t, upper, "k", linestyle="--", label="Upper constraint")
+            plt.plot(t, lower, "k", linestyle="--", label="Lower constraint")
 
         plt.xlabel("MPC horizon, t")
         plt.ylabel(sim_data.cv_units[i])
@@ -28,6 +29,8 @@ def PlotPrediction(sim_data, title, FIG_SIZE = 14):
         plt.grid()
     plt.suptitle(title)
     plt.show(block=False) # Avoid blocking 
+
+    return fig
 
 
 def PlotInput(sim_data, title, FIG_SIZE = 14):
@@ -42,10 +45,11 @@ def PlotInput(sim_data, title, FIG_SIZE = 14):
         fig.add_subplot(1, sim_data.n_MV, i + 1)
         plt.step(t, sim_data.u[i, :], "b", label="Optimized actuation")
 
-        upper = sim_data.mv_constraints[i][1] * np.ones(sim_data.T)
-        lower = sim_data.mv_constraints[i][0] * np.ones(sim_data.T)
-        plt.plot(t, upper, "k", linestyle="--", label="Upper constraint")
-        plt.plot(t, lower, "k", linestyle="--", label="Lower constraint")
+        if sim_data.plot_constraint:
+            upper = sim_data.mv_constraints[i][1] * np.ones(sim_data.T)
+            lower = sim_data.mv_constraints[i][0] * np.ones(sim_data.T)
+            plt.plot(t, upper, "k", linestyle="--", label="Upper constraint")
+            plt.plot(t, lower, "k", linestyle="--", label="Lower constraint")
 
         plt.xlabel("MPC horizon, t")
         plt.ylabel(sim_data.mv_units[i])
@@ -55,4 +59,6 @@ def PlotInput(sim_data, title, FIG_SIZE = 14):
         plt.grid()
     plt.suptitle(title)
     plt.show(block=False) # Avoid blocking
+
+    return fig
 

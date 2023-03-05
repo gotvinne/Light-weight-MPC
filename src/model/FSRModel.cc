@@ -135,7 +135,7 @@ void FSRModel::setPhiMatrix() {
                 VectorXd pad_vec = PadVec(vec, pad, sn); // pad_vec.rows() = N-W-1
                 int size = pad_vec.rows(); 
                 // Write to phi-matrix
-                phi_((i * P_) + pad, Eigen::seq(j * size, (j+1) * size - 1)) = pad_vec(Eigen::seq(0, Eigen::last)).transpose();
+                phi_((i * P_) + pad, Eigen::seq(j * size, (j+1) * size - 1)) = pad_vec.transpose();
             }
         }
     }

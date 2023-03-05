@@ -90,6 +90,27 @@ static void SerializeSimCV(json& data, const CVData& cvd, const MatrixXd& y_pred
     data[kCV] = arr;
 }
 
+static void SerializeSimCV(json& data, const CVData& cvd, const MatrixXd& y_pred, int n_CV) {
+    json arr = json::array(); 
+    
+    std::vector<string> outputs = cvd.getOutputs();
+    std::vector<string> units = cvd.getUnits();
+
+    for (int i = 0; i < n_CV; i++) {
+        json obj = json::object();
+        obj[kOutput] = outputs[i];
+        obj[kUnit] = units[i];
+
+        // Fill inn y
+        json y_pred_vec = json::array();
+        FillVector(y_pred_vec, y_pred, i);
+        obj[kY_pred] = y_pred_vec;
+
+        arr.push_back(obj);
+    }
+    data[kCV] = arr;
+}
+
 /**
  * @brief Formats the MV data in the simulation file
  * 
@@ -108,6 +129,23 @@ static void SerializeSimMV(json& data, const MVData& mvd, const MatrixXd& u, con
         obj[kUnit] = mvd.Units[i];
 
         obj[kC] = json::array({z_min(n_MV + i), z_max(n_MV + i)}); // U constraints
+        
+        json u_vec = json::array();
+        FillVector(u_vec, u, i);
+        obj[kU] = u_vec;
+
+        arr.push_back(obj);
+    }
+    data[kMV] = arr;
+}
+
+static void SerializeSimMV(json& data, const MVData& mvd, const MatrixXd& u, int n_MV) {
+    json arr = json::array(); 
+
+    for (int i = 0; i < n_MV; i++) {
+        json obj = json::object();
+        obj[kInput] = mvd.Inputs[i];
+        obj[kUnit] = mvd.Units[i];
         
         json u_vec = json::array();
         FillVector(u_vec, u, i);
@@ -159,3 +197,12 @@ void SerializeSimulation(const string& write_path, const MatrixXd& y_pred, const
     WriteJson(sim_data, write_path);
 }
 
+void SerializeOpenLoop(const string& write_path, const string& scenario, const CVData& cvd, const MVData& mvd, 
+                    const MatrixXd& y_pred, const MatrixXd& u_mat, const FSRModel& fsr, int T) {
+    json data;
+    
+    SerializeSimData(data, scenario, fsr, T);
+    SerializeSimCV(data, cvd, y_pred, fsr.getN_CV());
+    SerializeSimMV(data, mvd, u_mat, fsr.getN_MV());
+    WriteJson(data, write_path);
+}
