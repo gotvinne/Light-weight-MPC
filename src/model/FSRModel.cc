@@ -38,6 +38,29 @@ FSRModel::FSRModel(VectorXd** SR, std::map<std::string, int> m_param, int P, int
     setPsi();
 }
 
+FSRModel::FSRModel(VectorXd** SR, std::map<std::string, int> m_param, const std::vector<double>& init_u, 
+            const std::vector<double>& init_y) : P_{1}, M_{1}, W_{0} {
+    n_CV_ = m_param[kN_CV];
+    n_MV_ = m_param[kN_MV];  
+    N_ = m_param[kN];
+
+    theta_ = MatrixXd::Zero(n_CV_*(P_-W_), n_MV_*M_);
+    phi_.resize(n_CV_*(P_-W_), n_MV_*(N_-W_-1));
+    psi_.resize(n_CV_*(P_-W_), n_MV_);
+    du_tilde_mat_ = MatrixXd::Zero(n_MV_, N_-W_-1);
+
+    u_K_ = VectorXd::Map(init_u.data(), init_u.size());
+    u_ = VectorXd::Map(init_u.data(), init_u.size());
+    y_ = VectorXd::Map(init_y.data(), init_y.size());
+
+    AllocateAndDeepCopy(SR); 
+    // Setting matrix member variables
+    setSRMatrix();
+    setThetaMatrix();
+    setPhiMatrix();
+    setPsi();
+}
+
 FSRModel::~FSRModel() {
     if (n_CV_ != 0 && n_MV_ != 0) {
         for (int i = 0 ; i < n_CV_; i++) {
@@ -164,7 +187,7 @@ void FSRModel::UpdateU(const VectorXd& du) { // du = omega_u * z
 SparseXd FSRModel::getOmegaY() {
     MatrixXd omega_dense = MatrixXd::Zero(n_CV_, n_CV_ * P_);
     for (int i = 0; i < n_CV_; i++) {
-        omega_dense(i, i * n_CV_) = 1;
+        omega_dense(i, i * P_) = 1; 
     }
     return omega_dense.sparseView();
 }  
