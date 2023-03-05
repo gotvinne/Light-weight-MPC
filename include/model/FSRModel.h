@@ -87,29 +87,34 @@ private:
      */
     void setPsi();
 
-    SparseXd getOmegaY();
+    
     VectorXd getDuTilde();
 
 public: 
 
+    SparseXd getOmegaY();
+    
     FSRModel() : n_CV_{0}, n_MV_{0} {}
     /**
      * @brief The constructor. Constructing the object allocating memory for the SISO prediction matric
      */
     FSRModel(VectorXd** SR, std::map<std::string, int> m_param, int P, int M, int W,
             const std::vector<double>& init_u, const std::vector<double>& init_y);
+
+    /**
+     * @brief Construct a new FSRModel object, Open loop constructor
+     * 
+     * @param SR 
+     * @param m_param 
+     * @param init_u 
+     * @param init_y 
+     */
+    FSRModel(VectorXd** SR, std::map<std::string, int> m_param,
+            const std::vector<double>& init_u, const std::vector<double>& init_y);
     /**
      * @brief The destructor. Freeing the memory allocated in the constructor
      */
     ~FSRModel();
-
-    /**
-     * @brief Projecting the FSRModel, by updating the former step responses and actuation
-     * 
-     * @param du Optimized actuation for next projection
-     * @param du_gamma Optimized actuation scaled to fit phi
-     */
-    void UpdateU(const VectorXd& du);
 
     void setDuTildeMat(const MatrixXd& mat) { du_tilde_mat_ = mat; }
 
@@ -122,14 +127,24 @@ public:
 
     MatrixXd getTheta() const { return theta_; }
     MatrixXd getDuTildeMat() const { return du_tilde_mat_; }
-    VectorXd getUK() const { return u_K_; }
+    VectorXd getUK() const { return u_K_; } // Returns most recent U
     VectorXd getU() const { return u_; }
 
+    /** MPC functionality*/
     /**
-     * @brief Return model output, Y = Theta * Delta U + Phi * Delta U_tilde + Psi * U
-     *                               = Theta * Delta U + Lambda
+     * @brief Projecting the FSRModel, by updating the former step responses and actuation
      * 
-     * @param z n_CV
+     * @param du Optimized actuation for next projection
+     * @param du_gamma Optimized actuation scaled to fit phi
+     */
+    void UpdateU(const VectorXd& du);
+
+    /**
+     * @brief Return model output, Y(k+1) = Omega * (Theta * Delta U + Phi * Delta U_tilde + Psi * U)
+     *                                    = Omega * (Theta * Delta U + Lambda)
+     * Y is a vector containing every P * n_CV predictions further in time
+     * 
+     * @param z [Eigen::VectorXd] n_CV
      * @return VectorXd predicted output, one step, k+1 ahead. 
      */
     VectorXd getY(const VectorXd& z) { return getOmegaY() * (theta_ * z + getLambda()); } // Must be changed for soft constraint!

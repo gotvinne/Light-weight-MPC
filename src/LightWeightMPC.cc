@@ -27,13 +27,29 @@
  * @param T [int] MPC horizon
  * @param P [int] Prediction horizon
  */
-static VectorXd* AllocateReference(const std::vector<double>& ref_vec, int T, int P) { // Cannot reinitialize pointer via pass-by-pointer
+static VectorXd* AllocateConstReference(const std::vector<double>& ref_vec, int T, int P) { // Cannot reinitialize pointer via pass-by-pointer
     VectorXd* y_ref = new VectorXd[int(ref_vec.size())];
 
     for (int i = 0; i < int(ref_vec.size()); i++) {
         y_ref[i] = VectorXd::Constant(T + P, ref_vec.at(i)); // Takes predictions into account!
     }
     return y_ref;
+}
+
+static void AllocateStepReference(MatrixXd& du, const std::vector<double>& ref_vec, int T, double step) { 
+    du.resize(int(ref_vec.size()), T);
+    for (int i = 0; i < du.rows(); i++) {
+        double sum = 0;
+        for (int j = 0; j < T; j++) {
+            
+            if (sum < ref_vec[i]) {
+                du(i, j) = step;
+            } else {
+                du(i, j) = 0;
+            }
+            sum += step;
+        }
+    }
 }
 
 /**
@@ -128,7 +144,7 @@ static void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, co
     }
 }
 
-void OpenLoopSim(const string& system, const std::vector<double>& ref_vec, bool new_sim, int T) {
+void OpenLoopSim(const string& system, const std::vector<double>& ref_vec, int T) {
     const string sim = "sim_open_loop_" + system;
     const string sim_path = "../data/simulations/" + sim + ".json";
 
@@ -145,12 +161,25 @@ void OpenLoopSim(const string& system, const std::vector<double>& ref_vec, bool 
     // Parse information:
     ParseOpenLoop(system, m_map, cvd, mvd);
 
-    int P = 100;
-    int M = 50;
-    int W = 0
-
     // Select dynamical model: 
-    FSRModel fsr(cvd.getSR(), m_map, P, M, W, mvd.Inits, cvd.getInits());
+    FSRModel fsr(cvd.getSR(), m_map, mvd.Inits, cvd.getInits());
+
+    // Actuation: Interface to FSRModel is change in actuation.
+    MatrixXd du;
+    AllocateStepReference(du, ref_vec, T, 5); // Step = 5
+    
+    MatrixXd u_mat = MatrixXd::Zero(fsr.getN_MV(), T);
+    MatrixXd y_pred = MatrixXd::Zero(fsr.getN_CV(), T);
+
+    for (int k = 0; k < T; k++) {
+        // Store optimal du and y_pref: Before update!
+        u_mat.col(k) = fsr.getUK();
+        y_pred.col(k) = fsr.getY(du.col(k));
+
+        // Propagate FSR model:
+        fsr.UpdateU(du.col(k));
+    }
+    fsr.PrintActuation();
 
 }
 
@@ -190,7 +219,7 @@ void LightWeightMPC(const string& sce, const std::vector<double>& ref_vec, bool 
     if (int(ref_vec.size()) != m_map[kN_CV]) {
         throw std::invalid_argument("Number of references do not coincide with constrained variables");
     }
-    VectorXd* y_ref = AllocateReference(ref_vec, T, conf.P);
+    VectorXd* y_ref = AllocateConstReference(ref_vec, T, conf.P);
 
     // Solver: 
     try {

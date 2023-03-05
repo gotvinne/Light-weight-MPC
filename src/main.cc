@@ -10,7 +10,6 @@
  */
 
 #include "LightWeightMPC.h"
-
 #include <CLI/CLI.hpp>
 
 #include <string>
@@ -35,10 +34,13 @@ int main(int argc, char **argv) {
     CLI11_PARSE(app, argc, argv);
 
     // Reference
-    std::vector<double> ref_vec{GAS_RATE_REF, OIL_RATE_REF};
+    //std::vector<double> ref_vec{GAS_RATE_REF, OIL_RATE_REF};
+    const double CHOKE = 100;
+    const double GAS_LIFT = 0;
+    std::vector<double> ref_vec{CHOKE, GAS_LIFT};
  
     // ---- Light-weight MPC ---- //
-    OpenLoopSim(sce, ref_vec, new_sim, T);
+    OpenLoopSim(sce, ref_vec, T);
     //LightWeightMPC(sce, ref_vec, new_sim, T);
     
     return 0;
