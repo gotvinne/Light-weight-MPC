@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
     // Reference
     //std::vector<double> ref_vec{GAS_RATE_REF, OIL_RATE_REF};
     const double CHOKE = 100;
-    const double GAS_LIFT = 0;
+    const double GAS_LIFT = 1000;
     std::vector<double> ref_vec{CHOKE, GAS_LIFT};
  
     // ---- Light-weight MPC ---- //

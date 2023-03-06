@@ -44,18 +44,18 @@ static VectorXd* AllocateConstReference(const std::vector<double>& ref_vec, int 
  * @param T 
  * @param step 
  */
-static void AllocateStepReference(MatrixXd& du, const std::vector<double>& ref_vec, int T, double step) { 
+static void AllocateStepReference(MatrixXd& du, const std::vector<double>& ref_vec, const std::vector<double>& step, int T) { 
     du.resize(int(ref_vec.size()), T);
     for (int i = 0; i < du.rows(); i++) {
         double sum = 0;
         for (int j = 0; j < T; j++) {
             
             if (sum < ref_vec[i]) {
-                du(i, j) = step;
+                du(i, j) = step[i];
             } else {
                 du(i, j) = 0;
             }
-            sum += step;
+            sum += step[i];
         }
     }
 }
@@ -174,7 +174,8 @@ void OpenLoopSim(const string& system, const std::vector<double>& ref_vec, int T
 
     // Actuation: Interface to FSRModel is change in actuation.
     MatrixXd du;
-    AllocateStepReference(du, ref_vec, T, 5); // Step = 5
+    std::vector<double> step {5, 25};
+    AllocateStepReference(du, ref_vec, step, T); 
     
     MatrixXd u_mat = MatrixXd::Zero(fsr.getN_MV(), T);
     MatrixXd y_pred = MatrixXd::Zero(fsr.getN_CV(), T);
