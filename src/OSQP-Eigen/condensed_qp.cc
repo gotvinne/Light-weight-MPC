@@ -38,14 +38,14 @@ static void blkdiag(SparseXd& blk_mat, const MatrixXd& arg, int count) {
  * @param vec Diagonal vector
  * @param count Number of blocks
  */
-static void blkdiag(SparseXd& blk_mat, const VectorXd& vec, int count) {
-    MatrixXd arg = vec.asDiagonal();
-    MatrixXd mat = MatrixXd::Zero(arg.rows() * count, arg.cols() * count);
-    for (int i = 0; i < count; i++) {
-        mat.block(i * arg.rows(), i * arg.cols(), arg.rows(), arg.cols()) = arg;
-    }
-    blk_mat = mat.sparseView();
-}
+// static void blkdiag(SparseXd& blk_mat, const VectorXd& vec, int count) {
+//     MatrixXd arg = vec.asDiagonal();
+//     MatrixXd mat = MatrixXd::Zero(arg.rows() * count, arg.cols() * count);
+//     for (int i = 0; i < count; i++) {
+//         mat.block(i * arg.rows(), i * arg.cols(), arg.rows(), arg.cols()) = arg;
+//     }
+//     blk_mat = mat.sparseView();
+// }
 
 /**
  * @brief Calculate K inv matrix, this is a lower triangular matrix
@@ -115,8 +115,17 @@ static void setBounds(VectorXd& bound, const VectorXd& z_pop, FSRModel& fsr, con
 }
 
 void setWeightMatrices(SparseXd& Q_bar, SparseXd& R_bar, const MPCConfig& conf) {
-    blkdiag(Q_bar, conf.Q, conf.P);
-    blkdiag(R_bar, conf.R, conf.M);
+    // Replicate and flatten Q and R matrices: 
+    MatrixXd Q_replicate = conf.Q.replicate(1, conf.P - conf.W);
+    VectorXd Q_flatten = Q_replicate.reshaped<Eigen::RowMajor>().transpose();
+    MatrixXd R_replicate = conf.R.replicate(1, conf.M);
+    VectorXd R_flatten = R_replicate.reshaped<Eigen::RowMajor>().transpose();
+
+    MatrixXd Q = Q_flatten.asDiagonal();
+    MatrixXd R = R_flatten.asDiagonal();
+
+    Q_bar = Q.sparseView(); // dim(Q_bar) = n_CV * (P-W+1) x n_CV * (P-W+1)
+    R_bar = R.sparseView(); // dim(R_bar) = n_MV * M x n_MV * M
 }
 
 void setHessianMatrix(SparseXd& G, const SparseXd& Q_bar, const SparseXd& R_bar, const FSRModel& fsr) {
@@ -157,8 +166,8 @@ void setConstraintVectors(VectorXd& l, VectorXd& u, const VectorXd& z_min_pop, c
     SparseXd Gamma; 
     setGamma(Gamma, fsr.getM(), fsr.getN_MV());
 
-    setBounds(l, z_min_pop, fsr, K_inv, Gamma, m, n);
-    setBounds(u, z_max_pop, fsr, K_inv, Gamma, m, n);
+    setBounds(l, z_min_pop, fsr, K_inv, Gamma, m, n); // Constrain lower bound
+    setBounds(u, z_max_pop, fsr, K_inv, Gamma, m, n); // Constrain upper bound
 }
 
 void setOmegaU(SparseXd& omega, int M, int n_MV) {

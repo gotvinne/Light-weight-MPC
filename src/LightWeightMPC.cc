@@ -106,7 +106,7 @@ static void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, co
     VectorXd l;
     VectorXd u; 
 
-    setWeightMatrices(Q_bar, R_bar, conf);
+    setWeightMatrices(Q_bar, R_bar, conf); //n 
     setHessianMatrix(G, Q_bar, R_bar, fsr);
 
     setGradientVector(q, fsr, Q_bar, y_ref, 0); // Initial gradient
@@ -247,5 +247,4 @@ void LightWeightMPC(const string& sce, const std::vector<double>& ref_vec, bool 
     } else {
         SerializeSimulation(sim_path, y_pred, u_mat, T);
     }
-    
 }
