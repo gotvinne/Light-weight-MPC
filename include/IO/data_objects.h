@@ -119,8 +119,8 @@ struct MPCConfig {
 
     VectorXd Q; /** Output tuning */
     VectorXd R; /** Input change tuning */
-    double RoU; /** Upper Slack variable tuning */
-    double RoL; /** Lower Slack variable tuning */
+    VectorXd RoH; /** Upper Slack variable tuning */
+    VectorXd RoL; /** Lower Slack variable tuning */
     bool bias_update; /** Bias update / Integral effect enabled */
 
     /**
