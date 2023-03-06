@@ -67,8 +67,8 @@ The [nlohmann/json](https://json.nlohmann.me/api/basic_json/) library is used in
    "W": int, (Time delay)
    "Q": [Q1, Q2, ... , Qn_CV], (Positive definite)
    "R": [R1, R2, ... , Rn_MV], (Positive definite)
-   "Ro_u": double, (Slack variable)
-   "Ro_l": double,
+   "Ro_u": [Ro1, Ro2, ..., Ro n_CV], (Slack variable)
+   "Ro_l": [Ro1, Ro2, ..., Ro n_CV],
    "bias update": bool
  },
 

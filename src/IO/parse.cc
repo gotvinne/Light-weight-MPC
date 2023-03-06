@@ -24,6 +24,13 @@ using MatrixXd = Eigen::MatrixXd;
 using string = std::string;
 
 /**
+ * Checks: 
+ *  - If all Q and R are positive, 
+ *  - If Ro_u > Ro_l 
+ */
+
+
+/**
  * @brief function obtaining model data from system file
  * 
  * @param sys_data json object of system file
