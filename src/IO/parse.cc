@@ -24,13 +24,6 @@ using MatrixXd = Eigen::MatrixXd;
 using string = std::string;
 
 /**
- * Checks: 
- *  - If all Q and R are positive, 
- *  - If Ro_u > Ro_l 
- */
-
-
-/**
  * @brief function obtaining model data from system file
  * 
  * @param sys_data json object of system file
@@ -170,31 +163,37 @@ json ReadJson(const string& filepath) {
 }
 
 void ParseNew(const string& sce_filepath, std::map<string, int>& model_param,
-                    CVData& cvd, MVData& mvd, MPCConfig& mpc_config, 
+                    CVData& cvd, MVData& mvd, MPCConfig& conf, 
                         VectorXd& z_min, VectorXd& z_max) {
     // Parse scenario file
     json sce_data = ReadJson(sce_filepath);
     string system;
-    ParseScenarioData(sce_data, system, mpc_config, z_min, z_max);
+    ParseScenarioData(sce_data, system, conf, z_min, z_max);
    
     // Parse system file
     string sys_filepath = "../data/systems/" + system + ".json";
     json sys_data = ReadJson(sys_filepath);
     ParseSystemData(sys_data, model_param, cvd, mvd);
 
-    if (mpc_config.Q.rows() != model_param[kN_CV]) {
+    if (conf.Q.rows() != model_param[kN_CV]) {
         throw std::out_of_range("Q matrix dimension does not match system description");
     }
-    if (mpc_config.R.rows() != model_param[kN_MV]) {
+    if (conf.R.rows() != model_param[kN_MV]) {
         throw std::out_of_range("R matrix dimension does not match system description");
+    }
+    if (conf.P > m_map[kN]) {
+        throw std::out_of_range("Cannot predict further then P = N = " + str(m_map[kN]));
+    }
+    if (conf.M > m_map[kN]) {
+        throw std::out_of_range("Cannot predict further then M = N = " + str(m_map[kN]));
     }
 }
 
 void Parse(const string& sce_filepath, const string& sim_filepath, std::map<string, int>& model_param,
-            CVData& cvd, MVData& mvd, MPCConfig& mpc_config, 
+            CVData& cvd, MVData& mvd, MPCConfig& conf, 
                 VectorXd& z_min, VectorXd& z_max, MatrixXd& du_tilde) {
     
-    ParseNew(sce_filepath, model_param, cvd, mvd, mpc_config, z_min, z_max);
+    ParseNew(sce_filepath, model_param, cvd, mvd, conf, z_min, z_max);
 
     // Parse simulation file:
     json sim_data = ReadJson(sim_filepath);

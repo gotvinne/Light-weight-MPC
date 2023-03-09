@@ -1,6 +1,6 @@
 /**
  * @file LightWeightMPC.cc
- * @author your name (you@domain.com)
+ * @author Geir Ola Tvinnereim
  * @brief 
  * @version 0.1
  * @date 2023-01-25
@@ -86,8 +86,8 @@ static void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, co
     int n_CV = fsr.getN_CV();
 
     // Define QP:
-    const int n = M * n_MV; // #Optimization variables 
-    const int m = P * n_CV + 2 * n; // #Constraints
+    const int n = M * n_MV + 2 * n_CV; // #Optimization variables 
+    const int m = ; // #Constraints
    
     const VectorXd z_max_pop = PopulateConstraints(z_max, m, n, n_MV, n_CV, M, P);
     const VectorXd z_min_pop = PopulateConstraints(z_min, m, n, n_MV, n_CV, M, P);
@@ -106,7 +106,7 @@ static void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, co
     VectorXd l;
     VectorXd u; 
 
-    setWeightMatrices(Q_bar, R_bar, conf); //n 
+    setWeightMatrices(Q_bar, R_bar, conf);
     setHessianMatrix(G, Q_bar, R_bar, fsr);
 
     setGradientVector(q, fsr, Q_bar, y_ref, 0); // Initial gradient
@@ -127,29 +127,29 @@ static void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, co
     setOmegaU(omega_u, M, n_MV);
 
     // MPC loop:
-    for (int k = 0; k < T; k++) { 
-        // Optimize:
-        if (solver.solveProblem() != OsqpEigen::ErrorExitFlag::NoError) { throw std::runtime_error("Cannot solve problem"); }
+    // for (int k = 0; k < T; k++) { 
+    //     // Optimize:
+    //     if (solver.solveProblem() != OsqpEigen::ErrorExitFlag::NoError) { throw std::runtime_error("Cannot solve problem"); }
 
-        // Claim solution:
-        VectorXd z = solver.getSolution();
-        VectorXd du = omega_u * z; 
+    //     // Claim solution:
+    //     VectorXd z = solver.getSolution();
+    //     VectorXd du = omega_u * z; 
 
-        // Store optimal du and y_pref: Before update!
-        u_mat.col(k) = fsr.getUK();
-        y_pred.col(k) = fsr.getY(z);
+    //     // Store optimal du and y_pref: Before update!
+    //     u_mat.col(k) = fsr.getUK();
+    //     y_pred.col(k) = fsr.getY(z);
 
-        // Propagate FSR model:
-        fsr.UpdateU(du);
+    //     // Propagate FSR model:
+    //     fsr.UpdateU(du);
 
-        // Update MPC problem:
-        setConstraintVectors(l, u, z_min_pop, z_max_pop, fsr, m, n);
-        setGradientVector(q, fsr, Q_bar, y_ref, k); 
+    //     // Update MPC problem:
+    //     setConstraintVectors(l, u, z_min_pop, z_max_pop, fsr, m, n);
+    //     setGradientVector(q, fsr, Q_bar, y_ref, k); 
 
-        // Check if bounds are valid:
-        if (!solver.updateBounds(l, u)) { throw std::runtime_error("Cannot update bounds"); }
-        if (!solver.updateGradient(q)) { throw std::runtime_error("Cannot update gradient"); }    
-    }
+    //     // Check if bounds are valid:
+    //     if (!solver.updateBounds(l, u)) { throw std::runtime_error("Cannot update bounds"); }
+    //     if (!solver.updateGradient(q)) { throw std::runtime_error("Cannot update gradient"); }    
+    // }
 }
 
 void OpenLoopSim(const string& system, const std::vector<double>& ref_vec, int T) {

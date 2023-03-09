@@ -106,6 +106,8 @@ struct MVData {
      */
     MVData(const json& mv_data, int n_MV);
 
+    // Do not have a need for an assignment operator since no memory is allocated. 
+
     void setInits(double value, int index) { Inits.at(index) = value; }
 };
 

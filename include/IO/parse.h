@@ -32,12 +32,12 @@ nlohmann::json ReadJson(const std::string& filepath);
  * @param model_param map of model parameters
  * @param cvd CV system data  
  * @param mvd MV system data
- * @param mpc_config MPC configuration data
+ * @param conf MPC configuration data
  * @param z_min lower constraints 
  * @param z_max upper constraints
  */
 void ParseNew(const std::string& sce_filepath, std::map<std::string, int>& model_param,
-                    CVData& cvd, MVData& mvd, MPCConfig& mpc_config, 
+                    CVData& cvd, MVData& mvd, MPCConfig& conf, 
                         Eigen::VectorXd& z_min, Eigen::VectorXd& z_max);
 
 /**
@@ -48,13 +48,13 @@ void ParseNew(const std::string& sce_filepath, std::map<std::string, int>& model
  * @param model_param map of model parameters
  * @param cvd CV system data  
  * @param mvd MV system data
- * @param mpc_config MPC configuration data
+ * @param conf MPC configuration data
  * @param z_min lower constraints 
  * @param z_max upper constraints
  * @param du_tilde [Eigen::MatrixXd] Matrix of previous actuations
  */
 void Parse(const std::string& sce_filepath, const std::string& sim_filepath, std::map<std::string, int>& model_param,
-            CVData& cvd, MVData& mvd, MPCConfig& mpc_config, 
+            CVData& cvd, MVData& mvd, MPCConfig& conf, 
                 Eigen::VectorXd& z_min, Eigen::VectorXd& z_max, Eigen::MatrixXd& du_tilde);
 
 /**

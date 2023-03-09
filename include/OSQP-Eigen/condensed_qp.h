@@ -83,10 +83,12 @@ void setOmegaU(SparseXd& omega, int M, int n_MV);
  * @brief Populate constraint data, enabling dynamic constraints
  * 
  * @param c Constrain vector data
- * @param m Number of constraints 
- * @param n Number of optimalization variables
+ * @param n_MV Number of manipulated variables
+ * @param n_CV Number of constrained variables
+ * @param M Control horizon
+ * @param P Prediction horizon
  * @return VectorXd, populated vector
  */
-VectorXd PopulateConstraints(const VectorXd& c, int m, int n, int n_MV, int n_CV, int M, int P);
+VectorXd PopulateConstraints(const VectorXd& c, int n_MV, int n_CV, int M, int P);
 
 #endif // CONDENSED_QP_H

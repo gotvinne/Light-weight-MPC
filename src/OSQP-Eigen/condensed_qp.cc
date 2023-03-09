@@ -178,12 +178,15 @@ void setOmegaU(SparseXd& omega, int M, int n_MV) {
     omega = omega_dense.sparseView();
 }
 
-VectorXd PopulateConstraints(const VectorXd& c, int m, int n, int n_MV, int n_CV, int M, int P) { 
-    VectorXd populated(m);
+VectorXd PopulateConstraints(const VectorXd& c, int n_MV, int n_CV, int M, int P) { 
+    int n = M * n_CV + 2 * n_CV;
+    VectorXd populated = VectorXd::Zero(P * n_CV + 2 * n); // populated.rows() = m
 
-    // z_pop = [ Delta U (M * N_MV),
-    //           U (M * N_MV),
-    //           Y (P * N_CV)]
+    // z_pop = [ z - Delta U (M * N_MV),
+    //           z - U (M * N_MV),
+    //           z - Y (P * N_CV),
+    //           0 (N_CV),
+    //           0 (N_CV)]
 
     for (int var = 0; var < 2 * n_MV; var++) { // Assuming same constraining, u, du if n_MV < n_CV
         populated.block(var * M, 0, M, 1) = VectorXd::Constant(M, c(var));

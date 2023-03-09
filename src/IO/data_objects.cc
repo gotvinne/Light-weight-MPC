@@ -30,7 +30,7 @@ static void EigenFromJson(VectorXd& vec, const json& arr) {
 
 /* Error handling:
     Check that S is correct with N_MV and N_CV
-    Check that number of S is correct with n_CV
+    Check that number of S is correct with N
 */
 CVData::CVData(const json& cv_data, int n_MV, int n_CV, int N) : n_CV_{n_CV}, n_MV_{n_MV}, N_{N} {
     int n_outputs = cv_data.size();
@@ -116,7 +116,7 @@ MVData::MVData(const json& mv_data, int n_MV) {
     }             
 }
 
-MPCConfig::MPCConfig() : P(), M(), W(), RoU(), RoL(), bias_update() {}
+MPCConfig::MPCConfig() : P(), M(), W(), bias_update() {}
 MPCConfig::MPCConfig(const json& sce_data) {
     json mpc_data = sce_data.at(kMPC);
     P = mpc_data.at(kP);
@@ -128,18 +128,20 @@ MPCConfig::MPCConfig(const json& sce_data) {
 
     Q.resize(n_CV); 
     R.resize(n_MV);
-    RoU.resize(n_CV);
-    RoL.resize()
+    RoH.resize(n_CV);
+    RoL.resize(n_MV)
     
     for (int i = 0; i < n_CV; i++) { 
         Q[i] = mpc_data.at(kQ).at(i);
+        if (mpc_data.at(kRoH).at(i) < 0 || mpc_data.at(kRoL).at(i) < 0) {
+            throw std::invalid_argument("Negative turning arguments in Q and R");
+        } else {
+            RoH(i) = mpc_data.at(kRoH).at(i);
+            RoL(i) = mpc_data.at(kRoH).at(i);
+        }
     }
-   
     for (int i = 0; i < n_MV; i++) {
         R[i] = mpc_data.at(kR).at(i);
     }
-    
-    RoU = mpc_data.at(kRoU);
-    RoL = mpc_data.at(kRoL);
     bias_update = mpc_data.at(kBu);
 }
