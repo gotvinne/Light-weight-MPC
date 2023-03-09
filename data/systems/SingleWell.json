@@ -369,7 +369,7 @@
             ],
             "init": 0.0,
             "output": "Gas rate",
-            "unit": "m^3/h"
+            "unit": "m³/h"
         },
         {
             "S": [
@@ -740,7 +740,7 @@
             ],
             "init": 0.0,
             "output": "Oil rate",
-            "unit": "m^3/h"
+            "unit": "m³/h"
         }
     ],
     "MV": [
@@ -752,7 +752,7 @@
         {
             "init": 0.0,
             "input": "Gas lift rate",
-            "unit": "m^3/h"
+            "unit": "m³/h"
         }
     ],
     "model": {
