@@ -23,7 +23,7 @@ def PlotPrediction(sim_data, title, FIG_SIZE = 14):
 
         plt.xlabel("MPC horizon, t")
         plt.ylabel(sim_data.cv_units[i])
-        plt.legend(loc='upper right')
+        plt.legend()
 
         plt.title(sim_data.outputs[i]+ ": " + str(sim_data.y_pred[i, sim_data.T-1]))
         plt.grid()
@@ -53,7 +53,7 @@ def PlotInput(sim_data, title, FIG_SIZE = 14):
 
         plt.xlabel("MPC horizon, t")
         plt.ylabel(sim_data.mv_units[i])
-        plt.legend(loc='upper right')
+        plt.legend()
 
         plt.title(sim_data.inputs[i])
         plt.grid()
