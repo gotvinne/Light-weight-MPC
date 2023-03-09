@@ -29,14 +29,14 @@ nlohmann::json ReadJson(const std::string& filepath);
  * @brief Combines all parse functionality, parsing system and scenario file
  * 
  * @param sce_filepath scenario filepath
- * @param model_param map of model parameters
+ * @param m_map map of model parameters
  * @param cvd CV system data  
  * @param mvd MV system data
  * @param conf MPC configuration data
  * @param z_min lower constraints 
  * @param z_max upper constraints
  */
-void ParseNew(const std::string& sce_filepath, std::map<std::string, int>& model_param,
+void ParseNew(const std::string& sce_filepath, std::map<std::string, int>& m_map,
                     CVData& cvd, MVData& mvd, MPCConfig& conf, 
                         Eigen::VectorXd& z_min, Eigen::VectorXd& z_max);
 
@@ -45,7 +45,7 @@ void ParseNew(const std::string& sce_filepath, std::map<std::string, int>& model
  * 
  * @param sce_filepath scenario filepath
  * @param sim_filepath simulation filepath
- * @param model_param map of model parameters
+ * @param m_map of model parameters
  * @param cvd CV system data  
  * @param mvd MV system data
  * @param conf MPC configuration data
@@ -53,7 +53,7 @@ void ParseNew(const std::string& sce_filepath, std::map<std::string, int>& model
  * @param z_max upper constraints
  * @param du_tilde [Eigen::MatrixXd] Matrix of previous actuations
  */
-void Parse(const std::string& sce_filepath, const std::string& sim_filepath, std::map<std::string, int>& model_param,
+void Parse(const std::string& sce_filepath, const std::string& sim_filepath, std::map<std::string, int>& m_map,
             CVData& cvd, MVData& mvd, MPCConfig& conf, 
                 Eigen::VectorXd& z_min, Eigen::VectorXd& z_max, Eigen::MatrixXd& du_tilde);
 

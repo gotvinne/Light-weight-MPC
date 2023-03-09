@@ -64,19 +64,19 @@ static void ConstraintData(const json& sce_data, VectorXd& arr, bool upper) {
  * @brief high-level function parsing system file
  * 
  * @param sys_data json object of system file
- * @param model_param std::map holding model parameters
+ * @param m_map std::map holding model parameters
  * @param output_data CVData 
  * @param input_data MVData
  */
-static void ParseSystemData(const json& sys_data, std::map<string, int>& model_param,
+static void ParseSystemData(const json& sys_data, std::map<string, int>& m_map,
                     CVData& output_data, MVData& input_data) {
     try {
-        ModelData(sys_data, model_param);
+        ModelData(sys_data, m_map);
         json cv_data = sys_data.at(kCV);
         json mv_data = sys_data.at(kMV);
 
-        output_data = CVData(cv_data, model_param[kN_MV], model_param[kN_CV], model_param[kN]);
-        input_data = MVData(mv_data, model_param[kN_MV]); 
+        output_data = CVData(cv_data, m_map[kN_MV], m_map[kN_CV], m_map[kN]);
+        input_data = MVData(mv_data, m_map[kN_MV]); 
     }
     catch(json::exception& e) {
         std::cerr << "ERROR! " << e.what() << std::endl; 
@@ -162,7 +162,7 @@ json ReadJson(const string& filepath) {
     }
 }
 
-void ParseNew(const string& sce_filepath, std::map<string, int>& model_param,
+void ParseNew(const string& sce_filepath, std::map<string, int>& m_map,
                     CVData& cvd, MVData& mvd, MPCConfig& conf, 
                         VectorXd& z_min, VectorXd& z_max) {
     // Parse scenario file
@@ -173,27 +173,27 @@ void ParseNew(const string& sce_filepath, std::map<string, int>& model_param,
     // Parse system file
     string sys_filepath = "../data/systems/" + system + ".json";
     json sys_data = ReadJson(sys_filepath);
-    ParseSystemData(sys_data, model_param, cvd, mvd);
+    ParseSystemData(sys_data, m_map, cvd, mvd);
 
-    if (conf.Q.rows() != model_param[kN_CV]) {
+    if (conf.Q.rows() != m_map[kN_CV]) {
         throw std::out_of_range("Q matrix dimension does not match system description");
     }
-    if (conf.R.rows() != model_param[kN_MV]) {
+    if (conf.R.rows() != m_map[kN_MV]) {
         throw std::out_of_range("R matrix dimension does not match system description");
     }
     if (conf.P > m_map[kN]) {
-        throw std::out_of_range("Cannot predict further then P = N = " + str(m_map[kN]));
+        throw std::out_of_range("Cannot predict further then P = N = " + std::to_string(m_map[kN]));
     }
     if (conf.M > m_map[kN]) {
-        throw std::out_of_range("Cannot predict further then M = N = " + str(m_map[kN]));
+        throw std::out_of_range("Cannot predict further then M = N = " + std::to_string(m_map[kN]));
     }
 }
 
-void Parse(const string& sce_filepath, const string& sim_filepath, std::map<string, int>& model_param,
+void Parse(const string& sce_filepath, const string& sim_filepath, std::map<string, int>& m_map,
             CVData& cvd, MVData& mvd, MPCConfig& conf, 
                 VectorXd& z_min, VectorXd& z_max, MatrixXd& du_tilde) {
     
-    ParseNew(sce_filepath, model_param, cvd, mvd, conf, z_min, z_max);
+    ParseNew(sce_filepath, m_map, cvd, mvd, conf, z_min, z_max);
 
     // Parse simulation file:
     json sim_data = ReadJson(sim_filepath);

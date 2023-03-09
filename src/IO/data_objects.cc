@@ -129,7 +129,7 @@ MPCConfig::MPCConfig(const json& sce_data) {
     Q.resize(n_CV); 
     R.resize(n_MV);
     RoH.resize(n_CV);
-    RoL.resize(n_MV)
+    RoL.resize(n_MV);
     
     for (int i = 0; i < n_CV; i++) { 
         Q[i] = mpc_data.at(kQ).at(i);
