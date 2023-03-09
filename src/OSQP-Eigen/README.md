@@ -69,6 +69,6 @@ $$ K_j=\left[\begin{array}{ccccc}
 | $\boldsymbol{K}$ | $M \cdot n_{MV} \times M \cdot n_{MV}$ |
 | $\boldsymbol{A}$ | $2M \cdot n_{MV} + P \cdot n_{CV } \times M \cdot n_{MV}$|
 | $\boldsymbol{\Gamma}$ | $M \cdot n_{MV} \times n_{MV}$  |
-| $\Gamma$ | $M \cdot n_{MV} \times n_{MV}$  |
+
 
 </div>

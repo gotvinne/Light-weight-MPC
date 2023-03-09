@@ -87,10 +87,11 @@ static void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, co
 
     // Define QP:
     const int n = M * n_MV + 2 * n_CV; // #Optimization variables 
-    const int m = ; // #Constraints
+    const int m = 2 * M * n_MV + 4 * P * n_CV; // #Constraints
+    const int a = M * n_MV; // dim(du)
    
-    const VectorXd z_max_pop = PopulateConstraints(z_max, m, n, n_MV, n_CV, M, P);
-    const VectorXd z_min_pop = PopulateConstraints(z_min, m, n, n_MV, n_CV, M, P);
+    const VectorXd z_max_pop = PopulateConstraints(z_max, a, n_MV, n_CV, M, P);
+    const VectorXd z_min_pop = PopulateConstraints(z_min, a, n_MV, n_CV, M, P);
 
     solver.data()->setNumberOfVariables(n);
     solver.data()->setNumberOfConstraints(m);
@@ -98,7 +99,7 @@ static void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, co
     // Define Cost function variables: 
     SparseXd Q_bar; 
     SparseXd R_bar; 
-    SparseXd G;
+    SparseXd H;
     SparseXd A;
 
     // Dynamic variables:
@@ -107,13 +108,13 @@ static void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, co
     VectorXd u; 
 
     setWeightMatrices(Q_bar, R_bar, conf);
-    setHessianMatrix(G, Q_bar, R_bar, fsr);
+    setHessianMatrix(H, Q_bar, R_bar, fsr, a, n);
 
-    setGradientVector(q, fsr, Q_bar, y_ref, 0); // Initial gradient
-    setConstraintMatrix(A, fsr, m, n);
-    setConstraintVectors(l, u, z_min_pop, z_max_pop, fsr, m, n);
+    setGradientVector(q, fsr, Q_bar, y_ref, conf, n, 0); // Initial gradient
+    setConstraintMatrix(A, fsr, m, n, a);
+    setConstraintVectors(l, u, z_min_pop, z_max_pop, fsr, m, a);
 
-    if (!solver.data()->setHessianMatrix(G)) { throw std::runtime_error("Cannot initialize Hessian"); }
+    if (!solver.data()->setHessianMatrix(H)) { throw std::runtime_error("Cannot initialize Hessian"); }
     if (!solver.data()->setGradient(q)) { throw std::runtime_error("Cannot initialize Gradient"); }
     if (!solver.data()->setLinearConstraintsMatrix(A)) { throw std::runtime_error("Cannot initialize constraint matrix"); }
     if (!solver.data()->setLowerBound(l)) { throw std::runtime_error("Cannot initialize lower bound"); }
@@ -127,29 +128,30 @@ static void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, co
     setOmegaU(omega_u, M, n_MV);
 
     // MPC loop:
-    // for (int k = 0; k < T; k++) { 
-    //     // Optimize:
-    //     if (solver.solveProblem() != OsqpEigen::ErrorExitFlag::NoError) { throw std::runtime_error("Cannot solve problem"); }
+    for (int k = 0; k < T; k++) { 
+        // Optimize:
+        if (solver.solveProblem() != OsqpEigen::ErrorExitFlag::NoError) { throw std::runtime_error("Cannot solve problem"); }
 
-    //     // Claim solution:
-    //     VectorXd z = solver.getSolution();
-    //     VectorXd du = omega_u * z; 
+        // Claim solution:
+        VectorXd z_st = solver.getSolution(); // [dU, eta_h, eta_l]
+        VectorXd z = z_st(Eigen::seq(0, a - 1)); // [dU]
+        VectorXd du = omega_u * z; 
 
-    //     // Store optimal du and y_pref: Before update!
-    //     u_mat.col(k) = fsr.getUK();
-    //     y_pred.col(k) = fsr.getY(z);
+        // Store optimal du and y_pref: Before update!
+        u_mat.col(k) = fsr.getUK();
+        y_pred.col(k) = fsr.getY(z);
 
-    //     // Propagate FSR model:
-    //     fsr.UpdateU(du);
+        // Propagate FSR model:
+        fsr.UpdateU(du);
 
-    //     // Update MPC problem:
-    //     setConstraintVectors(l, u, z_min_pop, z_max_pop, fsr, m, n);
-    //     setGradientVector(q, fsr, Q_bar, y_ref, k); 
+        // Update MPC problem:
+        setConstraintVectors(l, u, z_min_pop, z_max_pop, fsr, m, a);
+        setGradientVector(q, fsr, Q_bar, y_ref, conf, n, k); 
 
-    //     // Check if bounds are valid:
-    //     if (!solver.updateBounds(l, u)) { throw std::runtime_error("Cannot update bounds"); }
-    //     if (!solver.updateGradient(q)) { throw std::runtime_error("Cannot update gradient"); }    
-    // }
+        // Check if bounds are valid:
+        if (!solver.updateBounds(l, u)) { throw std::runtime_error("Cannot update bounds"); }
+        if (!solver.updateGradient(q)) { throw std::runtime_error("Cannot update gradient"); }    
+    }
 }
 
 void OpenLoopSim(const string& system, const std::vector<double>& ref_vec, int T) {

@@ -134,8 +134,7 @@ public:
     /**
      * @brief Projecting the FSRModel, by updating the former step responses and actuation
      * 
-     * @param du Optimized actuation for next projection
-     * @param du_gamma Optimized actuation scaled to fit phi
+     * @param du Optimized actuation for next projection, du = omega_u * du
      */
     void UpdateU(const VectorXd& du);
 
@@ -144,10 +143,10 @@ public:
      *                                    = Omega * (Theta * Delta U + Lambda)
      * Y is a vector containing every P * n_CV predictions further in time
      * 
-     * @param z [Eigen::VectorXd] n_CV
+     * @param du [Eigen::VectorXd]
      * @return VectorXd predicted output, one step, k+1 ahead. 
      */
-    VectorXd getY(const VectorXd& z) { return getOmegaY() * (theta_ * z + getLambda()); } // Must be changed for soft constraint!
+    VectorXd getY(const VectorXd& du) { return getOmegaY() * (theta_ * du + getLambda()); } // Must be changed for soft constraint!
 
     /**
      * @brief Get the Lambda object, Lambda = Phi * Delta U_tilde + Psi * U

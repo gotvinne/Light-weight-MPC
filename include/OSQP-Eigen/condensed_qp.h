@@ -27,12 +27,14 @@ void setWeightMatrices(SparseXd& Q_bar, SparseXd& R_bar, const MPCConfig& conf);
 /**
  * @brief Set the Hessian Matrix object
  * 
- * @param G Positive definite optimization matrix
+ * @param H Positive definite optimization matrix
  * @param Q_bar Positive definite Eigen::MatrixXd output tuning matrix
  * @param R_bar Positive definite Eigen::MatrixXd change of input tuning matrix
  * @param fsr FSRModel Finite step response model
+ * @param a
+ * @param n
  */
-void setHessianMatrix(SparseXd& G, const SparseXd& Q_bar, const SparseXd& R_bar, const FSRModel& fsr); 
+void setHessianMatrix(SparseXd& H, const SparseXd& Q_bar, const SparseXd& R_bar, const FSRModel& fsr, int a, int n); 
 
 /**
  * @brief Set the Gradient Vector object, NB! Dynamic output
@@ -41,10 +43,12 @@ void setHessianMatrix(SparseXd& G, const SparseXd& Q_bar, const SparseXd& R_bar,
  * @param fsr Finite step response model
  * @param Q_bar output tuning
  * @param y_ref Reference vector 
+ * @param conf
+ * @param n
  * @param k MPC simulation step, concatinating y_ref
  */
 void setGradientVector(VectorXd& q, FSRModel& fsr, const SparseXd& Q_bar,
-                        VectorXd* y_ref, int k);
+                        VectorXd* y_ref, const MPCConfig& conf, int n, int k);
 
 /**
  * @brief Set the Constraint Matrix object
@@ -53,8 +57,9 @@ void setGradientVector(VectorXd& q, FSRModel& fsr, const SparseXd& Q_bar,
  * @param fsr Finite step response model
  * @param m Number of constraints
  * @param n Number of optimization variables
+ * @param a
  */
-void setConstraintMatrix(SparseXd& A, const FSRModel& fsr, int m, int n);
+void setConstraintMatrix(SparseXd& A, const FSRModel& fsr, int m, int n, int a);
 
 /**
  * @brief Set the Constraint Vectors object, NB! Dynamic output
@@ -83,12 +88,13 @@ void setOmegaU(SparseXd& omega, int M, int n_MV);
  * @brief Populate constraint data, enabling dynamic constraints
  * 
  * @param c Constrain vector data
+ * @param a
  * @param n_MV Number of manipulated variables
  * @param n_CV Number of constrained variables
  * @param M Control horizon
  * @param P Prediction horizon
  * @return VectorXd, populated vector
  */
-VectorXd PopulateConstraints(const VectorXd& c, int n_MV, int n_CV, int M, int P);
+VectorXd PopulateConstraints(const VectorXd& c, int a, int n_MV, int n_CV, int M, int P);
 
 #endif // CONDENSED_QP_H
