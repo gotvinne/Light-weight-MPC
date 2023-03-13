@@ -1,10 +1,5 @@
 #!/bin/bash
-
-# Check if the folder exists
-if [ ! -d "/build" ]
-then
-    mkdir build
-fi
+mkdir -p "build"
 
 # CLI parser
 argN=false
