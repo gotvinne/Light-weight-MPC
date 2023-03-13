@@ -364,3 +364,4 @@ cython_debug/
 
 .DS_Store
 build/
+public/
