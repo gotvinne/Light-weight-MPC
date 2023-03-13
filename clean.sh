@@ -1,3 +1,4 @@
 #!/bin/bash
 rm -rf build 
-rm -rf public
+rm public/web.js
+rm public/web.wasm
