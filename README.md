@@ -6,7 +6,7 @@ This is a repo for implementing the master's thesis for the study programme [Cyb
 
 The documentation is generated using [Doxygen](https://doxygen.nl/)
 
-Operating system: Linux
+Operating system: Linux, MacOS, Windows
 
 #### Master student: 
 - Geir Ola Tvinnereim gotvinne@stud.ntnu.no
@@ -28,10 +28,10 @@ Operating system: Linux
 This software is developed using a environment and package manager [conda](https://docs.conda.io/en/latest/#), builded using [CMake](https://cmake.org/) and compiled using [GCC](https://gcc.gnu.org/).
 
 Other C/C++ compilers needed:
+*Linux*: 
 ```console
 sudo apt-get install g++
-sudo apt install libexpat1-dev
-sudo apt install libxml2-dev
+sudo apt-get install emscripten
 ```
 
 Other libraries used: 
@@ -41,12 +41,7 @@ Other libraries used:
 - [Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page), Template library for linear algebra
 - [boost/odeint](http://headmyshoulder.github.io/odeint-v2/), Numerical ODE solver
 - [CLI11](https://github.com/CLIUtils/CLI11), Command line parser
-
-
-### Functional Mock-up Interface (FMI)
-This is an industrial standard for simulating dynamical systems, while simultaneously perserve the confidensiality of the model. 
-
-[FMI](https://fmi-standard.org/)
+- [Emscripten](https://emscripten.org/docs/index.html), web compiler
 
 ### Run Light-weight-MPC: 
 *From project root:* 
@@ -79,6 +74,17 @@ Arguments:
 chmod +x setup.sh                       // Set execute permission
 sh setup.sh -T mpc_horizon -s sce
 ```
+### Webassembly
+Light-weight MPC uses Webassembly and Emscripten compiler in order to compile the C++-code to a format which can be reached from a website using JavaScript.
+
+In order to interface web, binding files are requred the implementation of the interface functionality can be found in the *web* folder. 
+
+
+In order to install the web compiler: 
+```console
+conda install -n env -c conda-forge emscripten
+```
+
 
 ### Plot 
 
