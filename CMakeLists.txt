@@ -44,7 +44,6 @@ if(WEB)
 else(WEB)
     project(light_weight VERSION 1.0 LANGUAGES CXX)
 
-    # OSQP Eigen
     find_package(OsqpEigen REQUIRED)
     find_package(nlohmann_json 3.11.2 REQUIRED)
 
