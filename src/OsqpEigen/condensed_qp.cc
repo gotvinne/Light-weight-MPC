@@ -4,7 +4,7 @@
  * @copyright  Geir Ola Tvinnereim 
  * @date 2022
  */
-#include "OSQP-Eigen/condensed_qp.h"
+#include "OsqpEigen/condensed_qp.h"
 #include "IO/data_objects.h"
 #include "model/FSRModel.h"
 
@@ -108,7 +108,7 @@ static void ConfigureConstraint(VectorXd& bound, const VectorXd& z_pop, int m, i
         bound.block(0, 0, uy_size, 1) = z_pop;
         bound.block(uy_size, 0, m - uy_size, 1) = VectorXd::Constant(m - uy_size, std::numeric_limits<double>::max()); // Infinity
     } else {
-        VectorXd tmp = z_pop(Eigen::seq(a, Eigen::last)); // tmp.rows() = P * n_CV
+        VectorXd tmp = z_pop(Eigen::seq(a, Eigen::indexing::last)); // tmp.rows() = P * n_CV
         bound.block(a, 0, tmp.rows(), 1) = VectorXd::Constant(tmp.rows(), std::numeric_limits<double>::min()); // -Infinity
         bound.block(uy_size, 0, tmp.rows(), 1) = tmp;
     }

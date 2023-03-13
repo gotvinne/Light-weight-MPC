@@ -110,7 +110,7 @@ void FSRModel::setSRMatrix() {
         MatrixXd S = MatrixXd::Zero(P_, M_);
         for (int j = 0; j < n_MV_; j++) {
             setLowerTriangularMatrix(pp_SR_vec_[i][j], S);
-            pp_SR_mat_[i][j] = S(Eigen::seq(W_, Eigen::last), Eigen::seq(0, Eigen::last));
+            pp_SR_mat_[i][j] = S(Eigen::seq(W_, Eigen::indexing::last), Eigen::seq(0, Eigen::indexing::last));
         }
     }
 }
@@ -126,11 +126,11 @@ void FSRModel::setThetaMatrix() {
 void FSRModel::setPhiMatrix() {
     for (int i = 0; i < n_CV_; i++) {
         for (int j = 0; j < n_MV_; j++) { 
-            double sn = pp_SR_vec_[i][j](Eigen::last); // S(N)
+            double sn = pp_SR_vec_[i][j](Eigen::indexing::last); // S(N)
             
             for (int pad = 0; pad < P_; pad++) {
                 // Extract S-coefficients
-                VectorXd vec = pp_SR_vec_[i][j](Eigen::seq(W_ + 1 + pad, Eigen::last)); // Accessing [S(W+1+k), ..., S(N)]
+                VectorXd vec = pp_SR_vec_[i][j](Eigen::seq(W_ + 1 + pad, Eigen::indexing::last)); // Accessing [S(W+1+k), ..., S(N)]
                 
                 VectorXd pad_vec = PadVec(vec, pad, sn); // pad_vec.rows() = N-W-1
                 int size = pad_vec.rows(); 
@@ -156,7 +156,7 @@ VectorXd FSRModel::PadVec(VectorXd& vec, int pad, double sn) {
 void FSRModel::setPsi() {
     for (int i = 0; i < n_CV_; i++) {
         for (int j = 0; j < n_MV_; j++) {
-            VectorXd vec = VectorXd::Constant(P_-W_, pp_SR_vec_[i][j](Eigen::last));
+            VectorXd vec = VectorXd::Constant(P_-W_, pp_SR_vec_[i][j](Eigen::indexing::last));
             psi_.block(i*(P_-W_), j, P_-W_, 1) = vec;
         }
     }
@@ -204,11 +204,11 @@ void FSRModel::PrintPhi() const {
     
     for (int i = 0; i < phi_.rows(); i++) {
         std::cout << "Row = pad: " << i << std::endl;
-        //VectorXd vec = phi_(i, Eigen::seq(0, N_-W_-2-1));
+       
         std::cout << phi_(i, Eigen::seq(0, N_-W_-1-1)) << std::endl;
         std::cout << std::endl;
-        //VectorXd second = phi_(i, Eigen::seq(N_-W_-2, Eigen::last));
-        std::cout << phi_(i, Eigen::seq(N_-W_-1, Eigen::last)) << std::endl;
+        
+        std::cout << phi_(i, Eigen::seq(N_-W_-1, Eigen::indexing::last)) << std::endl;
         std::cout << std::endl;
     }
 }

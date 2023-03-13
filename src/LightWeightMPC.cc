@@ -10,7 +10,7 @@
  */
 
 #include "LightWeightMPC.h"
-#include "OSQP-Eigen/condensed_qp.h"
+#include "OsqpEigen/condensed_qp.h"
 #include "IO/json_specifiers.h"
 #include "IO/parse.h"
 #include "IO/serialize.h"
