@@ -20,8 +20,8 @@ const double OIL_RATE_REF = 70;
 
 int main(int argc, char **argv) {
     // Default
-    int T = 1;
-    string sce = "";
+    int T = 180;
+    string sce = "SingleWell";
     bool new_sim = false; 
 
     // Reference

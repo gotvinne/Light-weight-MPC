@@ -3,13 +3,13 @@ cmake_minimum_required(VERSION 3.11)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(CMAKE_CXX_FLAGS "--no-entry")
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 option(WEB "Compile to WebAssembly" OFF)
 
 if(WEB)
+    set(CMAKE_CXX_FLAGS "--no-entry")
     include(FetchContent)
     # Nlohmann_json
     FetchContent_Declare(json 
@@ -44,13 +44,14 @@ if(WEB)
 
 
 else(WEB)
+    #set(CMAKE_CXX_FLAGS "-Wall -Wextra") # Print warnings
     project(light_weight VERSION 1.0 LANGUAGES CXX)
 
     find_package(OsqpEigen REQUIRED)
     find_package(nlohmann_json 3.11.2 REQUIRED)
 
-    # Compiling all files in src
-    file(GLOB_RECURSE SRC_FILES src_cc/*.cc src_cc/*.cpp)
+    # Compiling all files in src except Bindings
+    file(GLOB_RECURSE SRC_FILES src_cc/OsqpEigen/*.cc src_cc/OsqpEigen/*.cpp src_cc/IO/*.cc src_cc/model/*.cc src_cc/main.cc src_cc/LightWeightMPC.cc)
     add_executable(light_weight ${SRC_FILES}) # Define executable
 
     # Include libs: include, conan, osqp, boost

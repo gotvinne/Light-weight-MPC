@@ -10,11 +10,7 @@ make
 if [ $? -eq 0 ]; then #Build successful
     echo 
 
-    if $argN; then # If flag is found
-      ./light_weight
-    else 
-      ./light_weight
-    fi
+    ./light_weight
 
     if [ $? -eq 0 ]; then #Running successfull
         echo
