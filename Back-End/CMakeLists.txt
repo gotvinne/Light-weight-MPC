@@ -31,8 +31,8 @@ if(WEB)
     project(web VERSION 1.0 LANGUAGES CXX)
 
     # Compiling all files in src
-    file(GLOB_RECURSE SRC_FILES src_cc/*.cc src_cc/*.cpp)
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/src") # Set web output in src folder
+    file(GLOB_RECURSE SRC_FILES src/*.cc src/*.cpp)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/../Front-End/src") # Set web output in src folder
     add_executable(web ${SRC_FILES}) # Define executable
 
     target_include_directories(web PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -50,7 +50,7 @@ else(WEB)
     find_package(OsqpEigen REQUIRED)
     find_package(nlohmann_json 3.11.2 REQUIRED)
 
-    set(BACK_END_SRC src_cc/OsqpEigen/*.cc src_cc/OsqpEigen/*.cpp src_cc/IO/*.cc src_cc/model/*.cc src_cc/main.cc src_cc/LightWeightMPC.cc)
+    set(BACK_END_SRC src/OsqpEigen/*.cc src/OsqpEigen/*.cpp src/IO/*.cc src/model/*.cc src/main.cc src/LightWeightMPC.cc)
     # Compiling all files in src except Bindings
     file(GLOB_RECURSE SRC_FILES ${BACK_END_SRC})
     add_executable(light_weight ${SRC_FILES}) # Define executable

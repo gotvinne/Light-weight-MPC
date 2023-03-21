@@ -363,4 +363,5 @@ cython_debug/
 
 .DS_Store
 build/
+build_emcc/
 node_modules/
