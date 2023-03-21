@@ -82,9 +82,11 @@ In order to interface web, binding files are requred the implementation of the i
 
 In order to install the web compiler: 
 ```console
-conda install -n env -c conda-forge emscripten
+./emsdk update
+./emsdk install latest
+./emsdk activate latest
+source ./emsdk_env.sh
 ```
-
 
 ### Plot 
 
