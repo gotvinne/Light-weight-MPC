@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.11)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-#set(CMAKE_CXX_FLAGS "-Wall -Wextra") # Print warnings
+set(CMAKE_CXX_FLAGS "--no-entry") # Print warnings
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
@@ -39,7 +39,9 @@ if(WEB)
     target_link_libraries(web nlohmann_json::nlohmann_json Eigen3::Eigen osqp)
 
     # In order to use bindings
-    set_target_properties(web PROPERTIES LINK_FLAGS "--bind")
+    set(EMCC_FLAGS "-s ENVIRONMENT=web -s SINGLE_FILE=1 -s EXPORT_NAME='createModule' -s USE_ES6_IMPORT_META=0 -s EXPORTED_FUNCTIONS='[${C_FUNCTIONS}, '_malloc', '_free']' -s EXPORTED_RUNTIME_METHODS=['ccall','cwrap']")
+    set_target_properties(web PROPERTIES SUFFIX ".mjs" LINK_FLAGS ${EMCC_FLAGS})
+
 
 else(WEB)
     project(light_weight VERSION 1.0 LANGUAGES CXX)
