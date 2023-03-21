@@ -32,7 +32,7 @@ if(WEB)
 
     # Compiling all files in src
     file(GLOB_RECURSE SRC_FILES src_cc/*.cc src_cc/*.cpp)
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/src_cc") # Set web output in public folder
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/src") # Set web output in src folder
     add_executable(web ${SRC_FILES}) # Define executable
 
     target_include_directories(web PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
