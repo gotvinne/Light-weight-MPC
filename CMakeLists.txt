@@ -50,8 +50,9 @@ else(WEB)
     find_package(OsqpEigen REQUIRED)
     find_package(nlohmann_json 3.11.2 REQUIRED)
 
+    set(BACK_END_SRC src_cc/OsqpEigen/*.cc src_cc/OsqpEigen/*.cpp src_cc/IO/*.cc src_cc/model/*.cc src_cc/main.cc src_cc/LightWeightMPC.cc)
     # Compiling all files in src except Bindings
-    file(GLOB_RECURSE SRC_FILES src_cc/OsqpEigen/*.cc src_cc/OsqpEigen/*.cpp src_cc/IO/*.cc src_cc/model/*.cc src_cc/main.cc src_cc/LightWeightMPC.cc)
+    file(GLOB_RECURSE SRC_FILES ${BACK_END_SRC})
     add_executable(light_weight ${SRC_FILES}) # Define executable
 
     # Include libs: include, conan, osqp, boost
