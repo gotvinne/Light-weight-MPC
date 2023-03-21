@@ -31,8 +31,8 @@ if(WEB)
     project(web VERSION 1.0 LANGUAGES CXX)
 
     # Compiling all files in src
-    file(GLOB_RECURSE SRC_FILES src/*.cc src/*.cpp)
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/src") # Set web output in public folder
+    file(GLOB_RECURSE SRC_FILES src_cc/*.cc src_cc/*.cpp)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/src_cc") # Set web output in public folder
     add_executable(web ${SRC_FILES}) # Define executable
 
     target_include_directories(web PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -50,7 +50,7 @@ else(WEB)
     find_package(nlohmann_json 3.11.2 REQUIRED)
 
     # Compiling all files in src
-    file(GLOB_RECURSE SRC_FILES src/*.cc src/*.cpp)
+    file(GLOB_RECURSE SRC_FILES src_cc/*.cc src_cc/*.cpp)
     add_executable(light_weight ${SRC_FILES}) # Define executable
 
     # Include libs: include, conan, osqp, boost
