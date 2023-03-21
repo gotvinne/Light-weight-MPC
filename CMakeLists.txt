@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.11)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(CMAKE_CXX_FLAGS "--no-entry") # Print warnings
+set(CMAKE_CXX_FLAGS "--no-entry")
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
@@ -32,14 +32,14 @@ if(WEB)
 
     # Compiling all files in src
     file(GLOB_RECURSE SRC_FILES src/*.cc src/*.cpp)
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/public") # Set web output in public folder
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/src") # Set web output in public folder
     add_executable(web ${SRC_FILES}) # Define executable
 
     target_include_directories(web PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
     target_link_libraries(web nlohmann_json::nlohmann_json Eigen3::Eigen osqp)
 
     # In order to use bindings
-    set(EMCC_FLAGS "-s ENVIRONMENT=web -s SINGLE_FILE=1 -s EXPORT_NAME='createModule' -s USE_ES6_IMPORT_META=0 -s EXPORTED_FUNCTIONS='[${C_FUNCTIONS}, '_malloc', '_free']' -s EXPORTED_RUNTIME_METHODS=['ccall','cwrap']")
+    set(EMCC_FLAGS "-s ENVIRONMENT=web -s SINGLE_FILE=1 -s EXPORT_NAME='LightWeightMPC' -s USE_ES6_IMPORT_META=0 -s EXPORTED_FUNCTIONS='[${C_FUNCTIONS}, '_malloc', '_free']' -s EXPORTED_RUNTIME_METHODS=['ccall','cwrap']")
     set_target_properties(web PROPERTIES SUFFIX ".mjs" LINK_FLAGS ${EMCC_FLAGS})
 
 

@@ -1,12 +1,7 @@
 #!/bin/bash
 
-# Delete old files:
-rm -rf build
-rm -rf public
-
 # Make folders
 mkdir -p "build"
-mkdir -p "public"
 cd build
 
 # Building Release
