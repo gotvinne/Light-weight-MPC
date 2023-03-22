@@ -4,8 +4,7 @@
     display: flex;
     justify-content: center;
     align-items: baseline;
-    padding: 0em;
-    margin-bottom: 0em;
+    padding-left: 50px;
     background-color: rgb(180, 180, 180);
     color: rgba(255,19,68,255);
 }

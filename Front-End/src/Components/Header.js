@@ -10,7 +10,7 @@ import Simulation from "./Simulation";
 import '../css/Header.css'
 import logo from '../img/equinor_logo.jpg'
 
-const ImageStyle = {height: "75px", width: "75px", transform: "translate(725px, 18px)"}  
+const ImageStyle = {height: "75px", width: "75px", transform: "translate(750px, 18px)"}  
 const Pages = ["Scenario", "Simulation", "Algorithm", "Models", "about"];
 
 interface TabPanelProps { // Struct

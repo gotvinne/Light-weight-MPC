@@ -31,7 +31,7 @@ Download Node.js and npm from [here](https://nodejs.org/en/download)
 *node_modules* directory needs to be installed in order to run the app in create-react-app. 
 
 ```console
-npm install
+npm install                        # Install needed react-packages
 npm start
 ```
 
