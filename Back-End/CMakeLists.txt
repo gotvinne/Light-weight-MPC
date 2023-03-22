@@ -31,7 +31,7 @@ if(WEB)
     project(web VERSION 1.0 LANGUAGES CXX)
 
     # Compiling all files in src
-    set(BACK_END_SRC src/OsqpEigen/*.cc src/OsqpEigen/*.cpp src/IO/*.cc src/model/*.cc src/bindings/*.cc src/LightWeightMPC.cc)
+    set(BACK_END_SRC src/bindings/*.cc)
     file(GLOB_RECURSE SRC_FILES ${BACK_END_SRC})
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/../Front-End/src") # Set web output in src folder
     add_executable(web ${SRC_FILES}) # Define executable
