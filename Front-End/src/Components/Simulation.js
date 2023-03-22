@@ -18,7 +18,7 @@ export default function Simulation() {
     <div className="Simulation">
         <Box sx={{ width: "100%", pt: 2, pl: 2 }}>
             <p>Let's do some basic addition:</p>  
-            <div> {add(1,9)} </div> 
+            <div> {add(1,89)} </div> 
         </Box>
     </div>
     );

@@ -1,6 +1,26 @@
 #!/bin/bash
 mkdir -p "build"
 
+# CLI parser
+argN=false
+while getopts "ns:T:h" flag; 
+do
+  case ${flag} in
+    T)
+      argT=${OPTARG};;
+
+    s) 
+      argS=${OPTARG};;
+
+    n) 
+      argN=true;;
+
+    ?|h)
+      echo "Usage: $(basename $0) [-T int] [-s string] [-n]"
+      exit 1;;
+  esac
+done
+
 cd build
 # Building Release
 cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX
@@ -10,7 +30,11 @@ make
 if [ $? -eq 0 ]; then #Build successful
     echo 
 
-    ./light_weight
+    if $argN; then # If flag is found
+      ./light_weight -T $argT -s $argS -n
+    else 
+      ./light_weight -T $argT -s $argS
+    fi
 
     if [ $? -eq 0 ]; then #Running successfull
         echo

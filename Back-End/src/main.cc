@@ -8,8 +8,8 @@
  * @copyright Copyright (c) 2023
  * 
  */
-
 #include "LightWeightMPC.h"
+#include <CLI/CLI.hpp>
 
 #include <string>
 #include <vector>
@@ -19,10 +19,18 @@ const double GAS_RATE_REF = 3800;
 const double OIL_RATE_REF = 70;
 
 int main(int argc, char **argv) {
+    CLI::App app{"Light Weight MPC"};
+    // ---- Parse CLI ---- //
+
     // Default
-    int T = 180;
-    string sce = "SingleWell";
+    int T = 1;
+    string sce = "";
     bool new_sim = false; 
+
+    app.add_option("-T", T, "MPC horizon");
+    app.add_option("-s", sce, "Scenario name");
+    app.add_flag("-n", new_sim, "New simulation");
+    CLI11_PARSE(app, argc, argv);
 
     // Reference
     std::vector<double> ref_vec{GAS_RATE_REF, OIL_RATE_REF};
@@ -34,5 +42,4 @@ int main(int argc, char **argv) {
     //OpenLoopSim(sce, ref_vec, T);
     LightWeightMPC(sce, ref_vec, new_sim, T);
     
-    return 0;
 }
