@@ -10,5 +10,5 @@ jupyter notebook
 ```console
 python3 vis/plot.py -s "Simulation"
 ```
-All visualization logic is implemented using *Matplotlib.pyplot*. 
+All visualization logic is implemented using [Matplotlib.pyplot](https://matplotlib.org/3.5.3/api/_as_gen/matplotlib.pyplot.html). 
 

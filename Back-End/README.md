@@ -50,21 +50,18 @@ conda install -n env -c conda-forge boost
 ```console
 conda env export > conda/env.yml
 ```
-
-- Build and run program, NB! setup.sh calls binary ./light_weight
+- Build and run program, NB! make.sh calls binary ./light_weight
 Arguments:
 - [-T int] mpc_horizon: Simulate scenario for the given mpc_horizon
 - [-s string] scenario_name: Scenario file to be simulated
 ```console
 chmod +x setup.sh                       // Set execute permission
-sh setup.sh -T mpc_horizon -s sce
+sh make.sh -T mpc_horizon -s sce
 ```
-
 ### Webassembly
 Light-weight MPC uses Webassembly and Emscripten compiler in order to compile the C++-code to a format which can be reached from a website using JavaScript.
 
 In order to interface web, binding files are requred the implementation of the interface functionality can be found in the *web* folder. 
-
 
 In order to install the web compiler: 
 ```console
@@ -73,6 +70,8 @@ In order to install the web compiler:
 ./emsdk activate latest
 source ./emsdk_env.sh
 ```
+
+Build 
 
 ### Plot
 For the **Light-weight MPC** software there are build in additional tools for plotting the simulation data. This software is developed in Python, and can be installed using [conda](https://docs.conda.io/en/latest/#). The visualization tool is found in the folder named */vis*
