@@ -33,7 +33,7 @@ Other libraries used:
 
 - Use conda in order to create environment access the environments in conda folder:
 ```console
-conda env create -f conda/env.yml
+conda env create -f env.yml
 ```
 
 or make a new environment, *light_weight*, and install conda packages: 
@@ -63,15 +63,24 @@ Light-weight MPC uses Webassembly and Emscripten compiler in order to compile th
 
 In order to interface web, binding files are requred the implementation of the interface functionality can be found in the *web* folder. 
 
-In order to install the web compiler: 
+Install the web compiler locally, [online documentation](https://emscripten.org/docs/getting_started/downloads.html#platform-notes-installation-instructions-sdk): 
 ```console
-./emsdk update
+git clone https://github.com/emscripten-core/emsdk.git
+cd emsdk
+git pull
 ./emsdk install latest
 ./emsdk activate latest
-source ./emsdk_env.sh
+```
+Or for MacOS, download via Brew
+```console
+brew install emscripten
 ```
 
-Build 
+Before building and running the compiler, the enscripten compiler needs to be sourced to terminal. Afterwards, emcc.sh can be run. The output, *web.mjs* is stored in the Front-End's src-folder.  
+```console
+source ./emsdk_env.sh
+sh emcc.sh
+```
 
 ### Plot
 For the **Light-weight MPC** software there are build in additional tools for plotting the simulation data. This software is developed in Python, and can be installed using [conda](https://docs.conda.io/en/latest/#). The visualization tool is found in the folder named */vis*
