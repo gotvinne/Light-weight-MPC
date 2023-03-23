@@ -88,7 +88,8 @@ The [nlohmann/json](https://json.nlohmann.me/api/basic_json/) library is used in
 
 - Simulation without slack variables: 
 ```json
-"Ro": 0
+"RoL": [0, 0, ..., 0 n_CV] // Need testing
+"RoH": [0, 0, ..., 0 n_CV]
 ```
 - Simulation without integral effect:
 ```json
