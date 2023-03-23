@@ -49,13 +49,13 @@ static void ModelData(const json& sys_data, std::map<string,int>& map) {
  * @param upper bool indicating if upper constraints are returned, upper = false: lower constraints are returnd 
  */
 static void ConstraintData(const json& sce_data, VectorXd& arr, bool upper) {
-    json j_arr(sce_data.at(kC));
+    json j_arr = sce_data.at(kC);
     int size = j_arr.size();
     
     arr.resize(size);
     for (int i = 0; i < size; i++) {
         for (auto& elem : j_arr.at(i).items()) {
-            arr[i] = elem.value().at(upper);
+            arr(i) = elem.value().at(upper);
         }
     }
 }
