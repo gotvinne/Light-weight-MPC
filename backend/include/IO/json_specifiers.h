@@ -36,6 +36,7 @@ const string kRoH = "RoH";
 const string kRoL = "RoL";
 const string kBu = "bias update";
 const string kC = "c"; 
+const string kDu = "du";
 
 // ------- Simulation file specifiers ------- //
 const string kScenario = "scenario";
