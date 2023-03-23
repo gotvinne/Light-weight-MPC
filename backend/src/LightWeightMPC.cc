@@ -212,12 +212,19 @@ void LightWeightMPC(const string& sce, const std::vector<double>& ref_vec, bool 
     MatrixXd du_tilde; 
 
     // Parse information:
-    if (new_sim) {
-        ParseNew(sce_path, m_map, cvd, mvd, conf, z_min, z_max);
-        du_tilde = MatrixXd::Zero(m_map[kN_MV], m_map[kN]-conf.W-1);
-    } else {
-        Parse(sce_path, sim_path, m_map, cvd, mvd, conf, z_min, z_max, du_tilde);
+    
+    try {
+        if (new_sim) {
+            ParseNew(sce_path, m_map, cvd, mvd, conf, z_min, z_max);
+            du_tilde = MatrixXd::Zero(m_map[kN_MV], m_map[kN]-conf.W-1);
+        } else {
+            Parse(sce_path, sim_path, m_map, cvd, mvd, conf, z_min, z_max, du_tilde);
+        }
     }
+    catch(std::exception& e) {
+        std::cout << e.what() << std::endl;
+    }
+    
     
     // Select dynamical model: 
     FSRModel fsr(cvd.getSR(), m_map, conf.P, conf.M, conf.W, mvd.Inits, cvd.getInits());
@@ -238,7 +245,7 @@ void LightWeightMPC(const string& sce, const std::vector<double>& ref_vec, bool 
         SRSolver(T, u_mat, y_pred, fsr, conf, z_min, z_max, y_ref);
         delete[] y_ref;
     }
-    catch(std::runtime_error& e) {
+    catch(std::exception& e) {
         std::cout << e.what() << std::endl;
     }
 

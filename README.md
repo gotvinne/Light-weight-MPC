@@ -13,8 +13,8 @@ Operating system: Linux, MacOS, Windows
 - Prof. Lars Struen Imsland (ITK) lars.imsland@ntnu.no
 - Dr. Gisle Otto Eikrem (Equinor) gise@equinor.com
 
-### backend
+## backend
 - C/C++ and Python module for simulating an MPC controller on an FSRM
 - Emscripten compiler to compile code to Webassembly format to interface JavaScript
-### frontend
+## frontend
 - JavaScript, CSS, React web application 
