@@ -16,6 +16,7 @@
 #include "model/FSRModel.h"
 
 #include <string>
+#include <map>
 
 #include "Eigen/Dense"
 #include <nlohmann/json.hpp>
@@ -40,11 +41,11 @@ void WriteJson(const json& data, const string& filepath);
  * @param scenario [string] scenario name
  * @param cvd CVData
  * @param mvd MVData
- * @param y_pred [Eigen::MatrixXd]
- * @param u_mat [Eigen::MatrixXd]
+ * @param y_pred [Eigen::MatrixXd] matrix of CV predictions
+ * @param u_mat [Eigen::MatrixXd] actuations
  * @param z_min [Eigen::VectorXd] lower constraints
  * @param z_max [Eigen::VectorXd] upper constraints
- * @param fsr [FSRModel] 
+ * @param fsr [FSRModel] The finite step response model
  * @param T [int] MPC horizon
  */
 void SerializeSimulationNew(const string& write_path, const string& scenario, const CVData& cvd, const MVData& mvd, 
@@ -61,7 +62,45 @@ void SerializeSimulationNew(const string& write_path, const string& scenario, co
  */
 void SerializeSimulation(const string& write_path, const MatrixXd& y_pred, const MatrixXd& u_mat, int T);
 
+/**
+ * @brief Serializing an open loop simulation into simulation JSON data file
+ * 
+ * @param write_path [string] file path to write json file
+ * @param scenario [string] scenario name
+ * @param cvd CVData
+ * @param mvd MVData
+ * @param y_pred [Eigen::MatrixXd]
+ * @param u_mat actuations
+ * @param fsr [FSRModel] 
+ * @param T [int] MPC horizon
+ */
 void SerializeOpenLoop(const string& write_path, const string& scenario, const CVData& cvd, const MVData& mvd, 
                     const MatrixXd& y_pred, const MatrixXd& u_mat, const FSRModel& fsr, int T);
-                    
+
+/**
+ * @brief Serializing a scenario file
+ * 
+ * @param write_path 
+ * @param scenario 
+ * @param system 
+ * @param sys_path
+ * @param mpc_m 
+ * @param Q 
+ * @param R 
+ * @param Ro 
+ * @param bias_update 
+ * @param l_du 
+ * @param l_u 
+ * @param l_y 
+ * @param u_du 
+ * @param u_u 
+ * @param u_y 
+ * @param n_CV 
+ * @param n_MV 
+ */
+void SerializeScenario(const string& write_path, const string& scenario, const string& system, const string& sys_path, std::map<string, int> mpc_m,
+                     const VectorXd& Q, const VectorXd& R, const VectorXd& Ro, bool bias_update, const VectorXd& l_du, 
+                     const VectorXd& l_u, const VectorXd& l_y, const VectorXd& u_du, const VectorXd& u_u, const VectorXd& u_y,
+                     int n_CV, int n_MV);     
+
 #endif  // SERIALIZE_H

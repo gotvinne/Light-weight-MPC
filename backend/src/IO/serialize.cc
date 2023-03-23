@@ -17,8 +17,14 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <filesystem>
+#include <stdexcept>
 
 #include <nlohmann/json.hpp>
+
+//////////////////////////////////
+//** SERIALIZE SIMULATION FILE *// 
+//////////////////////////////////
 
 /**
  * @brief Fill json::array() object from Eigen::MatrixXd
@@ -156,6 +162,75 @@ static void SerializeSimMV(json& data, const MVData& mvd, const MatrixXd& u, int
     data[kMV] = arr;
 }
 
+////////////////////////////////
+//** SERIALIZE SCENARIO FILE *//
+////////////////////////////////
+
+static bool isSystem(const string& system, const string& sys_path) {
+    string filename = system + ".json";
+    for (const auto& file : std::filesystem::directory_iterator(sys_path)) {
+        if (file.path().filename() == filename) {
+            return true;
+        }
+    }
+    return false; 
+}   
+
+static void SerializeMPC(json& data, std::map<string, int> mpc_m, const VectorXd& Q, const VectorXd& R, const VectorXd& Ro, bool bias_update) {
+    json obj = json::object();
+
+    obj[kP] = mpc_m[kP];
+    obj[kM] = mpc_m[kM];
+    obj[kW] = mpc_m[kW];
+    obj[kBu] = bias_update;
+
+    json q = json::array();
+    json r = json::array();
+    json rol = json::array();
+    json roh = json::array();
+
+    for (int i = 0; i < Q.rows(); i++) {
+        q.push_back(Q(i));
+        rol.push_back(Ro(0, i));
+        roh.push_back(Ro(1, i));
+    }
+    for (int i = 0; i < R.rows(); i++) {
+        r.push_back(R(i));
+    }
+
+    obj[kQ] = q;
+    obj[kR] = r;
+    obj[kRoL] = rol;
+    obj[kRoH] = roh;
+
+    data[kMPC] = obj;
+}
+
+static void SerializeConstraints(json& data, const VectorXd& l_du, const VectorXd& l_u,
+                    const VectorXd& l_y, const VectorXd& u_du, const VectorXd& u_u,
+                    const VectorXd& u_y, int n_CV, int n_MV) {
+    json arr = json::array();
+
+    for (int i = 0; i < n_MV; i++) {
+        json c_obj = json::object();
+        c_obj[kDu + "[" + std::to_string(i) + "]"] = json::array({l_du(i), u_du(i)});
+        arr.push_back(c_obj);
+    }
+
+    for (int i = 0; i < n_MV; i++) {
+        json c_obj = json::object();
+        c_obj[kU + "[" + std::to_string(i) + "]"] = json::array({l_u(i), u_u(i)});
+        arr.push_back(c_obj);
+    }
+
+    for (int i = 0; i < n_CV; i++) {
+        json c_obj = json::object();
+        c_obj[kY + "[" + std::to_string(i) + "]"] = json::array({l_y(i), u_y(i)});
+        arr.push_back(c_obj);
+    }
+    data[kC] = arr;
+}
+
 void SerializeSimulationNew(const string& write_path, const string& scenario, const CVData& cvd, const MVData& mvd, 
                     const MatrixXd& y_pred, const MatrixXd& u_mat, const VectorXd& z_min, const VectorXd& z_max, const FSRModel& fsr, int T) {
     json data;
@@ -206,3 +281,41 @@ void SerializeOpenLoop(const string& write_path, const string& scenario, const C
     SerializeSimMV(data, mvd, u_mat, fsr.getN_MV());
     WriteJson(data, write_path);
 }
+
+void SerializeScenario(const string& write_path, const string& scenario, const string& system, const string& sys_path, std::map<string, int> mpc_m,
+                     const VectorXd& Q, const VectorXd& R, const VectorXd& Ro, bool bias_update, const VectorXd& l_du, 
+                     const VectorXd& l_u, const VectorXd& l_y, const VectorXd& u_du, const VectorXd& u_u, const VectorXd& u_y,
+                     int n_CV, int n_MV) {
+    json data;
+
+    // Add additional test for M, P and length at bindings
+    if (Q.rows() != n_CV) {
+        throw std::out_of_range("Q matrix dimension does not match system description");
+    }
+    if (R.rows() != n_MV) {
+        throw std::out_of_range("Q matrix dimension does not match system description");
+    }
+    if (Ro.cols() != n_CV) {
+        throw std::out_of_range("Number of Ro elements does not match system description");
+    }
+
+    if (l_du.rows() != u_du.rows() || l_du.rows() != n_MV) {
+        throw std::out_of_range("Number of delta U constraints does not match system description");
+    }
+    if (l_u.rows() != u_u.rows() || l_u.rows() != n_MV) {
+        throw std::out_of_range("Number of U constraints does not match system description");
+    }
+    if (l_y.rows() != u_y.rows() || l_y.rows() != n_CV) {
+        throw std::out_of_range("Number of Y constraints does not match system description");
+    }
+
+    if (!isSystem(system, sys_path)) {
+        throw std::invalid_argument("Invalid system");
+    }
+
+    data[kSystem] = system; // Write system
+    SerializeMPC(data, mpc_m, Q, R, Ro, bias_update);
+    SerializeConstraints(data, l_du, l_u, l_y, u_du, u_u, u_y, n_CV, n_MV);
+    WriteJson(data, write_path);
+}
+
