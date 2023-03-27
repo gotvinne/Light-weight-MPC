@@ -48,7 +48,7 @@ function Header(props: Props) {
             </div>
             <AppBar position="sticky" sx={{height: 50, background: "#b4b4b4"}}>
                 <Toolbar sx={{borderColor: 'divider'}}>
-                    <Tabs value={value} onChange={handleChange} textColor={"#212121"} sx={{
+                    <Tabs value={value} onChange={handleChange} textColor="#212121" sx={{
                             '& .MuiTabs-indicator': { backgroundColor: "#212121" },
                             '& .MuiTab-root': { color: "#212121" },
                             '& .Mui-selected': { color: "#212121" },

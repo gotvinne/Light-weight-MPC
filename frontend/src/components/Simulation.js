@@ -7,10 +7,9 @@ import "../css/Simulation.css"
 
 export default function Simulation() {
     const [add, setAdd] = useState();
-    useEffect(  () => {LightWeightMPC().then((Module) => { 
+    useEffect( () => {LightWeightMPC().then((Module) => { 
     setAdd(() => Module.cwrap("add", "number", ["number", "number"]));
-    });  
-        }, []);  
+    }); }, []);  
 
     if (!add) {  
         return "Loading webassembly...";  
