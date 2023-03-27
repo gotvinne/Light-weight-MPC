@@ -103,4 +103,6 @@ void SerializeScenario(const string& write_path, const string& scenario, const s
                      const VectorXd& l_u, const VectorXd& l_y, const VectorXd& u_du, const VectorXd& u_u, const VectorXd& u_y,
                      int n_CV, int n_MV);     
 
+bool isSystem(const string& system, const string& sys_path);
+
 #endif  // SERIALIZE_H

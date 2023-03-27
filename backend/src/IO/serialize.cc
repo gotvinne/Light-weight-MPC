@@ -166,16 +166,6 @@ static void SerializeSimMV(json& data, const MVData& mvd, const MatrixXd& u, int
 //** SERIALIZE SCENARIO FILE *//
 ////////////////////////////////
 
-static bool isSystem(const string& system, const string& sys_path) {
-    string filename = system + ".json";
-    for (const auto& file : std::filesystem::directory_iterator(sys_path)) {
-        if (file.path().filename() == filename) {
-            return true;
-        }
-    }
-    return false; 
-}   
-
 static void SerializeMPC(json& data, std::map<string, int> mpc_m, const VectorXd& Q, const VectorXd& R, const VectorXd& Ro, bool bias_update) {
     json obj = json::object();
 
@@ -230,6 +220,16 @@ static void SerializeConstraints(json& data, const VectorXd& l_du, const VectorX
     }
     data[kC] = arr;
 }
+
+bool isSystem(const string& system, const string& sys_path) {
+    string filename = system + ".json";
+    for (const auto& file : std::filesystem::directory_iterator(sys_path)) {
+        if (file.path().filename() == filename) {
+            return true;
+        }
+    }
+    return false; 
+}   
 
 void SerializeSimulationNew(const string& write_path, const string& scenario, const CVData& cvd, const MVData& mvd, 
                     const MatrixXd& y_pred, const MatrixXd& u_mat, const VectorXd& z_min, const VectorXd& z_max, const FSRModel& fsr, int T) {

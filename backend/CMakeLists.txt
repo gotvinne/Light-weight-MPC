@@ -31,7 +31,7 @@ if(WEB)
     project(web VERSION 1.0 LANGUAGES CXX)
 
     # Compiling all files in src
-    set(BACK_END_SRC src/bindings/*.cc)
+    set(BACK_END_SRC src/bindings/*.cc src/IO/*.cc)
     file(GLOB_RECURSE SRC_FILES ${BACK_END_SRC})
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/../frontend/src") # Set web output in src folder
     add_executable(web ${SRC_FILES}) # Define executable
