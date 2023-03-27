@@ -5,8 +5,11 @@
 
 #include <string>
 
+
+const int = 0;
 extern "C" {
     EMSCRIPTEN_KEEPALIVE 
     int add(int a, int b){return a + b;}
+
 
 }
