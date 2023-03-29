@@ -10,7 +10,7 @@ import Simulation from "./Simulation";
 import '../css/Header.css'
 import logo from '../img/equinor_logo.jpg'
 
-const ImageStyle = {height: "75px", width: "75px", transform: "translate(750px, 18px)"}  
+const ImageStyle = {height: "75px", width: "75px", transform: "translate(700px, 18px)"}  // Adjust this to screen size
 const Pages = ["Scenario", "Simulation", "Algorithm", "Models", "about"];
 
 interface TabPanelProps { // Struct
@@ -48,7 +48,7 @@ function Header(props: Props) {
             </div>
             <AppBar position="sticky" sx={{height: 50, background: "#b4b4b4"}}>
                 <Toolbar sx={{borderColor: 'divider'}}>
-                    <Tabs value={value} onChange={handleChange} textColor="#212121" sx={{
+                    <Tabs value={value} onChange={handleChange} textColor={"inherit"} sx={{
                             '& .MuiTabs-indicator': { backgroundColor: "#212121" },
                             '& .MuiTab-root': { color: "#212121" },
                             '& .Mui-selected': { color: "#212121" },
