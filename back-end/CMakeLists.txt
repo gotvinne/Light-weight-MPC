@@ -23,24 +23,24 @@ if(WEB)
     )
     FetchContent_MakeAvailable(Eigen)
 
-    FetchContent_Declare(osqp
-        GIT_REPOSITORY https://github.com/osqp/osqp
-    )
-    FetchContent_MakeAvailable(osqp)
+    #FetchContent_Declare(osqp
+     #   GIT_REPOSITORY https://github.com/osqp/osqp
+    #)
+    #FetchContent_MakeAvailable(osqp)
 
     project(web VERSION 1.0 LANGUAGES CXX)
 
     # Compiling all files in src
-    set(BACK_END_SRC src/bindings/*.cc src/IO/*.cc)
+    set(BACK_END_SRC src/bindings/*.cc)
     file(GLOB_RECURSE SRC_FILES ${BACK_END_SRC})
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/../front-end/src") # Set web output in src folder
     add_executable(web ${SRC_FILES}) # Define executable
 
     target_include_directories(web PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
-    target_link_libraries(web nlohmann_json::nlohmann_json Eigen3::Eigen osqp)
+    target_link_libraries(web nlohmann_json::nlohmann_json Eigen3::Eigen) #osqp
 
     # In order to use bindings
-    set(EMCC_FLAGS "-s ENVIRONMENT=web -s SINGLE_FILE=1 -s EXPORT_NAME='LightWeightMPC' -s USE_ES6_IMPORT_META=0 -s EXPORTED_FUNCTIONS='[${C_FUNCTIONS}, '_malloc', '_free']' -s EXPORTED_RUNTIME_METHODS=['ccall','cwrap']")
+    set(EMCC_FLAGS "--bind --no-entry -s SINGLE_FILE=1 -s STRICT=1 -s ALLOW_MEMORY_GROWTH=1 -s MALLOC=emmalloc -s MODULARIZE=1 -s EXPORT_ES6=1 -s ENVIRONMENT=web -s EXPORT_NAME='LightWeightMPC' -s ASSERTIONS=1")
     set_target_properties(web PROPERTIES SUFFIX ".mjs" LINK_FLAGS ${EMCC_FLAGS})
 
 

@@ -26,6 +26,10 @@ using MatrixXd = Eigen::MatrixXd;
 using VectorXd = Eigen::VectorXd;
 using string = std::string; 
 
+const string SYS_PATH = "../data/systems/";
+const string SCE_PATH = "../data/scenarios/";
+const string SIM_PATH = "../data/simulations/";
+
 /**
  * @brief Write json object to file file according to filepath
  * 
