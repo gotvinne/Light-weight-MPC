@@ -365,3 +365,4 @@ cython_debug/
 build/
 build_emcc/
 node_modules/
+package-lock.json
