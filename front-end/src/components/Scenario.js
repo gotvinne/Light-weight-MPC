@@ -29,7 +29,8 @@ export default function Scenario() {
     }
 
     return (
-        <Box sx={{ width: "100%", pt: 3, pl: "2%" }}>
+        <div className="Scenario">
+        <Box sx={{ width: "inherit", pt: 3, pl: "2%" }}>
             <Box sx={{pt: 2, display: "flex", flexDirection: "row"}}>
                 <TextField id={keys[0]} variant="outlined" helperText={"System name, "+ DataTypes[2]} value={valueStates[keys[0]]} onChange={handleTextField} required/>
                 <TextField id={keys[1]} variant="outlined" helperText={"Scenario name, " + DataTypes[2]} value={valueStates[keys[1]]} onChange={handleTextField} required/>
@@ -93,6 +94,7 @@ export default function Scenario() {
                 </Box>
             </Box>
         </Box>
+        </div>
     );
 }
 

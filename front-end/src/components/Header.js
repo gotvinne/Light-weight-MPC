@@ -8,9 +8,6 @@ import Algorithm from "./Algorithm";
 import Simulation from "./Simulation";
 
 import '../css/Header.css'
-import logo from '../img/equinor_logo.jpg'
-
-const ImageStyle = {height: "75px", width: "75px", transform: "translate(700px, 18px)"}  // Adjust this to screen size
 const Pages = ["Scenario", "Simulation", "Algorithm", "Models", "about"];
 
 interface TabPanelProps { // Struct
@@ -42,9 +39,6 @@ function Header(props: Props) {
         <React.Fragment>
             <div className="Header">
                 <h1> Light Weight MPC </h1>
-                <img src={logo} alt='Equinor logo'
-                    style={ImageStyle}
-                ></img>
             </div>
             <AppBar position="sticky" sx={{height: 50, background: "#b4b4b4"}}>
                 <Toolbar sx={{borderColor: 'divider'}}>
@@ -61,7 +55,7 @@ function Header(props: Props) {
                     </Tabs>
                 </Toolbar>
             </AppBar>
-            <TabPanel value={value} index={0}>
+            <TabPanel value={value} width={"inherit"} index={0}>
                 <Scenario/>
             </TabPanel>
             <TabPanel value={value} index={1}>
@@ -71,7 +65,7 @@ function Header(props: Props) {
                 <Algorithm/>
             </TabPanel>
             <TabPanel value={value} index={3}>
-                <Box sx={{ width: "100%", pt: 2, pl: 2 }}>
+                <Box sx={{pt: 2, pl: 2 }}>
                     <Typography> Hei </Typography>
                 </Box>
             </TabPanel>

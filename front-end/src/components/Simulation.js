@@ -6,7 +6,7 @@ import LightWeightMPC from "./../web.mjs";
 import "../css/Simulation.css"
 
 const path = "../../../back-end/data/systems";
-const str = "SingleWell"; 
+//const str = "SingleWell"; 
 
 export default function Simulation() {
 
@@ -20,7 +20,7 @@ export default function Simulation() {
 
     return (    
     <div className="Simulation">
-        <Box sx={{ width: "100%", pt: 2, pl: 2 }}>
+        <Box sx={{pt: 2, pl: 2 }}>
             <p>Let's do some basic addition:</p>  
             <p> testChar </p>
             <div> {text} </div>
