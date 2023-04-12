@@ -5,27 +5,21 @@ import 'katex/dist/katex.min.css';
 import { BlockMath } from 'react-katex';
 
 const DataTypes = ["double", "vector<double>", "string", "int"];
-const TextFields = { "System": "", "Scenario": "", "T": 0, "P": 0, "M": 0, "W": 0, "Q": "[ ]", "R": "[ ]", "RoH": "[ ]", "RoL": "[ ]", "Lower": "[ ]", "Upper": "[ ]"};
 const Formulas = [`\\leq \\Delta U \\leq`, `\\leq U \\leq`, `\\leq Y \\leq`];
+const TextFields = { "System": "", "Scenario": "", "T": 0, "P": 0, "M": 0, "W": 0, "Q": "[ ]", "R": "[ ]", "RoH": "[ ]", "RoL": "[ ]", "Lower": "[ ]", "Upper": "[ ]"};
 
-export default function Scenario() {
-
+export default function Scenario() { // Everything is rendered inside this function
+    
     const keys = Object.keys(TextFields); // Access keys
-    //const items = Object.items(TextFields); // Access keys
+    const [valueStates, setValueStates] = useState(TextFields); // Initialize ValueStates is a dictionary of hooks
 
-    // Initialize objects to hold hooks
-    const [valueStates, setValueStates] = useState(TextFields);
-
-    // Declare state handlers 
     const handleSimulatonClick = e => {
-        console.log("Simulation button clicked");
+        console.log(JSON.stringify(valueStates));
         // Run simulation 
     };
 
-    const handleTextField = e => { // Update value in text field
-        var newState = {};
-        newState[e.target.id] = e.target.value;
-        setValueStates(newState);
+    const handleTextField = e => { // Update react hook
+        setValueStates(TextFields => ({...TextFields, [e.target.id]: e.target.value})) // Update dictionary hook
     }
 
     return (

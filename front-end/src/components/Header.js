@@ -66,7 +66,7 @@ function Header(props: Props) {
             </TabPanel>
             <TabPanel value={value} index={3}>
                 <Box sx={{pt: 2, pl: 2 }}>
-                    <Typography> Hei </Typography>
+                    <Typography> Grete er kjempesøt </Typography>
                 </Box>
             </TabPanel>
             <TabPanel value={value} index={4}>
