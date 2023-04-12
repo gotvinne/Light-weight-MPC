@@ -7,11 +7,18 @@ This is a repo for implementing the master's thesis for the study programme [Cyb
 Operating system: Linux, MacOS, Windows
 
 #### Master student: 
-- Geir Ola Tvinnereim gotvinne@stud.ntnu.no
+- Geir Ola Tvinnereim
 
 #### Supervisors:
-- Prof. Lars Struen Imsland (ITK) lars.imsland@ntnu.no
-- Dr. Gisle Otto Eikrem (Equinor) gise@equinor.com
+- Prof. Lars Struen Imsland (ITK) 
+- Dr. Gisle Otto Eikrem (Equinor)
+
+### Purpose:
+The purpose of the software is to shine light on Model Predictive Controllers 
+
+- Student projects
+- Industrial use
+- Academic framework for assessing an MPC
 
 ## backend
 - C/C++ and Python module for simulating an MPC controller on an FSRM
