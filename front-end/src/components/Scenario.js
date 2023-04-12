@@ -4,6 +4,8 @@ import { TextField, Box, Typography, Button } from "@mui/material";
 import 'katex/dist/katex.min.css';
 import { BlockMath } from 'react-katex';
 
+import LightWeightMPC from "./../web.mjs";
+
 const DataTypes = ["double", "vector<double>", "string", "int"];
 const Formulas = [`\\leq \\Delta U \\leq`, `\\leq U \\leq`, `\\leq Y \\leq`];
 const TextFields = { "System": "", "Scenario": "", "T": 0, "P": 0, "M": 0, "W": 0, "Q": "[ ]", "R": "[ ]", "RoH": "[ ]", "RoL": "[ ]", "Lower": "[ ]", "Upper": "[ ]"};
@@ -13,9 +15,14 @@ export default function Scenario() { // Everything is rendered inside this funct
     const keys = Object.keys(TextFields); // Access keys
     const [valueStates, setValueStates] = useState(TextFields); // Initialize ValueStates is a dictionary of hooks
 
+    const [json, setJson] = useState();
+    
     const handleSimulatonClick = e => {
-        console.log(JSON.stringify(valueStates));
-        // Run simulation 
+        let wasm: any;
+        LightWeightMPC().then((module) => {
+            wasm = module
+            setJson(wasm.sayHello(JSON.stringify(valueStates)));
+        });
     };
 
     const handleTextField = e => { // Update react hook
@@ -24,7 +31,9 @@ export default function Scenario() { // Everything is rendered inside this funct
 
     return (
         <div className="Scenario">
-        <Box sx={{ width: "inherit", pt: 3, pl: "2%" }}>
+        <Box sx={{ width: "inherit", pt: 3, pl: "2%", flexDirection: "row", display: "flex"}}>
+            <Box sx={{width: "60%"}}>
+
             <Box sx={{pt: 2, display: "flex", flexDirection: "row"}}>
                 <TextField id={keys[0]} variant="outlined" helperText={"System name, "+ DataTypes[2]} value={valueStates[keys[0]]} onChange={handleTextField} required/>
                 <TextField id={keys[1]} variant="outlined" helperText={"Scenario name, " + DataTypes[2]} value={valueStates[keys[1]]} onChange={handleTextField} required/>
@@ -86,6 +95,11 @@ export default function Scenario() { // Everything is rendered inside this funct
                     <Box />
                     <TextField id={keys[11]} variant="outlined" helperText={DataTypes[1]} value={valueStates[keys[11]]} onChange={handleTextField} required/>
                 </Box>
+            </Box>
+            </Box>
+
+            <Box sx={{width: "40%", pt: 2, display: "flex", flexDirection: "row"}}>
+                <Typography> {json} </Typography>
             </Box>
         </Box>
         </div>
