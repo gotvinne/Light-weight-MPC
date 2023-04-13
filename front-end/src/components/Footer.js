@@ -11,7 +11,7 @@ export default function Footer() {
                 <CopyrightIcon sx={{color:"#ff1344", pl: "40%"}} /> 
                 <Box sx={{pl: 0.5}} />
                 <Typography color="#ff1344" sx={{pt: 0.2, fontWeight: 'bold'}} align="center">
-                    2023. Copyright Geir Ola Tvinnereim
+                    BSD 3-Clause License
                 </Typography>
             </Box>
         </div>
