@@ -8,7 +8,7 @@ import LightWeightMPC from "./../web.mjs";
 
 const DataTypes = ["double", "vector<double>", "string", "int"];
 const Formulas = [`\\leq \\Delta U \\leq`, `\\leq U \\leq`, `\\leq Y \\leq`];
-const TextFields = { "System": "", "Scenario": "", "T": 0, "P": 0, "M": 0, "W": 0, "Q": "[ ]", "R": "[ ]", "RoH": "[ ]", "RoL": "[ ]", "Lower": "[ ]", "Upper": "[ ]"};
+const TextFields = { "System": "", "Scenario": "", "T": 0, "P": 0, "M": 0, "W": 0, "Q": "[ ]", "R": "[ ]", "RoH": "[ ]", "RoL": "[ ]", "ldu": "[ ]", "lu": "[ ]", "ly": "[ ]", "udu": "[ ]", "uu": "[ ]", "uy": "[ ]"};
 
 export default function Scenario() { // Everything is rendered inside this function
     
@@ -71,9 +71,9 @@ export default function Scenario() { // Everything is rendered inside this funct
                 <Box sx ={{pt:6, pl: 10}}>
                     <TextField id={keys[10]} variant="outlined" helperText={DataTypes[1]} value={valueStates[keys[10]]} onChange={handleTextField} required/>
                     <Box />
-                    <TextField id={keys[10]} variant="outlined" helperText={DataTypes[1]} value={valueStates[keys[10]]} onChange={handleTextField} required/>
+                    <TextField id={keys[11]} variant="outlined" helperText={DataTypes[1]} value={valueStates[keys[11]]} onChange={handleTextField} required/>
                     <Box />
-                    <TextField id={keys[10]} variant="outlined" helperText={DataTypes[1]} value={valueStates[keys[10]]} onChange={handleTextField} required/>
+                    <TextField id={keys[12]} variant="outlined" helperText={DataTypes[1]} value={valueStates[keys[12]]} onChange={handleTextField} required/>
                 </Box>
 
                 <Box >
@@ -89,11 +89,11 @@ export default function Scenario() { // Everything is rendered inside this funct
                 </Box >
                     
                 <Box sx ={{pt: 6}}>
-                    <TextField id={keys[11]} variant="outlined" helperText={DataTypes[1]} value={valueStates[keys[11]]} onChange={handleTextField} required/>
+                    <TextField id={keys[13]} variant="outlined" helperText={DataTypes[1]} value={valueStates[keys[13]]} onChange={handleTextField} required/>
                     <Box />
-                    <TextField id={keys[11]} variant="outlined" helperText={DataTypes[1]} value={valueStates[keys[11]]} onChange={handleTextField} required/>
+                    <TextField id={keys[14]} variant="outlined" helperText={DataTypes[1]} value={valueStates[keys[14]]} onChange={handleTextField} required/>
                     <Box />
-                    <TextField id={keys[11]} variant="outlined" helperText={DataTypes[1]} value={valueStates[keys[11]]} onChange={handleTextField} required/>
+                    <TextField id={keys[15]} variant="outlined" helperText={DataTypes[1]} value={valueStates[keys[15]]} onChange={handleTextField} required/>
                 </Box>
             </Box>
             </Box>

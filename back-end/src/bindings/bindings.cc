@@ -14,6 +14,7 @@ using json = nlohmann::json;
 
 std::string say_hello(std::string str) {
     return str;
+}
 
 std::string validateSystem(std::string system) {
     std::string filepath = system + ".json";
