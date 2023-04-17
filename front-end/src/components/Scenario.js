@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { TextField, Box, Typography, Button, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
+import { TextField, Box, Typography, Button, MenuItem, FormControl, InputLabel } from "@mui/material";
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 import 'katex/dist/katex.min.css';
 import { BlockMath } from 'react-katex';
@@ -21,7 +22,7 @@ export default function Scenario() { // Everything is rendered inside this funct
 
     useEffect(() => { // Have no ide why this runs twice!
         importSystems(systems, setSystems);
-    }, []);
+    }, [systems]);
     
     //** HANDLER FUNCTIONS */ 
     const handleSimulatonClick = e => {
@@ -30,12 +31,16 @@ export default function Scenario() { // Everything is rendered inside this funct
             wasm = module
             setJson(wasm.sayHello(JSON.stringify(valueStates)));
         });
-        console.log(systems);
+        console.log(valueStates);
     };
 
     const handleTextField = e => { // Update react hook
         setValueStates(TextFields => ({...TextFields, [e.target.id]: e.target.value})) // Update dictionary hook
     }
+
+    const handleSelect = (event: SelectChangeEvent) => {
+        setValueStates(TextFields => ({...TextFields, [keys[0]]: event.target.value}))
+    };
 
     return (
         <div className="Scenario">
@@ -44,17 +49,16 @@ export default function Scenario() { // Everything is rendered inside this funct
 
             <Box sx={{pt: 2, display: "flex", flexDirection: "row"}}>
                 <FormControl style={{minWidth: "20%"}}>
-                    <InputLabel id="demo-simple-select-label"> System name </InputLabel>
-                    <Select sx={{}}
-                        labelId={keys[0]}
+                    <InputLabel id={keys[0]}> System name </InputLabel>
+                    <Select
                         id={keys[0]}
                         value={valueStates[keys[0]]}
-                        label={"System name"}
-                        onChange={handleTextField}
+                        label="System name"
+                        onChange={handleSelect} 
                     >   
                     {systems.map((course, index) => {
                         return (
-                        <MenuItem key={index}>{course}</MenuItem>
+                        <MenuItem value={course} key={index}> {course} </MenuItem>
                         )
                     })}
                     </Select>
