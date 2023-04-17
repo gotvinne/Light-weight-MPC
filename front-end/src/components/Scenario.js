@@ -13,12 +13,11 @@ const TextFields = { "System": "", "Scenario": "", "T": 0, "P": 0, "M": 0, "W": 
 
 export default function Scenario() { // Everything is rendered inside this function
     const keys = Object.keys(TextFields); // Access keys
-    let system_var = new Set();
     
     //** HOOKS */
     const [valueStates, setValueStates] = useState(TextFields); // Initialize ValueStates is a dictionary of hooks
     const [json, setJson] = useState();
-    const [systems, setSystems] = useState(new Set());
+    const [systems, setSystems] = useState([]);
 
     useEffect(() => { // Have no ide why this runs twice!
         importSystems(systems, setSystems);
@@ -53,11 +52,10 @@ export default function Scenario() { // Everything is rendered inside this funct
                         label={"System name"}
                         onChange={handleTextField}
                     >   
-                    <MenuItem> Hei </MenuItem>
-                        {Object.values(systems).map(item => {
-                        <MenuItem value={item}>
-                            {item}
-                        </MenuItem>
+                    {systems.map((course, index) => {
+                        return (
+                        <MenuItem key={index}>{course}</MenuItem>
+                        )
                     })}
                     </Select>
                 </FormControl>

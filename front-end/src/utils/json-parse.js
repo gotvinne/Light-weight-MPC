@@ -7,19 +7,9 @@ export function importSystems(systems, setSystems) {
         const key = context.keys()[i];
         const fileName = key.replace('./', '');
         //const resource = require(`./../systems/${fileName}`);
-        //const namespace = fileName.replace('.json', '');
-        set.add(fileName);
+        const namespace = fileName.replace('.json', '');
+        set.add(namespace);
     }  
-    setSystems(set);
+    setSystems(Array.from(set));
 }
 
-//export function importSystems(systems) {
-//    const context = require.context('./../systems', false, /.json$/); // Read files in folder.
-//    for (let i = 0; i < context.keys().length; i++) {
-       // const key = context.keys()[i];
-      //  const fileName = key.replace('./', '');
-        //const resource = require(`./../systems/${fileName}`);
-        //const namespace = fileName.replace('.json', '');
-    //    systems.add(fileName);
-  //  }  
-//}
