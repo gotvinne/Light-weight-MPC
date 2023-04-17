@@ -35,7 +35,7 @@ export default function Algorithm() {
             This solver solves the QP defining the MPC problem for a finite step response model (FSRM) in terms of only one optimization variable (condensed form). This form is obtained by using the null space method on the optimilization problem formulated by quadratic constraining the output <InlineMath math={`Y`} />and input <InlineMath math={`\\Delta Y`} />: 
             </Typography>
 
-            <BlockMath math={`\\min \\sum_{j=W}^{P}\\left\|(y(k+j \\mid k)-r_y(k+j))\\right\|_{\\bar{Q}}^2+ \\sum_{j=0}^{(M-1)} \\left\|\\Delta u(k+j)\\right\|_{\\bar{R}}^2+\\bar{\\rho} \\bar{\\epsilon}+\\underline{\\rho} \\underline{\\epsilon}`} />
+            <BlockMath math={`\\min \\sum_{j=W}^{P}\\left|(y(k+j \\mid k)-r_y(k+j))\\right|_{\\bar{Q}}^2+ \\sum_{j=0}^{(M-1)} \\left|\\Delta u(k+j)\\right|_{\\bar{R}}^2+\\bar{\\rho} \\bar{\\epsilon}+\\underline{\\rho} \\underline{\\epsilon}`} />
             <BlockMath math={`\\min \\quad Y(k+w)^TQY(k+w) + \\Delta U(k+i)^TR\\Delta U(k+i) `} />
             <Typography variant="h5"> Condensed Form: </Typography>
             <BlockMath math={`\\min \\quad \\frac{1}{2}z_{cd}^T(2\\Theta^T\\bar{Q}\\Theta + 2\\bar{R})z_{cd} + 2\\Theta^TQ(\\Lambda(k)-\\tau(k))z_{cd} \\

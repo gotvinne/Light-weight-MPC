@@ -32,6 +32,18 @@ npm install @mui/material @emotion/react @emotion/styled
 npm install @mui/icons-material
 npm install react-katex
 ```
+
+Whenever you install a new react package, the package needs to be linked to react-native
+```console
+npm link pkg
+```
+
+1. Install the tool npm install -g npm-check-updates
+2. Verify that your package.json is checked in to version control (the next command will overwrite the package.json)
+3. Update the package.json ncu --upgrade
+4. Validate the changes to your package.json
+5. Install the new packages npm install
+
 ### create-react-app 
 In order to build a React application, [create-react-app](https://create-react-app.dev/docs/getting-started/) was utilized. 
 

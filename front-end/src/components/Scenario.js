@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { TextField, Box, Typography, Button } from "@mui/material";
+var find = require('list-files');
 
 import 'katex/dist/katex.min.css';
 import { BlockMath } from 'react-katex';
@@ -17,6 +18,7 @@ export default function Scenario() { // Everything is rendered inside this funct
 
     const [json, setJson] = useState();
     
+    //** HANDLER FUNCTIONS */ 
     const handleSimulatonClick = e => {
         let wasm: any;
         LightWeightMPC().then((module) => {
@@ -42,7 +44,6 @@ export default function Scenario() { // Everything is rendered inside this funct
                 <Box sx={{pl: "2%"}}/>
                 <Button variant="contained" size="large" color="success" onClick={handleSimulatonClick}> RUN SIMULATION </Button>
             </Box>
-
             <Box align="left" sx={{pl: 30, pt: 2}}>
                 <Typography variant="h5" sx={{fontWeight: 'bold'}}> Model Predictive Controller: </Typography>
             </Box>
