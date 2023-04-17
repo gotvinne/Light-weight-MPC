@@ -38,7 +38,7 @@ function Header(props: Props) {
     return (
         <React.Fragment>
             <div className="Header">
-                <h1> Light Weight MPC </h1>
+                <h1> Light-weight MPC </h1>
             </div>
             <AppBar position="sticky" sx={{height: 50, background: "#b4b4b4"}}>
                 <Toolbar sx={{borderColor: 'divider'}}>
