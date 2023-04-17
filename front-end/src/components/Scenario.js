@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import { TextField, Box, Typography, Button } from "@mui/material";
-var find = require('list-files');
+import React, { useState, useEffect } from "react";
+import { TextField, Box, Typography, Button, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 
 import 'katex/dist/katex.min.css';
 import { BlockMath } from 'react-katex';
+import { importSystems } from "../utils/json-parse.js";
 
 import LightWeightMPC from "./../web.mjs";
 
@@ -12,11 +12,17 @@ const Formulas = [`\\leq \\Delta U \\leq`, `\\leq U \\leq`, `\\leq Y \\leq`];
 const TextFields = { "System": "", "Scenario": "", "T": 0, "P": 0, "M": 0, "W": 0, "Q": "[ ]", "R": "[ ]", "RoH": "[ ]", "RoL": "[ ]", "ldu": "[ ]", "lu": "[ ]", "ly": "[ ]", "udu": "[ ]", "uu": "[ ]", "uy": "[ ]"};
 
 export default function Scenario() { // Everything is rendered inside this function
-    
     const keys = Object.keys(TextFields); // Access keys
+    let system_var = new Set();
+    
+    //** HOOKS */
     const [valueStates, setValueStates] = useState(TextFields); // Initialize ValueStates is a dictionary of hooks
-
     const [json, setJson] = useState();
+    const [systems, setSystems] = useState(new Set());
+
+    useEffect(() => { // Have no ide why this runs twice!
+        importSystems(systems, setSystems);
+    }, []);
     
     //** HANDLER FUNCTIONS */ 
     const handleSimulatonClick = e => {
@@ -25,6 +31,7 @@ export default function Scenario() { // Everything is rendered inside this funct
             wasm = module
             setJson(wasm.sayHello(JSON.stringify(valueStates)));
         });
+        console.log(systems);
     };
 
     const handleTextField = e => { // Update react hook
@@ -37,7 +44,24 @@ export default function Scenario() { // Everything is rendered inside this funct
             <Box sx={{width: "60%"}}>
 
             <Box sx={{pt: 2, display: "flex", flexDirection: "row"}}>
-                <TextField id={keys[0]} variant="outlined" helperText={"System name, "+ DataTypes[2]} value={valueStates[keys[0]]} onChange={handleTextField} required/>
+                <FormControl style={{minWidth: "20%"}}>
+                    <InputLabel id="demo-simple-select-label"> System name </InputLabel>
+                    <Select sx={{}}
+                        labelId={keys[0]}
+                        id={keys[0]}
+                        value={valueStates[keys[0]]}
+                        label={"System name"}
+                        onChange={handleTextField}
+                    >   
+                    <MenuItem> Hei </MenuItem>
+                        {Object.values(systems).map(item => {
+                        <MenuItem value={item}>
+                            {item}
+                        </MenuItem>
+                    })}
+                    </Select>
+                </FormControl>
+            
                 <TextField id={keys[1]} variant="outlined" helperText={"Scenario name, " + DataTypes[2]} value={valueStates[keys[1]]} onChange={handleTextField} required/>
                 <Box sx={{pl: 2}}/>
                 <TextField id={keys[2]} variant="outlined" helperText={"MPC horizon T, " + DataTypes[3]} value={valueStates[keys[2]]} onChange={handleTextField} required/>

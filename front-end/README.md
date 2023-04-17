@@ -1,5 +1,6 @@
 
-# React based Front-End:
+# React-based Front-End:
+Developed using application framework *Create-React-App*. In order to run the application, Node.js needs to be installed and can be done through a package manager **nvm (Node Version Manager)**. 
 
 This front end is implemented using *React JavaScript* and library [MaterialUI](https://mui.com/). 
 The front-end communicates with the back-end via Webassembly.

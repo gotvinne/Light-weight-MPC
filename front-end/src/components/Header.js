@@ -16,23 +16,23 @@ interface TabPanelProps { // Struct
     value: number;
   }
 
-function TabPanel(props: TabPanelProps) {
-const { children, value, index, ...other } = props;
+function TabPanel(props: TabPanelProps) { // Render tool bar on click
+    const { children, value, index, ...other } = props;
 
-return ( // Render react node based on value
-    <div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`}
-    aria-labelledby={`simple-tab-${index}`} 
-    {...other}
-    > 
-    {value === index && ( children )} 
-    </div>
-);
+    return (
+        <div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`}
+        aria-labelledby={`simple-tab-${index}`} 
+        {...other}
+        > 
+        {value === index && ( children )} 
+        </div>
+    );
 }
 
 function Header(props: Props) {
-    const [value, setValue] = React.useState(0); // Set initial value
-    const handleChange = (event: React.SyntheticEvent, newValue: number) => { // Handle callback
-        setValue(newValue);
+    const [value, setValue] = React.useState(0); 
+    const handleChange = (event: React.SyntheticEvent, newValue: number) => { 
+        setValue(newValue); // Store index in value hook
     };
     
     return (
@@ -56,7 +56,7 @@ function Header(props: Props) {
                 </Toolbar>
             </AppBar>
             <TabPanel value={value} width={"inherit"} index={0}>
-                <Scenario/>
+                <Scenario />
             </TabPanel>
             <TabPanel value={value} index={1}>
                 <Simulation />
