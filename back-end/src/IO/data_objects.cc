@@ -1,7 +1,7 @@
 /**
  * @file data_objects.cc
  * @author Geir Ola Tvinnereim
- * @copyright  Geir Ola Tvinnereim 
+ * @copyright  Released under the terms of the BSD 3-Clause License
  * @date 2022
  */
 

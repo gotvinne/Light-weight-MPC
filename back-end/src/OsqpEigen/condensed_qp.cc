@@ -1,7 +1,7 @@
 /**
  * @file condensed_qp.cc
  * @author Geir Ola Tvinnereim
- * @copyright  Geir Ola Tvinnereim 
+ * @copyright  Released under the terms of the BSD 3-Clause License
  * @date 2022
  */
 #include "OsqpEigen/condensed_qp.h"

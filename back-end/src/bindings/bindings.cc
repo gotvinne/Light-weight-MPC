@@ -1,3 +1,14 @@
+/**
+ * @file bindings.cc
+ * @author Geir Ola Tvinnereim
+ * @brief 
+ * @version 0.1
+ * @date 2023-04-18
+ * 
+ * @copyright  Released under the terms of the BSD 3-Clause License
+ * 
+ */
+
 #ifdef __EMSCRIPTEN__
 #include <emscripten/emscripten.h>
 #include <emscripten/bind.h>

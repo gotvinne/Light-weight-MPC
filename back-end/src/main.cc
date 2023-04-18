@@ -5,7 +5,7 @@
  * @version 0.1
  * @date 2023-01-26
  * 
- * @copyright Copyright (c) 2023
+ * @copyright  Released under the terms of the BSD 3-Clause License
  * 
  */
 #include "LightWeightMPC.h"
