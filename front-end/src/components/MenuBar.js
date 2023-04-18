@@ -7,7 +7,6 @@ import Scenario from "./Scenario";
 import Algorithm from "./Algorithm";
 import Simulation from "./Simulation";
 
-import '../css/Header.css'
 const Pages = ["Scenario", "Simulation", "Algorithm", "Models", "about"];
 
 interface TabPanelProps { // Struct
@@ -29,7 +28,7 @@ function TabPanel(props: TabPanelProps) { // Render tool bar on click
     );
 }
 
-function Header(props: Props) {
+function MenuBar(props: Props) {
     const [value, setValue] = React.useState(0); 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => { 
         setValue(newValue); // Store index in value hook
@@ -37,9 +36,6 @@ function Header(props: Props) {
     
     return (
         <React.Fragment>
-            <div className="Header">
-                <h1> Light-weight MPC </h1>
-            </div>
             <AppBar position="sticky" sx={{height: 50, background: "#b4b4b4"}}>
                 <Toolbar sx={{borderColor: 'divider'}}>
                     <Tabs value={value} onChange={handleChange} textColor={"inherit"} sx={{
@@ -76,4 +72,4 @@ function Header(props: Props) {
     )
 }
 
-export default Header
+export default MenuBar

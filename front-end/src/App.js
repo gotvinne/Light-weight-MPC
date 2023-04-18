@@ -1,13 +1,16 @@
 import React from "react";
 
-import Header from "./components/Header";
+import MenuBar from "./components/MenuBar";
 import Footer from "./components/Footer"
 import "./css/App.css"
 
 function App() {  
   return (    
-  <div className="App">    
-      <Header />
+  <div className="App"> 
+      <div className="Header">
+          <h1> Light-weight MPC </h1>
+      </div>   
+      <MenuBar />
       <Footer />
   </div>  
   );
