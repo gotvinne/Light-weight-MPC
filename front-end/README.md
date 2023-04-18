@@ -11,9 +11,10 @@ Folder structure:
 ```console
 public
 src
-    components
+    components/Modules
     css
-    img
+    systems
+    utils
 package-lock.json
 package.json
 ```

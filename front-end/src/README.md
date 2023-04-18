@@ -2,10 +2,13 @@
 
 The source code for the Front-end interface. 
 ## Components: 
-- Header
+- Modules
+- Footer
+- TabPanel
+
+## Modules: 
 - Scenario
 - Simulation
-- Algorithm 
+- Algorithm
 - Models
 - About
-- Footer
