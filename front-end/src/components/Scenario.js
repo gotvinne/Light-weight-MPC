@@ -3,7 +3,7 @@ import { TextField, Box, Typography, Button, MenuItem, FormControl, InputLabel }
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 import 'katex/dist/katex.min.css';
-import { BlockMath, InlineMath } from 'react-katex';
+import { BlockMath } from 'react-katex';
 import { importSystems, readModelParams, readSystem, serializeScenario } from "../utils/IO.js";
 
 import LightWeightMPC from "./../web.mjs";
@@ -43,13 +43,13 @@ export default function Scenario() { // Everything is rendered inside this funct
     //** HANDLER FUNCTIONS */ 
     const handleSimulatonClick = e => {
         readSystem(valueStates[keys[0]], setSystem);
-        //serializeScenario(valueStates, setScenario);
-        let wasm: any;
-        LightWeightMPC().then((module) => {
-            wasm = module
-            setScenario(wasm.sayHello(JSON.stringify(valueStates)));
-        });
-        console.log(system);
+        serializeScenario(valueStates, setScenario);
+        //let wasm: any;
+        //LightWeightMPC().then((module) => {
+         //   wasm = module
+         //   setScenario(wasm.sayHello(JSON.stringify(valueStates)));
+        //});
+        console.log(scenario);
     };
 
     const handleTextField = e => { // Update react hook
