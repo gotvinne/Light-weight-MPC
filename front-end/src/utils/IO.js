@@ -1,4 +1,8 @@
-
+/**
+ * Convert string array to number array
+ * @param {Array} str_arr 
+ * @returns Array
+ */
 function convertArr(str_arr) {
 
   // Removing brackets: 
@@ -8,6 +12,13 @@ function convertArr(str_arr) {
   return arr.split(",").map(Number);
 }
 
+/**
+ * 
+ * @param {Array} l_arr 
+ * @param {Array} u_arr 
+ * @param {string} identifier 
+ * @returns Array
+ */
 function processConstraints(l_arr, u_arr, identifier) {
   if (l_arr.length !== u_arr.length) {
     throw new Error("Invalid number of constraints!");
@@ -23,7 +34,10 @@ function processConstraints(l_arr, u_arr, identifier) {
   return lst;
 }
 
-/** Read all json filenames from system folder */
+/**
+ * Import avaliable system filenames
+ * @param {React.useState} setHook 
+ */
 export function importSystems(setHook) {
     const context = require.context('./../systems', false, /.json$/); // Read files in folder.
     const set = new Set();
@@ -37,7 +51,12 @@ export function importSystems(setHook) {
     setHook(Array.from(set));
 }
 
-/**  Read system file model params */
+/**
+ * Read model parameters from system JSON file
+ * @param {string} fileName 
+ * @param {React.useState} setHook 
+ * @param {string} identifier 
+ */
 export function readModelParams(fileName, setHook, identifier) {
   const resource = require(`./../systems/${fileName}.json`); // Load file
   const data = resource[identifier];
@@ -59,13 +78,21 @@ export function readModelParams(fileName, setHook, identifier) {
   setHook(Array.from(set));
 }
 
-/** Read system file */
+/**
+ * Read JSON file
+ * @param {string} fileName 
+ * @param {React.useState} setHook 
+ */
 export function readSystem(fileName, setHook) {
   const resource = require(`./../systems/${fileName}.json`); // Load file
   setHook(JSON.stringify(resource));
 }
 
-/** Constructing scenario json file */
+/**
+ * Serialize Scenario JSON file based on tunings
+ * @param {React.useState} tuning 
+ * @param {React.useState} setHook 
+ */
 export function serializeScenario(tuning, setHook) {
  
   const q_arr = convertArr(tuning["Q"]); 

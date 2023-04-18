@@ -1,6 +1,6 @@
 import React from "react";
 
-import MenuBar from "./components/MenuBar";
+import Modules from "./components/Modules";
 import Footer from "./components/Footer"
 import "./css/App.css"
 
@@ -10,7 +10,7 @@ function App() {
       <div className="Header">
           <h1> Light-weight MPC </h1>
       </div>   
-      <MenuBar />
+      <Modules />
       <Footer />
   </div>  
   );

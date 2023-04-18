@@ -4,10 +4,10 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 import 'katex/dist/katex.min.css';
 import { BlockMath } from 'react-katex';
-import { importSystems, readModelParams, readSystem, serializeScenario } from "../utils/IO.js";
-import { variableRender } from "../utils/rendering.js";
-
-import LightWeightMPC from "./../web.mjs";
+import { importSystems, readModelParams, readSystem, serializeScenario } from "../../utils/IO.js";
+import { variableRender } from "../../utils/rendering.js";
+import "../../css/Modules.css"
+import LightWeightMPC from "../../web.mjs";
 
 const LOCAL_STORAGE_KEY = 'lightweightMPC.storage';
 
@@ -15,7 +15,7 @@ const DATA_TYPES = ["double", "vector<double>", "string", "int"];
 const FORMULAS = [`\\leq \\Delta U \\leq`, `\\leq U \\leq`, `\\leq Y \\leq`];
 const TEXT_FIELDS = { "System": "", "Scenario": "", "T": 0, "P": 0, "M": 0, "W": 0, "Q": "[ ]", "R": "[ ]", "RoH": "[ ]", "RoL": "[ ]", "ldu": "[ ]", "lu": "[ ]", "ly": "[ ]", "udu": "[ ]", "uu": "[ ]", "uy": "[ ]"};
 
-export default function Scenario() {
+export default function Scenario(props) {
     const keys = Object.keys(TEXT_FIELDS); // Access keys
     
     //** HOOKS */
@@ -58,7 +58,7 @@ export default function Scenario() {
          //   wasm = module
          //   setScenario(wasm.sayHello(JSON.stringify(valueStates)));
         //});
-        console.log(scenario);
+        props.moduleHook(props.modules["simulation"]); // Change page
     };
 
     const handleTextField = e => { // Update react hook

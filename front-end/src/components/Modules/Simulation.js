@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Box } from "@mui/material";
 
-import LightWeightMPC from "./../web.mjs";
+import LightWeightMPC from "../../web.mjs";
 
-import "../css/Simulation.css"
+import "../../css/Modules.css"
 
 const path = "../../../back-end/data/systems";
 
