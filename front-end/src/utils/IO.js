@@ -15,7 +15,7 @@ function processConstraints(l_arr, u_arr, identifier) {
 
   let lst = [];
   for (let i = 0; i < l_arr.length; i++) {
-    let obj = new Object();
+    let obj = {};
     const key = "".concat(identifier, "[", i, "]");
     obj[key] = [l_arr[i], u_arr[i]];
     lst.push(obj);
@@ -70,14 +70,12 @@ export function serializeScenario(tuning, setHook) {
  
   const q_arr = convertArr(tuning["Q"]); 
   const r_arr = convertArr(tuning["R"]);
-
   const roh_arr = convertArr(tuning["RoH"]);
   const rol_arr = convertArr(tuning["RoL"]);
 
   const ldu_arr = convertArr(tuning["ldu"]);
   const lu_arr = convertArr(tuning["lu"]);
   const ly_arr = convertArr(tuning["ly"]);
-
   const udu_arr = convertArr(tuning["udu"]);
   const uu_arr = convertArr(tuning["uu"]);
   const uy_arr = convertArr(tuning["uy"]);
