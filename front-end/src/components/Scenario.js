@@ -4,9 +4,10 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 import 'katex/dist/katex.min.css';
 import { BlockMath, InlineMath } from 'react-katex';
-import { importSystems, readModelParams, readSystem } from "../utils/json-parse.js";
+import { importSystems, readModelParams, readSystem, serializeScenario } from "../utils/IO.js";
 
 import LightWeightMPC from "./../web.mjs";
+import { variableRender } from "../utils/rendering.js";
 
 const DataTypes = ["double", "vector<double>", "string", "int"];
 const Formulas = [`\\leq \\Delta U \\leq`, `\\leq U \\leq`, `\\leq Y \\leq`];
@@ -17,8 +18,8 @@ export default function Scenario() { // Everything is rendered inside this funct
     
     //** HOOKS */
     const [valueStates, setValueStates] = useState(TextFields); // Initialize ValueStates is a dictionary of hooks
-    const [scenario, setScenario] = useState(); // Scenario
-    const [system, setSystem] = useState(); // System
+    const [scenario, setScenario] = useState(); // Scenario file
+    const [system, setSystem] = useState(); // System file
     const [systemNames, setSystemNames] = useState([]); // System names
     
     const [ncv, setNCV] = useState([]);
@@ -42,6 +43,7 @@ export default function Scenario() { // Everything is rendered inside this funct
     //** HANDLER FUNCTIONS */ 
     const handleSimulatonClick = e => {
         readSystem(valueStates[keys[0]], setSystem);
+        //serializeScenario(valueStates, setScenario);
         let wasm: any;
         LightWeightMPC().then((module) => {
             wasm = module
@@ -100,23 +102,23 @@ export default function Scenario() { // Everything is rendered inside this funct
                     </Box>
 
                     <Box sx={{pt:2, pl: 5}}>
-                        <TextField id={keys[6]} variant="outlined" helperText={"Q, " + DataTypes[1]} value={valueStates[keys[6]]} onChange={handleTextField} required/>
+                        <TextField id={keys[6]} variant="outlined" helperText={"Q, " + DataTypes[1]+", length: " + ncv.length.toString()} value={valueStates[keys[6]]} onChange={handleTextField} required/>
                         <Box />
-                        <TextField id={keys[7]} variant="outlined" helperText={"R, " +DataTypes[1]} value={valueStates[keys[7]]} onChange={handleTextField} required/>
+                        <TextField id={keys[7]} variant="outlined" helperText={"R, " +DataTypes[1]+", length: " + nmv.length.toString()} value={valueStates[keys[7]]} onChange={handleTextField} required/>
                         <Box />
-                        <TextField id={keys[8]} variant="outlined" helperText={"RoH, " +DataTypes[0]} value={valueStates[keys[8]]} onChange={handleTextField} required/>
+                        <TextField id={keys[8]} variant="outlined" helperText={"RoH, " +DataTypes[0]+", length: " + ncv.length.toString()} value={valueStates[keys[8]]} onChange={handleTextField} required/>
                         <Box />
-                        <TextField id={keys[9]} variant="outlined" helperText={"RoL, " +DataTypes[0]} value={valueStates[keys[9]]} onChange={handleTextField} required/>
+                        <TextField id={keys[9]} variant="outlined" helperText={"RoL, " +DataTypes[0]+", length: " + ncv.length.toString()} value={valueStates[keys[9]]} onChange={handleTextField} required/>
                     </Box>
                 </Box>
 
                 <Box sx={{pt: 2, display: "flex", flexDirection: "row"}}>
                     <Box sx ={{pt:6, pl: 10}}>
-                        <TextField id={keys[10]} variant="outlined" helperText={DataTypes[1]} value={valueStates[keys[10]]} onChange={handleTextField} required/>
+                        <TextField id={keys[10]} variant="outlined" helperText={DataTypes[1]+", length: " + nmv.length.toString()} value={valueStates[keys[10]]} onChange={handleTextField} required/>
                         <Box />
-                        <TextField id={keys[11]} variant="outlined" helperText={DataTypes[1]} value={valueStates[keys[11]]} onChange={handleTextField} required/>
+                        <TextField id={keys[11]} variant="outlined" helperText={DataTypes[1]+", length: " + nmv.length.toString()} value={valueStates[keys[11]]} onChange={handleTextField} required/>
                         <Box />
-                        <TextField id={keys[12]} variant="outlined" helperText={DataTypes[1]} value={valueStates[keys[12]]} onChange={handleTextField} required/>
+                        <TextField id={keys[12]} variant="outlined" helperText={DataTypes[1]+", length: " + ncv.length.toString()} value={valueStates[keys[12]]} onChange={handleTextField} required/>
                     </Box>
 
                     <Box >
@@ -132,11 +134,11 @@ export default function Scenario() { // Everything is rendered inside this funct
                     </Box >
                         
                     <Box sx ={{pt: 6}}>
-                        <TextField id={keys[13]} variant="outlined" helperText={DataTypes[1]} value={valueStates[keys[13]]} onChange={handleTextField} required/>
+                        <TextField id={keys[13]} variant="outlined" helperText={DataTypes[1]+", length: " + nmv.length.toString()} value={valueStates[keys[13]]} onChange={handleTextField} required/>
                         <Box />
-                        <TextField id={keys[14]} variant="outlined" helperText={DataTypes[1]} value={valueStates[keys[14]]} onChange={handleTextField} required/>
+                        <TextField id={keys[14]} variant="outlined" helperText={DataTypes[1]+", length: " + nmv.length.toString()} value={valueStates[keys[14]]} onChange={handleTextField} required/>
                         <Box />
-                        <TextField id={keys[15]} variant="outlined" helperText={DataTypes[1]} value={valueStates[keys[15]]} onChange={handleTextField} required/>
+                        <TextField id={keys[15]} variant="outlined" helperText={DataTypes[1]+", length: " + ncv.length.toString()} value={valueStates[keys[15]]} onChange={handleTextField} required/>
                     </Box>
                 </Box>
             </Box>
@@ -144,11 +146,10 @@ export default function Scenario() { // Everything is rendered inside this funct
             <Box sx={{width: "40%", pt: 2}}>
                 <Box sx={{pt: 2, height: "30%", display: "flex", flexDirection: "row" }} >
                     
-                    <Box sx={{width: "20%", pt: 2, display: "flex", flexDirection: "row"}}> 
-                        <Typography sx={{pl: 5}} variant="h5"> <InlineMath math={`n_{CV} :`} /> </Typography>
+                    <Box sx={{width: "25%", pt: 2, display: "flex", flexDirection: "row"}}> 
+                        {variableRender(ncv.length, "CV")}
                     </Box>
-                    <Box sx={{width: "20%"}}> 
-
+                    <Box sx={{width: "25%"}}> 
                         {ncv.map((course, index) => {
                             return (
                             <Box key={index} sx={{width: "80%", pt: 3}}> 
@@ -158,14 +159,12 @@ export default function Scenario() { // Everything is rendered inside this funct
                         })}
                     </Box>
                 </Box>
-
                 <Box sx={{pt: 2, height: "30%", display: "flex", flexDirection: "row" }} >
                     
-                    <Box sx={{width: "20%", pt: 2, display: "flex", flexDirection: "row"}}> 
-                    <Typography sx={{pl: 5}} variant="h5"> <InlineMath math={`n_{MV} :`} /> </Typography>
+                    <Box sx={{width: "25%", pt: 2, display: "flex", flexDirection: "row"}}> 
+                        {variableRender(nmv.length, "MV")}
                     </Box>
-                    <Box sx={{width: "20%"}}> 
-
+                    <Box sx={{width: "25%"}}> 
                         {nmv.map((course, index) => {
                             return (
                             <Box key={index} sx={{width: "80%", pt: 3}}> 
@@ -177,14 +176,10 @@ export default function Scenario() { // Everything is rendered inside this funct
                     </Box>
                 </Box>
 
-               
                 <Box sx={{pt: 2, display: "flex", flexDirection: "row"}}>
                     <Typography> {scenario} </Typography>
                 </Box>
-                
             </Box>
-
-            
         </Box>
         </div>
     );
