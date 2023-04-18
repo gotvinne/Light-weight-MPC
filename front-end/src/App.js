@@ -5,6 +5,7 @@ import Footer from "./components/Footer"
 import "./css/App.css"
 
 function App() {  
+  localStorage.clear(); // Clear local storage when starting server
   return (    
   <div className="App"> 
       <div className="Header">
