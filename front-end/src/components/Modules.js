@@ -1,10 +1,10 @@
 import React from "react";
 import { AppBar, Tab, Tabs, Toolbar, Typography, Box } from "@mui/material";
 
-import About from "./Modules/About";
-import Scenario from "./Modules/Scenario";
-import Algorithm from "./Modules/Algorithm";
-import Simulation from "./Modules/Simulation";
+import About from "./modules/About";
+import Scenario from "./modules/Scenario";
+import Algorithm from "./modules/Algorithm";
+import Simulation from "./modules/Simulation";
 import TabPanel from "./TabPanel";
 
 // Mapping MODULES:
