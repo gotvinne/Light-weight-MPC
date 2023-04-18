@@ -18,25 +18,36 @@ export default function Scenario() { // Everything is rendered inside this funct
     //** HOOKS */
     const [valueStates, setValueStates] = useState(TextFields); // Initialize ValueStates is a dictionary of hooks
     const [scenario, setScenario] = useState(); // Scenario
-    const [system, setSystem] = useState([]); // System
+    const [system, setSystem] = useState(); // System
     const [systemNames, setSystemNames] = useState([]); // System names
     
     const [ncv, setNCV] = useState([]);
     const [nmv, setNMV] = useState([]);
 
+    //** USE EFFECTS */
     useEffect(() => { // Have no ide why this runs twice!
         importSystems(setSystemNames);
     }, []);
+
+    useEffect(() => { 
+
+        if (valueStates[keys[0]] === "") {
+            return;
+        }
+        // Call function to pop up system info
+        readModelParams(valueStates[keys[0]], setNCV, "CV");
+        readModelParams(valueStates[keys[0]], setNMV, "MV");
+    }, [valueStates[keys[0]]]); // Every time this variable change
     
     //** HANDLER FUNCTIONS */ 
     const handleSimulatonClick = e => {
-        //readSystem(valueStates[keys[0]], setSystem);
+        readSystem(valueStates[keys[0]], setSystem);
         let wasm: any;
         LightWeightMPC().then((module) => {
             wasm = module
             setScenario(wasm.sayHello(JSON.stringify(valueStates)));
         });
-        console.log(valueStates);
+        console.log(system);
     };
 
     const handleTextField = e => { // Update react hook
@@ -45,10 +56,6 @@ export default function Scenario() { // Everything is rendered inside this funct
 
     const handleSelect = (event: SelectChangeEvent) => {
         setValueStates(valueStates => ({...valueStates, [keys[0]]: event.target.value}));
-
-        // Call function to pop up system info
-        console.log(valueStates);
-        //readModelParams(valueStates[keys[0]], setNCV, "CV");
     };
 
     return (
@@ -137,48 +144,44 @@ export default function Scenario() { // Everything is rendered inside this funct
             <Box sx={{width: "40%", pt: 2}}>
                 <Box sx={{pt: 2, height: "30%", display: "flex", flexDirection: "row" }} >
                     
-                    <Box sx={{width: "30%", pt: 2, display: "flex", flexDirection: "row"}}> 
+                    <Box sx={{width: "20%", pt: 2, display: "flex", flexDirection: "row"}}> 
                         <Typography sx={{pl: 5}} variant="h5"> <InlineMath math={`n_{CV} :`} /> </Typography>
                     </Box>
                     <Box sx={{width: "20%"}}> 
 
-
-                        <Box sx={{width: "50%", pt: 2}}> 
-                            <Typography variant="h5"> n_CV: </Typography>
-                        </Box>
-                        <Box sx={{width: "50%", pt: 2}}> 
-                            <Typography variant="h5"> n_CV: </Typography>
-                        </Box>
-
-
-
+                        {ncv.map((course, index) => {
+                            return (
+                            <Box key={index} sx={{width: "80%", pt: 3}}> 
+                                <Typography variant="h5" key={index}> - {course} </Typography>
+                            </Box>
+                            )
+                        })}
                     </Box>
                 </Box>
 
                 <Box sx={{pt: 2, height: "30%", display: "flex", flexDirection: "row" }} >
                     
-                    <Box sx={{width: "30%", pt: 2, display: "flex", flexDirection: "row"}}> 
+                    <Box sx={{width: "20%", pt: 2, display: "flex", flexDirection: "row"}}> 
                     <Typography sx={{pl: 5}} variant="h5"> <InlineMath math={`n_{MV} :`} /> </Typography>
                     </Box>
                     <Box sx={{width: "20%"}}> 
 
-
-                        <Box sx={{width: "50%", pt: 2}}> 
-                            <Typography variant="h5"> n_CV: </Typography>
-                        </Box>
-                        <Box sx={{width: "50%", pt: 2}}> 
-                            <Typography variant="h5"> n_CV: </Typography>
-                        </Box>
-
+                        {nmv.map((course, index) => {
+                            return (
+                            <Box key={index} sx={{width: "80%", pt: 3}}> 
+                                <Typography variant="h5" key={index}> - {course} </Typography>
+                            </Box>
+                            )
+                        })}
 
                     </Box>
-
                 </Box>
 
                
                 <Box sx={{pt: 2, display: "flex", flexDirection: "row"}}>
                     <Typography> {scenario} </Typography>
                 </Box>
+                
             </Box>
 
             
