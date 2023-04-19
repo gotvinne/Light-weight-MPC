@@ -19,19 +19,28 @@
 #include "IO/serialize.h"
 #include "MPC/solvers.h"
 #include "model/FSRModel.h"
-#include "LightWeightMPC.h"
 
 #include <stdlib.h>
 #include <string>
 #include <map>
-#include <nlohmann/json.hpp>
+#include <vector>
 #include <Eigen/Dense>
 
-using json = nlohmann::json;
+using VectorXd = Eigen::VectorXd;
+using MatrixXd = Eigen::MatrixXd;
 using string = std::string;
 
 const double GAS_RATE_REF = 3800;
 const double OIL_RATE_REF = 70;
+
+VectorXd* AllocateConstReference(const std::vector<double>& ref_vec, int T, int P) { // Cannot reinitialize pointer via pass-by-pointer
+    VectorXd* y_ref = new VectorXd[int(ref_vec.size())];
+
+    for (int i = 0; i < int(ref_vec.size()); i++) {
+        y_ref[i] = VectorXd::Constant(T + P, ref_vec.at(i)); // Takes predictions into account!
+    }
+    return y_ref;
+}
 
 string say_hello(string str) {
     return str;
@@ -53,7 +62,8 @@ string simulate(string sce_file, string sys_file, string sce, int T) {
         Parse(sce_file, sys_file, m_map, cvd, mvd, conf, z_min, z_max);
     }
     catch(std::exception& e) {
-        return e.what();
+        string error(e.what());
+        return error;
     }
     MatrixXd du_tilde = MatrixXd::Zero(m_map[kN_MV], m_map[kN]-conf.W-1);
 
@@ -78,7 +88,8 @@ string simulate(string sce_file, string sys_file, string sce, int T) {
         delete[] y_ref;
     }
     catch(std::exception& e) {
-        return e.what();
+        string error(e.what());
+        return error;
     }
     
     return SerializeSimulation(sce, cvd, mvd, 
@@ -88,6 +99,6 @@ string simulate(string sce_file, string sys_file, string sce, int T) {
 #ifdef __EMSCRIPTEN__
 EMSCRIPTEN_BINDINGS(my_module) {
     emscripten::function("sayHello", &say_hello);
-    emscripten::fumction("simulate", &simulate);
+    emscripten::function("simulate", &simulate);
 }
 #endif // __EMSCRIPTEN__

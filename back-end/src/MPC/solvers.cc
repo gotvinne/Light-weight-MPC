@@ -10,7 +10,7 @@
  */
 #include "MPC/solvers.h"
 #include "MPC/condensed_qp.h"
-#include "OsqpEigen/OsqpEigen.h"
+#include <OsqpEigen/OsqpEigen.h>
 
 #include <stdexcept>
 

@@ -53,9 +53,10 @@ conda env export > conda/env.yml
 Arguments:
 - [-T int] mpc_horizon: Simulate scenario for the given mpc_horizon
 - [-s string] scenario_name: Scenario file to be simulated
+- [-n bool] new simulation
 ```console
 chmod +x setup.sh                       // Set execute permission
-sh make.sh -T mpc_horizon -s sce
+sh make.sh -T mpc_horizon -s sce -n
 ```
 ### Webassembly
 Light-weight MPC uses the *Emscripten* compiler in order to compile the C++-code to a *Webassembly* which can be reached from a website using JavaScript.
