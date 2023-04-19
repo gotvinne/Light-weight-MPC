@@ -6,7 +6,7 @@ import { BlockMath } from 'react-katex';
 import { importSystems, readModelParams, readSystem, serializeScenario } from "../../utils/IO.js";
 import { variableRender } from "../../utils/rendering.js";
 import "../../css/Modules.css"
-import LightWeightMPC from "../../web.mjs";
+//import backend from "../../webassembly.mjs";
 
 const LOCAL_STORAGE_KEY = 'lightweightMPC.storage';
 
@@ -17,51 +17,53 @@ const KEYS = Object.keys(TEXT_FIELDS); // Access keys
 
 export default function Scenario(props) {
     //** HOOKS */
-    const [valueStates, setValueStates] = useState(TEXT_FIELDS); // Initialize ValueStates is a dictionary of hooks
+    const [tuning, setTuning] = useState(TEXT_FIELDS); // Initialize tuning is a dictionary of hooks
     const [scenario, setScenario] = useState(); // Scenario file
     const [system, setSystem] = useState(); // System file
     const [systemNames] = useState(importSystems()); // System names
     
     const [ncv, nmv] = useMemo(() => {
-        if (valueStates[KEYS[0]] === "") {
+        if (tuning[KEYS[0]] === "") {
             return [[], []];
         } else {
-            return [readModelParams(valueStates[KEYS[0]], "CV"), readModelParams(valueStates[KEYS[0]], "MV")];
+            return [readModelParams(tuning[KEYS[0]], "CV"), readModelParams(tuning[KEYS[0]], "MV")];
         }
-    }, [valueStates[KEYS[0]]]);
+    }, [tuning[KEYS[0]]]);
 
     //** USE EFFECTS */
     useEffect(() => { // Called for every rerender. 
-        const storedValueStates = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
-        if (storedValueStates !== null) setValueStates(storedValueStates);
+        const storedtuning = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
+        if (storedtuning !== null) setTuning(storedtuning);
     }, []);
 
-    useEffect(() => { // Store valueStates
-        if (valueStates !== TEXT_FIELDS) localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(valueStates))
-    }, [valueStates])
+    useEffect(() => { // Store tuning
+        if (tuning !== TEXT_FIELDS) localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(tuning))
+    }, [tuning])
     
     //** HANDLER FUNCTIONS */ 
     const handleSimulatonClick = () => {
-        readSystem(valueStates[KEYS[0]], setSystem);
-        serializeScenario(valueStates, setScenario);
-        let wasm: any;
-        LightWeightMPC().then((module) => {
-            wasm = module
-            setScenario(wasm.sayHello(JSON.stringify(valueStates)));
-        });
+        readSystem(tuning[KEYS[0]], setSystem);
+        serializeScenario(tuning, setScenario);
+        //let wasm: any;
+        //backend()
+         //   .then((module) => {
+          //      wasm = module
+          //      setScenario(wasm.sayHello(JSON.stringify(tuning)));
+          //      })
+          //  .catch(setScenario)
 
         //props.moduleHook(props.modules["simulation"]); // Change page
     };
 
     const handleTextField = e => { 
-        setValueStates(valueStates => {
-            return {...valueStates, [e.target.id]: e.target.value}
+        setTuning(tuning => {
+            return {...tuning, [e.target.id]: e.target.value}
         }); 
     }
 
     const handleSelect = e => {
-        setValueStates(valueStates => {
-            return {...valueStates, [KEYS[0]]: e.target.value}
+        setTuning(tuning => {
+            return {...tuning, [KEYS[0]]: e.target.value}
         });
     };
 
@@ -75,7 +77,7 @@ export default function Scenario(props) {
                         <InputLabel id={KEYS[0]}> System name </InputLabel>
                         <Select
                             id={KEYS[0]}
-                            value={valueStates[KEYS[0]]}
+                            value={tuning[KEYS[0]]}
                             label="System name"
                             onChange={handleSelect} 
                         >   
@@ -87,9 +89,9 @@ export default function Scenario(props) {
                         </Select>
                     </FormControl>
                 
-                    <TextField id={KEYS[1]} variant="outlined" helperText={"Scenario name, " + DATA_TYPES[2]} value={valueStates[KEYS[1]]} onChange={handleTextField} required/>
+                    <TextField id={KEYS[1]} variant="outlined" helperText={"Scenario name, " + DATA_TYPES[2]} value={tuning[KEYS[1]]} onChange={handleTextField} required/>
                     <Box sx={{pl: 2}}/>
-                    <TextField id={KEYS[2]} variant="outlined" helperText={"MPC horizon T, " + DATA_TYPES[3]} value={valueStates[KEYS[2]]} onChange={handleTextField} required/>
+                    <TextField id={KEYS[2]} variant="outlined" helperText={"MPC horizon T, " + DATA_TYPES[3]} value={tuning[KEYS[2]]} onChange={handleTextField} required/>
                     <Box sx={{pl: "2%"}}/>
                     <Button variant="contained" size="large" color="success" onClick={handleSimulatonClick}> RUN SIMULATION </Button>
                 </Box>
@@ -99,31 +101,31 @@ export default function Scenario(props) {
             
                 <Box sx={{pl: 6, pt: 2, display: "flex", flexDirection: "row"}}>
                     <Box sx ={{pt:2, pl: 10}}>
-                        <TextField id={KEYS[3]} variant="outlined" helperText={"Prediction horizon P, " + DATA_TYPES[0]} value={valueStates[KEYS[3]]} onChange={handleTextField} required/>
+                        <TextField id={KEYS[3]} variant="outlined" helperText={"Prediction horizon P, " + DATA_TYPES[0]} value={tuning[KEYS[3]]} onChange={handleTextField} required/>
                         <Box />
-                        <TextField id={KEYS[4]} variant="outlined" helperText={"Control horizon M, " + DATA_TYPES[0]} value={valueStates[KEYS[4]]} onChange={handleTextField} required/>
+                        <TextField id={KEYS[4]} variant="outlined" helperText={"Control horizon M, " + DATA_TYPES[0]} value={tuning[KEYS[4]]} onChange={handleTextField} required/>
                         <Box />
-                        <TextField id={KEYS[5]} variant="outlined" helperText={"Time delay, W " + DATA_TYPES[0]} value={valueStates[KEYS[5]]} onChange={handleTextField} required/>
+                        <TextField id={KEYS[5]} variant="outlined" helperText={"Time delay, W " + DATA_TYPES[0]} value={tuning[KEYS[5]]} onChange={handleTextField} required/>
                     </Box>
 
                     <Box sx={{pt:2, pl: 5}}>
-                        <TextField id={KEYS[6]} variant="outlined" helperText={"Q, " + DATA_TYPES[1]+", length: " + ncv.length.toString()} value={valueStates[KEYS[6]]} onChange={handleTextField} required/>
+                        <TextField id={KEYS[6]} variant="outlined" helperText={"Q, " + DATA_TYPES[1]+", length: " + ncv.length.toString()} value={tuning[KEYS[6]]} onChange={handleTextField} required/>
                         <Box />
-                        <TextField id={KEYS[7]} variant="outlined" helperText={"R, " +DATA_TYPES[1]+", length: " + nmv.length.toString()} value={valueStates[KEYS[7]]} onChange={handleTextField} required/>
+                        <TextField id={KEYS[7]} variant="outlined" helperText={"R, " +DATA_TYPES[1]+", length: " + nmv.length.toString()} value={tuning[KEYS[7]]} onChange={handleTextField} required/>
                         <Box />
-                        <TextField id={KEYS[8]} variant="outlined" helperText={"RoH, " +DATA_TYPES[0]+", length: " + ncv.length.toString()} value={valueStates[KEYS[8]]} onChange={handleTextField} required/>
+                        <TextField id={KEYS[8]} variant="outlined" helperText={"RoH, " +DATA_TYPES[0]+", length: " + ncv.length.toString()} value={tuning[KEYS[8]]} onChange={handleTextField} required/>
                         <Box />
-                        <TextField id={KEYS[9]} variant="outlined" helperText={"RoL, " +DATA_TYPES[0]+", length: " + ncv.length.toString()} value={valueStates[KEYS[9]]} onChange={handleTextField} required/>
+                        <TextField id={KEYS[9]} variant="outlined" helperText={"RoL, " +DATA_TYPES[0]+", length: " + ncv.length.toString()} value={tuning[KEYS[9]]} onChange={handleTextField} required/>
                     </Box>
                 </Box>
 
                 <Box sx={{pt: 2, display: "flex", flexDirection: "row"}}>
                     <Box sx ={{pt:6, pl: 10}}>
-                        <TextField id={KEYS[10]} variant="outlined" helperText={DATA_TYPES[1]+", length: " + nmv.length.toString()} value={valueStates[KEYS[10]]} onChange={handleTextField} required/>
+                        <TextField id={KEYS[10]} variant="outlined" helperText={DATA_TYPES[1]+", length: " + nmv.length.toString()} value={tuning[KEYS[10]]} onChange={handleTextField} required/>
                         <Box />
-                        <TextField id={KEYS[11]} variant="outlined" helperText={DATA_TYPES[1]+", length: " + nmv.length.toString()} value={valueStates[KEYS[11]]} onChange={handleTextField} required/>
+                        <TextField id={KEYS[11]} variant="outlined" helperText={DATA_TYPES[1]+", length: " + nmv.length.toString()} value={tuning[KEYS[11]]} onChange={handleTextField} required/>
                         <Box />
-                        <TextField id={KEYS[12]} variant="outlined" helperText={DATA_TYPES[1]+", length: " + ncv.length.toString()} value={valueStates[KEYS[12]]} onChange={handleTextField} required/>
+                        <TextField id={KEYS[12]} variant="outlined" helperText={DATA_TYPES[1]+", length: " + ncv.length.toString()} value={tuning[KEYS[12]]} onChange={handleTextField} required/>
                     </Box>
 
                     <Box >
@@ -139,11 +141,11 @@ export default function Scenario(props) {
                     </Box >
                         
                     <Box sx ={{pt: 6}}>
-                        <TextField id={KEYS[13]} variant="outlined" helperText={DATA_TYPES[1]+", length: " + nmv.length.toString()} value={valueStates[KEYS[13]]} onChange={handleTextField} required/>
+                        <TextField id={KEYS[13]} variant="outlined" helperText={DATA_TYPES[1]+", length: " + nmv.length.toString()} value={tuning[KEYS[13]]} onChange={handleTextField} required/>
                         <Box />
-                        <TextField id={KEYS[14]} variant="outlined" helperText={DATA_TYPES[1]+", length: " + nmv.length.toString()} value={valueStates[KEYS[14]]} onChange={handleTextField} required/>
+                        <TextField id={KEYS[14]} variant="outlined" helperText={DATA_TYPES[1]+", length: " + nmv.length.toString()} value={tuning[KEYS[14]]} onChange={handleTextField} required/>
                         <Box />
-                        <TextField id={KEYS[15]} variant="outlined" helperText={DATA_TYPES[1]+", length: " + ncv.length.toString()} value={valueStates[KEYS[15]]} onChange={handleTextField} required/>
+                        <TextField id={KEYS[15]} variant="outlined" helperText={DATA_TYPES[1]+", length: " + ncv.length.toString()} value={tuning[KEYS[15]]} onChange={handleTextField} required/>
                     </Box>
                 </Box>
             </Box>
