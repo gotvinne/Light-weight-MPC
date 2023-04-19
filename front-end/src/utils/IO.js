@@ -36,46 +36,44 @@ function processConstraints(l_arr, u_arr, identifier) {
 
 /**
  * Import avaliable system filenames
- * @param {React.useState} setHook 
  */
-export function importSystems(setHook) {
+export function importSystems() {
     const context = require.context('./../systems', false, /.json$/); // Read files in folder.
-    const set = new Set();
+    const arr = [];
     for (let i = 0; i < context.keys().length; i++) {
         const key = context.keys()[i];
         const fileName = key.replace('./', '');
         
         const namespace = fileName.replace('.json', '');
-        set.add(namespace);
+        arr.push(namespace);
     }  
-    setHook(Array.from(set));
+    return arr;
 }
 
 /**
  * Read model parameters from system JSON file
  * @param {string} fileName 
- * @param {React.useState} setHook 
  * @param {string} identifier 
  */
-export function readModelParams(fileName, setHook, identifier) {
+export function readModelParams(fileName, identifier) {
   const resource = require(`./../systems/${fileName}.json`); // Load file
   const data = resource[identifier];
  
-  const set = new Set();
+  const arr = [];
 
   if (identifier === "CV") {
     data.forEach((cv) => {
-      set.add(cv["output"]);
+      arr.push(cv["output"]);
     });
   } else if (identifier === "MV") {
     data.forEach((mv) => {
-      set.add(mv["input"]);
+      arr.push(mv["input"]);
     });
   } else {
     throw new Error("Invalid identifier!");
   }
   
-  setHook(Array.from(set));
+  return arr;
 }
 
 /**
