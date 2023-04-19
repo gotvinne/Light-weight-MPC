@@ -1,4 +1,12 @@
 #!/bin/bash
+# Compiling backend directly using local data folder
+# flags: 
+#     -T int MPC horizon
+#     -s string scenario name
+#     -n bool new simulation
+# 
+# ex: sh make.sh -T 180 -s SingleWell -n
+
 mkdir -p "build"
 
 # CLI parser
@@ -31,9 +39,9 @@ if [ $? -eq 0 ]; then #Build successful
     echo 
 
     if $argN; then # If flag is found
-      ./light_weight -T $argT -s $argS -n
+      ./backend -T $argT -s $argS -n
     else 
-      ./light_weight -T $argT -s $argS
+      ./backend -T $argT -s $argS
     fi
 
     if [ $? -eq 0 ]; then #Running successfull
