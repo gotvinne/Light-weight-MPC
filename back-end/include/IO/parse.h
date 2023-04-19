@@ -41,6 +41,22 @@ void ParseNew(const std::string& sce_filepath, std::map<std::string, int>& m_map
                         Eigen::VectorXd& z_min, Eigen::VectorXd& z_max);
 
 /**
+ * @brief 
+ * 
+ * @param sce_file 
+ * @param sys_file 
+ * @param m_map 
+ * @param cvd 
+ * @param mvd 
+ * @param conf 
+ * @param z_min 
+ * @param z_max 
+ */
+void Parse(const std::string& sce_file, const std::string& sys_file, std::map<std::string, int>& m_map,
+                    CVData& cvd, MVData& mvd, MPCConfig& conf, 
+                        Eigen::VectorXd& z_min, Eigen::VectorXd& z_max);
+        
+/**
  * @brief Parse function taking previous simulations into account
  * 
  * @param sce_filepath scenario filepath

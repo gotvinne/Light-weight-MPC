@@ -200,6 +200,17 @@ void Parse(const string& sce_filepath, const string& sim_filepath, std::map<stri
     ParseSimulationData(sim_data, du_tilde, cvd, mvd);
 }
 
+void Parse(const std::string& sce_file, const std::string& sys_file, std::map<std::string, int>& m_map,
+                    CVData& cvd, MVData& mvd, MPCConfig& conf, 
+                        Eigen::VectorXd& z_min, Eigen::VectorXd& z_max) {
+    json sce_data = json::parse(sce_file); 
+    json sys_data = json::parse(sys_file);
+
+    string system; // Dummy variable
+    ParseScenarioData(sce_data, system, conf, z_min, z_max);
+    ParseSystemData(sys_data, m_map, cvd, mvd);
+}
+
 void ParseOpenLoop(const string& system, std::map<string, int>& m_map, CVData& cvd, MVData& mvd) {
     // Parse system file
     string sys_filepath = "../data/systems/" + system + ".json";

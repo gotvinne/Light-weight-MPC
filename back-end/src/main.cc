@@ -87,5 +87,5 @@ int main(int argc, char **argv) {
  
     // ---- Light-weight MPC ---- //
     //OpenLoopSim(sce, ref_vec, T);
-    //LightWeightMPC(sce, ref_vec, new_sim, T);
+    LightWeightMPC(sce, ref_vec, new_sim, T);
 }

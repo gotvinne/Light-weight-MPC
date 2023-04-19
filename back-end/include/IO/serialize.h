@@ -26,10 +26,6 @@ using MatrixXd = Eigen::MatrixXd;
 using VectorXd = Eigen::VectorXd;
 using string = std::string; 
 
-const string SYS_PATH = "../data/systems/";
-const string SCE_PATH = "../data/scenarios/";
-const string SIM_PATH = "../data/simulations/";
-
 /**
  * @brief Write json object to file file according to filepath
  * 
@@ -65,6 +61,23 @@ void SerializeSimulationNew(const string& write_path, const string& scenario, co
  * @param T [int] MPC horizon
  */
 void SerializeSimulation(const string& write_path, const MatrixXd& y_pred, const MatrixXd& u_mat, int T);
+
+/**
+ * @brief Serialize Simulation returning a JSON string
+ *
+ * @param scenario [string] scenario name
+ * @param cvd CVData
+ * @param mvd MVData
+ * @param y_pred [Eigen::MatrixXd] matrix of CV predictions
+ * @param u_mat [Eigen::MatrixXd] actuations
+ * @param z_min [Eigen::VectorXd] lower constraints
+ * @param z_max [Eigen::VectorXd] upper constraints
+ * @param fsr [FSRModel] The finite step response model
+ * @param T [int] MPC horizon
+ * @return string 
+ */
+string SerializeSimulation(const string& scenario, const CVData& cvd, const MVData& mvd, 
+                    const MatrixXd& y_pred, const MatrixXd& u_mat, const VectorXd& z_min, const VectorXd& z_max, const FSRModel& fsr, int T);
 
 /**
  * @brief Serializing an open loop simulation into simulation JSON data file
@@ -105,8 +118,6 @@ void SerializeOpenLoop(const string& write_path, const string& scenario, const C
 void SerializeScenario(const string& write_path, const string& scenario, const string& system, const string& sys_path, std::map<string, int> mpc_m,
                      const VectorXd& Q, const VectorXd& R, const VectorXd& Ro, bool bias_update, const VectorXd& l_du, 
                      const VectorXd& l_u, const VectorXd& l_y, const VectorXd& u_du, const VectorXd& u_u, const VectorXd& u_y,
-                     int n_CV, int n_MV);     
-
-bool isSystem(const string& system, const string& sys_path);
+                     int n_CV, int n_MV);
 
 #endif  // SERIALIZE_H

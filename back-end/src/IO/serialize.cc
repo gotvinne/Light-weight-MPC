@@ -221,15 +221,15 @@ static void SerializeConstraints(json& data, const VectorXd& l_du, const VectorX
     data[kC] = arr;
 }
 
-bool isSystem(const string& system, const string& sys_path) {
-    string filename = system + ".json";
-    for (const auto& file : std::filesystem::directory_iterator(sys_path)) {
-        if (file.path().filename() == filename) {
-            return true;
-        }
-    }
-    return false; 
-}   
+//static bool isSystem(const string& system, const string& sys_path) {
+    //string filename = system + ".json";
+    //for (const auto& file : std::filesystem::directory_iterator(sys_path)) {
+    //    if (file.path().filename() == filename) {
+    //        return true;
+    //    }
+    //}
+    //return false; 
+//}   
 
 void SerializeSimulationNew(const string& write_path, const string& scenario, const CVData& cvd, const MVData& mvd, 
                     const MatrixXd& y_pred, const MatrixXd& u_mat, const VectorXd& z_min, const VectorXd& z_max, const FSRModel& fsr, int T) {
@@ -272,6 +272,16 @@ void SerializeSimulation(const string& write_path, const MatrixXd& y_pred, const
     WriteJson(sim_data, write_path);
 }
 
+string SerializeSimulation(const string& scenario, const CVData& cvd, const MVData& mvd, 
+                    const MatrixXd& y_pred, const MatrixXd& u_mat, const VectorXd& z_min, const VectorXd& z_max, const FSRModel& fsr, int T) {
+    json data;
+    
+    SerializeSimData(data, scenario, fsr, T);
+    SerializeSimCV(data, cvd, y_pred, z_min, z_max, fsr.getN_CV(), fsr.getN_MV());
+    SerializeSimMV(data, mvd, u_mat, z_min, z_max, fsr.getN_MV());
+    return to_string(data);
+}
+
 void SerializeOpenLoop(const string& write_path, const string& scenario, const CVData& cvd, const MVData& mvd, 
                     const MatrixXd& y_pred, const MatrixXd& u_mat, const FSRModel& fsr, int T) {
     json data;
@@ -309,9 +319,9 @@ void SerializeScenario(const string& write_path, const string& scenario, const s
         throw std::out_of_range("Number of Y constraints does not match system description");
     }
 
-    if (!isSystem(system, sys_path)) {
-        throw std::invalid_argument("Invalid system");
-    }
+    //if (!isSystem(system, sys_path)) {
+     //   throw std::invalid_argument("Invalid system");
+    //}
 
     data[kSystem] = system; // Write system
     SerializeMPC(data, mpc_m, Q, R, Ro, bias_update);
