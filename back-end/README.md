@@ -3,8 +3,7 @@
 ## Modules
 
 - [data](data/README.md): System and scenario files defining the simulation.
-  
-- [OSQP-Eigen](src/OSQP-Eigen/README.md): Solving the MPC problems. 
+- [MPC](src/MPC/README.md): Solving the MPC problems. 
 - [model](src/model/README.md): Generating a FSRM model.
 - [IO](src/IO/README.md): Parsing and formatting respectively input and output data.
 - [Vis](vis/README.md): Visualizing simulations in jupyter notebook
@@ -28,7 +27,7 @@ Other libraries used:
 - [CLI11](https://github.com/CLIUtils/CLI11), Command line parser
 - [Emscripten](https://emscripten.org/docs/index.html), web compiler
 
-### Run Light-weight-MPC: 
+### Run Light-weight MPC: 
 *From project root:* 
 
 - Use conda in order to create environment access the environments in conda folder:
@@ -59,11 +58,11 @@ chmod +x setup.sh                       // Set execute permission
 sh make.sh -T mpc_horizon -s sce
 ```
 ### Webassembly
-Light-weight MPC uses Webassembly and Emscripten compiler in order to compile the C++-code to a format which can be reached from a website using JavaScript.
+Light-weight MPC uses the *Emscripten* compiler in order to compile the C++-code to a *Webassembly* which can be reached from a website using JavaScript.
 
-In order to interface web, binding files are requred the implementation of the interface functionality can be found in the *web* folder. 
+In order to interface web, binding files are requred the implementation of the interface functionality can be found in the *bindings* folder. 
 
-Install the web compiler locally, [online documentation](https://emscripten.org/docs/getting_started/downloads.html#platform-notes-installation-instructions-sdk): 
+Install the Webassembly compiler locally, [online documentation](https://emscripten.org/docs/getting_started/downloads.html#platform-notes-installation-instructions-sdk): 
 ```console
 git clone https://github.com/emscripten-core/emsdk.git
 cd emsdk
@@ -76,7 +75,7 @@ Or for MacOS, download via Brew
 brew install emscripten
 ```
 
-Before building and running the compiler, the enscripten compiler needs to be sourced to terminal. Afterwards, emcc.sh can be run. The output, *web.mjs* is stored in the Front-End's src-folder.  
+Before building and running the compiler, the enscripten compiler needs to be sourced to terminal. Afterwards, emcc.sh can be run. The output, *webassembly.mjs* is stored in the Front-End's src-folder.  
 ```console
 source ./emsdk_env.sh
 sh emcc.sh
@@ -96,6 +95,3 @@ One can choose to either open Jupyter-Notebook and run *vis.ipynb*. Alternativel
 ```console
 python3 vis/plot.py -s "Simulation"
 ```
-
-### LICENCE:
-

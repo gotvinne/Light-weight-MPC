@@ -25,3 +25,6 @@ Software applications:
 - Emscripten compiler to compile code to Webassembly format to interface JavaScript
 ## frontend
 - JavaScript, CSS, React web application 
+
+### LICENCE:
+Released under the terms of the BSD 3-Clause License
