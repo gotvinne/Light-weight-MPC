@@ -1,4 +1,4 @@
-# Master's thesis: Light-weight-MPC
+# Master's thesis: Light-weight MPC
 
 This is a repo for implementing the master's thesis for the study programme [Cybernetics & Robotics](https://www.ntnu.no/studier/mttk) at **NTNU** the fall 2022. The thesis is handed out by **Equinor**, and aims on implementing a simpler software framework simulating optimized control on step response models. 
 
@@ -14,11 +14,11 @@ Operating system: Linux, MacOS, Windows
 - Dr. Gisle Otto Eikrem (Equinor)
 
 ### Purpose:
-The purpose of the software is to shine light on Model Predictive Controllers 
+The purpose of the software is to shine light on Model Predictive Controllers providing a neat and lightweight simulation tool for a JavaScript React frontend and C++ backend. 
 
-- Student projects
-- Industrial use
-- Academic framework for assessing an MPC
+Software applications:
+- Industrial use, determing the optimal MPC tuning.
+- Academic framework understanding the controller method. 
 
 ## backend
 - C/C++ and Python module for simulating an MPC controller on an FSRM
