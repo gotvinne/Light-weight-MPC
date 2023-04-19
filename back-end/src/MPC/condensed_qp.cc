@@ -4,18 +4,11 @@
  * @copyright  Released under the terms of the BSD 3-Clause License
  * @date 2022
  */
-#include "OsqpEigen/condensed_qp.h"
-#include "IO/data_objects.h"
-#include "model/FSRModel.h"
+#include "MPC/condensed_qp.h"
 
 #include <string>
 #include <iostream>
 #include <limits>
-
-#include <Eigen/Eigen>
-using VectorXd = Eigen::VectorXd;
-using MatrixXd = Eigen::MatrixXd;
-using SparseXd = Eigen::SparseMatrix<double>;
 
 /**
  * @brief Helper function. Implementing block diagonal matrix
