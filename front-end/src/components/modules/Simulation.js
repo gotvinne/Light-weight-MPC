@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Box } from "@mui/material";
 
 //import backend from "../../webassembly.mjs";
@@ -10,6 +10,10 @@ const path = "../../../back-end/data/systems";
 export default function Simulation() {
 
     const [text, setText] = useState();
+    
+    useEffect(() => { // Called for every rerender. 
+        setText(path);
+    }, []);
     //let wasm: any;
 
     //backend()

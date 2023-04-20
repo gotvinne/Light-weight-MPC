@@ -21,7 +21,8 @@ export default function Scenario(props) {
     const [scenario, setScenario] = useState(); // Scenario file
     const [system, setSystem] = useState(); // System file
     const [systemNames] = useState(importSystems()); // System names
-    
+    const [reference] = useState(0);
+        
     const [ncv, nmv] = useMemo(() => {
         if (tuning[KEYS[0]] === "") {
             return [[], []];
@@ -60,6 +61,14 @@ export default function Scenario(props) {
             return {...tuning, [e.target.id]: e.target.value}
         }); 
     }
+
+    //const handleReference = e => { 
+      //  const update = {};
+        //update[e.target.id] = e.target.value;
+        //setReference(reference => {
+        //    return {...reference, ...update}
+        //}); 
+    //}
 
     const handleSelect = e => {
         setTuning(tuning => {
@@ -151,34 +160,61 @@ export default function Scenario(props) {
             </Box>
 
             <Box sx={{width: "40%", pt: 2}}>
-                <Box sx={{pt: 2, height: "30%", display: "flex", flexDirection: "row" }} >
+                <Box sx={{pt: 2, height: "5%", display: "flex", flexDirection: "row" }} >
                     <Box sx={{width: "25%", pt: 2, display: "flex", flexDirection: "row"}}> 
                         {variableRender(ncv.length, "CV")}
+                    </Box>
+                </Box>
+                <Box sx={{pt: 2, height: "30%", display: "flex", flexDirection: "row" }} >
+                    <Box sx={{width: "25%", pt: 2, display: "flex", flexDirection: "row"}}> 
                     </Box>
                     <Box sx={{width: "25%"}}> 
                         {ncv.map((course, index) => {
                             return (
-                            <Box key={index} sx={{width: "80%", pt: 3}}> 
+                            <Box key={index} sx={{width: "80%", height: "27%", pt: 2}}> 
                                 <Typography variant="h5" key={index}> {course} </Typography>
                             </Box>
                             )
                         })}
+                    </Box>
+                    <Box sx={{width: "35%"}}> 
+                        {ncv.map((course, index) => {
+                            return (
+                            <Box key={index} sx={{width: "80%"}}> 
+                                <TextField id={course} variant="outlined" helperText={course + " reference, " + DATA_TYPES[0]} value={reference} required/>
+                            </Box>
+                            )
+                        })}
+                    </Box>
+                </Box>
+                <Box sx={{pt: 2, height: "5%", display: "flex", flexDirection: "row" }} >
+                    <Box sx={{width: "25%", pt: 2, display: "flex", flexDirection: "row"}}> 
+                        {variableRender(ncv.length, "MV")}
                     </Box>
                 </Box>
                 <Box sx={{pt: 2, height: "30%", display: "flex", flexDirection: "row" }} >
                     <Box sx={{width: "25%", pt: 2, display: "flex", flexDirection: "row"}}> 
-                        {variableRender(nmv.length, "MV")}
                     </Box>
                     <Box sx={{width: "25%"}}> 
                         {nmv.map((course, index) => {
                             return (
-                            <Box key={index} sx={{width: "80%", pt: 3}}> 
+                            <Box key={index} sx={{width: "80%", height: "27%", pt: 2}}> 
                                 <Typography variant="h5" key={index}> {course} </Typography>
                             </Box>
                             )
                         })}
                     </Box>
+                    <Box sx={{width: "35%"}}> 
+                        {nmv.map((course, index) => {
+                            return (
+                            <Box key={index} sx={{width: "80%"}}> 
+                                <TextField id={course} variant="outlined" helperText={course + " reference, " + DATA_TYPES[0]} value={reference} required/>
+                            </Box>
+                            )
+                        })}
+                    </Box>
                 </Box>
+                
 
                 <Box sx={{pt: 2, display: "flex", flexDirection: "row"}}>
                     <Typography> {scenario} </Typography>
