@@ -21,7 +21,8 @@ export default function Scenario(props) {
     const [scenario, setScenario] = useState(); // Scenario file
     const [system, setSystem] = useState(); // System file
     const [systemNames] = useState(importSystems()); // System names
-    const [reference] = useState(0);
+    const [cvRef, setCVRef] = useState([]);
+    const [mvRef, setMVRef] = useState([]);
         
     const [ncv, nmv] = useMemo(() => {
         if (tuning[KEYS[0]] === "") {
@@ -35,6 +36,8 @@ export default function Scenario(props) {
     useEffect(() => { // Called for every rerender. 
         const storedtuning = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
         if (storedtuning !== null) setTuning(storedtuning);
+
+        
     }, []);
 
     useEffect(() => { // Store tuning
@@ -62,13 +65,20 @@ export default function Scenario(props) {
         }); 
     }
 
-    //const handleReference = e => { 
-      //  const update = {};
-        //update[e.target.id] = e.target.value;
-        //setReference(reference => {
-        //    return {...reference, ...update}
-        //}); 
-    //}
+    const handleReference = e => { 
+        const [type, index] = e.target.id.split(",");
+        if (type === "CV") {
+            setCVRef(reference => {
+                reference[index] = e.target.value;
+                return reference
+            }); 
+        } else if (type === "MV") {
+            setMVRef(reference => {
+                reference[index] = e.target.value;
+                return reference
+            }); 
+        } 
+    }
 
     const handleSelect = e => {
         setTuning(tuning => {
@@ -181,7 +191,7 @@ export default function Scenario(props) {
                         {ncv.map((course, index) => {
                             return (
                             <Box key={index} sx={{width: "80%"}}> 
-                                <TextField id={course} variant="outlined" helperText={course + " reference, " + DATA_TYPES[0]} value={reference} required/>
+                                <TextField id={"CV,"+index.toString()} variant="outlined" helperText={course + " reference, " + DATA_TYPES[0]} value={cvRef[index]} onChange={handleReference} required/>
                             </Box>
                             )
                         })}
@@ -208,7 +218,7 @@ export default function Scenario(props) {
                         {nmv.map((course, index) => {
                             return (
                             <Box key={index} sx={{width: "80%"}}> 
-                                <TextField id={course} variant="outlined" helperText={course + " reference, " + DATA_TYPES[0]} value={reference} required/>
+                                <TextField id={"MV,"+index.toString()} variant="outlined" helperText={course + " reference, " + DATA_TYPES[0]} value={mvRef[index]} onChange={handleReference} required/>
                             </Box>
                             )
                         })}
