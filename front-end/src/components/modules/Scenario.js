@@ -36,8 +36,6 @@ export default function Scenario(props) {
     useEffect(() => { // Called for every rerender. 
         const storedtuning = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
         if (storedtuning !== null) setTuning(storedtuning);
-
-        
     }, []);
 
     useEffect(() => { // Store tuning
@@ -55,7 +53,6 @@ export default function Scenario(props) {
           //      setScenario(wasm.sayHello(JSON.stringify(tuning)));
           //      })
           //  .catch(setScenario)
-
         //props.moduleHook(props.modules["simulation"]); // Change page
     };
 
@@ -114,7 +111,7 @@ export default function Scenario(props) {
                     <Box sx={{pl: "2%"}}/>
                     <Button variant="contained" size="large" color="success" onClick={handleSimulatonClick}> RUN SIMULATION </Button>
                 </Box>
-                <Box align="left" sx={{pl: 30, pt: 2}}>
+                <Box align="left" sx={{pl: "26%", pt: 2}}>
                     <Typography variant="h5" sx={{fontWeight: 'bold'}}> Model Predictive Controller: </Typography>
                 </Box>
             
