@@ -8,37 +8,43 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 option(WEBASSEMBLY "Compile to WebAssembly" OFF)
 
 if(WEBASSEMBLY)
-    set(CMAKE_CXX_FLAGS "--no-entry")
+    set(CMAKE_CXX_FLAGS "--no-entry -fPIC")
+
+    # Fetch nlohmann_json, Eigen3 and osqp
     include(FetchContent)
-    
-    FetchContent_Declare(nlohmann_json 
+    FetchContent_Declare(nlohmann_json
         GIT_REPOSITORY https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent
         GIT_TAG v3.11.2
     )
-    FetchContent_MakeAvailable(nlohmann_json)
 
     FetchContent_Declare(Eigen
         GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
+        GIT_TAG master
+        GIT_SHALLOW TRUE
+        GIT_PROGRESS TRUE
     )
-    FetchContent_MakeAvailable(Eigen)
+    set(EIGEN_BUILD_DOC OFF)
+    set(BUILD_TESTING OFF)
+    set(OFF)
 
     FetchContent_Declare(osqp
         GIT_REPOSITORY https://github.com/osqp/osqp
     )
-    FetchContent_MakeAvailable(osqp)
+
+    FetchContent_MakeAvailable(nlohmann_json Eigen osqp)
 
     project(webassembly VERSION 1.0 LANGUAGES CXX)
-
-    # Compiling every file except main.cc
-    set(BACK_END_SRC src/bindings/*.cc src/OsqpEigen/*.cpp src/IO/*.cc src/model/*.cc src/MPC/*.cc)
-    file(GLOB_RECURSE SRC_FILES ${BACK_END_SRC})
+    set(BACKEND_SRC src/bindings/*.cc src/OsqpEigen/*.cpp src/IO/*.cc src/model/*.cc src/MPC/*.cc src/LightWeightMPC.cc)
+    file(GLOB_RECURSE SRC_FILES ${BACKEND_SRC})
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/../front-end/src") # Set webassembly output in src folder
-    add_executable(webassembly ${SRC_FILES}) # Define executable
+    add_executable(webassembly ${SRC_FILES}) 
 
     target_include_directories(webassembly PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
     target_link_libraries(webassembly nlohmann_json::nlohmann_json Eigen3::Eigen osqp)
 
-    set(EMCC_FLAGS "--bind --no-entry -s MAIN_MODULE -s SINGLE_FILE=1 -s STRICT=1 -s ALLOW_MEMORY_GROWTH=1 -s MALLOC=emmalloc -s MODULARIZE=1 -s EXPORT_ES6=1 -s ENVIRONMENT=web -s EXPORT_NAME='backend' -s ASSERTIONS=1")
+    # emcc compiler flags
+    set(EXPORT_FUNC "['__syscall_acct','__syscall_getegid32','__syscall_geteuid32','__syscall_getgroups32']") #NB! No pads
+    set(EMCC_FLAGS "--bind --target=wasm32-unknown-emscripten -lmusl -s MAIN_MODULE=2 -s SINGLE_FILE=1 -s STRICT=1 -s ALLOW_MEMORY_GROWTH=1 -s MALLOC=emmalloc -s MODULARIZE=1 -s EXPORT_ES6=1 -s ENVIRONMENT=web -s EXPORT_NAME='backend' -s ASSERTIONS=1 -s LINKABLE=1 -s EXPORT_ALL=1")
     set_target_properties(webassembly PROPERTIES SUFFIX ".mjs" LINK_FLAGS ${EMCC_FLAGS})
 
 else(WEBASSEMBLY)

@@ -13,12 +13,13 @@
 #include <emscripten/bind.h>
 #endif // __EMSCRIPTEN__
 
-#include "IO/json_specifiers.h"
 #include "IO/data_objects.h"
+#include "IO/json_specifiers.h"
 #include "IO/parse.h"
 #include "IO/serialize.h"
 #include "MPC/solvers.h"
 #include "model/FSRModel.h"
+#include "LightWeightMPC.h"
 
 #include <stdlib.h>
 #include <string>
@@ -33,18 +34,9 @@ using string = std::string;
 const double GAS_RATE_REF = 3800;
 const double OIL_RATE_REF = 70;
 
-VectorXd* AllocateConstReference(const std::vector<double>& ref_vec, int T, int P) { // Cannot reinitialize pointer via pass-by-pointer
-    VectorXd* y_ref = new VectorXd[int(ref_vec.size())];
-
-    for (int i = 0; i < int(ref_vec.size()); i++) {
-        y_ref[i] = VectorXd::Constant(T + P, ref_vec.at(i)); // Takes predictions into account!
-    }
-    return y_ref;
-}
-
-string say_hello(string str) {
-    return str;
-}
+//string say_hello(string str) {
+ //   return str;
+//}
 
 string simulate(string sce_file, string sys_file, string sce, int T) {
     // System variables:
@@ -67,38 +59,38 @@ string simulate(string sce_file, string sys_file, string sce, int T) {
     }
     MatrixXd du_tilde = MatrixXd::Zero(m_map[kN_MV], m_map[kN]-conf.W-1);
 
-    // Select dynamical model: 
-    FSRModel fsr(cvd.getSR(), m_map, conf.P, conf.M, conf.W, mvd.Inits, cvd.getInits());
-    fsr.setDuTildeMat(du_tilde);
+    // // Select dynamical model: 
+    // FSRModel fsr(cvd.getSR(), m_map, conf.P, conf.M, conf.W, mvd.Inits, cvd.getInits());
+    // fsr.setDuTildeMat(du_tilde);
 
-    // MPC variables:
-    MatrixXd u_mat; /** Optimized actuation, (n_MV, T) */
-    MatrixXd y_pred; /** Predicted output (n_CV, T)*/
+    // // MPC variables:
+    // MatrixXd u_mat; /** Optimized actuation, (n_MV, T) */
+    // MatrixXd y_pred; /** Predicted output (n_CV, T)*/
 
-    std::vector<double> ref_vec{GAS_RATE_REF, OIL_RATE_REF};
-    // Reference: 
-    if (int(ref_vec.size()) != m_map[kN_CV]) {
-        return "Number of references do not coincide with constrained variables";
-    }
-    VectorXd* y_ref = AllocateConstReference(ref_vec, T, conf.P);
+    // std::vector<double> ref_vec{GAS_RATE_REF, OIL_RATE_REF};
+    // // Reference: 
+    // if (int(ref_vec.size()) != m_map[kN_CV]) {
+    //     return "Number of references do not coincide with constrained variables";
+    // }
+    // VectorXd* y_ref = AllocateConstReference(ref_vec, T, conf.P);
 
-    // Solver: 
-    try {
-        SRSolver(T, u_mat, y_pred, fsr, conf, z_min, z_max, y_ref);
-        delete[] y_ref;
-    }
-    catch(std::exception& e) {
-        string error(e.what());
-        return error;
-    }
+    // // Solver: 
+    // try {
+    //     SRSolver(T, u_mat, y_pred, fsr, conf, z_min, z_max, y_ref);
+    //     delete[] y_ref;
+    // }
+    // catch(std::exception& e) {
+    //     string error(e.what());
+    //     return error;
+    // }
     
-    return SerializeSimulation(sce, cvd, mvd, 
-               y_pred, u_mat, z_min, z_max, fsr, T);
+    return "Works!";
+    //return SerializeSimulation(sce, cvd, mvd, 
+               //y_pred, u_mat, z_min, z_max, fsr, T);
 }
 
 #ifdef __EMSCRIPTEN__
 EMSCRIPTEN_BINDINGS(my_module) {
-    emscripten::function("sayHello", &say_hello);
     emscripten::function("simulate", &simulate);
 }
 #endif // __EMSCRIPTEN__

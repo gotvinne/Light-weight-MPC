@@ -6,7 +6,7 @@ import { BlockMath } from 'react-katex';
 import { importSystems, readModelParams, readSystem, serializeScenario } from "../../utils/IO.js";
 import { variableRender } from "../../utils/rendering.js";
 import "../../css/Modules.css"
-//import backend from "../../webassembly.mjs";
+import backend from "../../webassembly.mjs";
 
 const LOCAL_STORAGE_KEY = 'lightweightMPC.storage';
 
