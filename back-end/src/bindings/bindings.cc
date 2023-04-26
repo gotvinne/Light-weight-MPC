@@ -34,10 +34,6 @@ using string = std::string;
 const double GAS_RATE_REF = 3800;
 const double OIL_RATE_REF = 70;
 
-//string say_hello(string str) {
- //   return str;
-//}
-
 string simulate(string sce_file, string sys_file, string sce, int T) {
     // System variables:
     CVData cvd; 
@@ -59,34 +55,34 @@ string simulate(string sce_file, string sys_file, string sce, int T) {
     }
     MatrixXd du_tilde = MatrixXd::Zero(m_map[kN_MV], m_map[kN]-conf.W-1);
 
-    // // Select dynamical model: 
-    // FSRModel fsr(cvd.getSR(), m_map, conf.P, conf.M, conf.W, mvd.Inits, cvd.getInits());
-    // fsr.setDuTildeMat(du_tilde);
+    // Select dynamical model: 
+    FSRModel fsr(cvd.getSR(), m_map, conf.P, conf.M, conf.W, mvd.Inits, cvd.getInits());
+    fsr.setDuTildeMat(du_tilde);
 
-    // // MPC variables:
-    // MatrixXd u_mat; /** Optimized actuation, (n_MV, T) */
-    // MatrixXd y_pred; /** Predicted output (n_CV, T)*/
+    // MPC variables:
+    MatrixXd u_mat; /** Optimized actuation, (n_MV, T) */
+    MatrixXd y_pred; /** Predicted output (n_CV, T)*/
 
-    // std::vector<double> ref_vec{GAS_RATE_REF, OIL_RATE_REF};
-    // // Reference: 
-    // if (int(ref_vec.size()) != m_map[kN_CV]) {
-    //     return "Number of references do not coincide with constrained variables";
-    // }
-    // VectorXd* y_ref = AllocateConstReference(ref_vec, T, conf.P);
+    std::vector<double> ref_vec{GAS_RATE_REF, OIL_RATE_REF};
+    // Reference: 
+    if (int(ref_vec.size()) != m_map[kN_CV]) {
+         return "Number of references do not coincide with constrained variables";
+    }
+    VectorXd* y_ref = AllocateConstReference(ref_vec, T, conf.P);
 
-    // // Solver: 
-    // try {
-    //     SRSolver(T, u_mat, y_pred, fsr, conf, z_min, z_max, y_ref);
-    //     delete[] y_ref;
-    // }
-    // catch(std::exception& e) {
-    //     string error(e.what());
-    //     return error;
-    // }
+    // Solver: 
+    try {
+        SRSolver(T, u_mat, y_pred, fsr, conf, z_min, z_max, y_ref);
+        delete[] y_ref;
+    }
+    catch(std::exception& e) {
+        string error(e.what());
+        return error;
+    }
     
-    return "Works!";
-    //return SerializeSimulation(sce, cvd, mvd, 
-               //y_pred, u_mat, z_min, z_max, fsr, T);
+    //return "Works!";
+    return SerializeSimulation(sce, cvd, mvd, 
+               y_pred, u_mat, z_min, z_max, fsr, T);
 }
 
 #ifdef __EMSCRIPTEN__

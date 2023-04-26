@@ -43,8 +43,7 @@ if(WEBASSEMBLY)
     target_link_libraries(webassembly nlohmann_json::nlohmann_json Eigen3::Eigen osqp)
 
     # emcc compiler flags
-    set(EXPORT_FUNC "['__syscall_acct','__syscall_getegid32','__syscall_geteuid32','__syscall_getgroups32']") #NB! No pads
-    set(EMCC_FLAGS "--bind --target=wasm32-unknown-emscripten -lmusl -s MAIN_MODULE=2 -s SINGLE_FILE=1 -s STRICT=1 -s ALLOW_MEMORY_GROWTH=1 -s MALLOC=emmalloc -s MODULARIZE=1 -s EXPORT_ES6=1 -s ENVIRONMENT=web -s EXPORT_NAME='backend' -s ASSERTIONS=1 -s LINKABLE=1 -s EXPORT_ALL=1")
+    set(EMCC_FLAGS "--bind -s MAIN_MODULE=2 -s USE_ES6_IMPORT_META=0 -s WASM=1 -s SINGLE_FILE=1 -s ALLOW_MEMORY_GROWTH=1 -s MALLOC=emmalloc -s MODULARIZE=1 -s EXPORT_ES6=1 -s ENVIRONMENT=web -s EXPORT_NAME='backend' -s ASSERTIONS=1 -s LINKABLE=1 -std=c++11")
     set_target_properties(webassembly PROPERTIES SUFFIX ".mjs" LINK_FLAGS ${EMCC_FLAGS})
 
 else(WEBASSEMBLY)

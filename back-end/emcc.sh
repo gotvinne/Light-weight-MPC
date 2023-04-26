@@ -8,5 +8,8 @@ cd build_emcc
 echo 'source "/home/gotvinne/emsdk/emsdk_env.sh"' >> $HOME/.bash_profile
 
 # Building Release
-emcmake cmake .. -DCMAKE_BUILD_TYPE=Release -DWEBASSEMBLY=ON
+emcmake cmake .. -DEMCC_FORCE_STDLIBS=1 -DWEBASSEMBLY=ON
 emmake make 
+
+# Update modified js file to ignore eslint errors
+sed -i '1i/* eslint-disable */' ../../front-end/src/webassembly.mjs
