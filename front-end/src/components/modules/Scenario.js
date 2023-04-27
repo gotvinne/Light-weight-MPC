@@ -5,8 +5,9 @@ import 'katex/dist/katex.min.css';
 import { BlockMath } from 'react-katex';
 import { importSystems, readModelParams, readSystem, serializeScenario } from "../../utils/IO.js";
 import { variableRender } from "../../utils/rendering.js";
+import { simulate } from "../../utils/wasm.js";
 import "../../css/Modules.css"
-import backend from "../../webassembly.mjs";
+
 
 const LOCAL_STORAGE_KEY = 'lightweightMPC.storage';
 
@@ -18,8 +19,6 @@ const KEYS = Object.keys(TEXT_FIELDS); // Access keys
 export default function Scenario(props) {
     //** HOOKS */
     const [tuning, setTuning] = useState(TEXT_FIELDS); // Initialize tuning is a dictionary of hooks
-    const [scenario, setScenario] = useState(""); // Scenario JSON file
-    const [system, setSystem] = useState(); // System JSON file
     const [systemNames] = useState(importSystems()); // System names
     const [cvRef, setCVRef] = useState([]);
     const [mvRef, setMVRef] = useState([]);
@@ -33,19 +32,6 @@ export default function Scenario(props) {
         }
     }, [tuning[KEYS[0]]]);
 
-    useMemo(() => {
-        if (scenario === ""){
-            return "None";
-        } else {
-            let wasm: any;
-            backend()
-            .then((module) => {
-                wasm = module;
-                setSim(wasm.simulate(scenario, system, tuning[KEYS[1]], tuning[KEYS[2]]));
-            })
-        }
-    }, [scenario]);
-
     //** USE EFFECTS */
     useEffect(() => { // Called for every rerender. 
         const storedtuning = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
@@ -58,10 +44,12 @@ export default function Scenario(props) {
     
     //** HANDLER FUNCTIONS */ 
     const handleSimulatonClick = () => {
-        readSystem(tuning[KEYS[0]], setSystem);
-        serializeScenario(tuning, setScenario);
-        
-        //props.moduleHook(props.modules["simulation"]); // Change page
+
+        // Check TextFields if valid inputs are given.
+
+        const sys_file = readSystem(tuning[KEYS[0]]);
+        const sce_file = serializeScenario(tuning);
+        simulate(sce_file, sys_file, tuning[KEYS[1]], parseInt(tuning[KEYS[2]]), setSim);
     };
 
     const handleTextField = e => { 
@@ -230,10 +218,6 @@ export default function Scenario(props) {
                     </Box>
                 </Box>
                 
-
-                <Box sx={{pt: 2, display: "flex", flexDirection: "row"}}>
-                    <Typography> {scenario} </Typography>
-                </Box>
                 <Box sx={{pt: 2, display: "flex", flexDirection: "row"}}>
                     <Typography> {sim} </Typography>
                 </Box>

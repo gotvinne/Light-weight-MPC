@@ -77,21 +77,20 @@ export function readModelParams(fileName, identifier) {
 }
 
 /**
- * Read JSON file
+ * Read JSON file from systems database
  * @param {string} fileName 
  * @param {React.useState} setHook 
  */
-export function readSystem(fileName, setHook) {
+export function readSystem(fileName) {
   const resource = require(`./../systems/${fileName}.json`); // Load file
-  setHook(JSON.stringify(resource));
+  return JSON.stringify(resource);
 }
 
 /**
  * Serialize Scenario JSON file based on tunings
  * @param {React.useState} tuning 
- * @param {React.useState} setHook 
  */
-export function serializeScenario(tuning, setHook) {
+export function serializeScenario(tuning) {
  
   const q_arr = convertArr(tuning["Q"]); 
   const r_arr = convertArr(tuning["R"]);
@@ -124,6 +123,7 @@ export function serializeScenario(tuning, setHook) {
       processConstraints(ly_arr, uy_arr, "y"))
   }
 
-  setHook(JSON.stringify(scenario));
+  const json = JSON.stringify(scenario);
+  return json;
 }
 

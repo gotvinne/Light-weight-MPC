@@ -50,8 +50,7 @@ string simulate(string sce_file, string sys_file, string sce, int T) {
         Parse(sce_file, sys_file, m_map, cvd, mvd, conf, z_min, z_max);
     }
     catch(std::exception& e) {
-        string error(e.what());
-        return error;
+        return string(e.what());
     }
     MatrixXd du_tilde = MatrixXd::Zero(m_map[kN_MV], m_map[kN]-conf.W-1);
 
@@ -76,13 +75,12 @@ string simulate(string sce_file, string sys_file, string sce, int T) {
         delete[] y_ref;
     }
     catch(std::exception& e) {
-        string error(e.what());
-        return error;
+        return string(e.what());
     }
     
     //return "Works!";
     return SerializeSimulation(sce, cvd, mvd, 
-               y_pred, u_mat, z_min, z_max, fsr, T);
+              y_pred, u_mat, z_min, z_max, fsr, T);
 }
 
 #ifdef __EMSCRIPTEN__
