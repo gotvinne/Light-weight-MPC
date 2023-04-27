@@ -1,9 +1,10 @@
 import React, { useState, useMemo } from "react";
-import { AppBar, Tab, Tabs, Toolbar, Typography, Box } from "@mui/material";
+import { AppBar, Tab, Tabs, Toolbar } from "@mui/material";
 
 import About from "./modules/About";
 import Scenario from "./modules/Scenario";
 import Algorithm from "./modules/Algorithm";
+import Models from "./modules/Models";
 import Simulation from "./modules/Simulation";
 import TabPanel from "./TabPanel";
 
@@ -54,9 +55,7 @@ export default function Modules() {
                 <Algorithm/>
             </TabPanel>
             <TabPanel value={module} index={3}>
-                <Box sx={{pt: 2, pl: 2 }}>
-                    <Typography> Grete er kjempesøt </Typography>
-                </Box>
+                <Models />
             </TabPanel>
             <TabPanel value={module} index={4}>
                 <About/>
