@@ -3,6 +3,11 @@ import { Box } from "@mui/material";
 
 import "../../css/Modules.css"
 
+/**
+ * 
+ * @param {React.useState} sim_data MPC simulation data  
+ * @returns 
+ */
 export default function Simulation({sim_data}) {
 
     return (    

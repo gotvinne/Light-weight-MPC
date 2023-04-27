@@ -17,6 +17,9 @@ function createData(
     createData('Y', "P x n_CV")
   ];
 
+/**
+ * Module describing the MPC algorithm
+ */
 export default function Algorithm() {
 
     return (

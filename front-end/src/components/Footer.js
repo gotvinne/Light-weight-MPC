@@ -4,6 +4,9 @@ import CopyrightIcon from '@mui/icons-material/Copyright';
 
 import "../css/Footer.css"
 
+/**
+ * Defining the frontend footer
+ */
 export default function Footer() {
     return (
         <div className="Footer">

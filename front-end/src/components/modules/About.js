@@ -3,6 +3,9 @@ import { Box, Typography, Link } from '@mui/material';
 
 import "../../css/Modules.css"
 
+/**
+ * Module describing the background of the project
+ */
 export default function About() {
   return (
     <div className='About'>
