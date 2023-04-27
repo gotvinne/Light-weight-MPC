@@ -79,7 +79,6 @@ export function readModelParams(fileName, identifier) {
 /**
  * Read JSON file from systems database
  * @param {string} fileName 
- * @param {React.useState} setHook 
  */
 export function readSystem(fileName) {
   const resource = require(`./../systems/${fileName}.json`); // Load file

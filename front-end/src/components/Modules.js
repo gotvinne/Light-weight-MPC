@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useMemo } from "react";
 import { AppBar, Tab, Tabs, Toolbar, Typography, Box } from "@mui/material";
 
 import About from "./modules/About";
@@ -12,10 +12,19 @@ const MODULES = {"scenario": 0, "simulation": 1, "algorithm": 2, "models": 3, "a
 
 export default function Modules() {
     const keys = Object.keys(MODULES);
-    const [module, setModule] = React.useState(MODULES["scenario"]); 
+    const [module, setModule] = useState(MODULES["scenario"]); 
+    const [sim, setSim] = useState("");
     const handleChange = (event: React.SyntheticEvent, newModule: number) => { 
         setModule(newModule); 
     };
+
+    useMemo(() => { // Change module when simulation is received
+        if (sim === "") {
+            return; 
+        } else {
+            setModule(MODULES["simulation"]); 
+        }
+    }, [sim]);
     
     return (
         <React.Fragment>
@@ -36,10 +45,10 @@ export default function Modules() {
             </AppBar>
 
             <TabPanel value={module} width={"inherit"} index={0}>
-                <Scenario moduleHook={setModule} modules={MODULES}/>
+                <Scenario simHook={setSim} />
             </TabPanel>
             <TabPanel value={module} index={1}>
-                <Simulation />
+                <Simulation sim_data={sim}/>
             </TabPanel>
             <TabPanel value={module} index={2}>
                 <Algorithm/>

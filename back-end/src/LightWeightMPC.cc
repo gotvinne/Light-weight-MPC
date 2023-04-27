@@ -143,14 +143,11 @@ void LightWeightMPC(const string& sce, const std::vector<double>& ref_vec, bool 
         std::cout << e.what() << std::endl;
     }
 
-    std::cout << SerializeSimulation(sce, cvd, mvd, 
-               y_pred, u_mat, z_min, z_max, fsr, T) << std::endl;
-
     // Serializing: 
-    //if (new_sim) {
-        //SerializeSimulationNew(sim_path, sce, cvd, mvd, 
-        //       y_pred, u_mat, z_min, z_max, fsr, T);
-    //} else {
-     //   SerializeSimulation(sim_path, y_pred, u_mat, T);
-    //}
+    if (new_sim) {
+        SerializeSimulationNew(sim_path, sce, cvd, mvd, 
+               y_pred, u_mat, z_min, z_max, fsr, T);
+    } else {
+        SerializeSimulation(sim_path, y_pred, u_mat, T);
+    }
 }

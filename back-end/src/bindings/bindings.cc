@@ -78,7 +78,6 @@ string simulate(string sce_file, string sys_file, string sce, int T) {
         return string(e.what());
     }
     
-    //return "Works!";
     return SerializeSimulation(sce, cvd, mvd, 
               y_pred, u_mat, z_min, z_max, fsr, T);
 }
