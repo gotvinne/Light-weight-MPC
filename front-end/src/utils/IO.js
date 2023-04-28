@@ -1,3 +1,11 @@
+export interface CV {
+  output: string; unit: string; c: number[]; y_pred: number[];
+}
+
+export interface MV {
+  input: string; unit: string; c: number[]; u: number[];
+}
+
 /**
  * Convert string array to number array
  * @param {Array} str_arr 
@@ -60,7 +68,6 @@ export function readModelParams(fileName, identifier) {
   const data = resource[identifier];
  
   const arr = [];
-
   if (identifier === "CV") {
     data.forEach((cv) => {
       arr.push(cv["output"]);
@@ -126,3 +133,6 @@ export function serializeScenario(tuning) {
   return json;
 }
 
+export function readSimulationParams(sim) {
+  
+}
