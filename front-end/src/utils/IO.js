@@ -1,10 +1,4 @@
-export interface CV {
-  output: string; unit: string; c: number[]; y_pred: number[];
-}
-
-export interface MV {
-  input: string; unit: string; c: number[]; u: number[];
-}
+/** SYSTEM IO */
 
 /**
  * Convert string array to number array
@@ -92,6 +86,8 @@ export function readSystem(fileName) {
   return JSON.stringify(resource);
 }
 
+/** SCENARIO IO*/
+
 /**
  * Serialize Scenario JSON file based on tunings
  * @param {React.useState} tuning 
@@ -133,6 +129,59 @@ export function serializeScenario(tuning) {
   return json;
 }
 
-export function readSimulationParams(sim) {
-  
+/** SIMULATION IO */
+export interface CV {
+  output: string; unit: string; c: number[]; y_pred: number[];
+}
+
+export interface MV {
+  input: string; unit: string; c: number[]; u: number[];
+}
+
+export interface SimParam {
+  scenario: string; T: number; n_CV: number; n_MV: number;
+}
+
+export function readSimParams(sim) {
+  const simParam: SimParam = {
+    scenario: sim["scenario"],
+    T: sim["T"],
+    n_CV: sim["n_CV"],
+    n_MV: sim["n_MV"]
+  }
+  return simParam; 
+}
+
+export function readSimCV(sim) {
+  const CVs: CV[] = []; // Declare array of CV
+  const cv_data = sim["CV"]; // Array
+
+  cv_data.forEach((data) => {
+      const elem: CV = {
+        output: data["output"],
+        unit: data["unit"],
+        c: data["c"],
+        y_pred: data["y_pred"]
+      }
+      CVs.push(elem);
+    }
+  );
+  return CVs;
+}
+
+export function readSimMV(sim) {
+  const MVs: MV[] = []; // Declare array of CV
+  const mv_data = sim["MV"]; // Array
+
+  mv_data.forEach((data) => {
+      const elem: MV = {
+        input: data["input"],
+        unit: data["unit"],
+        c: data["c"],
+        u: data["u"]
+      }
+      MVs.push(elem);
+    }
+  );
+  return MVs;
 }
