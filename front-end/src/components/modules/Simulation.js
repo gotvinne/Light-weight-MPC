@@ -5,6 +5,8 @@ import { readSimParams, readSimCV, readSimMV } from "../../utils/IO.js";
 import { PlotPrediction, PlotActuation } from "../../utils/plot.js";
 import "../../css/Modules.css"
 
+const initSimParam = {scenario: "", T: 0, nCV: 0, nMV: 0};
+
 /**
  * Describe the simulation module for plotting data
  * @param {React.useState} sim_data MPC simulation data  
@@ -12,7 +14,7 @@ import "../../css/Modules.css"
 export default function Simulation({sim_data}) {
 
     const [simAvaliable, setSimAvaliable] = useState(false);
-    const [simParam, setSimParam] = useState({scenario: "", T: 0, nCV: 0, nMV: 0});
+    const [simParam, setSimParam] = useState(initSimParam);
     const [CVs, setCVs] = useState([]);
     const [MVs, setMVs] = useState([]);
 
@@ -30,7 +32,9 @@ export default function Simulation({sim_data}) {
     }, [sim_data]);
 
     useEffect(() => {
-        setSimAvaliable(true);
+        if (simParam !== initSimParam) {
+            setSimAvaliable(true);
+        }
     }, [simParam])
 
     return (    

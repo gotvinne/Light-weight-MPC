@@ -18,16 +18,27 @@ $$ min \quad Y(k+w)^TQY(k+w) + \Delta U(k+i)^TR\Delta U(k+i) $$
 
 *Condensed form:*
 
-$$ \min \quad \frac{1}{2}z_{cd}^T(2\Theta^T\bar{Q}\Theta + 2\bar{R})z_{cd} + 2\Theta^TQ(\Lambda(k)-\tau(k))z_{cd} \\
-   \quad \frac{1}{2} z_{cd}^T \boldsymbol{H} z_{cd}+q^T z_{cd} $$
+$$ \min_{z_{cd}} \quad \frac{1}{2} z_{cd}^T \boldsymbol{G_{cd}} z_{cd}+q^T_{cd} z_{cd} $$
 
 where 
 
-$$ \Lambda(k) = \boldsymbol{\Phi} \Delta \tilde{U}(k)+\Psi \tilde{U}(k-N)+B(k)$$ 
+$$ \boldsymbol{G_{cd}} = 2 \cdot blkdiag( \boldsymbol{\Theta}^{T} \boldsymbol{\bar{Q}} \boldsymbol{\Theta} + \boldsymbol{\bar{R}}, \boldsymbol{0}, \boldsymbol{0}), $$
 
-$$ \underline{z}_{st} - \begin{bmatrix} 0 \\ \boldsymbol{K}^{-1} \boldsymbol{\Gamma} \bar{U}(k-N) \\ \Lambda(k) \end{bmatrix} \leq 
- \begin{bmatrix} \boldsymbol{I} \\ \boldsymbol{K}^{-1}\\ \boldsymbol{\Theta} \end{bmatrix} z_{cd} \leq \bar{z}_{st} - \begin{bmatrix} 0 \\ \boldsymbol{K}^{-1} \boldsymbol{\Gamma} \bar{U}(k-N) \\ \Lambda(k) \end{bmatrix} \\
- l \leq \boldsymbol{A} z \leq u$$
+$$ q_{cd}(k) = \begin{bmatrix} 2 \cdot \boldsymbol{\Theta}^T\boldsymbol{\bar{Q}}(\Lambda(k) - \mathcal{T}(k)) \\ \rho_{h} \\ \rho_{l} \end{bmatrix}, $$ 
+
+$$ \underline{z}_{cd}(k) = \begin{bmatrix}
+        \Delta \underline{U} \\ \underline{U} \\ -\infty \\ \underline{Y} \\ 0 \\ 0
+    \end{bmatrix} - \begin{bmatrix} 0 \\ \mathbf{K}^{-1} \mathbf{\Gamma} U(k-1) \\ \mathbf{\Lambda}(k) \\ \mathbf{\Lambda}(k)\\ 0 \\ 0 \end{bmatrix} \leq 
+    \begin{bmatrix}
+    \mathbf{I} & \mathbf{0} & \mathbf{0} \\
+    \mathbf{K^{-1}} & \mathbf{0} & \mathbf{0} \\
+    \mathbf{\Theta} & \mathbf{-I} & \mathbf{0} \\
+    \mathbf{\Theta} & \mathbf{0} & \mathbf{I} \\
+    \mathbf{0} & \mathbf{I} & \mathbf{0} \\
+    \mathbf{0} & \mathbf{0} & \mathbf{I} \\
+    \end{bmatrix} z_{cd} \leq \begin{bmatrix}
+        \Delta \bar{U} \\ \bar{U} \\ \bar{Y} \\ \infty \\ \infty \\ \infty
+    \end{bmatrix} - \begin{bmatrix} 0 \\ \mathbf{K}^{-1} \mathbf{\Gamma} U(k-1) \\ \mathbf{\Lambda}(k) \\ \mathbf{\Lambda}(k) \\ 0 \\ 0 \end{bmatrix} = \bar{z}_{cd}(k) $$
  
 
 

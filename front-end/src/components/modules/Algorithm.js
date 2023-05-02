@@ -47,7 +47,7 @@ export default function Algorithm() {
                 </Typography>
 
                 <BlockMath math={`\\min \\sum_{j=W}^{P}\\left|(y(k+j \\mid k)-r_y(k+j))\\right|_{\\bar{Q}}^2+ \\sum_{j=0}^{(M-1)} \\left|\\Delta u(k+j)\\right|_{\\bar{R}}^2+\\bar{\\rho} \\bar{\\epsilon}+\\underline{\\rho} \\underline{\\epsilon}`} />
-                <BlockMath math={`\\min \\quad Y(k+w)^TQY(k+w) + \\Delta U(k+i)^TR\\Delta U(k+i) `} />
+                <BlockMath math={`\\min \\quad Y(k+(P-W))^TQY(k+(P-W)) + \\Delta U(k+(M-1))^TR\\Delta U(k+(M-1)) `} />
                 <Typography variant="h5"> Condensed Form: </Typography>
                 <BlockMath math={`\\min_{z_{cd}} \\quad \\frac{1}{2} z_{cd}^T \\boldsymbol{G_{cd}} z_{cd}+q^T_{cd} z_{cd}`} />
                 <BlockMath math={`\\boldsymbol{G_{cd}} = 2 \\cdot blkdiag( \\boldsymbol{\\Theta}^{T} \\boldsymbol{\\bar{Q}} \\boldsymbol{\\Theta} + \\boldsymbol{\\bar{R}}, \\boldsymbol{0}, \\boldsymbol{0}),`} />
