@@ -3,11 +3,11 @@ import backend from "../webassembly.mjs";
 
 /**
  * 
- * @param {*} sce_file 
- * @param {*} sys_file 
- * @param {*} sce 
- * @param {*} T 
- * @param {*} setHook 
+ * @param {string} sce_file 
+ * @param {string} sys_file 
+ * @param {string} sce 
+ * @param {number} T 
+ * @param {React.useState} setHook 
  */
 export function simulate(sce_file, sys_file, sce, T, setHook) {
 
@@ -17,5 +17,4 @@ export function simulate(sce_file, sys_file, sce, T, setHook) {
         wasm = module;
         setHook(wasm.simulate(sce_file, sys_file, sce, T));
     })
-    console.log("Simulation done");
 }
