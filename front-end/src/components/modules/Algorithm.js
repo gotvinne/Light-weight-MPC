@@ -14,7 +14,15 @@ function createData(
   }
   
   const rows = [
-    createData('Y', "P x n_CV")
+    createData('z_{cd}', `M \\cdot n_{MV} + 2 \\cdot n_{CV}`),
+    createData('\\boldsymbol{\\bar{Q}}', `n_{CV} \\cdot (P - W) \\times n_{CV} \\cdot (P - W)`),
+    createData('\\boldsymbol{\\bar{R}}', `M \\cdot n_{MV}  \\times M \\cdot n_{MV}`),
+    createData('\\boldsymbol{\\Theta}', `n_{CV} \\cdot (P-W) \\times M \\cdot n_{MV}`),
+    createData('\\boldsymbol{\\Phi}', `n_{C V}\\left(P-W\\right) \\times \\sum_{j=1}^{n_{M V}}\\left(N-W-1\\right)`),
+    createData('\\boldsymbol{\\Psi}', `n_{C V}\\left(P-W\\right) \\times n_{M V}`),
+    createData('\\boldsymbol{K}', `M \\cdot n_{MV} \\times M \\cdot n_{MV}`),
+    createData('\\boldsymbol{\\Gamma}', `M \\cdot n_{MV} \\times n_{MV}`),
+    createData('\\boldsymbol{A}', `2M \\cdot n_{MV} + P \\cdot n_{CV} \\times M \\cdot n_{MV}`)
   ];
 
 /**
@@ -41,34 +49,49 @@ export default function Algorithm() {
                 <BlockMath math={`\\min \\sum_{j=W}^{P}\\left|(y(k+j \\mid k)-r_y(k+j))\\right|_{\\bar{Q}}^2+ \\sum_{j=0}^{(M-1)} \\left|\\Delta u(k+j)\\right|_{\\bar{R}}^2+\\bar{\\rho} \\bar{\\epsilon}+\\underline{\\rho} \\underline{\\epsilon}`} />
                 <BlockMath math={`\\min \\quad Y(k+w)^TQY(k+w) + \\Delta U(k+i)^TR\\Delta U(k+i) `} />
                 <Typography variant="h5"> Condensed Form: </Typography>
-                <BlockMath math={`\\min \\quad \\frac{1}{2}z_{cd}^T(2\\Theta^T\\bar{Q}\\Theta + 2\\bar{R})z_{cd} + 2\\Theta^TQ(\\Lambda(k)-\\tau(k))z_{cd} \\
-                                = \\frac{1}{2} z_{cd}^T  \\boldsymbol{H} z_{cd}+q^T z_{cd}`} />
+                <BlockMath math={`\\min_{z_{cd}} \\quad \\frac{1}{2} z_{cd}^T \\boldsymbol{G_{cd}} z_{cd}+q^T_{cd} z_{cd}`} />
+                <BlockMath math={`\\boldsymbol{G_{cd}} = 2 \\cdot blkdiag( \\boldsymbol{\\Theta}^{T} \\boldsymbol{\\bar{Q}} \\boldsymbol{\\Theta} + \\boldsymbol{\\bar{R}}, \\boldsymbol{0}, \\boldsymbol{0}),`} />
+                <BlockMath math={`q_{cd}(k) = \\begin{bmatrix} 2 \\cdot \\boldsymbol{\\Theta}^T\\boldsymbol{\\bar{Q}}(\\Lambda(k) - \\mathcal{T}(k)) \\\\ \\rho_{h} \\\\ \\rho_{l} \\end{bmatrix},`} />
+                <Typography sx={{pl:"30%"}}> such that: </Typography>
+                <BlockMath math={`\\underline{z}_{cd}(k) = \\begin{bmatrix}
+                                \\Delta \\underline{U} \\\\ \\underline{U} \\\\ -\\infty \\\\ \\underline{Y} \\\\ 0 \\\\ 0
+                                \\end{bmatrix} - \\begin{bmatrix} 0 \\\\ \\mathbf{K}^{-1} \\mathbf{\\Gamma} U(k-1) \\\\ \\mathbf{\\Lambda}(k) \\\\ \\mathbf{\\Lambda}(k)\\\\ 0 \\\\ 0 \\end{bmatrix} \\leq 
+                                \\begin{bmatrix}
+                                \\mathbf{I} & \\mathbf{0} & \\mathbf{0} \\\\
+                                \\mathbf{K^{-1}} & \\mathbf{0} & \\mathbf{0} \\\\
+                                \\mathbf{\\Theta} & \\mathbf{-I} & \\mathbf{0} \\\\
+                                \\mathbf{\\Theta} & \\mathbf{0} & \\mathbf{I} \\\\
+                                \\mathbf{0} & \\mathbf{I} & \\mathbf{0} \\\\
+                                \\mathbf{0} & \\mathbf{0} & \\mathbf{I} \\\\
+                                \\end{bmatrix} z_{cd} \\leq \\begin{bmatrix}
+                                \\Delta \\bar{U} \\\\ \\bar{U} \\\\ \\bar{Y} \\\\ \\infty \\\\ \\infty \\\\ \\infty
+                                \\end{bmatrix} - \\begin{bmatrix} 0 \\\\ \\mathbf{K}^{-1} \\mathbf{\\Gamma} U(k-1) \\\\ \\mathbf{\\Lambda}(k) \\\\ \\mathbf{\\Lambda}(k) \\\\ 0 \\\\ 0 \\end{bmatrix} = \\bar{z}_{cd}(k) `} />
 
-                <BlockMath math={`\\Lambda(k) = \\boldsymbol{\\Phi} \\Delta \\tilde{U}(k)+\\Psi \\tilde{U}(k-N)+B(k)`} />
-
-                <TableContainer sx={{width: "30%"}} component={Paper}>
-                    <Table sx={{ width: "100%" }} aria-label="simple table">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Matrix Expression</TableCell>
-                                <TableCell > Condensed dimensions </TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {rows.map((row) => (
-                                <TableRow
-                                    key={row.name}
-                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                    >
-                                    <TableCell component="th" scope="row">
-                                        {row.name}
-                                    </TableCell>
-                                    <TableCell align="center">{row.num}</TableCell>
+                <Typography sx={{pt: "2%"}} variant="h5"> Overview of the dimensions used in the controller: </Typography>               
+                <Box sx={{pl: "30%", pt: "2%"}}> 
+                    <TableContainer sx={{width: "50%"}} component={Paper}>
+                        <Table sx={{ width: "100%" }} aria-label="simple table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Matrix Expression</TableCell>
+                                    <TableCell > Condensed dimensions </TableCell>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>    
+                            </TableHead>
+                            <TableBody>
+                                {rows.map((row) => (
+                                    <TableRow
+                                        key={row.name}
+                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                        >
+                                        <TableCell component="th" scope="row"> <InlineMath math={row.name}/> </TableCell>
+                                        <TableCell align="center"> <InlineMath math={row.num} /> </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Box>    
+                <Box sx={{pt: "2%"}}/>
             </Box>
         </div>
     );
