@@ -21,10 +21,27 @@ Software applications:
 - Academic framework understanding the controller method. 
 
 ## backend
-- C/C++ and Python module for simulating an MPC controller on an FSRM
+- C/C++ module for simulating an MPC controller on an FSRM
+- Python module using pyplot.matplotlib to visualise simulation data
 - Emscripten compiler to compile code to Webassembly format to interface JavaScript
 ## frontend
 - JavaScript, CSS, React web application 
 
 ### LICENCE:
 Released under the terms of the BSD 3-Clause License
+
+{CVs.map((cv, index) => {
+                        return (
+                        <Box key={index} sx={{width: "50%"}}> 
+                            <PlotPrediction cv_data={cv} T={simParam.T} />
+                        </Box>
+                        )
+                    })}
+
+{MVs.map((mv, index) => {
+                    return (
+                    <Box key={index} sx={{width: "50%"}}> 
+                        <Typography variant="h5" key={index}> {mv.input + ":"} </Typography>
+                    </Box>
+                    )
+                })}

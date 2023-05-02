@@ -130,34 +130,24 @@ export function serializeScenario(tuning) {
 }
 
 /** SIMULATION IO */
-export interface CV {
-  output: string; unit: string; c: number[]; y_pred: number[];
-}
 
-export interface MV {
-  input: string; unit: string; c: number[]; u: number[];
-}
-
-export interface SimParam {
-  scenario: string; T: number; n_CV: number; n_MV: number;
-}
 
 export function readSimParams(sim) {
-  const simParam: SimParam = {
+    const simParam = {
     scenario: sim["scenario"],
     T: sim["T"],
-    n_CV: sim["n_CV"],
-    n_MV: sim["n_MV"]
+    nCV: sim["n_CV"],
+    nMV: sim["n_MV"]
   }
   return simParam; 
 }
 
 export function readSimCV(sim) {
-  const CVs: CV[] = []; // Declare array of CV
+  const CVs = []; // Declare array of CV
   const cv_data = sim["CV"]; // Array
 
   cv_data.forEach((data) => {
-      const elem: CV = {
+      const elem = {
         output: data["output"],
         unit: data["unit"],
         c: data["c"],
@@ -170,11 +160,11 @@ export function readSimCV(sim) {
 }
 
 export function readSimMV(sim) {
-  const MVs: MV[] = []; // Declare array of CV
+  const MVs = []; // Declare array of CV
   const mv_data = sim["MV"]; // Array
 
   mv_data.forEach((data) => {
-      const elem: MV = {
+      const elem = {
         input: data["input"],
         unit: data["unit"],
         c: data["c"],
