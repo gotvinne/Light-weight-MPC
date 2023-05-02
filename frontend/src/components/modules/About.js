@@ -25,6 +25,9 @@ export default function About() {
           Supervisors:
           Prof. Lars Struen Imsland (ITK) & Dr. Gisle Otto Eikrem (Equinor)
         </Typography>
+        <Typography variant="body1" gutterBottom>
+          The source code can be found at <Link href="https://github.com/gotvinne/Light-weight-MPC/tree/main" underline="hover"> {'Github'} </Link> and is distributed under the <Link href="https://github.com/gotvinne/Light-weight-MPC/blob/main/LICENSE" underline="hover"> {"BSD-3-Clause license."} </Link>
+        </Typography>
       </Box>
     </div>
     
