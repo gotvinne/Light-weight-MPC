@@ -30,3 +30,32 @@ export function PlotPrediction(cv_data, T) {
         <Plot data={data} layout={layout}/>
     ); 
 }
+
+export function PlotActuation(mv_data, T) {
+    let t = Array.from({ length: T }, (value, index) => index);
+
+    var data = [
+        {
+            x: t,
+            y: mv_data.u,
+            type: "line",
+            line: {
+                color: 'rgb(0, 0, 255)'
+            }
+        }
+    ];
+
+    var layout = {
+        title: mv_data.input,
+        xaxis: {
+            title: "MPC horizon, t"
+        },
+        yaxis: {
+            title: mv_data.unit
+        }
+    };
+
+    return (
+        <Plot data={data} layout={layout}/>
+    ); 
+}

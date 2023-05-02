@@ -29,19 +29,3 @@ Software applications:
 
 ### LICENCE:
 Released under the terms of the BSD 3-Clause License
-
-{CVs.map((cv, index) => {
-                        return (
-                        <Box key={index} sx={{width: "50%"}}> 
-                            <PlotPrediction cv_data={cv} T={simParam.T} />
-                        </Box>
-                        )
-                    })}
-
-{MVs.map((mv, index) => {
-                    return (
-                    <Box key={index} sx={{width: "50%"}}> 
-                        <Typography variant="h5" key={index}> {mv.input + ":"} </Typography>
-                    </Box>
-                    )
-                })}

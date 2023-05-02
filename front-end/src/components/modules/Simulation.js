@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 
 import { readSimParams, readSimCV, readSimMV } from "../../utils/IO.js";
-import { PlotPrediction } from "../../utils/plot.js";
+import { PlotPrediction, PlotActuation } from "../../utils/plot.js";
 import "../../css/Modules.css"
 
 /**
@@ -37,12 +37,24 @@ export default function Simulation({sim_data}) {
     <div className="Simulation">
         {simAvaliable
             ? <Box sx={{width: "inherit"}}> 
-                <Box sx={{width: "inherit", pt: 3, height: "30%", display: "flex", flexDirection: "row"}}>
-                    {PlotPrediction(CVs[0], simParam.T)}
+                <Box sx={{width: "inherit", pl:"10%", height: "30%", display: "flex", flexDirection: "row"}}>
+                    {CVs.map((cv, index) => {
+                        return (
+                        <Box key={index} > 
+                            {PlotPrediction(cv, simParam.T)}
+                        </Box>
+                        )
+                    })}
                 </Box>
 
-                <Box sx={{width: "inherit", pt: 3, height: "30%", display: "flex", flexDirection: "row"}}>
-                
+                <Box sx={{width: "inherit", pl:"10%", height: "30%", display: "flex", flexDirection: "row"}}>
+                    {MVs.map((mv, index) => {
+                        return (
+                        <Box key={index} > 
+                            {PlotActuation(mv, simParam.T)}
+                        </Box>
+                        )
+                    })}
                 </Box>
             </Box>
 

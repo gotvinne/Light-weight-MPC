@@ -15,6 +15,7 @@ src
     css
     systems
     utils
+    webassembly.mjs
 package-lock.json
 package.json
 ```
@@ -55,6 +56,8 @@ In order to build a React application, [create-react-app](https://create-react-a
 npm install                        # Install needed react-packages
 npm start
 ```
+### Plots 
+*Plotly* is the JavaScript framework used to plot the simulation data in the app
 
 ### Deploying the app to production/server
 
