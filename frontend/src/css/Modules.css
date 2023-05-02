@@ -1,0 +1,20 @@
+
+.Scenario {
+    width: 100%;
+}
+
+.Simulation {
+    text-align: left;
+    width: 100%;
+}
+
+.Algorithm {
+    text-align: left;
+}
+
+.About {
+    text-align: center;
+    width: 50%;
+    padding-left: 25%;
+    padding-top: 3%;
+}
