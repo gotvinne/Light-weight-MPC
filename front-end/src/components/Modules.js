@@ -10,12 +10,12 @@ import TabPanel from "./TabPanel";
 
 // Mapping MODULES:
 const MODULES = {"scenario": 0, "simulation": 1, "algorithm": 2, "models": 3, "about": 4};
-
+const keys = Object.keys(MODULES);
 /**
  * Defining the modules of the frontend
  */
 export default function Modules() {
-    const keys = Object.keys(MODULES);
+    
     const [module, setModule] = useState(MODULES["scenario"]); 
     const [sim, setSim] = useState("");
     const handleChange = (event: React.SyntheticEvent, newModule: number) => { 
