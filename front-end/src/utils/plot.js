@@ -10,6 +10,7 @@ export function PlotPrediction(cv_data, T) {
     var prediction = {
         x: t,
         y: cv_data.y_pred,
+        name: "Prediction",
         type: "line",
         line: {
             color: 'rgb(128, 0, 128)'
@@ -20,6 +21,7 @@ export function PlotPrediction(cv_data, T) {
         x: t, 
         y: lower,
         mode: 'lines',
+        name: "Lower",
         line: {
             dash: 'dot',
             width: 2,
@@ -31,6 +33,7 @@ export function PlotPrediction(cv_data, T) {
         x: t, 
         y: upper,
         mode: 'lines',
+        name: "Upper",
         line: {
             dash: 'dot',
             width: 2,
@@ -61,6 +64,7 @@ export function PlotActuation(mv_data, T) {
     var actuation = {
         x: t,
         y: mv_data.u,
+        name: "Actuation",
         type: "line",
         line: {
             color: 'rgb(0, 0, 255)'
@@ -71,6 +75,7 @@ export function PlotActuation(mv_data, T) {
         x: t, 
         y: lower,
         mode: 'lines',
+        name: "Lower",
         line: {
             dash: 'dot',
             width: 2,
@@ -82,6 +87,7 @@ export function PlotActuation(mv_data, T) {
         x: t, 
         y: upper,
         mode: 'lines',
+        name: "Upper",
         line: {
             dash: 'dot',
             width: 2,
