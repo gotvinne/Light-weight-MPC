@@ -24,4 +24,10 @@ using string = std::string;
  */
 void TestSerializeScenario(const string& sce, const string& sys, const string& SCE_PATH, const string& SYS_PATH);
 
+/**
+ * @brief Test Wasm Simulate function
+ * 
+ */
+void TestSimulate();
+
 #endif // TESTS_H

@@ -12,14 +12,20 @@
 #include "tests.h"
 #include "IO/json_specifiers.h"
 #include "IO/serialize.h"
+#include "IO/parse.h"
+
+#include "wasm/wasm.h"
 
 #include <iostream>
 #include <vector>
 #include <map>
 
 #include <Eigen/Dense>
+#include <nlohmann/json.hpp>
 
 using VectorXd = Eigen::VectorXd;
+using json = nlohmann::json; 
+using string = std::string;
 
 void TestSerializeScenario(const string& sce, const string& sys, const string& SCE_PATH, const string& SYS_PATH) {
     const double CHOKE = 100;
@@ -60,4 +66,23 @@ void TestSerializeScenario(const string& sce, const string& sys, const string& S
     catch(std::exception& e) {
         std::cout << e.what() << std::endl;
     }
+}
+
+void TestSimulate() {
+    json ref = json::object();
+    ref["ref"] = {3800, 70};
+    string ref_str = to_string(ref);
+    
+    string sce = "test";
+    int T = 180;
+
+    json scenario = ReadJson("../data/scenarios/sce_SingleWell.json");
+    string sce_file = to_string(scenario);
+
+    json system = ReadJson("../data/systems/SingleWell.json");
+    string sys_file = to_string(system);
+
+    string data = simulate(sce_file, sys_file, sce, ref_str, T);
+    
+    std::cout << data << std::endl;
 }
