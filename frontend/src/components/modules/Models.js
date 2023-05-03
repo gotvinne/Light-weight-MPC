@@ -22,7 +22,7 @@ export default function Models() {
                 The FSRModel is a C++ object creating the dynamics of a general linear step response model. The following equations and matrices are avaliable by calling the FSRModel functionality.
                 </Typography>
                 <Typography variant="h5"> Output prediction equation: </Typography>
-                <BlockMath math={`\\tilde{Y}(k+P) = \\boldsymbol{\\Theta} \\Delta U(k+M)+ \\boldsymbol{\\Phi} \\Delta \\tilde{U}(k)+\\Psi \\tilde{U}(k-N)+B(k) = \\boldsymbol{\\Theta} \\Delta U(k+M) + \\boldsymbol{\\Lambda}(k) `} />
+                <BlockMath math={`\\tilde{Y}(k+P) = \\boldsymbol{\\Theta} \\Delta U(k+M)+ \\boldsymbol{\\Phi} \\Delta \\tilde{U}(k)+\\boldsymbol{\\Psi} \\tilde{U}(k-N)+B(k) = \\boldsymbol{\\Theta} \\Delta U(k+M) + \\boldsymbol{\\Lambda}(k) `} />
                 <Typography variant="h5"> Theta-matrix definition: </Typography>
                 <Box sx={{pl: "3%", pt: 2, display: "flex", flexDirection: "row"}}>
                 <BlockMath math={`\\boldsymbol{\\Theta} \\triangleq\\left[\\begin{array}{cccc}

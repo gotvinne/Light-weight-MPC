@@ -12,8 +12,8 @@ const LOCAL_STORAGE_KEY = 'lightweightMPC.storage';
  
 const DATA_TYPES = ["int", "vector<double>", "string"];
 const FORMULAS = [`\\leq \\Delta U \\leq`, `\\leq U \\leq`, `\\leq Y \\leq`];
-const TEXT_FIELDS = { "System": "", "Scenario": "test", "T": 180, "P": 100, "M": 50, "W": 0, "Q": "[1, 100]", "R": "[1, 100]", "RoH": "[1, 1]", "RoL": "[1, 1]", "ldu": "[-2, -10]", "lu": "[0, 0]", "ly": "[0, 0]", "udu": "[2, 10]", "uu": "[100, 1000]", "uy": "[4000, 100]"};
-//const TEXT_FIELDS = { "System": "", "Scenario": "", "T": 0, "P": 0, "M": 0, "W": 0, "Q": "[]", "R": "[]", "RoH": "[]", "RoL": "[]", "ldu": "[]", "lu": "[]", "ly": "[]", "udu": "[]", "uu": "[]", "uy": "[]"};
+//const TEXT_FIELDS = { "System": "", "Scenario": "test", "T": 180, "P": 100, "M": 50, "W": 0, "Q": "[1, 100]", "R": "[1, 100]", "RoH": "[1, 1]", "RoL": "[1, 1]", "ldu": "[-2, -10]", "lu": "[0, 0]", "ly": "[0, 0]", "udu": "[2, 10]", "uu": "[100, 1000]", "uy": "[4000, 100]"};
+const TEXT_FIELDS = { "System": "", "Scenario": "", "T": 0, "P": 0, "M": 0, "W": 0, "Q": "[]", "R": "[]", "RoH": "[]", "RoL": "[]", "ldu": "[]", "lu": "[]", "ly": "[]", "udu": "[]", "uu": "[]", "uy": "[]"};
 const KEYS = Object.keys(TEXT_FIELDS); // Access keys
 
 /**
