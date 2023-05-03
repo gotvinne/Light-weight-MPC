@@ -8,8 +8,9 @@
  * @copyright Released under the terms of the BSD 3-Clause License
  * 
  */
-#include "LightWeightMPC.h"
+#include "simulations.h"
 #include "MPC/solvers.h"
+
 #include "IO/json_specifiers.h"
 #include "IO/data_objects.h"
 #include "IO/parse.h"
@@ -96,7 +97,12 @@ void OpenLoopFSRM(const string& system, const std::vector<double>& ref_vec, int 
     }
 
     // Serialize:
-    SerializeOpenLoop(sim_path, system, cvd, mvd, y_pred, u_mat, fsr, T); 
+    try {
+        SerializeOpenLoop(sim_path, system, cvd, mvd, y_pred, u_mat, fsr, T); 
+    }
+    catch(std::exception& e) {
+        std::cout << e.what() << std::endl;
+    }
 }
 
 void MPCSimFSRM(const string& sce, const std::vector<double>& ref_vec, bool new_sim, int T) {
@@ -128,7 +134,7 @@ void MPCSimFSRM(const string& sce, const std::vector<double>& ref_vec, bool new_
         std::cout << e.what() << std::endl;
     }
     
-    // Select dynamical model: 
+    // FSRM:
     FSRModel fsr(cvd.getSR(), m_map, conf.P, conf.M, conf.W, mvd.Inits, cvd.getInits());
     fsr.setDuTildeMat(du_tilde);
 
@@ -152,10 +158,15 @@ void MPCSimFSRM(const string& sce, const std::vector<double>& ref_vec, bool new_
     }
 
     // Serializing: 
-    if (new_sim) {
-        SerializeSimulationNew(sim_path, sce, cvd, mvd, 
+    try {
+        if (new_sim) {
+            SerializeSimulationNew(sim_path, sce, cvd, mvd, 
                y_pred, u_mat, z_min, z_max, fsr, T);
-    } else {
-        SerializeSimulation(sim_path, y_pred, u_mat, T);
+        } else {
+            SerializeSimulation(sim_path, y_pred, u_mat, T);
+        }
+    }
+    catch(std::exception& e) {
+        std::cout << e.what() << std::endl;
     }
 }
