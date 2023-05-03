@@ -3,7 +3,7 @@ import { Typography } from "@mui/material"
 import { InlineMath } from "react-katex"
 
 /**
- * 
+ * Render variables in mathematical format
  * @param {number} length 
  * @param {string} identifier 
  * @returns 
