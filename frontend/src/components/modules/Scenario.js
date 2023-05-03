@@ -208,16 +208,7 @@ export default function Scenario({simHook}) {
                         {nmv.map((course, index) => {
                             return (
                             <Box key={index} sx={{width: "80%", height: "27%", pt: 2}}> 
-                                <Typography variant="h5" key={index}> {course + ":"} </Typography>
-                            </Box>
-                            )
-                        })}
-                    </Box>
-                    <Box sx={{width: "35%"}}> 
-                        {nmv.map((course, index) => {
-                            return (
-                            <Box key={index} sx={{width: "80%"}}> 
-                                <TextField id={"MV,"+index.toString()} variant="outlined" helperText={course + " reference, " + DATA_TYPES[0]} value={mvRef[index]} onChange={handleReference} required/>
+                                <Typography variant="h5" key={index}> {course} </Typography>
                             </Box>
                             )
                         })}
