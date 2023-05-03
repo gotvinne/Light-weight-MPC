@@ -9,20 +9,11 @@
 #include "IO/json_specifiers.h"
 #include "IO/data_objects.h"
 
-#include <nlohmann/json.hpp>
-#include <Eigen/Dense>
-
-#include <string>
 #include <map>
 #include <vector>
 #include <iostream>
 #include <fstream>
 #include <stdexcept>
-
-using json = nlohmann::json; 
-using VectorXd = Eigen::VectorXd;
-using MatrixXd = Eigen::MatrixXd;
-using string = std::string;
 
 /**
  * @brief function obtaining model data from system file

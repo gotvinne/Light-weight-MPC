@@ -34,7 +34,7 @@ if(WEBASSEMBLY)
     FetchContent_MakeAvailable(nlohmann_json Eigen osqp)
 
     project(webassembly VERSION 1.0 LANGUAGES CXX)
-    set(BACKEND_SRC src/bindings/*.cc src/OsqpEigen/*.cpp src/IO/*.cc src/model/*.cc src/MPC/*.cc src/LightWeightMPC.cc)
+    set(BACKEND_SRC src/wasm/*.cc src/OsqpEigen/*.cpp src/IO/*.cc src/model/*.cc src/MPC/*.cc src/LightWeightMPC.cc)
     file(GLOB_RECURSE SRC_FILES ${BACKEND_SRC})
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/../frontend/src") # Set webassembly output in src folder
     add_executable(webassembly ${SRC_FILES}) 
