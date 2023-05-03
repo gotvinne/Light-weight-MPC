@@ -1,8 +1,7 @@
-
 import backend from "../webassembly.mjs";
 
 /**
- * 
+ * Calling Webassembly compiled C++ simulation
  * @param {string} sce_file 
  * @param {string} sys_file 
  * @param {string} sce 
