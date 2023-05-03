@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { TextField, Box, Typography, Button, MenuItem, FormControl, InputLabel, Select } from "@mui/material";
 import { BlockMath } from 'react-katex';
-import { importSystems, readModelParams, readSystem, serializeScenario } from "../../utils/IO.js";
+import { importSystems, readModelParams, readSystem, serializeRef, serializeScenario } from "../../utils/IO.js";
 import { variableRender } from "../../utils/rendering.js";
 import { simulate } from "../../utils/wasm.js";
 
@@ -24,8 +24,7 @@ export default function Scenario({simHook}) {
     //** HOOKS */
     const [tuning, setTuning] = useState(TEXT_FIELDS); // Initialize tuning is a dictionary of hooks
     const [systemNames] = useState(importSystems()); // System names
-    const [cvRef, setCVRef] = useState([]);
-    const [mvRef, setMVRef] = useState([]);
+    const [ref, setRef] = useState([]);
         
     const [ncv, nmv] = useMemo(() => { // Read model params for displayment
         if (tuning[KEYS[0]] === "") {
@@ -52,9 +51,11 @@ export default function Scenario({simHook}) {
 
         const sys_file = readSystem(tuning[KEYS[0]]);
         const sce_file = serializeScenario(tuning);
+        const ref_str = serializeRef(ref);
 
         // Might use async
-        simulate(sce_file, sys_file, tuning[KEYS[1]], parseInt(tuning[KEYS[2]]), simHook);
+        // MPC simulation:
+        simulate(sce_file, sys_file, tuning[KEYS[1]], ref_str, parseInt(tuning[KEYS[2]]), simHook);
     };
 
     const handleTextField = e => { // Handle input bars
@@ -64,18 +65,10 @@ export default function Scenario({simHook}) {
     }
 
     const handleReference = e => { // Handle reference bars
-        const [type, index] = e.target.id.split(",");
-        if (type === "CV") {
-            setCVRef(reference => {
-                reference[index] = e.target.value;
-                return reference
-            }); 
-        } else if (type === "MV") {
-            setMVRef(reference => {
-                reference[index] = e.target.value;
-                return reference
-            }); 
-        } 
+        setRef(reference => {
+            reference[parseInt(e.target.id)] = parseFloat(e.target.value);
+            return reference
+        }); 
     }
 
     const handleSelect = e => { // Handle system select
@@ -190,7 +183,7 @@ export default function Scenario({simHook}) {
                         {ncv.map((course, index) => {
                             return (
                             <Box key={index} sx={{width: "80%"}}> 
-                                <TextField id={"CV,"+index.toString()} variant="outlined" helperText={course + " reference, " + DATA_TYPES[0]} value={cvRef[index]} onChange={handleReference} required/>
+                                <TextField id={index.toString()} variant="outlined" helperText={course + " reference, " + DATA_TYPES[0]} value={ref[index]} onChange={handleReference} required/>
                             </Box>
                             )
                         })}

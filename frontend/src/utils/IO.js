@@ -129,6 +129,13 @@ export function serializeScenario(tuning) {
   return json;
 }
 
+export function serializeRef(ref) {
+  const json_ref = {
+    "ref": ref
+  };
+  return JSON.stringify(json_ref);
+}
+
 /** SIMULATION IO */
 
 
