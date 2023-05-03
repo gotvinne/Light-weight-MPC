@@ -1,11 +1,11 @@
 /**
  * @file wasm.h
- * @author your name (you@domain.com)
- * @brief 
+ * @author Geir Ola Tvinnereim
+ * @brief Defining Emscripten includes
  * @version 0.1
  * @date 2023-05-02
  * 
- * @copyright Copyright (c) 2023
+ * @copyright Released under the terms of the BSD 3-Clause License
  * 
  */
 
