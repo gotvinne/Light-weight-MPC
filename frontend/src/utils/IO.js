@@ -5,13 +5,19 @@
  * @param {Array} str_arr 
  * @returns Array
  */
-function convertArr(str_arr) {
+export function convertArr(str_arr) {
 
   // Removing brackets: 
   let arr = str_arr.replace('[', '');
   arr = arr.replace(']', '');
-
-  return arr.split(",").map(Number);
+  
+  if (arr === "") { // If empty list
+    return [];
+  } else if (!isNaN(arr)) { // If only one number
+    return [parseFloat(arr)];
+  } else { // For many variables
+    return arr.split(",").map(Number);
+  }
 }
 
 /**
@@ -89,30 +95,30 @@ export function readSystem(fileName) {
 /** SCENARIO IO*/
 
 /**
- * Serialize Scenario JSON file based on tunings
- * @param {React.useState} tuning 
+ * Serialize Scenario JSON file based on scenario
+ * @param {React.useState} sce 
  */
-export function serializeScenario(tuning) {
+export function serializeScenario(sce) {
  
-  const q_arr = convertArr(tuning["Q"]); 
-  const r_arr = convertArr(tuning["R"]);
-  const roh_arr = convertArr(tuning["RoH"]);
-  const rol_arr = convertArr(tuning["RoL"]);
+  const q_arr = convertArr(sce["Q"]); 
+  const r_arr = convertArr(sce["R"]);
+  const roh_arr = convertArr(sce["RoH"]);
+  const rol_arr = convertArr(sce["RoL"]);
 
-  const ldu_arr = convertArr(tuning["ldu"]);
-  const lu_arr = convertArr(tuning["lu"]);
-  const ly_arr = convertArr(tuning["ly"]);
-  const udu_arr = convertArr(tuning["udu"]);
-  const uu_arr = convertArr(tuning["uu"]);
-  const uy_arr = convertArr(tuning["uy"]);
+  const ldu_arr = convertArr(sce["ldu"]);
+  const lu_arr = convertArr(sce["lu"]);
+  const ly_arr = convertArr(sce["ly"]);
+  const udu_arr = convertArr(sce["udu"]);
+  const uu_arr = convertArr(sce["uu"]);
+  const uy_arr = convertArr(sce["uy"]);
 
   const scenario = {
-    "system": tuning["System"],
+    "system": sce["System"],
 
     "MPC": {
-      "P": tuning["P"], 
-      "M": tuning["M"],
-      "W": tuning["W"], 
+      "P": sce["P"], 
+      "M": sce["M"],
+      "W": sce["W"], 
       "Q": q_arr,
       "R": r_arr,
       "RoH": roh_arr,
@@ -137,8 +143,6 @@ export function serializeRef(ref) {
 }
 
 /** SIMULATION IO */
-
-
 export function readSimParams(sim) {
     const simParam = {
     scenario: sim["scenario"],
