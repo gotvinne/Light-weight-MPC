@@ -14,6 +14,7 @@
 
 #include <string>
 #include <map>
+#include <vector>
 #include <iostream>
 #include <fstream>
 #include <stdexcept>
@@ -216,4 +217,17 @@ void ParseOpenLoop(const string& system, std::map<string, int>& m_map, CVData& c
     string sys_filepath = "../data/systems/" + system + ".json";
     json sys_data = ReadJson(sys_filepath);
     ParseSystemData(sys_data, m_map, cvd, mvd);
+}
+
+VectorXd* ParseReferenceStrByAllocation(string ref_str, int T, int P) {
+    json ref_data = json::parse(ref_str); 
+    json ref_vec = ref_data.at(kRef);
+
+    int size = int(ref_vec.size());
+    VectorXd* y_ref = new VectorXd[size];
+
+    for (int i = 0; i < size; i++) {
+        y_ref[i] = VectorXd::Constant(T + P, ref_vec.at(i)); // Takes predictions into account!
+    }
+    return y_ref;
 }

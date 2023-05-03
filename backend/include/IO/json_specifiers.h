@@ -47,4 +47,7 @@ const string kY = "y";
 const string kY_pred = "y_pred";
 const string kU = "u";
 
+// ------- Referense file specifier --------- //
+const string kRef = "ref"; 
+
 #endif // JSON_SPECIFIERS_H
