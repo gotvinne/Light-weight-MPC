@@ -19,8 +19,9 @@ using string = std::string;
  * 
  * @param sce [std::string] Scenario name
  * @param sys [std::string] System name
- * @param SYS_PATH [std::string] Path to system folder
+ * @param SCE_PATH [std::string] Path to scenario folder, write folder
+ * @param SYS_PATH [std::string] Path to system folder, read folder
  */
-void TestSerializeScenario(const string& sce, const string& sys, const string& SYS_PATH);
+void TestSerializeScenario(const string& sce, const string& sys, const string& SCE_PATH, const string& SYS_PATH);
 
 #endif // TESTS_H

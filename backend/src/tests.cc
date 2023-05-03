@@ -11,6 +11,7 @@
 
 #include "tests.h"
 #include "IO/json_specifiers.h"
+#include "IO/serialize.h"
 
 #include <iostream>
 #include <vector>
@@ -20,7 +21,7 @@
 
 using VectorXd = Eigen::VectorXd;
 
-void TestSerializeScenario(const string& sce, const string& sys, const string& SYS_PATH) {
+void TestSerializeScenario(const string& sce, const string& sys, const string& SCE_PATH, const string& SYS_PATH) {
     const double CHOKE = 100;
     const double GAS_LIFT = 1000;
     std::vector<double> ref_vec{CHOKE, GAS_LIFT};

@@ -60,7 +60,7 @@ static VectorXd* AllocateConstReference(const std::vector<double>& ref_vec, int 
 }
 
 void OpenLoopFSRM(const string& system, const std::vector<double>& ref_vec, int T) {
-    const string sim = "sim_open_loop_" + system;
+    const string sim = "sim_open_loop_" + system; // Simulation file name
     const string sim_path = "../data/simulations/" + sim + ".json";
 
     // System variables:
