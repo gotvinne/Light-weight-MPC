@@ -7,7 +7,7 @@
 # 
 # ex: sh make.sh -T 180 -s SingleWell -n
 
-mkdir -p "build"
+mkdir -p "build" #NB! Sometimes the old build folder needs to be deleted.
 
 # CLI parser
 argN=false
