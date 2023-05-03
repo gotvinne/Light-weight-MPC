@@ -118,11 +118,12 @@ MVData::MVData(const json& mv_data, int n_MV) {
 
 MPCConfig::MPCConfig() : P(), M(), W(), bias_update() {}
 MPCConfig::MPCConfig(const json& sce_data) {
-    json mpc_data = sce_data.at(kMPC);
+    json mpc_data = sce_data.at(kMPC); // Extract data marked MPC. 
     P = mpc_data.at(kP);
     M = mpc_data.at(kM);
     W = mpc_data.at(kW);
 
+    // Recall sizes
     int n_CV = int(mpc_data.at(kQ).size());
     int n_MV = int(mpc_data.at(kR).size());
 
