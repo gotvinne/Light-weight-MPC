@@ -17,13 +17,18 @@
 #include <Eigen/Dense>
 #include <nlohmann/json.hpp>
 
+using json = nlohmann::json; 
+using VectorXd = Eigen::VectorXd;
+using MatrixXd = Eigen::MatrixXd;
+using string = std::string;
+
 /**
  * @brief Reads a json file using nlohmann::json
  * 
  * @param filepath file to be read
  * @return json object
  */
-nlohmann::json ReadJson(const std::string& filepath);
+json ReadJson(const string& filepath);
 
 /**
  * @brief Combines all parse functionality, parsing system and scenario file
@@ -36,9 +41,9 @@ nlohmann::json ReadJson(const std::string& filepath);
  * @param z_min lower constraints 
  * @param z_max upper constraints
  */
-void ParseNew(const std::string& sce_filepath, std::map<std::string, int>& m_map,
+void ParseNew(const string& sce_filepath, std::map<string, int>& m_map,
                     CVData& cvd, MVData& mvd, MPCConfig& conf, 
-                        Eigen::VectorXd& z_min, Eigen::VectorXd& z_max);
+                        VectorXd& z_min, VectorXd& z_max);
 
 /**
  * @brief 
@@ -52,9 +57,9 @@ void ParseNew(const std::string& sce_filepath, std::map<std::string, int>& m_map
  * @param z_min 
  * @param z_max 
  */
-void Parse(const std::string& sce_file, const std::string& sys_file, std::map<std::string, int>& m_map,
+void Parse(const string& sce_file, const string& sys_file, std::map<string, int>& m_map,
                     CVData& cvd, MVData& mvd, MPCConfig& conf, 
-                        Eigen::VectorXd& z_min, Eigen::VectorXd& z_max);
+                        VectorXd& z_min, VectorXd& z_max);
         
 /**
  * @brief Parse function taking previous simulations into account
@@ -69,9 +74,9 @@ void Parse(const std::string& sce_file, const std::string& sys_file, std::map<st
  * @param z_max upper constraints
  * @param du_tilde [Eigen::MatrixXd] Matrix of previous actuations
  */
-void Parse(const std::string& sce_filepath, const std::string& sim_filepath, std::map<std::string, int>& m_map,
+void Parse(const string& sce_filepath, const string& sim_filepath, std::map<string, int>& m_map,
             CVData& cvd, MVData& mvd, MPCConfig& conf, 
-                Eigen::VectorXd& z_min, Eigen::VectorXd& z_max, Eigen::MatrixXd& du_tilde);
+                VectorXd& z_min, VectorXd& z_max, MatrixXd& du_tilde);
 
 /**
  * @brief Parsing only the system in order to simulate open loop
@@ -82,4 +87,15 @@ void Parse(const std::string& sce_filepath, const std::string& sim_filepath, std
  * @param mvd 
  */
 void ParseOpenLoop(const string& system, std::map<string, int>& m_map, CVData& cvd, MVData& mvd);
+
+/**
+ * @brief 
+ * 
+ * @param ref_str 
+ * @param T 
+ * @param P 
+ * @return VectorXd* 
+ */
+VectorXd* ParseReferenceStrByAllocation(string ref_str, int T, int P);
+
 #endif // PARSE_H
