@@ -4,7 +4,7 @@
 mkdir -p "build_emcc"
 cd build_emcc
 
-# Setting emsdk path
+# Setting emsdk path, REMOVE THIS LINE!
 echo 'source "/home/gotvinne/emsdk/emsdk_env.sh"' >> $HOME/.bash_profile
 
 # Building Release

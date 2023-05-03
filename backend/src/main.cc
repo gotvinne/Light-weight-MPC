@@ -45,7 +45,6 @@ int main(int argc, char **argv) {
     std::vector<double> ref_vec{GAS_RATE_REF, OIL_RATE_REF};
     
     // ---- MPC Simulations ---- //
-
     //OpenLoopFSRM(sce, ref_vec, T);
     MPCSimFSRM(sce, ref_vec, new_sim, T);
 }

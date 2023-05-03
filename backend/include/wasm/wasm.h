@@ -19,9 +19,7 @@
 
 #include "MPC/solvers.h"
 #include "model/FSRModel.h"
-#include "LightWeightMPC.h"
 
-#include <stdlib.h>
 #include <string>
 #include <map>
 #include <vector>

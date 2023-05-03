@@ -59,6 +59,7 @@ string simulate(string sce_file, string sys_file, string sce, string ref_str, in
               y_pred, u_mat, z_min, z_max, fsr, T);
 }
 
+// webassembly.mjs: Functions added into EMCRIPTEN_BINDINGS are compiled to JS using Webassembly.
 #ifdef __EMSCRIPTEN__
 EMSCRIPTEN_BINDINGS(my_module) {
     emscripten::function("simulate", &simulate);
