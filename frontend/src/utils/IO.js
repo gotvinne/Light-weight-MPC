@@ -68,19 +68,26 @@ export function readModelParams(fileName, identifier) {
   const data = resource[identifier];
  
   const arr = [];
+  const units = [];
   if (identifier === "CV") {
     data.forEach((cv) => {
       arr.push(cv["output"]);
+      units.push("["+ cv["unit"] +"]");
     });
   } else if (identifier === "MV") {
     data.forEach((mv) => {
       arr.push(mv["input"]);
+      if (mv["unit"] === "%") {
+        units.push("[\\"+mv["unit"]+"]");
+      } else {
+        units.push("["+ mv["unit"] +"]");
+      }
     });
   } else {
     throw new Error("Invalid identifier!");
   }
   
-  return arr;
+  return [arr, units];
 }
 
 /**

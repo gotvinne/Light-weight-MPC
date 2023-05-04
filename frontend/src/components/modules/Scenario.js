@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { TextField, Box, Typography, Button, MenuItem, FormControl, InputLabel, Select } from "@mui/material";
-import { BlockMath } from 'react-katex';
+import { BlockMath, InlineMath } from 'react-katex';
 import { importSystems, readModelParams, readSystem, serializeRef, serializeScenario } from "../../utils/IO.js";
 import { variableRender } from "../../utils/rendering.js";
 import { updateError } from "../../utils/error.js";
@@ -12,10 +12,9 @@ const LOCAL_STORAGE_KEY = 'lightweightMPC.storage';
  
 const DATA_TYPES = ["int", "vector<double>", "string"];
 const FORMULAS = [`\\leq \\Delta U \\leq`, `\\leq U \\leq`, `\\leq Y \\leq`];
-const TEXT_FIELDS = { "System": "", "Scenario": "test", "T": 180, "P": 100, "M": 50, "W": 0, "Q": "[1, 100]", "R": "[1, 100]", "RoH": "[1, 1]", "RoL": "[1, 1]", "ldu": "[-2, -10]", "lu": "[0, 0]", "ly": "[0, 0]", "udu": "[2, 10]", "uu": "[100, 1000]", "uy": "[4000, 100]"};
+//const TEXT_FIELDS = { "System": "", "Scenario": "test", "T": 180, "P": 100, "M": 50, "W": 0, "Q": "[1, 100]", "R": "[1, 100]", "RoH": "[1, 1]", "RoL": "[1, 1]", "ldu": "[-2, -10]", "lu": "[0, 0]", "ly": "[0, 0]", "udu": "[2, 10]", "uu": "[100, 1000]", "uy": "[4000, 100]"};
 //const TEXT_FIELDS = { "System": "", "Scenario": "test", "T": 100, "P": 10, "M": 5, "W": 0, "Q": "[1]", "R": "[1]", "RoH": "[1]", "RoL": "[1]", "ldu": "[-10]", "lu": "[-0.01]", "ly": "[-0.01]", "udu": "[10]", "uu": "[0.8]", "uy": "[1.6]"};
-//const TEXT_FIELDS = { "System": "", "Scenario": "", "T": 0, "P": 0, "M": 0, "W": 0, "Q": "[]", "R": "[]", "RoH": "[]", "RoL": "[]", "ldu": "[]", "lu": "[]", "ly": "[]", "udu": "[]", "uu": "[]", "uy": "[]"};
-//const ERROR = {"T": true, "P": true, "M": true, "W": true, "Q": true, "R": true, "RoH": true, "RoL": true, "ldu": true, "lu": true, "ly": true, "udu": true, "uu": true, "uy": true};
+const TEXT_FIELDS = { "System": "", "Scenario": "", "T": 0, "P": 0, "M": 0, "W": 0, "Q": "[]", "R": "[]", "RoH": "[]", "RoL": "[]", "ldu": "[]", "lu": "[]", "ly": "[]", "udu": "[]", "uu": "[]", "uy": "[]"};
 const ERROR = {"T": false, "P": false, "M": false, "W": false, "Q": false, "R": false, "RoH": false, "RoL": false, "ldu": false, "lu": false, "ly": false, "udu": false, "uu": false, "uy": false};
 const KEYS = Object.keys(TEXT_FIELDS); 
 
@@ -32,7 +31,7 @@ export default function Scenario({simHook}) {
         
     const [cv, mv] = useMemo(() => { // Read model params for displayment
         if (sce[KEYS[0]] === "") {
-            return [[], []];
+            return [[[], []], [[], []]];
         } else {
             return [readModelParams(sce[KEYS[0]], "CV"), readModelParams(sce[KEYS[0]], "MV")];
         }
@@ -42,7 +41,7 @@ export default function Scenario({simHook}) {
     useEffect(() => { // Fetch storage
         const storedSce = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
         if (storedSce !== null) setSce(storedSce);
-        
+        console.log(mv);
     }, []);
 
     useEffect(() => { // Store sce
@@ -121,11 +120,11 @@ export default function Scenario({simHook}) {
             
                 <Box sx={{pt: 2, display: "flex", flexDirection: "row"}}>
                     <Box sx ={{pt:2, pl: 7}}>
-                        <TextField error={error[KEYS[3]]} sx={{width: "70%"}} id={KEYS[3]} variant="outlined" helperText={"Prediction horizon P, " + DATA_TYPES[0]} value={sce[KEYS[3]]} onChange={handleTextField} required/>
+                        <TextField error={error[KEYS[3]]} sx={{width: "90%"}} id={KEYS[3]} variant="outlined" helperText={"Prediction horizon P, " + DATA_TYPES[0]} value={sce[KEYS[3]]} onChange={handleTextField} required/>
                         <Box />
-                        <TextField error={error[KEYS[4]]} sx={{width: "70%"}} id={KEYS[4]} variant="outlined" helperText={"Control horizon M, " + DATA_TYPES[0]} value={sce[KEYS[4]]} onChange={handleTextField} required/>
+                        <TextField error={error[KEYS[4]]} sx={{width: "90%"}} id={KEYS[4]} variant="outlined" helperText={"Control horizon M, " + DATA_TYPES[0]} value={sce[KEYS[4]]} onChange={handleTextField} required/>
                         <Box />
-                        <TextField error={error[KEYS[5]]} sx={{width: "70%"}} id={KEYS[5]} variant="outlined" helperText={"Time delay, W " + DATA_TYPES[0]} value={sce[KEYS[5]]} onChange={handleTextField} required/>
+                        <TextField error={error[KEYS[5]]} sx={{width: "90%"}} id={KEYS[5]} variant="outlined" helperText={"Time delay, W " + DATA_TYPES[0]} value={sce[KEYS[5]]} onChange={handleTextField} required/>
                     </Box>
 
                     <Box sx={{pt:2}}>
@@ -174,14 +173,14 @@ export default function Scenario({simHook}) {
             <Box sx={{width: "50%"}}>
                 <Box sx={{pt: 2, height: "5%", display: "flex", flexDirection: "row"}} >
                     <Box sx={{width: "25%", pt: 2, display: "flex", flexDirection: "row"}}> 
-                        {variableRender(cv.length, "CV")}
+                        {variableRender(cv[0].length, "CV")}
                     </Box>
                 </Box>
                 <Box sx={{pt: 2, height: "30%", display: "flex", flexDirection: "row" }} >
                     <Box sx={{width: "15%", pt: 2, display: "flex", flexDirection: "row"}}> 
                     </Box>
                     <Box sx={{width: "20%"}}> 
-                        {cv.map((course, index) => {
+                        {cv[0].map((course, index) => {
                             return (
                             <Box key={index} sx={{width: "80%", height: "27%", pt: 2}}> 
                                 <Typography variant="h5" key={index}> {course + ":"} </Typography>
@@ -189,11 +188,20 @@ export default function Scenario({simHook}) {
                             )
                         })}
                     </Box>
-                    <Box sx={{width: "35%"}}> 
-                        {cv.map((course, index) => {
+                    <Box sx={{width: "30%"}}> 
+                        {cv[0].map((course, index) => {
                             return (
-                            <Box key={index} sx={{width: "80%"}}> 
-                                <TextField id={index.toString()} variant="outlined" helperText={course + " reference, " + DATA_TYPES[0]} value={ref[index]} onChange={handleReference} required/>
+                            <Box key={index}> 
+                                <TextField sx={{width: "90%"}} id={index.toString()} variant="outlined" helperText={course + " reference, " + DATA_TYPES[0]} value={ref[index]} onChange={handleReference} required/>
+                            </Box>
+                            )
+                        })}
+                    </Box>
+                    <Box sx={{width: "15%"}}> 
+                        {cv[1].map((unit, index) => {
+                            return (
+                            <Box key={index} sx={{width: "80%", height: "27%", pt: 2}}> 
+                                <Typography variant="h5" key={index}> <InlineMath math={unit} /> </Typography>
                             </Box>
                             )
                         })}
@@ -201,22 +209,23 @@ export default function Scenario({simHook}) {
                 </Box>
                 <Box sx={{pt: 2, height: "5%", display: "flex", flexDirection: "row" }} >
                     <Box sx={{width: "25%", pt: 2, display: "flex", flexDirection: "row"}}> 
-                        {variableRender(cv.length, "MV")}
+                        {variableRender(mv[0].length, "MV")}
                     </Box>
                 </Box>
                 <Box sx={{pt: 2, height: "30%", display: "flex", flexDirection: "row" }} >
                     <Box sx={{width: "15%", pt: 2, display: "flex", flexDirection: "row"}}> 
                     </Box>
-                    <Box sx={{width: "20%"}}> 
-                        {mv.map((course, index) => {
+                    <Box sx={{width: "35%"}}> 
+                        {mv[0].map((course, index) => {
                             return (
                             <Box key={index} sx={{width: "80%", height: "27%", pt: 2}}> 
-                                <Typography variant="h5" key={index}> {course} </Typography>
+                                <Typography variant="h5" key={index}> {course + ": "} <InlineMath math={mv[1][index]} /> </Typography>
                             </Box>
                             )
                         })}
                     </Box>
                 </Box>
+    
             </Box>
         </Box>
         </div>
