@@ -12,8 +12,8 @@ import Tuning from "./textfields/Tuning.js";
 const LOCAL_STORAGE_KEY = 'lightweightMPC.storage';
  
 //const TEXT_FIELDS = { "System": "", "Scenario": "test", "T": 180, "P": 100, "M": 50, "W": 0, "Q": "[1, 100]", "R": "[1, 100]", "RoH": "[1, 1]", "RoL": "[1, 1]", "ldu": "[-2, -10]", "lu": "[0, 0]", "ly": "[0, 0]", "udu": "[2, 10]", "uu": "[100, 1000]", "uy": "[4000, 100]"};
-//const TEXT_FIELDS = { "System": "", "Scenario": "test", "T": 100, "P": 10, "M": 5, "W": 0, "Q": "[1]", "R": "[1]", "RoH": "[1]", "RoL": "[1]", "ldu": "[-10]", "lu": "[-0.01]", "ly": "[-0.01]", "udu": "[10]", "uu": "[0.8]", "uy": "[1.6]"};
-const TEXT_FIELDS = { "System": "", "Scenario": "", "T": 0, "P": 0, "M": 0, "W": 0, "Q": "[]", "R": "[]", "RoH": "[]", "RoL": "[]", "ldu": "[]", "lu": "[]", "ly": "[]", "udu": "[]", "uu": "[]", "uy": "[]"};
+const TEXT_FIELDS = { "System": "", "Scenario": "test", "T": 100, "P": 10, "M": 5, "W": 0, "Q": "[1]", "R": "[1]", "RoH": "[1]", "RoL": "[1]", "ldu": "[-10]", "lu": "[-0.01]", "ly": "[-0.01]", "udu": "[10]", "uu": "[0.8]", "uy": "[1.6]"};
+//const TEXT_FIELDS = { "System": "", "Scenario": "", "T": 0, "P": 0, "M": 0, "W": 0, "Q": "[]", "R": "[]", "RoH": "[]", "RoL": "[]", "ldu": "[]", "lu": "[]", "ly": "[]", "udu": "[]", "uu": "[]", "uy": "[]"};
 const ERROR = {"T": false, "P": false, "M": false, "W": false, "Q": false, "R": false, "RoH": false, "RoL": false, "ldu": false, "lu": false, "ly": false, "udu": false, "uu": false, "uy": false};
 const KEYS = Object.keys(TEXT_FIELDS); 
 
@@ -27,6 +27,7 @@ export default function Scenario({simHook}) {
     const [systemNames] = useState(importSystems()); // System names
     const [error, setError] = useState(ERROR);
     const [ref, setRef] = useState([]);
+    const [buttonColor, setButtonColor] = useState("secondary");
         
     const [cv, mv] = useMemo(() => { // Read model params for displayment
         if (sce[KEYS[0]] === "") {
@@ -47,7 +48,13 @@ export default function Scenario({simHook}) {
             localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(sce));
         }
         if (sce[KEYS[0]] !== "") {
-            setError({...updateError(sce, error, cv.length, mv.length)});
+            setError({...updateError(sce, error, cv[0].length, mv[0].length)});
+
+            if (Object.values(error).every((v) => v === false) && sce[KEYS[0]] !== "") {
+                setButtonColor("success");
+            } else {
+                setButtonColor("secondary");
+            }
         }
     }, [sce])
     
@@ -94,7 +101,7 @@ export default function Scenario({simHook}) {
                     <Box sx={{pl: 2}}/>
                     <TextField error={error[KEYS[2]]} sx={{width: "20%"}} id={KEYS[2]} variant="outlined" helperText={"MPC horizon T, int"} value={sce[KEYS[2]]} onChange={handleTextField} required/>
                     <Box sx={{pl: "3%"}}/>
-                    <Button variant="contained" size="large" color="success" onClick={handleSimulatonClick}> RUN SIMULATION </Button>
+                    <Button variant="contained" size="large" color={buttonColor} onClick={handleSimulatonClick}> RUN SIMULATION </Button>
                 </Box>
 
                 <Tuning keys={KEYS} ncv={cv[0].length} nmv={mv[0].length} error={error} scenario={sce} handler={handleTextField} />
