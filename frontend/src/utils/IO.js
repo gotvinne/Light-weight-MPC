@@ -11,7 +11,7 @@ export function convertArr(str_arr) {
   let arr = str_arr.replace('[', '');
   arr = arr.replace(']', '');
   
-  if (arr === "") { // If empty list
+  if (arr === '') { // If empty list
     return [];
   } else if (!isNaN(arr)) { // If only one number
     return [parseFloat(arr)];
