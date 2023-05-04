@@ -1,15 +1,15 @@
 {
-    "system": "sr_siso_test",
+    "system": "siso_test",
     
     "MPC": {
       "P": 10,
       "M": 5,
       "W": 0,
 
-      "Q": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-      "R": [1, 1, 1, 1, 1], 
-      "RoH": [0],
-      "RoL": [0],
+      "Q": [1],
+      "R": [1], 
+      "RoH": [1],
+      "RoL": [1],
       "bias update": false
     },
 
