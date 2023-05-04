@@ -1,17 +1,16 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { TextField, Box, Typography, Button, MenuItem, FormControl, InputLabel, Select } from "@mui/material";
-import { BlockMath, InlineMath } from 'react-katex';
+import { TextField, Box, Button, MenuItem, FormControl, InputLabel, Select } from "@mui/material";
 import { importSystems, readModelParams, readSystem, serializeRef, serializeScenario } from "../../utils/IO.js";
-import { variableRender } from "../../utils/rendering.js";
 import { updateError } from "../../utils/error.js";
 import { simulate } from "../../utils/wasm.js";
 
 import "../../css/Modules.css"
+import Reference from "./textfields/Reference.js";
+import Constraints from "./textfields/Constraints.js";
+import Tuning from "./textfields/Tuning.js";
 
 const LOCAL_STORAGE_KEY = 'lightweightMPC.storage';
  
-const DATA_TYPES = ["int", "vector<double>", "string"];
-const FORMULAS = [`\\leq \\Delta U \\leq`, `\\leq U \\leq`, `\\leq Y \\leq`];
 //const TEXT_FIELDS = { "System": "", "Scenario": "test", "T": 180, "P": 100, "M": 50, "W": 0, "Q": "[1, 100]", "R": "[1, 100]", "RoH": "[1, 1]", "RoL": "[1, 1]", "ldu": "[-2, -10]", "lu": "[0, 0]", "ly": "[0, 0]", "udu": "[2, 10]", "uu": "[100, 1000]", "uy": "[4000, 100]"};
 //const TEXT_FIELDS = { "System": "", "Scenario": "test", "T": 100, "P": 10, "M": 5, "W": 0, "Q": "[1]", "R": "[1]", "RoH": "[1]", "RoL": "[1]", "ldu": "[-10]", "lu": "[-0.01]", "ly": "[-0.01]", "udu": "[10]", "uu": "[0.8]", "uy": "[1.6]"};
 const TEXT_FIELDS = { "System": "", "Scenario": "", "T": 0, "P": 0, "M": 0, "W": 0, "Q": "[]", "R": "[]", "RoH": "[]", "RoL": "[]", "ldu": "[]", "lu": "[]", "ly": "[]", "udu": "[]", "uu": "[]", "uy": "[]"};
@@ -41,7 +40,6 @@ export default function Scenario({simHook}) {
     useEffect(() => { // Fetch storage
         const storedSce = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
         if (storedSce !== null) setSce(storedSce);
-        console.log(mv);
     }, []);
 
     useEffect(() => { // Store sce
@@ -54,7 +52,7 @@ export default function Scenario({simHook}) {
     }, [sce])
     
     //** HANDLER FUNCTIONS */ 
-    const handleSimulatonClick = () => { // Handle Simulation button
+    const handleSimulatonClick = () => {
 
         // Check TextFields if valid inputs are given.
 
@@ -67,23 +65,12 @@ export default function Scenario({simHook}) {
         simulate(sce_file, sys_file, sce[KEYS[1]], ref_str, parseInt(sce[KEYS[2]]), simHook);
     };
 
-    const handleTextField = e => { // Handle input bars
-        setSce(sce => {
-            return {...sce, [e.target.id]: e.target.value}
-        }); 
+    const handleTextField = e => { 
+        setSce(sce => { return {...sce, [e.target.id]: e.target.value} }); 
     }
 
-    const handleReference = e => { // Handle reference bars
-        setRef(reference => {
-            reference[parseInt(e.target.id)] = parseFloat(e.target.value);
-            return reference
-        }); 
-    }
-
-    const handleSelect = e => { // Handle system select
-        setSce(sce => {
-            return {...sce, [KEYS[0]]: e.target.value}
-        });
+    const handleSelect = e => { 
+        setSce(sce => { return {...sce, [KEYS[0]]: e.target.value} });
     };
 
     return (
@@ -94,12 +81,7 @@ export default function Scenario({simHook}) {
                 <Box sx={{pt: 2, display: "flex", flexDirection: "row"}}>
                     <FormControl style={{minWidth: "20%"}}>
                         <InputLabel id={KEYS[0]}> System name </InputLabel>
-                        <Select
-                            id={KEYS[0]}
-                            value={sce[KEYS[0]]}
-                            label="System name"
-                            onChange={handleSelect} 
-                        >   
+                        <Select id={KEYS[0]} value={sce[KEYS[0]]} label="System name" onChange={handleSelect} >   
                         {systemNames.map((course, index) => {
                             return (
                             <MenuItem value={course} key={index}> {course} </MenuItem>
@@ -108,125 +90,20 @@ export default function Scenario({simHook}) {
                         </Select>
                     </FormControl>
                 
-                    <TextField id={KEYS[1]} variant="outlined" helperText={"Scenario name, " + DATA_TYPES[2]} value={sce[KEYS[1]]} onChange={handleTextField} required/>
+                    <TextField id={KEYS[1]} variant="outlined" helperText={"Scenario name, string"} value={sce[KEYS[1]]} onChange={handleTextField} required/>
                     <Box sx={{pl: 2}}/>
-                    <TextField error={error[KEYS[2]]} sx={{width: "20%"}} id={KEYS[2]} variant="outlined" helperText={"MPC horizon T, " + DATA_TYPES[0]} value={sce[KEYS[2]]} onChange={handleTextField} required/>
+                    <TextField error={error[KEYS[2]]} sx={{width: "20%"}} id={KEYS[2]} variant="outlined" helperText={"MPC horizon T, int"} value={sce[KEYS[2]]} onChange={handleTextField} required/>
                     <Box sx={{pl: "3%"}}/>
                     <Button variant="contained" size="large" color="success" onClick={handleSimulatonClick}> RUN SIMULATION </Button>
                 </Box>
-                <Box align="left" sx={{pl: "16%", pt: 2}}>
-                    <Typography variant="h5" sx={{fontWeight: 'bold'}}> Model Predictive Controller: </Typography>
-                </Box>
+
+                <Tuning keys={KEYS} ncv={cv[0].length} nmv={mv[0].length} error={error} scenario={sce} handler={handleTextField} />
+                <Constraints keys={KEYS} nmv={mv[0].length} ncv={cv[0].length} error={error} scenario={sce} handler={handleTextField} />
             
-                <Box sx={{pt: 2, display: "flex", flexDirection: "row"}}>
-                    <Box sx ={{pt:2, pl: 7}}>
-                        <TextField error={error[KEYS[3]]} sx={{width: "90%"}} id={KEYS[3]} variant="outlined" helperText={"Prediction horizon P, " + DATA_TYPES[0]} value={sce[KEYS[3]]} onChange={handleTextField} required/>
-                        <Box />
-                        <TextField error={error[KEYS[4]]} sx={{width: "90%"}} id={KEYS[4]} variant="outlined" helperText={"Control horizon M, " + DATA_TYPES[0]} value={sce[KEYS[4]]} onChange={handleTextField} required/>
-                        <Box />
-                        <TextField error={error[KEYS[5]]} sx={{width: "90%"}} id={KEYS[5]} variant="outlined" helperText={"Time delay, W " + DATA_TYPES[0]} value={sce[KEYS[5]]} onChange={handleTextField} required/>
-                    </Box>
-
-                    <Box sx={{pt:2}}>
-                        <TextField error={error[KEYS[6]]} sx={{width: "90%"}} id={KEYS[6]} variant="outlined" helperText={"Q, " + DATA_TYPES[1]+", length: " + cv.length.toString()} value={sce[KEYS[6]]} onChange={handleTextField} required/>
-                        <Box />
-                        <TextField error={error[KEYS[7]]} sx={{width: "90%"}} id={KEYS[7]} variant="outlined" helperText={"R, " +DATA_TYPES[1]+", length: " + mv.length.toString()} value={sce[KEYS[7]]} onChange={handleTextField} required/>
-                        <Box />
-                        <TextField error={error[KEYS[8]]} sx={{width: "90%"}} id={KEYS[8]} variant="outlined" helperText={"RoH, " +DATA_TYPES[1]+", length: " + cv.length.toString()} value={sce[KEYS[8]]} onChange={handleTextField} required/>
-                        <Box />
-                        <TextField error={error[KEYS[9]]} sx={{width: "90%"}} id={KEYS[9]} variant="outlined" helperText={"RoL, " +DATA_TYPES[1]+", length: " + cv.length.toString()} value={sce[KEYS[9]]} onChange={handleTextField} required/>
-                    </Box>
-                </Box>
-                <Box align="left" sx={{pl: "27%", pt: 2}}>
-                    <Typography variant="h5" sx={{fontWeight: 'bold'}}> Constraints: </Typography>
-                </Box>
-                <Box sx={{pl: "3%", display: "flex", flexDirection: "row"}}>
-                    <Box sx ={{pt:2}}>
-                        <TextField error={error[KEYS[10]]} sx={{width: "90%"}} id={KEYS[10]} variant="outlined" helperText={DATA_TYPES[1]+", length: " + mv.length.toString()} value={sce[KEYS[10]]} onChange={handleTextField} required/>
-                        <Box />
-                        <TextField error={error[KEYS[11]]} sx={{width: "90%"}} id={KEYS[11]} variant="outlined" helperText={DATA_TYPES[1]+", length: " + mv.length.toString()} value={sce[KEYS[11]]} onChange={handleTextField} required/>
-                        <Box />
-                        <TextField error={error[KEYS[12]]} sx={{width: "90%"}} id={KEYS[12]} variant="outlined" helperText={DATA_TYPES[1]+", length: " + cv.length.toString()} value={sce[KEYS[12]]} onChange={handleTextField} required/>
-                    </Box>
-
-                    <Box >
-                        <div className="katex"> 
-                            <Box sx={{pt: 1}}/>
-                            <BlockMath math={FORMULAS[0]} />
-                            <Box sx={{pt: 1}}/>
-                            <BlockMath math={FORMULAS[1]} />
-                            <Box sx={{pt: 1}}/>
-                            <BlockMath math={FORMULAS[2]} />
-                        </div>
-                    </Box >
-                        
-                    <Box sx ={{pt: 2}}>
-                        <TextField error={error[KEYS[13]]} sx={{width: "90%"}} id={KEYS[13]} variant="outlined" helperText={DATA_TYPES[1]+", length: " + mv.length.toString()} value={sce[KEYS[13]]} onChange={handleTextField} required/>
-                        <Box />
-                        <TextField error={error[KEYS[14]]} sx={{width: "90%"}} id={KEYS[14]} variant="outlined" helperText={DATA_TYPES[1]+", length: " + mv.length.toString()} value={sce[KEYS[14]]} onChange={handleTextField} required/>
-                        <Box />
-                        <TextField error={error[KEYS[15]]} sx={{width: "90%"}} id={KEYS[15]} variant="outlined" helperText={DATA_TYPES[1]+", length: " + cv.length.toString()} value={sce[KEYS[15]]} onChange={handleTextField} required/>
-                    </Box>
-                </Box>
             </Box>
 
-            <Box sx={{width: "50%"}}>
-                <Box sx={{pt: 2, height: "5%", display: "flex", flexDirection: "row"}} >
-                    <Box sx={{width: "25%", pt: 2, display: "flex", flexDirection: "row"}}> 
-                        {variableRender(cv[0].length, "CV")}
-                    </Box>
-                </Box>
-                <Box sx={{pt: 2, height: "30%", display: "flex", flexDirection: "row" }} >
-                    <Box sx={{width: "15%", pt: 2, display: "flex", flexDirection: "row"}}> 
-                    </Box>
-                    <Box sx={{width: "20%"}}> 
-                        {cv[0].map((course, index) => {
-                            return (
-                            <Box key={index} sx={{width: "80%", height: "27%", pt: 2}}> 
-                                <Typography variant="h5" key={index}> {course + ":"} </Typography>
-                            </Box>
-                            )
-                        })}
-                    </Box>
-                    <Box sx={{width: "30%"}}> 
-                        {cv[0].map((course, index) => {
-                            return (
-                            <Box key={index}> 
-                                <TextField sx={{width: "90%"}} id={index.toString()} variant="outlined" helperText={course + " reference, " + DATA_TYPES[0]} value={ref[index]} onChange={handleReference} required/>
-                            </Box>
-                            )
-                        })}
-                    </Box>
-                    <Box sx={{width: "15%"}}> 
-                        {cv[1].map((unit, index) => {
-                            return (
-                            <Box key={index} sx={{width: "80%", height: "27%", pt: 2}}> 
-                                <Typography variant="h5" key={index}> <InlineMath math={unit} /> </Typography>
-                            </Box>
-                            )
-                        })}
-                    </Box>
-                </Box>
-                <Box sx={{pt: 2, height: "5%", display: "flex", flexDirection: "row" }} >
-                    <Box sx={{width: "25%", pt: 2, display: "flex", flexDirection: "row"}}> 
-                        {variableRender(mv[0].length, "MV")}
-                    </Box>
-                </Box>
-                <Box sx={{pt: 2, height: "30%", display: "flex", flexDirection: "row" }} >
-                    <Box sx={{width: "15%", pt: 2, display: "flex", flexDirection: "row"}}> 
-                    </Box>
-                    <Box sx={{width: "35%"}}> 
-                        {mv[0].map((course, index) => {
-                            return (
-                            <Box key={index} sx={{width: "80%", height: "27%", pt: 2}}> 
-                                <Typography variant="h5" key={index}> {course + ": "} <InlineMath math={mv[1][index]} /> </Typography>
-                            </Box>
-                            )
-                        })}
-                    </Box>
-                </Box>
-    
-            </Box>
+            <Reference cv={cv} mv={mv} hook={ref} setHook={setRef}/>
+
         </Box>
         </div>
     );
