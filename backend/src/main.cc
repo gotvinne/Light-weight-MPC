@@ -10,6 +10,7 @@
  */
 #include "simulations.h"
 #include <CLI/CLI.hpp>
+#include "tests.h"
 
 #include <string>
 #include <vector>
@@ -41,8 +42,11 @@ int main(int argc, char **argv) {
     app.add_flag("-n", new_sim, "New simulation");
     CLI11_PARSE(app, argc, argv);
 
+    //TestSimulate();
+
     // Reference
     std::vector<double> ref_vec{GAS_RATE_REF, OIL_RATE_REF};
+    //std::vector<double> ref_vec{1};
     
     // ---- MPC Simulations ---- //
     //OpenLoopFSRM(sce, ref_vec, T);

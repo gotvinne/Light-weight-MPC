@@ -13,8 +13,10 @@ const LOCAL_STORAGE_KEY = 'lightweightMPC.storage';
 const DATA_TYPES = ["int", "vector<double>", "string"];
 const FORMULAS = [`\\leq \\Delta U \\leq`, `\\leq U \\leq`, `\\leq Y \\leq`];
 //const TEXT_FIELDS = { "System": "", "Scenario": "test", "T": 180, "P": 100, "M": 50, "W": 0, "Q": "[1, 100]", "R": "[1, 100]", "RoH": "[1, 1]", "RoL": "[1, 1]", "ldu": "[-2, -10]", "lu": "[0, 0]", "ly": "[0, 0]", "udu": "[2, 10]", "uu": "[100, 1000]", "uy": "[4000, 100]"};
-const TEXT_FIELDS = { "System": "", "Scenario": "", "T": 0, "P": 0, "M": 0, "W": 0, "Q": "[]", "R": "[]", "RoH": "[]", "RoL": "[]", "ldu": "[]", "lu": "[]", "ly": "[]", "udu": "[]", "uu": "[]", "uy": "[]"};
-const ERROR = {"T": true, "P": true, "M": true, "W": true, "Q": true, "R": true, "RoH": true, "RoL": true, "ldu": true, "lu": true, "ly": true, "udu": true, "uu": true, "uy": true};
+const TEXT_FIELDS = { "System": "", "Scenario": "test", "T": 100, "P": 10, "M": 5, "W": 0, "Q": "[1]", "R": "[1]", "RoH": "[1]", "RoL": "[1]", "ldu": "[-10]", "lu": "[-0.01]", "ly": "[-0.01]", "udu": "[10]", "uu": "[0.8]", "uy": "[1.6]"};
+//const TEXT_FIELDS = { "System": "", "Scenario": "", "T": 0, "P": 0, "M": 0, "W": 0, "Q": "[]", "R": "[]", "RoH": "[]", "RoL": "[]", "ldu": "[]", "lu": "[]", "ly": "[]", "udu": "[]", "uu": "[]", "uy": "[]"};
+//const ERROR = {"T": true, "P": true, "M": true, "W": true, "Q": true, "R": true, "RoH": true, "RoL": true, "ldu": true, "lu": true, "ly": true, "udu": true, "uu": true, "uy": true};
+const ERROR = {"T": false, "P": false, "M": false, "W": false, "Q": false, "R": false, "RoH": false, "RoL": false, "ldu": false, "lu": false, "ly": false, "udu": false, "uu": false, "uy": false};
 const KEYS = Object.keys(TEXT_FIELDS); 
 
 /**
@@ -47,7 +49,7 @@ export default function Scenario({simHook}) {
         if (sce !== TEXT_FIELDS) {
             localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(sce));
         }
-        setError(updateError(sce, error, cv.length, mv.length));
+        //setError(updateError(sce, error, cv.length, mv.length));
     }, [sce])
     
     //** HANDLER FUNCTIONS */ 
@@ -59,9 +61,10 @@ export default function Scenario({simHook}) {
         const sce_file = serializeScenario(sce);
         const ref_str = serializeRef(ref);
 
+
         // Might use async
         // MPC simulation:
-        //simulate(sce_file, sys_file, sce[KEYS[1]], ref_str, parseInt(sce[KEYS[2]]), simHook);
+        simulate(sce_file, sys_file, sce[KEYS[1]], ref_str, parseInt(sce[KEYS[2]]), simHook);
     };
 
     const handleTextField = e => { // Handle input bars

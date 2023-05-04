@@ -161,7 +161,6 @@ void ParseNew(const string& sce_filepath, std::map<string, int>& m_map,
     json sce_data = ReadJson(sce_filepath);
     string system;
     ParseScenarioData(sce_data, system, conf, z_min, z_max);
-   
     // Parse system file
     string sys_filepath = "../data/systems/" + system + ".json";
     json sys_data = ReadJson(sys_filepath);
