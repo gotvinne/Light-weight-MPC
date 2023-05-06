@@ -8,7 +8,7 @@ import backend from "../webassembly.mjs";
  * @param {number} T 
  * @param {React.useState} setHook 
  */
-export function simulate(sce_file, sys_file, sce, ref_str, T, setHook) {
+export function simulate(sce_file, sys_file, sce, ref_str, T, setHook, errorHook) {
     let wasm: any;
     backend()
     .then((module) => {
@@ -17,5 +17,6 @@ export function simulate(sce_file, sys_file, sce, ref_str, T, setHook) {
     })
     .catch((error) => {
         console.error(error);
+        errorHook(simStatus => { return {...simStatus, error: String(error)}});
     });
 }

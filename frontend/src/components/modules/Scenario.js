@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { TextField, Box, Button, MenuItem, FormControl, InputLabel, Select } from "@mui/material";
+import { TextField, Box, Button, MenuItem, FormControl, InputLabel, Select, Typography } from "@mui/material";
 import { importSystems, readModelParams, readSystem, serializeRef, serializeScenario } from "../../utils/IO.js";
 import { onlyNumbers, updateError } from "../../utils/error.js";
 import { simulate } from "../../utils/wasm.js";
@@ -26,6 +26,7 @@ export default function Scenario({simHook}) {
     const [error, setError] = useState(ERROR);
     const [ref, setRef] = useState("");
     const [buttonDisable, setButtonDisable] = useState(true);
+    const [simStatus, setSimStatus] = useState({status: "", error: ""});
         
     const [cv, mv] = useMemo(() => { // When system is selected 
         if (sce[KEYS[0]] === "") {
@@ -72,7 +73,11 @@ export default function Scenario({simHook}) {
         const ref_str = serializeRef(ref);
 
         // MPC simulation:
-        simulate(sce_file, sys_file, sce[KEYS[1]], ref_str, parseInt(sce[KEYS[2]]), simHook);
+        console.log("Simulating...");
+        setSimStatus(simStatus => { return {...simStatus, status: "Simulating..."} });
+
+        console.log(ref_str);
+        //simulate(sce_file, sys_file, sce[KEYS[1]], ref_str, parseInt(sce[KEYS[2]]), simHook, setSimStatus);
     };
 
     const handleTextField = e => { 
@@ -115,9 +120,22 @@ export default function Scenario({simHook}) {
                 <Constraints keys={KEYS} nmv={mv[0].length} ncv={cv[0].length} error={error} scenario={sce} handler={handleTextField} />
             
             </Box>
+            
+            <Box sx={{width: "45%"}}>
+                <Reference cv={cv} mv={mv} value={ref} handler={handleReference}/>
 
-            <Reference cv={cv} mv={mv} value={ref} handler={handleReference}/>
-
+                <Box sx={{pt: 2, height: "5%", display: "flex", flexDirection: "row"}} >
+                    <Typography variant="h4">
+                        {simStatus.status}
+                    </Typography>
+                </Box>
+                <Box sx={{pt: 2, height: "5%", display: "flex", flexDirection: "row"}} >
+                    <Typography color={"#d40808"}>
+                        {simStatus.error}
+                    </Typography>
+                </Box>
+            </Box>
+            
         </Box>
         </div>
     );

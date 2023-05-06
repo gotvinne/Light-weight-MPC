@@ -143,8 +143,9 @@ export function serializeScenario(sce) {
 }
 
 export function serializeRef(ref) {
+  let number_arr = ref.map(Number);
   const json_ref = {
-    "ref": ref
+    "ref": number_arr
   };
   return JSON.stringify(json_ref);
 }

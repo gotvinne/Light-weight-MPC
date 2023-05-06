@@ -9,7 +9,7 @@ import { InlineMath } from 'react-katex';
  */
 export default function Reference({cv, mv, value, handler}) {
     return (
-        <Box sx={{width: "45%"}}>
+        <div>
             <Box sx={{pt: 2, height: "5%", display: "flex", flexDirection: "row"}} >
                 <Box sx={{width: "25%", pt: 2, display: "flex", flexDirection: "row"}}> 
                     {variableRender(cv[0].length, "CV")}
@@ -64,6 +64,6 @@ export default function Reference({cv, mv, value, handler}) {
                     })}
                 </Box>
             </Box>
-        </Box>
+        </div>
     );
 }

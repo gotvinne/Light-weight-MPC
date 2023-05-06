@@ -34,7 +34,7 @@ if(WEBASSEMBLY)
     FetchContent_MakeAvailable(nlohmann_json Eigen osqp)
 
     project(webassembly VERSION 1.0 LANGUAGES CXX)
-    set(BACKEND_SRC src/wasm/*.cc src/OsqpEigen/*.cpp src/IO/*.cc src/model/*.cc src/MPC/*.cc src/LightWeightMPC.cc)
+    set(BACKEND_SRC src/wasm/*.cc src/OsqpEigen/*.cpp src/IO/*.cc src/model/*.cc src/MPC/*.cc src/simulations.cc)
     file(GLOB_RECURSE SRC_FILES ${BACKEND_SRC})
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/../frontend/src") # Set webassembly output in src folder
     add_executable(webassembly ${SRC_FILES}) 
@@ -43,7 +43,7 @@ if(WEBASSEMBLY)
     target_link_libraries(webassembly nlohmann_json::nlohmann_json Eigen3::Eigen osqp)
 
     # emcc compiler flags
-    set(EMCC_FLAGS "--bind -s MAIN_MODULE=2 -s USE_ES6_IMPORT_META=0 -s WASM=1 -s SINGLE_FILE=1 -s ALLOW_MEMORY_GROWTH=1 -s MALLOC=emmalloc -s MODULARIZE=1 -s EXPORT_ES6=1 -s ENVIRONMENT=web -s EXPORT_NAME='backend' -s ASSERTIONS=1 -s LINKABLE=1 -std=c++11")
+    set(EMCC_FLAGS "--bind -s MAIN_MODULE=2 -s NO_DISABLE_EXCEPTION_CATCHING -s USE_ES6_IMPORT_META=0 -s WASM=1 -s SINGLE_FILE=1 -s ALLOW_MEMORY_GROWTH=1 -s MALLOC=emmalloc -s MODULARIZE=1 -s EXPORT_ES6=1 -s ENVIRONMENT=web -s EXPORT_NAME='backend' -s ASSERTIONS=1 -s LINKABLE=1 -std=c++11")
     set_target_properties(webassembly PROPERTIES SUFFIX ".mjs" LINK_FLAGS ${EMCC_FLAGS})
 
 else(WEBASSEMBLY)
