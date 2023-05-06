@@ -40,7 +40,10 @@ export default function Simulation({sim_data}) {
     return (    
     <div className="Simulation">
         {simAvaliable
-            ? <Box sx={{width: "inherit"}}> 
+            ?   <Box sx={{width: "inherit"}}> 
+                    <Box sx={{pl: "2%"}}>
+                        <Typography variant="h5"> {"Scenario: " + simParam.scenario} </Typography>
+                    </Box>
                 <Box sx={{width: "inherit", pl:"10%", height: "30%", display: "flex", flexDirection: "row"}}>
                     {CVs.map((cv, index) => {
                         return (
