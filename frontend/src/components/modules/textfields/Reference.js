@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { Box, Typography, TextField } from '@mui/material'
 import { variableRender } from "../../../utils/rendering.js";
 import { InlineMath } from 'react-katex';
@@ -7,14 +7,7 @@ import { InlineMath } from 'react-katex';
  * Display Reference TextFields
  * @param {*} param0 
  */
-export default function Reference({cv, mv, hook, setHook}) {
-
-    const handleReference = e => {
-        setHook(reference => {
-            reference[parseInt(e.target.id)] = parseFloat(e.target.value);
-            return reference
-        }); 
-    }
+export default function Reference({cv, mv, value, handler}) {
 
     return (
         <Box sx={{width: "45%"}}>
@@ -39,7 +32,7 @@ export default function Reference({cv, mv, hook, setHook}) {
                     {cv[0].map((course, index) => {
                         return (
                         <Box key={index}> 
-                            <TextField sx={{width: "90%"}} id={index.toString()} variant="outlined" helperText={course + " reference, int"} value={hook[index]} onChange={handleReference} required/>
+                            <TextField sx={{width: "90%"}} id={index.toString()} variant="outlined" helperText={course + " reference, int"} value={value[index]} onChange={handler} required/>
                         </Box>
                         )
                     })}

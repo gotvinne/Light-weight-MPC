@@ -1,6 +1,17 @@
 
 import { convertArr } from './IO.js'
 
+/**
+ * Checks if array contains onlu numbers or number strings
+ * @param {*} arr 
+ * @returns 
+ */
+export function onlyNumbers(arr) { 
+    return arr.every(element => {
+      return !isNaN(element);
+    });
+}
+
 export function updateError(scenario, error, ncv, nmv) {
     var curr_err = error;
 
