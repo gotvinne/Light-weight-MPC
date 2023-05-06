@@ -11,7 +11,7 @@ import Tuning from "./textfields/Tuning.js";
 
 const SCENARIO_STORAGE_KEY = 'scenario.storage';
  
-const TEXT_FIELDS = { "System": "", "Scenario": "", "T": 0, "P": 0, "M": 0, "W": 0, "Q": "[]", "R": "[]", "RoH": "[]", "RoL": "[]", "ldu": "[]", "lu": "[]", "ly": "[]", "udu": "[]", "uu": "[]", "uy": "[]"};
+const TEXT_FIELDS = { "System": "", "Scenario": "", "T": "0", "P": "0", "M": "0", "W": "0", "Q": "[]", "R": "[]", "RoH": "[]", "RoL": "[]", "ldu": "[]", "lu": "[]", "ly": "[]", "udu": "[]", "uu": "[]", "uy": "[]"};
 const ERROR = {"T": false, "P": false, "M": false, "W": false, "Q": false, "R": false, "RoH": false, "RoL": false, "ldu": false, "lu": false, "ly": false, "udu": false, "uu": false, "uy": false};
 const KEYS = Object.keys(TEXT_FIELDS); 
 
@@ -75,9 +75,7 @@ export default function Scenario({simHook}) {
         // MPC simulation:
         console.log("Simulating...");
         setSimStatus(simStatus => { return {...simStatus, status: "Simulating..."} });
-
-        console.log(ref_str);
-        //simulate(sce_file, sys_file, sce[KEYS[1]], ref_str, parseInt(sce[KEYS[2]]), simHook, setSimStatus);
+        simulate(sce_file, sys_file, sce[KEYS[1]], ref_str, parseInt(sce[KEYS[2]]), simHook, setSimStatus);
     };
 
     const handleTextField = e => { 

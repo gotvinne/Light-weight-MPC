@@ -41,7 +41,7 @@ export default function Simulation({sim_data}) {
     <div className="Simulation">
         {simAvaliable
             ?   <Box sx={{width: "inherit"}}> 
-                    <Box sx={{pl: "2%"}}>
+                    <Box sx={{pl: "2%", pt: "1%"}}>
                         <Typography variant="h5"> {"Scenario: " + simParam.scenario} </Typography>
                     </Box>
                 <Box sx={{width: "inherit", pl:"10%", height: "30%", display: "flex", flexDirection: "row"}}>

@@ -123,9 +123,9 @@ export function serializeScenario(sce) {
     "system": sce["System"],
 
     "MPC": {
-      "P": sce["P"], 
-      "M": sce["M"],
-      "W": sce["W"], 
+      "P": parseInt(sce["P"]), 
+      "M": parseInt(sce["M"]),
+      "W": parseInt(sce["W"]), 
       "Q": q_arr,
       "R": r_arr,
       "RoH": roh_arr,
@@ -144,6 +144,7 @@ export function serializeScenario(sce) {
 
 export function serializeRef(ref) {
   let number_arr = ref.map(Number);
+  console.log(number_arr);
   const json_ref = {
     "ref": number_arr
   };
