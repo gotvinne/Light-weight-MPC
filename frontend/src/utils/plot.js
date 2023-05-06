@@ -3,6 +3,8 @@ import React from "react";
 import Plot from "react-plotly.js"
 
 const BLACK = 'rgb(0, 0, 0)';
+const BLUE = 'rgb(0, 0, 255)';
+const RED = 'rgb(255, 0, 0)';
 
 export function PlotPrediction(cv_data, T, P, ref) {
     let t = Array.from({ length: T }, (value, index) => index);
@@ -26,7 +28,7 @@ export function PlotPrediction(cv_data, T, P, ref) {
         name: "Reference",
         type: "line",
         line: {
-            color: 'rgb(255, 0, 0)',
+            color: RED,
             dash: "dashdot"
         }
     };
@@ -102,9 +104,10 @@ export function PlotActuation(mv_data, T, P) {
         x: t.slice(0, T-P),
         y: mv_data.u.slice(0, T-P),
         name: "Actuation",
-        type: "line",
+        type: 'scatter',
         line: {
-            color: 'rgb(0, 0, 255)'
+            color: BLUE,
+            shape: 'hv'
         }
     };
 
@@ -112,10 +115,11 @@ export function PlotActuation(mv_data, T, P) {
         x: t.slice(T-P, t.length),
         y: mv_data.u.slice(T-P, t.length),
         name: "Pred actuation",
-        type: "line",
+        type: "scatter",
         line: {
-            color: 'rgb(0, 0, 255)',
-            dash: "dot"
+            color: BLUE,
+            dash: "dot",
+            shape: 'hv'
         }
     };
 
