@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React from "react"
 import { Box, Typography, TextField } from '@mui/material'
 import { variableRender } from "../../../utils/rendering.js";
 import { InlineMath } from 'react-katex';
@@ -8,7 +8,6 @@ import { InlineMath } from 'react-katex';
  * @param {*} param0 
  */
 export default function Reference({cv, mv, value, handler}) {
-
     return (
         <Box sx={{width: "45%"}}>
             <Box sx={{pt: 2, height: "5%", display: "flex", flexDirection: "row"}} >

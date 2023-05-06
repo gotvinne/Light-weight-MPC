@@ -27,7 +27,7 @@ export default function Scenario({simHook}) {
     const [systemNames] = useState(importSystems()); // System names
     const [error, setError] = useState(ERROR);
     const [ref, setRef] = useState("");
-    const [buttonColor, setButtonColor] = useState("secondary");
+    const [buttonDisable, setButtonDisable] = useState(true);
         
     const [cv, mv] = useMemo(() => { // Read model params for displayment
         if (sce[KEYS[0]] === "") {
@@ -42,12 +42,8 @@ export default function Scenario({simHook}) {
     //** USE EFFECTS */
     useEffect(() => { // Fetch storage
         const storedSce = JSON.parse(localStorage.getItem(SCENARIO_STORAGE_KEY));
-        if (storedSce !== null) setSce(storedSce);
+        if (storedSce !== null) { setSce(storedSce); }
     }, []);
-
-    useEffect(() => { // Fetch storage
-        console.log(ref);
-    }, [ref]);
 
     useEffect(() => { // Store sce
         if (sce !== TEXT_FIELDS) {
@@ -57,16 +53,15 @@ export default function Scenario({simHook}) {
         if (sce[KEYS[0]] !== "") {
             setError({...updateError(sce, error, cv[0].length, mv[0].length)});
             if (Object.values(error).every((v) => v === false) && sce[KEYS[0]] !== "" && onlyNumbers(ref)) {
-                setButtonColor("success");
+                setButtonDisable(false);
             } else {
-                setButtonColor("secondary");
+                setButtonDisable(true);
             }
         }
     }, [sce])
     
     //** HANDLER FUNCTIONS */ 
     const handleSimulatonClick = () => {
-
         // Check TextFields if valid inputs are given.
         const sys_file = readSystem(sce[KEYS[0]]);
         const sce_file = serializeScenario(sce);
@@ -112,7 +107,7 @@ export default function Scenario({simHook}) {
                     <Box sx={{pl: 2}}/>
                     <TextField error={error[KEYS[2]]} sx={{width: "20%"}} id={KEYS[2]} variant="outlined" helperText={"MPC horizon T, int"} value={sce[KEYS[2]]} onChange={handleTextField} required/>
                     <Box sx={{pl: "3%"}}/>
-                    <Button variant="contained" size="large" color={buttonColor} onClick={handleSimulatonClick}> RUN SIMULATION </Button>
+                    <Button variant="contained" size="large" color={"success"} disabled={buttonDisable} onClick={handleSimulatonClick}> RUN SIMULATION </Button>
                 </Box>
 
                 <Tuning keys={KEYS} ncv={cv[0].length} nmv={mv[0].length} error={error} scenario={sce} handler={handleTextField} />
