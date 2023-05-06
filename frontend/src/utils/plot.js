@@ -2,18 +2,43 @@
 import React from "react";
 import Plot from "react-plotly.js"
 
-export function PlotPrediction(cv_data, T) {
+const BLACK = 'rgb(0, 0, 0)';
+
+export function PlotPrediction(cv_data, T, P, ref) {
     let t = Array.from({ length: T }, (value, index) => index);
     let lower = Array(T).fill(cv_data.c[0]);
     let upper = Array(T).fill(cv_data.c[1]);
+    let refData = Array(T).fill(ref);
 
     var prediction = {
-        x: t,
-        y: cv_data.y_pred,
-        name: "Prediction",
+        x: t.slice(0, T-P),
+        y: cv_data.y_pred.slice(0, T-P),
+        name: "Output",
         type: "line",
         line: {
             color: 'rgb(128, 0, 128)'
+        }
+    };
+
+    var ref = {
+        x: t,
+        y: refData,
+        name: "Reference",
+        type: "line",
+        line: {
+            color: 'rgb(255, 0, 0)',
+            dash: "dashdot"
+        }
+    };
+
+    var prediction_pred = {
+        x: t.slice(T-P, t.lenght),
+        y: cv_data.y_pred.slice(T-P, t.length),
+        name: "Pred Output",
+        type: "line",
+        line: {
+            color: 'rgb(128, 0, 128)',
+            dash: "dot"
         }
     };
 
@@ -21,11 +46,11 @@ export function PlotPrediction(cv_data, T) {
         x: t, 
         y: lower,
         mode: 'lines',
-        name: "Lower",
+        name: "Lower limit",
         line: {
-            dash: 'dot',
+            dash: 'dashdot',
             width: 2,
-            color: 'rgb(0, 0, 0)'
+            color: BLACK
         }
     } 
 
@@ -33,11 +58,11 @@ export function PlotPrediction(cv_data, T) {
         x: t, 
         y: upper,
         mode: 'lines',
-        name: "Upper",
+        name: "Upper limit",
         line: {
-            dash: 'dot',
+            dash: 'dashdot',
             width: 2,
-            color: 'rgb(0, 0, 0)'
+            color: BLACK
         }
     } 
 
@@ -48,22 +73,34 @@ export function PlotPrediction(cv_data, T) {
         },
         yaxis: {
             title: cv_data.unit
-        }
+        },
+        shapes: [{ //line vertical
+            yref: "paper",
+            type: 'line',
+            x0: T-P,
+            y0: 0,
+            x1: T-P,
+            y1: 1,
+            line: { 
+                color: BLACK,
+                width: 1
+            }
+        }]
     };
 
     return (
-        <Plot data={[prediction, lower_constraint, upper_constraint]} layout={layout}/>
+        <Plot data={[prediction, prediction_pred, ref, lower_constraint, upper_constraint]} layout={layout}/>
     ); 
 }
 
-export function PlotActuation(mv_data, T) {
+export function PlotActuation(mv_data, T, P) {
     let t = Array.from({ length: T }, (value, index) => index);
     let lower = Array(T).fill(mv_data.c[0]);
     let upper = Array(T).fill(mv_data.c[1]);
 
     var actuation = {
-        x: t,
-        y: mv_data.u,
+        x: t.slice(0, T-P),
+        y: mv_data.u.slice(0, T-P),
         name: "Actuation",
         type: "line",
         line: {
@@ -71,15 +108,26 @@ export function PlotActuation(mv_data, T) {
         }
     };
 
+    var actuation_pred = {
+        x: t.slice(T-P, t.length),
+        y: mv_data.u.slice(T-P, t.length),
+        name: "Pred actuation",
+        type: "line",
+        line: {
+            color: 'rgb(0, 0, 255)',
+            dash: "dot"
+        }
+    };
+
     var lower_constraint = {
         x: t, 
         y: lower,
         mode: 'lines',
-        name: "Lower",
+        name: "Lower limit",
         line: {
-            dash: 'dot',
+            dash: 'dashdot',
             width: 2,
-            color: 'rgb(0, 0, 0)'
+            color: BLACK
         }
     } 
 
@@ -87,11 +135,11 @@ export function PlotActuation(mv_data, T) {
         x: t, 
         y: upper,
         mode: 'lines',
-        name: "Upper",
+        name: "Upper limit",
         line: {
-            dash: 'dot',
+            dash: 'dashdot',
             width: 2,
-            color: 'rgb(0, 0, 0)'
+            color: BLACK
         }
     } 
 
@@ -102,10 +150,22 @@ export function PlotActuation(mv_data, T) {
         },
         yaxis: {
             title: mv_data.unit
-        }
+        },
+        shapes: [{ //line vertical
+            yref: "paper",
+            type: 'line',
+            x0: T-P,
+            y0: 0,
+            x1: T-P,
+            y1: 1,
+            line: { 
+                color: BLACK,
+                width: 1
+            }
+        }]
     };
 
     return (
-        <Plot data={[actuation, lower_constraint, upper_constraint]} layout={layout}/>
+        <Plot data={[actuation, actuation_pred, lower_constraint, upper_constraint]} layout={layout}/>
     ); 
 }

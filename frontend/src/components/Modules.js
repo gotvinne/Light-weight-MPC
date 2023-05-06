@@ -18,7 +18,10 @@ export default function Modules() {
     
     const [module, setModule] = useState(MODULES["scenario"]); 
     const [sim, setSim] = useState("");
-    const handleChange = (event: React.SyntheticEvent, newModule: number) => { 
+    const [P, setP] = useState("");
+    const [simRef, setSimRef] = useState("");
+
+    const handleChange = (newModule) => { 
         setModule(newModule); 
     };
 
@@ -49,10 +52,10 @@ export default function Modules() {
             </AppBar>
 
             <TabPanel value={module} width={"inherit"} index={0}>
-                <Scenario simHook={setSim} />
+                <Scenario simHook={setSim} setP={setP} setSimRef={setSimRef}/>
             </TabPanel>
             <TabPanel value={module} index={1}>
-                <Simulation sim_data={sim}/>
+                <Simulation simData={sim} P={P} simRef={simRef}/>
             </TabPanel>
             <TabPanel value={module} index={2}>
                 <Algorithm/>

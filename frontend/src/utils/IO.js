@@ -144,7 +144,7 @@ export function serializeScenario(sce) {
 
 export function serializeRef(ref) {
   let number_arr = ref.map(Number);
-  console.log(number_arr);
+  
   const json_ref = {
     "ref": number_arr
   };
@@ -152,6 +152,11 @@ export function serializeRef(ref) {
 }
 
 /** SIMULATION IO */
+/**
+ * 
+ * @param {*} sim 
+ * @returns 
+ */
 export function readSimParams(sim) {
     const simParam = {
     scenario: sim["scenario"],

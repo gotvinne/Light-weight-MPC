@@ -9,9 +9,9 @@ const initSimParam = {scenario: "", T: 0, nCV: 0, nMV: 0};
 
 /**
  * Describe the simulation module for plotting data
- * @param {React.useState} sim_data MPC simulation data  
+ * @param {React.useState} simData MPC simulation data  
  */
-export default function Simulation({sim_data}) {
+export default function Simulation({simData, P, simRef}) {
 
     const [simAvaliable, setSimAvaliable] = useState(false);
     const [simParam, setSimParam] = useState(initSimParam);
@@ -19,17 +19,17 @@ export default function Simulation({sim_data}) {
     const [MVs, setMVs] = useState([]);
 
     useEffect(() => {
-        if (sim_data === "") {
+        if (simData === "") {
             setSimAvaliable(false);
             return;
         } else {
-            const json_sim = JSON.parse(sim_data);
+            const json_sim = JSON.parse(simData);
             setSimParam(readSimParams(json_sim));
             setCVs(readSimCV(json_sim));
             setMVs(readSimMV(json_sim));
             
         }
-    }, [sim_data]);
+    }, [simData]);
 
     useEffect(() => {
         if (simParam !== initSimParam) {
@@ -44,21 +44,21 @@ export default function Simulation({sim_data}) {
                     <Box sx={{pl: "2%", pt: "1%"}}>
                         <Typography variant="h5"> {"Scenario: " + simParam.scenario} </Typography>
                     </Box>
-                <Box sx={{width: "inherit", pl:"10%", height: "30%", display: "flex", flexDirection: "row"}}>
+                <Box sx={{width: "inherit", pl:"10%", display: "flex", flexDirection: "row"}}>
                     {CVs.map((cv, index) => {
                         return (
                         <Box key={index} > 
-                            {PlotPrediction(cv, simParam.T)}
+                            {PlotPrediction(cv, simParam.T, P, simRef[index])}
                         </Box>
                         )
                     })}
                 </Box>
 
-                <Box sx={{width: "inherit", pl:"10%", height: "30%", display: "flex", flexDirection: "row"}}>
+                <Box sx={{width: "inherit", pl:"10%", display: "flex", flexDirection: "row"}}>
                     {MVs.map((mv, index) => {
                         return (
                         <Box key={index} > 
-                            {PlotActuation(mv, simParam.T)}
+                            {PlotActuation(mv, simParam.T, P)}
                         </Box>
                         )
                     })}
