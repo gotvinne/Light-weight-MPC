@@ -8,7 +8,11 @@ import { convertArr } from './IO.js'
  */
 export function onlyNumbers(arr) { 
     return arr.every(element => {
-      return !isNaN(element);
+        if (!isNaN(element) && element !== "0") {
+            return true;
+        } else {
+            return false;
+        }
     });
 }
 

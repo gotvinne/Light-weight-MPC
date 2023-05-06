@@ -52,13 +52,14 @@ export default function Scenario({simHook}) {
         
         if (sce[KEYS[0]] !== "") {
             setError({...updateError(sce, error, cv[0].length, mv[0].length)});
+            console.log(onlyNumbers(ref));
             if (Object.values(error).every((v) => v === false) && sce[KEYS[0]] !== "" && onlyNumbers(ref)) {
                 setButtonDisable(false);
             } else {
                 setButtonDisable(true);
             }
         }
-    }, [sce])
+    }, [sce, ref])
     
     //** HANDLER FUNCTIONS */ 
     const handleSimulatonClick = () => {
