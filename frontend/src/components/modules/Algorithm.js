@@ -33,6 +33,7 @@ export default function Algorithm() {
     return (
         <div className="Algorithm">
             <Box sx={{ width: '75%', pl: "5%", pt: "3%"}}>
+                <Typography variant="h4" sx={{fontWeight: 'bold'}}> MPC algorithm: </Typography>
                 <Typography variant="body1" gutterBottom>
                 Implemented using <Link href="https://github.com/gotvinne/Light-weight-MPC/tree/main/src/OSQP-Eigen" underline="hover"> {"osqp-eigen"} </Link>
                 C++ wrapper for the <Link href="https://osqp.org/" underline="hover"> {"OSQP"} </Link> software:
@@ -41,14 +42,44 @@ export default function Algorithm() {
                 The OSQP, operator splitting QP solver solves the problems of the following form:
                 </Typography>
                 <BlockMath math={`min \\frac{1}{2} z^T \\boldsymbol{H} z+q^T z \\quad s.t. \\quad \\ l \\leq \\boldsymbol{A} z \\leq u `} />
+                <Typography> 
+                    Given, <InlineMath math={"H"} /> is a positive definite matrix, yielding a convex quadratic program. The OSQP solver uses an custom ADMM-based first order method and is one of the fastest QP solvers avaliable. 
+                </Typography>
                 <Typography variant="h5"> Step Response MPC solver: </Typography>
                 <Typography variant="body1" gutterBottom>
-                This solver solves the QP defining the MPC problem for a finite step response model (FSRM) in terms of only one optimization variable (condensed form). This form is obtained by using the null space method on the optimilization problem formulated by quadratic constraining the output <InlineMath math={`Y`} />and input <InlineMath math={`\\Delta Y`} />: 
+                This MPC controller is defined as a standard quadratic program (QP) where the cost aims to minimize the error between the output <InlineMath math={"Y"}/> and the reference <InlineMath math={"r_y"} />:
                 </Typography>
 
                 <BlockMath math={`\\min \\sum_{j=W}^{P}\\left|(y(k+j \\mid k)-r_y(k+j))\\right|_{\\bar{Q}}^2+ \\sum_{j=0}^{(M-1)} \\left|\\Delta u(k+j)\\right|_{\\bar{R}}^2+\\bar{\\rho} \\bar{\\epsilon}+\\underline{\\rho} \\underline{\\epsilon}`} />
-                <BlockMath math={`\\min \\quad Y(k+(P-W))^TQY(k+(P-W)) + \\Delta U(k+(M-1))^TR\\Delta U(k+(M-1)) `} />
+                <Typography variant="body1" gutterBottom>
+                The cost function is constrained by the model definition and relating variables. The general FSRM-MPC algorithm can be summaried as:
+                </Typography>
+                <BlockMath math={`min \\quad Y(k+(P-W))^T \\boldsymbol{\\bar{Q}} Y(k+(P-W))+\\Delta U(k+(M-1))^T \\boldsymbol{\\bar{R}} \\Delta U(k+(M-1)) \\\\\ 
+                                        -2 \\mathcal{T}(k)^T \\boldsymbol{\\bar{Q}} Y(k+(P-W))+\\rho_h^T \\epsilon_h+\\rho_l^T \\epsilon_l,`} />
+                <Typography variant="body1" gutterBottom>
+                such that:
+                </Typography>
+                <BlockMath math={`Y(k+(P-W))  = \\boldsymbol{\\Theta} \\Delta U(k+(M-1))+ \\boldsymbol{\\Phi} \\Delta \\tilde{U}(k)+\\Psi \\tilde{U}(k-N)+B(k), \\
+                                     = \\boldsymbol{\\Theta} \\Delta U(k)+ \\hat{\\boldsymbol{Y}}^{\\boldsymbol{o}}(k+P) + B(k), \\
+                                    = \\boldsymbol{\\Theta} \\Delta U(k)+ \\boldsymbol{\\Lambda}(k),`} />
+                <BlockMath math={`U(k) = \\boldsymbol{K}^{-1}(\\Gamma \\tilde{U}(k-1) + \\Delta U(k)), \\quad B(k) = Y(k) - \\hat{Y}(k), \\quad \\boldsymbol{K} \\succ 0`} />
+                <BlockMath math={`Y(k+j) = Y(k+j) + B(k), \\quad j \\in\\left\\{W, \\ldots, P\\right\\}`} />
+                <BlockMath math={`\\Delta \\underline{U} \\leq \\Delta U(k+j) \\leq \\Delta \\overline{U}, \\quad j \\in\\left\\{0, \\ldots, M-1\\right\\}`} />
+                <BlockMath math={`\\underline{U} \\leq U(k+j) \\leq \\bar{U}, \\quad j \\in\\left\\{0, \\ldots, M-1\\right\\}`} />
+                <BlockMath math={`\\underline{Y}- \\epsilon_l \\leq Y(k+j) \\leq \\bar{Y}+ \\epsilon_h, \\quad \\epsilon_h \\geq 0, \\epsilon_l \\geq 0, \\quad j \\in\\left\\{W, \\ldots, P\\right\\}`} />
+
                 <Typography variant="h5"> Condensed Form: </Typography>
+                <Typography variant="body1" gutterBottom>
+                The condensed formulation solves a smaller optimalization problem, obtained using the Nullspace method. This method reduces the number of optimalization variabled by defining a linear transform. <InlineMath math={"z_{st} = A z_{cd} + C \\quad"} /> 
+                The transform cancels optimalization variables with the given constraints, yielding a computationally easier problem. </Typography>
+                <Typography>
+                The original optimalization vector, <InlineMath math={"z_{st} = \\begin{bmatrix} \\Delta U \\\\ U \\\\ Y \\\\ \\epsilon_h \\\\ \\epsilon_l \\end{bmatrix} \\quad"} />, is reduced to 
+                <InlineMath math={"z_{cd} = \\begin{bmatrix} \\Delta U \\\\ \\epsilon_h \\\\ \\epsilon_l \\end{bmatrix}."} />
+                </Typography>
+
+                <Typography>
+                    The consdenced formulation is formulated followingly:
+                </Typography>
                 <BlockMath math={`\\min_{z_{cd}} \\quad \\frac{1}{2} z_{cd}^T \\boldsymbol{G_{cd}} z_{cd}+q^T_{cd} z_{cd}`} />
                 <BlockMath math={`\\boldsymbol{G_{cd}} = 2 \\cdot blkdiag( \\boldsymbol{\\Theta}^{T} \\boldsymbol{\\bar{Q}} \\boldsymbol{\\Theta} + \\boldsymbol{\\bar{R}}, \\boldsymbol{0}, \\boldsymbol{0}),`} />
                 <BlockMath math={`q_{cd}(k) = \\begin{bmatrix} 2 \\cdot \\boldsymbol{\\Theta}^T\\boldsymbol{\\bar{Q}}(\\Lambda(k) - \\mathcal{T}(k)) \\\\ \\rho_{h} \\\\ \\rho_{l} \\end{bmatrix},`} />

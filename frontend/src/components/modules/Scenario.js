@@ -122,7 +122,7 @@ export default function Scenario({simHook, setP, setSimRef}) {
             
             </Box>
             
-            <Box sx={{width: "45%"}}>
+            <Box sx={{pt: 2, width: "45%"}}>
                 <Reference cv={cv} mv={mv} value={ref} handler={handleReference}/>
 
                 <Box sx={{pt: 2, height: "5%", display: "flex", flexDirection: "row"}} >

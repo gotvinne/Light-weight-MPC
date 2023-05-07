@@ -27,7 +27,10 @@ export function variableRender(length, identifier) {
 export default function Reference({cv, mv, value, handler}) {
     return (
         <div>
-            <Box sx={{pt: 2, height: "5%", display: "flex", flexDirection: "row"}} >
+            <Typography variant="h5" sx={{fontWeight: 'bold'}} >
+                Reference(s): 
+            </Typography>
+            <Box sx={{height: "5%", display: "flex", flexDirection: "row"}} >
                 <Box sx={{width: "25%", pt: 2, display: "flex", flexDirection: "row"}}> 
                     {variableRender(cv[0].length, "CV")}
                 </Box>

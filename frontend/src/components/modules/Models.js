@@ -1,10 +1,10 @@
 import React from "react";
 import { Box, Typography, Link } from "@mui/material";
+import { BlockMath, InlineMath } from 'react-katex';
 
 import "../../css/Modules.css"
-
 import 'katex/dist/katex.min.css';
-import { BlockMath, InlineMath } from 'react-katex';
+
 
 /**
  * Informative component describing the dynamical models
@@ -13,7 +13,7 @@ export default function Models() {
     return (
         <div className="Algorithm">
             <Box sx={{ width: '75%', pl: "5%", pt: "3%"}}>
-                <Typography variant="h4"> Finite Step Response Model, FSRM </Typography>
+                <Typography variant="h4" sx={{fontWeight: 'bold'}}> Finite Step Response Model, FSRM </Typography>
                 <Typography variant="body1" gutterBottom>
                 Implemented 
                 using <Link href="https://eigen.tuxfamily.org/index.php?title=Main_Page" underline="hover"> {"Eigen"} </Link> software for linear algebra:
