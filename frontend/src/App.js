@@ -1,16 +1,15 @@
 import React from "react";
 
 import Modules from "./components/Modules";
-import Footer from "./components/Footer"
+import Header from  "./components/Header";
+import Footer from "./components/Footer";
 import "./css/App.css"
 
 function App() {  
   localStorage.clear(); // Clear local storage when starting server
   return (    
   <div className="App"> 
-      <div className="Header">
-          <h1> Light-weight MPC </h1>
-      </div>   
+      <Header /> 
       <Modules />
       <Footer />
   </div>  
