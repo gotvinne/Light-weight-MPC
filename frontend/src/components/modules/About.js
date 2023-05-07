@@ -51,6 +51,9 @@ export default function About() {
         </Box>
         <Box sx={{pl: "10%"}}> 
           <img src={require("./../../img/outputfeedback.drawio.png")} alt="loop" width="120%"/>
+          <Typography sx={{pl: "50%"}}> 
+            fig: Illustration of the MPC control loop
+          </Typography>
         </Box>
       </Box>
 

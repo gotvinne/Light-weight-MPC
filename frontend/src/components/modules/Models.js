@@ -4,7 +4,7 @@ import { Box, Typography, Link } from "@mui/material";
 import "../../css/Modules.css"
 
 import 'katex/dist/katex.min.css';
-import { BlockMath } from 'react-katex';
+import { BlockMath, InlineMath } from 'react-katex';
 
 /**
  * Informative component describing the dynamical models
@@ -15,33 +15,47 @@ export default function Models() {
             <Box sx={{ width: '75%', pl: "5%", pt: "3%"}}>
                 <Typography variant="h4"> Finite Step Response Model, FSRM </Typography>
                 <Typography variant="body1" gutterBottom>
-                Implemented <Link href="https://github.com/gotvinne/Light-weight-MPC/tree/main/src/model/" underline="hover"> {"here,"} </Link>
+                Implemented 
                 using <Link href="https://eigen.tuxfamily.org/index.php?title=Main_Page" underline="hover"> {"Eigen"} </Link> software for linear algebra:
                 </Typography>
                 <Typography variant="body1" gutterBottom>
-                The FSRModel is a C++ object creating the dynamics of a general linear step response model. The following equations and matrices are avaliable by calling the FSRModel functionality.
+                    The FSRModel is a C++ object creating the dynamics of a general linear step response model. 
+                    The following equations and matrices are avaliable by calling the FSRModel functionality.
                 </Typography>
+
+                <Typography variant="h5"> Model definition: </Typography>
+                <Typography>
+                    Instead of using states to describe the dynamics for a given time <InlineMath math={"t"} /> the step response models uses step response coefficients, <InlineMath math={"s"} /> to describe the relation between the input and output. 
+                    For an arbitrary FSR model, the model is describe by <InlineMath math={"N"} /> step response coefficients. 
+                    Furthermore, in order to describe how the change in actuation affects the outputs and the predicted outputs, three matrices are defined: 
+                    <InlineMath math={"\\quad \\boldsymbol{\\Theta, \\Phi, \\Psi}"} />. The first matrix determines how the step response coefficients are used to predict future outputs, while the others describes the dynamics of past actuation. 
+                </Typography>
+                <Typography>
+                    In industrial MPC applications, output variables are denoted "Controlled variables (CV)" and input variables "Manipulated variables (MV)". Hence, <InlineMath math={"n_{CV}"} /> and <InlineMath math={"n_{MV}"} /> denote the number of inputs and outputs.
+                </Typography>
+
                 <Typography variant="h5"> Output prediction equation: </Typography>
                 <BlockMath math={`\\tilde{Y}(k+P) = \\boldsymbol{\\Theta} \\Delta U(k+M)+ \\boldsymbol{\\Phi} \\Delta \\tilde{U}(k)+\\boldsymbol{\\Psi} \\tilde{U}(k-N)+B(k) = \\boldsymbol{\\Theta} \\Delta U(k+M) + \\boldsymbol{\\Lambda}(k) `} />
-                <Typography variant="h5"> Theta-matrix definition: </Typography>
+                
                 <Box sx={{pl: "3%", pt: 2, display: "flex", flexDirection: "row"}}>
-                <BlockMath math={`\\boldsymbol{\\Theta} \\triangleq\\left[\\begin{array}{cccc}
-                                    \\boldsymbol{S}_{11} & \\boldsymbol{S}_{12} & \\cdots & \\boldsymbol{S}_{1 n_{MV}} \\\\\n
-                                    \\boldsymbol{S}_{21} & \\cdots & \\cdots & \\boldsymbol{S}_{2 n_{MV}} \\\\\n
-                                    \\vdots & \\vdots & \\vdots & \\vdots \\\\\n
-                                    \\boldsymbol{S}_{n_{CV} 1} & \\cdots & \\cdots & \\boldsymbol{S}_{n_{CV} n_{MV}} \\end{array}\\right]_{n_{CV} \\cdot (P-W) \\times M \\cdot n_{MV}},  `} />
-                    <Box width={"2%"}/>
-                    <BlockMath math={`\\boldsymbol{S} \\triangleq\\left[\\begin{array}{cccc}
-                                    s_1 & 0 & \\cdots & 0 \\\\\n
-                                    s_2 & s_1 & 0 & \\vdots \\\\\n
-                                    \\vdots & \\vdots & \\ddots & 0 \\\\\n
-                                    s_M & s_{M-1} & \\cdots & s_1 \\\\\n
-                                    s_{M+1} & s_M & \\cdots & s_2 \\\\\n
-                                    \\vdots & \\vdots & \\ddots & \\vdots \\\\\n
-                                    s_P & s_{P-1} & \\cdots & s_{P-M+1}
-                                    \\end{array}\\right] `} />
+                    <BlockMath math={`\\boldsymbol{\\Theta} \\triangleq\\left[\\begin{array}{cccc}
+                                        \\boldsymbol{S}_{11} & \\boldsymbol{S}_{12} & \\cdots & \\boldsymbol{S}_{1 n_{MV}} \\\\\n
+                                        \\boldsymbol{S}_{21} & \\cdots & \\cdots & \\boldsymbol{S}_{2 n_{MV}} \\\\\n
+                                        \\vdots & \\vdots & \\vdots & \\vdots \\\\\n
+                                        \\boldsymbol{S}_{n_{CV} 1} & \\cdots & \\cdots & \\boldsymbol{S}_{n_{CV} n_{MV}} \\end{array}\\right]_{n_{CV} \\cdot (P-W) \\times M \\cdot n_{MV}},  `} />
+                        <Box width={"2%"}/>
+                        <BlockMath math={`\\boldsymbol{S} \\triangleq\\left[\\begin{array}{cccc}
+                                        s_1 & 0 & \\cdots & 0 \\\\\n
+                                        s_2 & s_1 & 0 & \\vdots \\\\\n
+                                        \\vdots & \\vdots & \\ddots & 0 \\\\\n
+                                        s_M & s_{M-1} & \\cdots & s_1 \\\\\n
+                                        s_{M+1} & s_M & \\cdots & s_2 \\\\\n
+                                        \\vdots & \\vdots & \\ddots & \\vdots \\\\\n
+                                        s_P & s_{P-1} & \\cdots & s_{P-M+1}
+                                        \\end{array}\\right] `} />
                 </Box>
-                <Typography variant="h5"> Phi-matrix definition: </Typography>
+
+
                 <Box sx={{pl: "3%", pt: 2, display: "flex", flexDirection: "row"}}>
                     <BlockMath math={`\\boldsymbol{\\Phi}=\\left[\\begin{array}{cccc}
                                     \\boldsymbol{\\Phi_{1,1}} & \\boldsymbol{\\Phi_{1,2}} & \\cdots & \\boldsymbol{\\Phi_{1, n_{M V}}} \\\\\n
@@ -59,7 +73,6 @@ export default function Models() {
 
                 </Box>
                 
-                <Typography variant="h5"> Psi-matrix definition: </Typography>
                 <Box sx={{pl: "3%", pt: 2, display: "flex", flexDirection: "row"}}>
                     <BlockMath math={`\\boldsymbol{\\Psi} =\\left[\\begin{array}{cccc}
                                     \\Psi_{1,1} & \\Psi_{1,2} & \\cdots & \\Psi_{1, n_{M V}} \\\\\n
@@ -76,7 +89,6 @@ export default function Models() {
                                     \\end{array}\\right]_{\\left(P-W+1\\right) \\times 1} `} />
 
                 </Box>
-                
             </Box>
         </div>
     );
