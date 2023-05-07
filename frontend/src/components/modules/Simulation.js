@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 
 import { readSimParams, readSimCV, readSimMV } from "../../utils/IO.js";
-import { PlotPrediction, PlotActuation } from "../../utils/plot.js";
+import { OutputCharts, ActuationCharts } from "./LineChart.js";
 import "../../css/Modules.css"
 
 const initSimParam = {scenario: "", T: 0, nCV: 0, nMV: 0};
@@ -44,26 +44,9 @@ export default function Simulation({simData, P, simRef}) {
                     <Box sx={{pl: "2%", pt: "1%"}}>
                         <Typography variant="h5"> {"Scenario: " + simParam.scenario} </Typography>
                     </Box>
-                <Box sx={{width: "inherit", pl:"10%", display: "flex", flexDirection: "row"}}>
-                    {CVs.map((cv, index) => {
-                        return (
-                        <Box key={index} > 
-                            {PlotPrediction(cv, simParam.T, P, simRef[index])}
-                        </Box>
-                        )
-                    })}
+                    <OutputCharts CVs={CVs} T={simParam.T} P={P} refData={simRef}/>
+                    <ActuationCharts MVs={MVs} T={simParam.T} P={P} />
                 </Box>
-
-                <Box sx={{width: "inherit", pl:"10%", display: "flex", flexDirection: "row"}}>
-                    {MVs.map((mv, index) => {
-                        return (
-                        <Box key={index} > 
-                            {PlotActuation(mv, simParam.T, P)}
-                        </Box>
-                        )
-                    })}
-                </Box>
-            </Box>
 
             : <Box sx={{width: "inherit", pt: 3}}>
                 <Box sx={{pl: "2%"}}>

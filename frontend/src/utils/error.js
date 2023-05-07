@@ -35,9 +35,9 @@ function updateHorizons(scenario, error) {
     if (data[0] > data[1] && data[1] >= data[2] && data[1] > data[3] && data[1] > 0) {
         error["P"] = false;
     } else { error["P"] = true; } 
-    // Check W
+    // Check W:
     (data[3] <= data[1] ? error["W"] = false : error["W"] = true) 
-    // Check M
+    // Check M:
     if (data[2] < data[1] && data[2] < data[0] && data[2] > 0) {
         error["M"] = false;
     } else {

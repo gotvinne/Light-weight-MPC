@@ -21,7 +21,7 @@ export default function Modules() {
     const [P, setP] = useState("");
     const [simRef, setSimRef] = useState("");
 
-    const handleChange = (newModule) => { 
+    const handleChange = (event: React.SyntheticEvent, newModule: number) => { 
         setModule(newModule); 
     };
 

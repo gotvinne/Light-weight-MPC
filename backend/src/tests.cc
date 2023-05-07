@@ -70,10 +70,10 @@ void TestSerializeScenario(const string& sce, const string& sys, const string& S
 
 void TestSimulate() {
     // TEST PARAMETERS //
-    string sys = "siso_test";
+    string sys = "SingleWell";
 
     json ref = json::object();
-    ref["ref"] = {1};
+    ref["ref"] = {3800, 70};
     /////////////////
     string ref_str = to_string(ref);
 

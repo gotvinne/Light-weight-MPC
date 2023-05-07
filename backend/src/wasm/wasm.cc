@@ -16,6 +16,7 @@
 #include "wasm/wasm.h"
 
 string simulate(string sce_file, string sys_file, string sce, string ref_str, int T) {
+    
     // System variables:
     CVData cvd; 
     MVData mvd;
@@ -44,6 +45,7 @@ string simulate(string sce_file, string sys_file, string sce, string ref_str, in
     MatrixXd y_pred; /** Predicted output (n_CV, T)*/
 
     // Reference: 
+    T += conf.P; // In order to plot future predictions
     VectorXd* y_ref = ParseReferenceStrByAllocation(ref_str, T, conf.P);
 
     // Solver: 
