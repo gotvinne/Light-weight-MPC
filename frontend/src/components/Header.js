@@ -9,7 +9,7 @@ import "../css/App.css"
 export default function Header() {
     return (
         <div className="Header">
-            <Box sx={{width: "inherit", pt: 2, pb: 2, display: "flex", flexDirection: "row"}}>
+            <Box sx={{width: "inherit", pt: 1, pb: 1, display: "flex", flexDirection: "row"}}>
                 <Box sx={{pl: "40%", width: "20%"}} >
                     <Typography variant="h4" color="#ff1344" sx={{pt: "3%", fontWeight: 'bold'}}>
                         Light-weight MPC

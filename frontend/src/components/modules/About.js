@@ -45,12 +45,12 @@ export default function About() {
         </Typography>
       </Box>
 
-      <Box sx={{pt: "2%", pl:"20%", display: "flex", flexDirection: "row"}}>
+      <Box sx={{pt: "2%", pl:"15%", display: "flex", flexDirection: "row"}}>
         <Box> 
-          <img src={require("./../../img/MPC_logo.png")} alt="Logo" />
+          <img src={require("./../../img/MPC_logo.png")} alt="Logo" width="120%" />
         </Box>
         <Box sx={{pl: "10%"}}> 
-          <img src={require("./../../img/outputfeedback.drawio.png")} alt="loop" />
+          <img src={require("./../../img/outputfeedback.drawio.png")} alt="loop" width="120%"/>
         </Box>
       </Box>
 
