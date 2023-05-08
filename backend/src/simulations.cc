@@ -69,8 +69,7 @@ void OpenLoopFSRM(const string& system, const std::vector<double>& ref_vec, int 
     std::map<string, int> m_map;
 
     // Scenario variables:
-    VectorXd z_min; /** Lower constraint vector */
-    VectorXd z_max; /** Upper constraint vector */
+    VectorXd z_min, z_max; /** Constraint vectors */
     MPCConfig conf; /** MPC configuration */
 
     // Parse information:
@@ -84,9 +83,8 @@ void OpenLoopFSRM(const string& system, const std::vector<double>& ref_vec, int 
     std::vector<double> step {5, 25};
     AllocateStepReference(du, ref_vec, step, T); 
     
-    MatrixXd u_mat = MatrixXd::Zero(fsr.getN_MV(), T);
-    MatrixXd y_pred = MatrixXd::Zero(fsr.getN_CV(), T);
-
+    MatrixXd u_mat = MatrixXd::Zero(fsr.getN_MV(), T), y_pred = MatrixXd::Zero(fsr.getN_CV(), T);
+ 
     for (int k = 0; k < T; k++) {
         // Store optimal du and y_pref: Before update!
         u_mat.col(k) = fsr.getUK();
@@ -105,7 +103,8 @@ void OpenLoopFSRM(const string& system, const std::vector<double>& ref_vec, int 
     }
 }
 
-void MPCSimFSRM(const string& sce, const std::vector<double>& ref_vec, bool new_sim, int T) {
+void MPCSimFSRM(const string& sce, const string& ref_vec, bool new_sim, int T) {
+    // Mapping to Data folder
     const string sim = "sim_" + sce;
     const string sce_path = "../data/scenarios/sce_" + sce + ".json";
     const string sim_path = "../data/simulations/" + sim + ".json";
@@ -116,9 +115,8 @@ void MPCSimFSRM(const string& sce, const std::vector<double>& ref_vec, bool new_
     std::map<string, int> m_map;
 
     // Scenario variables:
-    VectorXd z_min; /** Lower constraint vector */
-    VectorXd z_max; /** Upper constraint vector */
-    MPCConfig conf; /** MPC configuration */
+    VectorXd z_min, z_max; /** Constraint vectors */
+    MPCConfig conf; 
     MatrixXd du_tilde; 
 
     // Parse information:
@@ -139,14 +137,10 @@ void MPCSimFSRM(const string& sce, const std::vector<double>& ref_vec, bool new_
     fsr.setDuTildeMat(du_tilde);
 
     // MPC variables:
-    MatrixXd u_mat; /** Optimized actuation, (n_MV, T) */
-    MatrixXd y_pred; /** Predicted output (n_CV, T)*/
+    MatrixXd u_mat, y_pred; /** Optimized actuation, (n_MV, T) */ /** Predicted output (n_CV, T)*/
 
     // Reference: 
-    if (int(ref_vec.size()) != m_map[kN_CV]) {
-        throw std::invalid_argument("Number of references do not coincide with constrained variables");
-    }
-    VectorXd* y_ref = AllocateConstReference(ref_vec, T, conf.P);
+    VectorXd* y_ref = ParseReferenceStrByAllocation(ref_vec, T, conf.P, m_map[kN_CV]);
 
     // Solver: 
     try {

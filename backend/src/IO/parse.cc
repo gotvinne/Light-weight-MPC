@@ -14,6 +14,7 @@
 #include <iostream>
 #include <fstream>
 #include <stdexcept>
+#include <algorithm>
 
 /**
  * @brief function obtaining model data from system file
@@ -31,6 +32,15 @@ static void ModelData(const json& sys_data, std::map<string,int>& map) {
     catch(json::exception& e) {
         std::cerr << e.what() << std::endl; 
     }    
+}
+
+static bool IsDigit(string str) {
+    for (auto &ch : str) {
+        if (!isdigit(ch)) {
+            return false;
+        }
+    }
+    return true; 
 }
 
 /**
@@ -215,6 +225,42 @@ VectorXd* ParseReferenceStrByAllocation(string ref_str, int T, int P) {
     json ref_vec = ref_data.at(kRef);
 
     int size = int(ref_vec.size());
+    VectorXd* y_ref = new VectorXd[size]; // Assume size is already checked with model.
+
+    for (int i = 0; i < size; i++) {
+        y_ref[i] = VectorXd::Constant(T + P, ref_vec.at(i)); // Takes predictions into account!
+    }
+    return y_ref;
+}
+
+VectorXd* ParseReferenceStrByAllocation(const string& ref_str, int T, int P, int n_CV) {
+    // Remove whitespaces:
+    string copy = ref_str;
+
+    if (copy[0] != '[') {
+        throw std::invalid_argument("Missing starting bracket in referece arg!");
+    } else if (copy.back() != ']') {
+        throw std::invalid_argument("Missing enclosing bracket in referece arg!");
+    }
+
+    string stripped = copy.substr(1, copy.size() - 2);
+    const char sep = ',', space = ' ';
+    std::replace(stripped.begin(), stripped.end(), sep, space);
+ 
+    // Split string to std::vector
+    std::vector<double> ref_vec; 
+    std::stringstream ss(stripped);
+    string item;
+    while (ss >> item) {
+        if (IsDigit(item)) {
+            ref_vec.push_back(std::stod(item));
+        }
+    }
+
+    int size = int(ref_vec.size());
+    if (size != n_CV) {
+        throw std::invalid_argument("Number of references do not coincide with number of n_CV, expected: " + std::to_string(n_CV));
+    }
     VectorXd* y_ref = new VectorXd[size];
 
     for (int i = 0; i < size; i++) {

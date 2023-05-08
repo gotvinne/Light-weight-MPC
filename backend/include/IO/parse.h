@@ -89,13 +89,14 @@ void Parse(const string& sce_filepath, const string& sim_filepath, std::map<stri
 void ParseOpenLoop(const string& system, std::map<string, int>& m_map, CVData& cvd, MVData& mvd);
 
 /**
- * @brief 
+ * @brief Parse JSON reference to Eigen::VectorXd
  * 
- * @param ref_str 
- * @param T 
- * @param P 
- * @return VectorXd* 
+ * @param ref_str JSON formatted string
+ * @param T MPC horison 
+ * @param P Prediction horizon
+ * @return Allocated Eigen::VectorXd holding references
  */
 VectorXd* ParseReferenceStrByAllocation(string ref_str, int T, int P);
 
+VectorXd* ParseReferenceStrByAllocation(const string& ref_str, int T, int P, int n_CV);
 #endif // PARSE_H

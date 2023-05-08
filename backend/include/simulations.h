@@ -23,11 +23,11 @@ using string = std::string;
  * @brief MPC simulation of FSR model, can also do simulations further
  * 
  * @param sce [std::string] Scenario to be simulated 
- * @param ref_vec [std::vector] vector holding reference values
+ * @param ref_vec [std::string] vector holding reference values
  * @param new_sim [bool]
  * @param T [int] MPC horizon
  */
-void MPCSimFSRM(const string& sce, const std::vector<double>& ref_vec, bool new_sim, int T);
+void MPCSimFSRM(const string& sce, const string& ref_vec, bool new_sim, int T);
 
 /**
  * @brief Open loop simulation of FSR model
