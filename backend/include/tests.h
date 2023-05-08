@@ -27,7 +27,10 @@ void TestSerializeScenario(const string& sce, const string& sys, const string& S
 /**
  * @brief Test Wasm Simulate function
  * 
+ * @param sce 
+ * @param ref_vec 
+ * @param T 
  */
-void TestSimulate();
+void TestSimulate(const string& sce, const string& ref_vec, int T);
 
 #endif // TESTS_H
