@@ -23,7 +23,7 @@ export default function Models() {
                     The following equations and matrices are avaliable by calling the FSRModel functionality.
                 </Typography>
 
-                <Typography variant="h5"> Model definition: </Typography>
+                <Typography variant="subtitle1" sx={{fontWeight: "bold"}}> Model definition: </Typography>
                 <Typography>
                     Instead of using states to describe the dynamics for a given time <InlineMath math={"t"} /> the step response models uses step response coefficients, <InlineMath math={"s"} /> to describe the relation between the input and output. 
                     For an arbitrary FSR model, the model is describe by <InlineMath math={"N"} /> step response coefficients. 
@@ -34,7 +34,7 @@ export default function Models() {
                     In industrial MPC applications, output variables are denoted "Controlled variables (CV)" and input variables "Manipulated variables (MV)". Hence, <InlineMath math={"n_{CV}"} /> and <InlineMath math={"n_{MV}"} /> denote the number of inputs and outputs.
                 </Typography>
 
-                <Typography variant="h5"> Output prediction equation: </Typography>
+                <Typography variant="subtitle1" sx={{fontWeight: "bold"}}> Output prediction equation: </Typography>
                 <BlockMath math={`\\tilde{Y}(k+P) = \\boldsymbol{\\Theta} \\Delta U(k+M)+ \\boldsymbol{\\Phi} \\Delta \\tilde{U}(k)+\\boldsymbol{\\Psi} \\tilde{U}(k-N)+B(k) = \\boldsymbol{\\Theta} \\Delta U(k+M) + \\boldsymbol{\\Lambda}(k) `} />
                 
                 <Box sx={{pl: "3%", pt: 2, display: "flex", flexDirection: "row"}}>

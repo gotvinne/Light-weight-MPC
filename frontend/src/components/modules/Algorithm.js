@@ -45,7 +45,7 @@ export default function Algorithm() {
                 <Typography> 
                     Given, <InlineMath math={"H"} /> is a positive definite matrix, yielding a convex quadratic program. The OSQP solver uses an custom ADMM-based first order method and is one of the fastest QP solvers avaliable. 
                 </Typography>
-                <Typography variant="h5"> Step Response MPC solver: </Typography>
+                <Typography variant="subtitle1" sx={{fontWeight: "bold"}}> Step Response MPC solver: </Typography>
                 <Typography variant="body1" gutterBottom>
                 This MPC controller is defined as a standard quadratic program (QP) where the cost aims to minimize the error between the output <InlineMath math={"Y"}/> and the reference <InlineMath math={"r_y"} />:
                 </Typography>
@@ -68,7 +68,7 @@ export default function Algorithm() {
                 <BlockMath math={`\\underline{U} \\leq U(k+j) \\leq \\bar{U}, \\quad j \\in\\left\\{0, \\ldots, M-1\\right\\}`} />
                 <BlockMath math={`\\underline{Y}- \\epsilon_l \\leq Y(k+j) \\leq \\bar{Y}+ \\epsilon_h, \\quad \\epsilon_h \\geq 0, \\epsilon_l \\geq 0, \\quad j \\in\\left\\{W, \\ldots, P\\right\\}`} />
 
-                <Typography variant="h5"> Condensed Form: </Typography>
+                <Typography variant="subtitle1" sx={{fontWeight: "bold"}}> Condensed Form: </Typography>
                 <Typography variant="body1" gutterBottom>
                 The condensed formulation solves a smaller optimalization problem, obtained using the Nullspace method. This method reduces the number of optimalization variabled by defining a linear transform. <InlineMath math={"z_{st} = A z_{cd} + C \\quad"} /> 
                 The transform cancels optimalization variables with the given constraints, yielding a computationally easier problem. </Typography>
