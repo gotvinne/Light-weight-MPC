@@ -34,9 +34,16 @@ static void ModelData(const json& sys_data, std::map<string,int>& map) {
     }    
 }
 
+/**
+ * @brief Checks if std::string is double or int
+ * 
+ * @param str 
+ * @return true 
+ * @return false 
+ */
 static bool IsDigit(string str) {
     for (auto &ch : str) {
-        if (!isdigit(ch)) {
+        if (!isdigit(ch) && ch != '.') {
             return false;
         }
     }

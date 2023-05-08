@@ -89,7 +89,7 @@ void Parse(const string& sce_filepath, const string& sim_filepath, std::map<stri
 void ParseOpenLoop(const string& system, std::map<string, int>& m_map, CVData& cvd, MVData& mvd);
 
 /**
- * @brief Parse JSON reference to Eigen::VectorXd
+ * @brief Parse JSON reference to Eigen::VectorXd, used in Web application
  * 
  * @param ref_str JSON formatted string
  * @param T MPC horison 
@@ -98,5 +98,14 @@ void ParseOpenLoop(const string& system, std::map<string, int>& m_map, CVData& c
  */
 VectorXd* ParseReferenceStrByAllocation(string ref_str, int T, int P);
 
+/**
+ * @brief Another implementation with size check
+ * 
+ * @param ref_str 
+ * @param T 
+ * @param P 
+ * @param n_CV 
+ * @return VectorXd* 
+ */
 VectorXd* ParseReferenceStrByAllocation(const string& ref_str, int T, int P, int n_CV);
 #endif // PARSE_H
