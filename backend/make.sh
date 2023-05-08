@@ -5,26 +5,26 @@
 #     -s string scenario name
 #     -n bool new simulation
 # 
-# ex: sh make.sh -T 180 -s SingleWell -n
+# ex: sh make.sh -T 180 -s SingleWell -r [3800,70] -n
 
 mkdir -p "build" #NB! Sometimes the old build folder needs to be deleted.
 
 # CLI parser
 argN=false
-while getopts "ns:T:h" flag; 
+while getopts "ns:r:T:h" flag; 
 do
   case ${flag} in
     T)
       argT=${OPTARG};;
-
     s) 
       argS=${OPTARG};;
-
+    r) 
+      argRef=${OPTARG};;
     n) 
       argN=true;;
 
     ?|h)
-      echo "Usage: $(basename $0) [-T int] [-s string] [-n]"
+      echo "WRONG CLI, Usage: $(basename $0) [-T int] [-s string] [-r std::vector<double>] [-n]"
       exit 1;;
   esac
 done
@@ -39,9 +39,9 @@ if [ $? -eq 0 ]; then #Build successful
     echo 
 
     if $argN; then # If flag is found
-      ./backend -T $argT -s $argS -n
+      ./mpc_core -T $argT -s $argS -r $argRef -n
     else 
-      ./backend -T $argT -s $argS
+      ./mpc_core -T $argT -s $argS -r $argRef
     fi
 
     if [ $? -eq 0 ]; then #Running successfull

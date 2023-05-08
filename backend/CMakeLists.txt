@@ -48,14 +48,14 @@ if(WEBASSEMBLY)
 
 else(WEBASSEMBLY)
     #set(CMAKE_CXX_FLAGS "-Wall -Wextra") # Print warnings
-    project(backend VERSION 1.0 LANGUAGES CXX)
+    project(mpc_core VERSION 1.0 LANGUAGES CXX)
 
     find_package(OsqpEigen REQUIRED)
     find_package(nlohmann_json 3.11.2 REQUIRED)
 
     file(GLOB_RECURSE SRC_FILES src/*.cc)
-    add_executable(backend ${SRC_FILES}) # Define executable
+    add_executable(mpc_core ${SRC_FILES}) # Define executable
 
-    target_include_directories(backend PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
-    target_link_libraries(backend OsqpEigen::OsqpEigen nlohmann_json::nlohmann_json)
+    target_include_directories(mpc_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+    target_link_libraries(mpc_core OsqpEigen::OsqpEigen nlohmann_json::nlohmann_json)
 endif(WEBASSEMBLY)
