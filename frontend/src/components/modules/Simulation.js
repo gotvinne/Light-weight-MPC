@@ -21,13 +21,11 @@ export default function Simulation({simData, P, simRef}) {
     useEffect(() => {
         if (simData === "") {
             setSimAvaliable(false);
-            return;
         } else {
             const json_sim = JSON.parse(simData);
             setSimParam(readSimParams(json_sim));
             setCVs(readSimCV(json_sim));
             setMVs(readSimMV(json_sim));
-            
         }
     }, [simData]);
 

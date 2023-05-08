@@ -180,7 +180,7 @@ export function readSimCV(sim) {
       }
       CVs.push(elem);
     }
-  );
+  ); 
   return CVs;
 }
 
