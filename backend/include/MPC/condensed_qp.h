@@ -16,7 +16,7 @@ using MatrixXd = Eigen::MatrixXd;
 using SparseXd = Eigen::SparseMatrix<double>;
 
 /**
- * @brief Set the Weight Matrices object
+ * @brief Set the weight Matrices
  * 
  * @param Q_bar Eigen::SparseMatrix<double> to be filled by output tuning
  * @param R_bar Eigen::SparseMatrix<double> to be filled by change of input tuning
@@ -25,19 +25,19 @@ using SparseXd = Eigen::SparseMatrix<double>;
 void setWeightMatrices(SparseXd& Q_bar, SparseXd& R_bar, const MPCConfig& conf);
 
 /**
- * @brief Set the Hessian Matrix object
+ * @brief Set the Hessian Matrix G
  * 
- * @param H Positive definite optimization matrix
+ * @param G Positive definite optimization matrix
  * @param Q_bar Positive definite Eigen::MatrixXd output tuning matrix
  * @param R_bar Positive definite Eigen::MatrixXd change of input tuning matrix
  * @param fsr FSRModel Finite step response model
  * @param a
  * @param n
  */
-void setHessianMatrix(SparseXd& H, const SparseXd& Q_bar, const SparseXd& R_bar, const FSRModel& fsr, int a, int n); 
+void setHessianMatrix(SparseXd& G, const SparseXd& Q_bar, const SparseXd& R_bar, const FSRModel& fsr, int a, int n); 
 
 /**
- * @brief Set the Gradient Vector object, NB! Dynamic output
+ * @brief Set the Gradient Vector q
  * 
  * @param q Eigen::VectorXd gradient vector
  * @param fsr Finite step response model
@@ -51,7 +51,7 @@ void setGradientVector(VectorXd& q, FSRModel& fsr, const SparseXd& Q_bar,
                         VectorXd* y_ref, const MPCConfig& conf, int n, int k);
 
 /**
- * @brief Set the Constraint Matrix object
+ * @brief Set the Constraint Matrix A
  * 
  * @param A Eigen::SparseMatrix<double>
  * @param fsr Finite step response model
@@ -62,7 +62,7 @@ void setGradientVector(VectorXd& q, FSRModel& fsr, const SparseXd& Q_bar,
 void setConstraintMatrix(SparseXd& A, const FSRModel& fsr, int m, int n, int a);
 
 /**
- * @brief Set the Constraint Vectors object, NB! Dynamic output
+ * @brief Set the Constraint Vectors l, u. fsr model is k-dependant
  * 
  * @param l Eigen::VectorXd lower constraint vector 
  * @param u Eigen::VectorXd upper constraint vector
@@ -96,5 +96,33 @@ void setOmegaU(SparseXd& omega, int M, int n_MV);
  * @return VectorXd, populated vector
  */
 VectorXd PopulateConstraints(const VectorXd& c, int a, int n_MV, int n_CV, int M, int P);
+
+/**
+ * @brief Calculate K inv matrix, this is a lower triangular matrix
+ * 
+ * @param a size of K_inv
+ * @return Eigen::MatrixXd
+ */
+MatrixXd setKInv(int a);
+
+/**
+ * @brief Set the Gamma object, to select the prior actuation. du_k = gamma * z
+ * 
+ * @param M Control horizon
+ * @param n_MV number of manipulated variables
+ * @return Eigen::Sparse<double>
+ */
+SparseXd setGamma(int M, int n_MV);
+
+/**
+ * @brief 
+ * 
+ * @param bound 
+ * @param z_pop Populated constraints 
+ * @param m Number of contraints
+ * @param a Number of predicted actuations
+ * @param upper bool
+ */
+void ConfigureConstraint(VectorXd& bound, const VectorXd& z_pop, int m, int a, bool upper);
 
 #endif // CONDENSED_QP_H
