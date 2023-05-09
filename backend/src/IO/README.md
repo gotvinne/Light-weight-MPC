@@ -1,7 +1,6 @@
 
 ## Input-Output, IO formatting
-
-This module handles the inputs and outputs of the Light-Weight software, in fact the json data files. 
+This module handles the inputs and outputs of the MPC-core, in fact the json data files. 
 
 ### Input format
 - A json file defining **the system** (states, inputs, step coefficients and references)

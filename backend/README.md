@@ -83,7 +83,7 @@ source ./emsdk_env.sh
 sh emcc.sh -d ../frontend/src
 ```
 
-### Plot
+### Visualization
 MPC-core has an secondary code base providing plot functionality. This software is developed in Python, and can be installed using [conda](https://docs.conda.io/en/latest/#). The visualization tool is found in the folder named */vis*
 
 ```console

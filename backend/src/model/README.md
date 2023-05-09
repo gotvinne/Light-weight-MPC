@@ -73,7 +73,7 @@ $$ U(s) = \frac{\Delta u}{s}, $$
 
 where $\Delta u$ is the model input.  
 
-### Reference
+### Plant model:
 
 In order to simulate the MPC scenario realistically, a reference system generating a measured output is desired. This model represents the output of an avaliable sensor for the SISO case. The measured value can be used to realize output feedback by obtaining a bias correction term. 
 
