@@ -22,17 +22,17 @@ int main(int argc, char **argv) {
     // ---- Parse CLI ---- //
     // Default values:
     int T = 1;
-    string sce = "";
+    string sys = "";
     string ref_vec = "";
     bool new_sim = false; 
 
     // Add flags: 
     app.add_option("-T", T, "MPC horizon");
-    app.add_option("-s", sce, "Scenario name");
+    app.add_option("-s", sys, "System name");
     app.add_option("-r", ref_vec, "Reference vector"); 
     app.add_flag("-n", new_sim, "New simulation");
     CLI11_PARSE(app, argc, argv);
     
     // ---- MPC Simulations ---- //
-    MPCSimFSRM(sce, ref_vec, new_sim, T);
+    MPCSimFSRM(sys, ref_vec, new_sim, T);
 }
