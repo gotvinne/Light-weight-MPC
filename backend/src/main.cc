@@ -10,11 +10,8 @@
  */
 #include "simulations.h"
 #include <CLI/CLI.hpp>
-#include "tests.h"
 
 #include <string>
-#include <vector>
-
 using string = std::string;
 
 int main(int argc, char **argv) {
@@ -32,6 +29,9 @@ int main(int argc, char **argv) {
     app.add_option("-r", ref_str, "Reference vector"); 
     app.add_flag("-n", new_sim, "New simulation");
     CLI11_PARSE(app, argc, argv);
+
+    // NB! The system file sys.json must be located inside data/systems folder
+    // The corresponding sce_sys.json file will be used as scenario. This must be found in data/scenarios
     
     // ---- MPC Simulations ---- //
     //OpenLoopFSRM(sys, ref_str, T);
