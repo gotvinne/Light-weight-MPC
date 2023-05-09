@@ -27,14 +27,13 @@ void setWeightMatrices(SparseXd& Q_bar, SparseXd& R_bar, const MPCConfig& conf);
 /**
  * @brief Set the Hessian Matrix G
  * 
- * @param G Positive definite optimization matrix
  * @param Q_bar Positive definite Eigen::MatrixXd output tuning matrix
  * @param R_bar Positive definite Eigen::MatrixXd change of input tuning matrix
  * @param fsr FSRModel Finite step response model
  * @param a
  * @param n
  */
-void setHessianMatrix(SparseXd& G, const SparseXd& Q_bar, const SparseXd& R_bar, const FSRModel& fsr, int a, int n); 
+SparseXd setHessianMatrix(const SparseXd& Q_bar, const SparseXd& R_bar, const FSRModel& fsr, int a, int n); 
 
 /**
  * @brief Set the Gradient Vector q
@@ -53,27 +52,29 @@ void setGradientVector(VectorXd& q, FSRModel& fsr, const SparseXd& Q_bar,
 /**
  * @brief Set the Constraint Matrix A
  * 
- * @param A Eigen::SparseMatrix<double>
  * @param fsr Finite step response model
  * @param m Number of constraints
  * @param n Number of optimization variables
  * @param a
+ * @return Eigen::Sparse<double>
  */
-void setConstraintMatrix(SparseXd& A, const FSRModel& fsr, int m, int n, int a);
+SparseXd setConstraintMatrix(const FSRModel& fsr, int m, int n, int a);
 
 /**
  * @brief Set the Constraint Vectors l, u. fsr model is k-dependant
  * 
  * @param l Eigen::VectorXd lower constraint vector 
  * @param u Eigen::VectorXd upper constraint vector
- * @param z_min lower constraints, du, u, y
- * @param z_max upper constraints, du, u, y
  * @param fsr Finite step response model
+ * @param c_l
+ * @param c_u
+ * @param K_inv
+ * @param Gamma
  * @param m Number of constraints
- * @param n Number of optimization variables
+ * @param a dim(du)
  */
-void setConstraintVectors(VectorXd& l, VectorXd& u, const VectorXd& z_min_pop, const VectorXd& z_max_pop,
-                         FSRModel& fsr, int m, int n);
+void setConstraintVectors(VectorXd& l, VectorXd& u, FSRModel& fsr, const VectorXd& c_l, const VectorXd& c_u, const MatrixXd& K_inv,
+                         const SparseXd& Gamma, int m, int a);
 
 /**
  * @brief Set the Omega U object, such that du = omega_u * z
@@ -117,12 +118,12 @@ SparseXd setGamma(int M, int n_MV);
 /**
  * @brief 
  * 
- * @param bound 
  * @param z_pop Populated constraints 
  * @param m Number of contraints
  * @param a Number of predicted actuations
  * @param upper bool
+ * @return Eigen::VectorXd
  */
-void ConfigureConstraint(VectorXd& bound, const VectorXd& z_pop, int m, int a, bool upper);
+VectorXd ConfigureConstraint(const VectorXd& z_pop, int m, int a, bool upper) ;
 
 #endif // CONDENSED_QP_H

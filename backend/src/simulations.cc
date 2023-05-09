@@ -152,15 +152,15 @@ void MPCSimFSRM(const string& sce, const string& ref_vec, bool new_sim, int T) {
     }
 
     // Serializing: 
-    try {
-        if (new_sim) {
-            SerializeSimulationNew(sim_path, sce, cvd, mvd, 
-               y_pred, u_mat, z_min, z_max, fsr, T);
-        } else {
-            SerializeSimulation(sim_path, y_pred, u_mat, T);
-        }
-    }
-    catch(std::exception& e) {
-        std::cout << e.what() << std::endl;
-    }
+    // try {
+    //     if (new_sim) {
+    //         SerializeSimulationNew(sim_path, sce, cvd, mvd, 
+    //            y_pred, u_mat, z_min, z_max, fsr, T);
+    //     } else {
+    //         SerializeSimulation(sim_path, y_pred, u_mat, T);
+    //     }
+    // }
+    // catch(std::exception& e) {
+    //     std::cout << e.what() << std::endl;
+    // }
 }

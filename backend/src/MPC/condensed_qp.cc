@@ -26,30 +26,6 @@ static void blkdiag(SparseXd& blk_mat, const MatrixXd& arg, int count) {
 }
 
 /**
- * @brief Calculate K inv matrix, this is a lower triangular matrix
- * 
- * @param K_inv Eigen::MatrixXd passed by reference
- * @param a size of K_inv
- */
-static void setKInv(MatrixXd& K_inv, int a) { 
-    K_inv = MatrixXd::Constant(a, a, 1);
-    K_inv = K_inv.triangularView<Eigen::Lower>();
-}
-
-/**
- * @brief Set the Gamma object, to select the prior actuation.
- * 
- * @param gamma SparseMatrix accessing the first du for every MV, du_k = gamma * z
- * @param M Control horizon
- * @param n_MV number of manipulated variables
- */
-static void setGamma(SparseXd& gamma, int M, int n_MV) {
-    MatrixXd gamma_arg = MatrixXd::Zero(M, 1);
-    gamma_arg(0, 0) = 1.0;
-    blkdiag(gamma, gamma_arg, n_MV);
-}
-
-/**
  * @brief Set the Tau object, sliced from @param y_ref
  * 
  * @param tau Reference vector on output
@@ -77,13 +53,13 @@ static void setTau(VectorXd& tau, VectorXd* y_ref, int P, int n_CV, int k) { // 
  */
 static void UpdateBounds(VectorXd& bound, FSRModel& fsr, const MatrixXd& K_inv, 
                 const SparseXd& Gamma, int m, int a) { //Change name
-    VectorXd c = VectorXd::Zero(m);
     // c = [ 0 (a),
     //       K⁽⁻¹⁾ Gamma U(k-N) (a),
     //       Lambda (n_CV (P-W)),
     //       Lambda (n_CV (P-W)),
     //       0 (n_CV),
     //       0 (n_CV)]
+    VectorXd c = VectorXd::Zero(m);
     int size_lambda = fsr.getLambda().rows();
 
     c.block(a, 0, a, 1) = K_inv * Gamma * fsr.getUK();
@@ -93,32 +69,46 @@ static void UpdateBounds(VectorXd& bound, FSRModel& fsr, const MatrixXd& K_inv,
     bound -= c;
 }
 
-static void ConfigureConstraint(VectorXd& bound, const VectorXd& z_pop, int m, int a, bool upper) {
-    bound = VectorXd::Zero(m);
-    int uy_size = z_pop.rows(); // = 2 * M * n_MV + P * n_CV = 2 * a + P * n_CV
+VectorXd ConfigureConstraint(const VectorXd& z_pop, int m, int a, bool upper) {
+    VectorXd bound = VectorXd::Zero(m);
+    int duuy_size = z_pop.rows(); // = 2 * M * n_MV + P * n_CV = 2 * a + P * n_CV
 
     if (upper) {
-        bound.block(0, 0, uy_size, 1) = z_pop;
-        bound.block(uy_size, 0, m - uy_size, 1) = VectorXd::Constant(m - uy_size, std::numeric_limits<double>::max()); // Infinity
+        bound.block(0, 0, duuy_size, 1) = z_pop;
+        // Set Infinity values
+         bound.block(duuy_size, 0, m - duuy_size, 1) = VectorXd::Constant(m - duuy_size, std::numeric_limits<double>::max()); 
     } else {
-        VectorXd tmp = z_pop(Eigen::seq(a, Eigen::indexing::last)); // tmp.rows() = P * n_CV
-        bound.block(a, 0, tmp.rows(), 1) = VectorXd::Constant(tmp.rows(), std::numeric_limits<double>::min()); // -Infinity
-        bound.block(uy_size, 0, tmp.rows(), 1) = tmp;
+        // Extract lower Y constraints
+        VectorXd lower_y = z_pop(Eigen::seq(2 * a, Eigen::indexing::last)); // lower_y.rows() = P * n_CV
+        // Set -Infinity values
+        bound.block(2 * a, 0, lower_y.rows(), 1) = VectorXd::Constant(lower_y.rows(), std::numeric_limits<double>::min());
+        bound.block(duuy_size, 0, lower_y.rows(), 1) = lower_y; // Set lower Y
+        bound.block(0, 0, 2 * a, 1) = z_pop(Eigen::seq(0, (2 * a)-1)); // Set lower du and u
     }
+    return bound;
 }
 
-void setConstraintVectors(VectorXd& l, VectorXd& u, const VectorXd& z_min_pop, const VectorXd& z_max_pop,
-                         FSRModel& fsr, int m, int a) {
-    MatrixXd K_inv;
-    setKInv(K_inv, a);
-    SparseXd Gamma; 
-    setGamma(Gamma, fsr.getM(), fsr.getN_MV());
+MatrixXd setKInv(int a) { // Return by value
+    MatrixXd K_inv = MatrixXd::Constant(a, a, 1);
+    return K_inv.triangularView<Eigen::Lower>();
+}
 
-    ConfigureConstraint(l, z_min_pop, m, a, false);
-    ConfigureConstraint(u, z_max_pop, m, a, true);
+SparseXd setGamma(int M, int n_MV) {
+    SparseXd gamma;
+    MatrixXd gamma_arg = MatrixXd::Zero(M, 1);
+    gamma_arg(0, 0) = 1.0;
+    blkdiag(gamma, gamma_arg, n_MV);
+    return gamma;
+}
 
-    UpdateBounds(l, fsr, K_inv, Gamma, m, a); // Constrain lower bound
-    UpdateBounds(u, fsr, K_inv, Gamma, m, a); // Constrain upper bound
+void setConstraintVectors(VectorXd& l, VectorXd& u, FSRModel& fsr, const VectorXd& c_l, const VectorXd& c_u, const MatrixXd& K_inv,
+                         const SparseXd& Gamma, int m, int a) {
+    // Reset bounds:
+    l.block(0, 0, c_l.rows(), 1) = c_l;
+    u.block(0, 0, c_u.rows(), 1) = c_u, 
+
+    UpdateBounds(l, fsr, K_inv, Gamma, m, a);
+    UpdateBounds(u, fsr, K_inv, Gamma, m, a);
 }
 
 void setWeightMatrices(SparseXd& Q_bar, SparseXd& R_bar, const MPCConfig& conf) {
@@ -135,15 +125,12 @@ void setWeightMatrices(SparseXd& Q_bar, SparseXd& R_bar, const MPCConfig& conf) 
     R_bar = R.sparseView(); // dim(R_bar) = n_MV * M x n_MV * M
 }
 
-void setHessianMatrix(SparseXd& H, const SparseXd& Q_bar, const SparseXd& R_bar, const FSRModel& fsr, int a, int n) {
-    MatrixXd h = MatrixXd::Zero(n, n);
-    h.block(0, 0, a, a) = 2 * fsr.getTheta().transpose() * Q_bar * fsr.getTheta() + 2 * R_bar;
+SparseXd setHessianMatrix(const SparseXd& Q_bar, const SparseXd& R_bar, const FSRModel& fsr, int a, int n) {
+    MatrixXd g = MatrixXd::Zero(n, n);
+    g.block(0, 0, a, a) = 2 * fsr.getTheta().transpose() * Q_bar * fsr.getTheta() + 2 * R_bar;
     
-    // H = [h (axa),
-    //      0 (n_CVxn_CV),
-    //      0 (n_CVxn_CV)]
-
-    H = h.sparseView();
+    // G = blkdiag(g (axa), 0 (n_CVxn_CV), 0 (n_CVxn_CV)]
+    return g.sparseView();
 }
 
 void setGradientVector(VectorXd& q, FSRModel& fsr, const SparseXd& Q_bar,
@@ -161,10 +148,7 @@ void setGradientVector(VectorXd& q, FSRModel& fsr, const SparseXd& Q_bar,
     q << temp, conf.RoH, conf.RoL;
 }
 
-void setConstraintMatrix(SparseXd& A, const FSRModel& fsr, int m, int n, int a) {
-    A.resize(m, n);
-    MatrixXd dense = MatrixXd::Zero(m, n); 
-
+SparseXd setConstraintMatrix(const FSRModel& fsr, int m, int n, int a) {
     // A = [ I (axa),              0 (axn_CV),         0 (axn_CV)
     //       K⁽⁻¹⁾ (axa),          0 (axn_CV),         0 (axn_CV)
     //       Theta (n_CV(P-W)xa), -I (n_CV(P-W)xn_CV), 0 (n_CV(P-W)xn_CV)
@@ -172,13 +156,13 @@ void setConstraintMatrix(SparseXd& A, const FSRModel& fsr, int m, int n, int a) 
     //       0 (n_CVxa),           I (n_CVxn_CV),      0 (n_CVxn_CV)
     //       0 (n_CVxa),           0 (n_CVxn_CV),      I (n_CVxn_CV)]; 
 
+    MatrixXd dense = MatrixXd::Zero(m, n); 
     int n_CV = fsr.getN_CV();
     int dim_theta = fsr.getTheta().rows();
 
     MatrixXd In_cv = MatrixXd::Identity(n_CV, n_CV);
     MatrixXd Itheta = MatrixXd::Identity(dim_theta, n_CV);
-    MatrixXd K_inv;
-    setKInv(K_inv, a);
+    MatrixXd K_inv = setKInv(a);
 
     // dU, U row
     dense.block(0, 0, a, a) = MatrixXd::Identity(a, a);
@@ -193,7 +177,7 @@ void setConstraintMatrix(SparseXd& A, const FSRModel& fsr, int m, int n, int a) 
     // eta row
     dense.block(2 * a + 2 * dim_theta, a, n_CV, n_CV) = In_cv;
     dense.block(2 * a + 2 * dim_theta + n_CV, a + n_CV, n_CV, n_CV) = In_cv;
-    A = dense.sparseView();
+    return dense.sparseView();
 }
 
 void setOmegaU(SparseXd& omega, int M, int n_MV) {
