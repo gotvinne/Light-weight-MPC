@@ -16,15 +16,13 @@
 #include "wasm/wasm.h"
 
 string simulate(string sce_file, string sys_file, string sce, string ref_str, int T) {
-    
     // System variables:
     CVData cvd; 
     MVData mvd;
     std::map<string, int> m_map;
 
     // Scenario variables:
-    VectorXd z_min; /** Lower constraint vector */
-    VectorXd z_max; /** Upper constraint vector */
+    VectorXd z_min, z_max; /** Constraint vectors */
     MPCConfig conf; /** MPC configuration */
 
     // Parse information:
@@ -41,17 +39,14 @@ string simulate(string sce_file, string sys_file, string sce, string ref_str, in
     fsr.setDuTildeMat(du_tilde);
 
     // MPC variables:
-    MatrixXd u_mat; /** Optimized actuation, (n_MV, T) */
-    MatrixXd y_pred; /** Predicted output (n_CV, T)*/
-
+    MatrixXd u_mat, y_pred;
     // Reference: 
     T += conf.P; // In order to plot future predictions
-    VectorXd* y_ref = ParseReferenceStrByAllocation(ref_str, T, conf.P);
+    MatrixXd ref = ParseReferenceStrByAllocation(ref_str, T, conf.P);
 
     // Solver: 
     try {
-        SRSolver(T, u_mat, y_pred, fsr, conf, z_min, z_max, y_ref);
-        delete[] y_ref;
+        SRSolver(T, u_mat, y_pred, fsr, conf, z_min, z_max, ref);
     }
     catch(std::exception& e) {
         return string(e.what());

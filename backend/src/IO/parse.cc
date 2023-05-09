@@ -226,21 +226,20 @@ void ParseOpenLoop(const string& system, std::map<string, int>& m_map, CVData& c
     ParseSystemData(sys_data, m_map, cvd, mvd);
 }
 
-VectorXd* ParseReferenceStrByAllocation(string ref_str, int T, int P) {
+MatrixXd ParseReferenceStrByAllocation(string ref_str, int T, int P) {
     json ref_data = json::parse(ref_str);
-
     json ref_vec = ref_data.at(kRef);
 
     int size = int(ref_vec.size());
-    VectorXd* y_ref = new VectorXd[size]; // Assume size is already checked with model.
+    MatrixXd ref = MatrixXd::Zero(size, T + P);
 
     for (int i = 0; i < size; i++) {
-        y_ref[i] = VectorXd::Constant(T + P, ref_vec.at(i)); // Takes predictions into account!
+        ref.row(i) = VectorXd::Constant(T + P, ref_vec.at(i)); // Takes predictions into account!
     }
-    return y_ref;
+    return ref;
 }
 
-VectorXd* ParseReferenceStrByAllocation(const string& ref_str, int T, int P, int n_CV) {
+std::vector<double> ParseRefString(const string& ref_str, int n_CV) {
     // Remove whitespaces:
     string copy = ref_str;
 
@@ -263,15 +262,6 @@ VectorXd* ParseReferenceStrByAllocation(const string& ref_str, int T, int P, int
             ref_vec.push_back(std::stod(item));
         }
     }
-
-    int size = int(ref_vec.size());
-    if (size != n_CV) {
-        throw std::invalid_argument("Number of references do not coincide with number of n_CV, expected: " + std::to_string(n_CV));
-    }
-    VectorXd* y_ref = new VectorXd[size];
-
-    for (int i = 0; i < size; i++) {
-        y_ref[i] = VectorXd::Constant(T + P, ref_vec.at(i)); // Takes predictions into account!
-    }
-    return y_ref;
+    return ref_vec;
 }
+

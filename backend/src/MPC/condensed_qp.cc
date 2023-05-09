@@ -34,11 +34,13 @@ static void blkdiag(SparseXd& blk_mat, const MatrixXd& arg, int count) {
  * @param n_CV Number of controlled variables
  * @param k MPC simulation step
  */
-static void setTau(VectorXd& tau, VectorXd* y_ref, int P, int n_CV, int k) { // Might need W
-    tau.resize(n_CV * P);
+static VectorXd setTau(const MatrixXd& ref, int P, int n_CV, int k) { // Might need W
+    VectorXd tau = VectorXd::Zero(n_CV * P);
     for (int i = 0; i < n_CV; i++) {
-        tau.block(i * P, 0, P, 1) = y_ref[i](Eigen::seq(k, k + (P-1))); // Bit unsure on how to do time delay
+        VectorXd tmp = ref(i, Eigen::seq(k, k + (P-1)));
+        tau.block(i * P, 0, P, 1) = tmp; // Bit unsure on how to do time delay
     }
+    return tau;
 }
 
 /**
@@ -134,9 +136,8 @@ SparseXd setHessianMatrix(const SparseXd& Q_bar, const SparseXd& R_bar, const FS
 }
 
 void setGradientVector(VectorXd& q, FSRModel& fsr, const SparseXd& Q_bar,
-                        VectorXd* y_ref, const MPCConfig& conf, int n, int k) {
-    VectorXd tau;
-    setTau(tau, y_ref, fsr.getP(), fsr.getN_CV(), k);
+                        const MatrixXd& ref, const MPCConfig& conf, int n, int k) {
+    VectorXd tau = setTau(ref, fsr.getP(), fsr.getN_CV(), k);
 
     q.resize(n);
     VectorXd temp = 2 * fsr.getTheta().transpose() * Q_bar * (fsr.getLambda() - tau);

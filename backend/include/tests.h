@@ -17,20 +17,20 @@ using string = std::string;
 /**
  * @brief Test ScerializeScenario functionality
  * 
- * @param sce [std::string] Scenario name
- * @param sys [std::string] System name
- * @param SCE_PATH [std::string] Path to scenario folder, write folder
- * @param SYS_PATH [std::string] Path to system folder, read folder
+ * @param sce Scenario name
+ * @param sys System name
+ * @param SCE_PATH Path to scenario folder, write folder
+ * @param SYS_PATH Path to system folder, read folder
  */
 void TestSerializeScenario(const string& sce, const string& sys, const string& SCE_PATH, const string& SYS_PATH);
 
 /**
- * @brief Test Wasm Simulate function
+ * @brief Test Wasm Simulate function, simulate scenario sce_sys.json
  * 
- * @param sce 
- * @param ref_vec 
- * @param T 
+ * @param sys System name
+ * @param ref_vec vector of references, must concide with system
+ * @param T MPC horizon
  */
-void TestSimulate(const string& sce, const string& ref_vec, int T);
+void TestSimulate(const string& sys, const string& ref_vec, int T);
 
 #endif // TESTS_H

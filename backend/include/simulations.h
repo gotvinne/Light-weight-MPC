@@ -20,22 +20,22 @@ using MatrixXd = Eigen::MatrixXd;
 using string = std::string;
 
 /**
- * @brief MPC simulation of FSR model, can also do simulations further
+ * @brief MPC simulation of FSR model, can also do simulations further. Scenario file: sce_sys.json
  * 
- * @param sce [std::string] Scenario to be simulated 
- * @param ref_vec [std::string] vector holding reference values
- * @param new_sim [bool]
- * @param T [int] MPC horizon
+ * @param sys System to be simulated
+ * @param ref_vec vector holding reference values
+ * @param new_sim New simulation or simulate further
+ * @param T MPC horizon
  */
-void MPCSimFSRM(const string& sce, const string& ref_vec, bool new_sim, int T);
+void MPCSimFSRM(const string& sys, const string& ref_vec, bool new_sim, int T);
 
 /**
  * @brief Open loop simulation of FSR model
  * 
- * @param sce [std::string] Scenario name
- * @param ref_vec [std::vector<double>] Reference values
- * @param T [int] Simulations steps
+ * @param sys System name
+ * @param ref_vec Reference values
+ * @param T Simulations steps
  */
-void OpenLoopFSRM(const string& sce, const std::vector<double>& ref_vec, int T);
+void OpenLoopFSRM(const string& sys, const std::vector<double>& ref_vec, int T);
 
 #endif // SIMULATIONS_H

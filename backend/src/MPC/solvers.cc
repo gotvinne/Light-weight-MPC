@@ -17,7 +17,7 @@
 using SparseXd = Eigen::SparseMatrix<double>; 
 
 void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPCConfig& conf, const VectorXd& z_min, 
-             const VectorXd& z_max, VectorXd* y_ref) {
+             const VectorXd& z_max, const MatrixXd& ref) {
     // Initialize solver:
     OsqpEigen::Solver solver;
     solver.settings()->setWarmStart(true); // Starts primal and dual variables from previous QP
@@ -47,7 +47,7 @@ void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPC
     setWeightMatrices(Q_bar, R_bar, conf);
     SparseXd G = setHessianMatrix(Q_bar, R_bar, fsr, a, n);
     SparseXd A = setConstraintMatrix(fsr, m, n, a);
-    setGradientVector(q, fsr, Q_bar, y_ref, conf, n, 0); // Initial gradient
+    setGradientVector(q, fsr, Q_bar, ref, conf, n, 0); // Initial gradient
     setConstraintVectors(l, u, fsr, c_l, c_u, K_inv, Gamma, m, a);
 
     if (!solver.data()->setHessianMatrix(G)) { throw std::runtime_error("Cannot initialize Hessian"); }
@@ -80,7 +80,7 @@ void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPC
 
         // Update MPC problem:
         setConstraintVectors(l, u, fsr, c_l, c_u, K_inv, Gamma, m, a);
-        setGradientVector(q, fsr, Q_bar, y_ref, conf, n, k); 
+        setGradientVector(q, fsr, Q_bar, ref, conf, n, k); 
 
         // Check if bounds are valid:
         if (!solver.updateBounds(l, u)) { throw std::runtime_error("Cannot update bounds"); }

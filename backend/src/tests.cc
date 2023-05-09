@@ -68,14 +68,14 @@ void TestSerializeScenario(const string& sce, const string& sys, const string& S
     }
 }
 
-void TestSimulate(const string& sce, const string& ref_vec, int T) {
+void TestSimulate(const string& sys, const string& ref_vec, int T) {
     string sce_name = "test";
 
-    string sce_filepath = "../data/scenarios/sce_" + sce + ".json";
+    string sce_filepath = "../data/scenarios/sce_" + sys + ".json";
     json scenario = ReadJson(sce_filepath);
     string sce_file = to_string(scenario);
 
-    string sys_filepath = "../data/systems/" + sce + ".json";
+    string sys_filepath = "../data/systems/" + sys + ".json";
     json system = ReadJson(sys_filepath);
     string sys_file = to_string(system);
 

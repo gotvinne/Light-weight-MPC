@@ -41,13 +41,13 @@ SparseXd setHessianMatrix(const SparseXd& Q_bar, const SparseXd& R_bar, const FS
  * @param q Eigen::VectorXd gradient vector
  * @param fsr Finite step response model
  * @param Q_bar output tuning
- * @param y_ref Reference vector 
+ * @param ref Reference vector 
  * @param conf
  * @param n
  * @param k MPC simulation step, concatinating y_ref
  */
 void setGradientVector(VectorXd& q, FSRModel& fsr, const SparseXd& Q_bar,
-                        VectorXd* y_ref, const MPCConfig& conf, int n, int k);
+                        const MatrixXd& ref, const MPCConfig& conf, int n, int k);
 
 /**
  * @brief Set the Constraint Matrix A
