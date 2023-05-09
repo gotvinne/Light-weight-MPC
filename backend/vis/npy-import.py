@@ -1,5 +1,9 @@
 import numpy as np
 
+#################################
+# Import S-coefficients
+#################################
+
 def PrintNpy(filepath):
     X = np.load(filepath, mmap_mode='r')
     print(X)
