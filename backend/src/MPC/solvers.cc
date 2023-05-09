@@ -18,7 +18,7 @@ using SparseXd = Eigen::SparseMatrix<double>;
 
 void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPCConfig& conf, const VectorXd& z_min, 
              const VectorXd& z_max, VectorXd* y_ref) {
-    // Setup solver:
+    // Initialize solver:
     OsqpEigen::Solver solver;
     solver.settings()->setWarmStart(true); // Starts primal and dual variables from previous QP
     solver.settings()->setVerbosity(false); // Disable printing
@@ -57,37 +57,33 @@ void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPC
     if (!solver.data()->setUpperBound(u)) { throw std::runtime_error("Cannot initialize upper bound"); }
     if (!solver.initSolver()) { throw std::runtime_error("Cannot initialize solver"); }
 
-    // u_mat = MatrixXd::Zero(n_MV, T);
-    // y_pred = MatrixXd::Zero(n_CV, T);
-
-    // SparseXd omega_u;
-    // setOmegaU(omega_u, M, n_MV);
+    u_mat = MatrixXd::Zero(n_MV, T);
+    y_pred = MatrixXd::Zero(n_CV, T);
+    SparseXd omega_u = setOmegaU(M, n_MV);
 
     // MPC loop:
-//     for (int k = 0; k < T; k++) { 
-//         // Optimize:
-//         if (solver.solveProblem() != OsqpEigen::ErrorExitFlag::NoError) { throw std::runtime_error("Cannot solve problem"); }
+    for (int k = 0; k < T; k++) { 
+        // Optimize:
+        if (solver.solveProblem() != OsqpEigen::ErrorExitFlag::NoError) { throw std::runtime_error("Cannot solve problem"); }
 
-//         // Claim solution:
-//         VectorXd z_st = solver.getSolution(); // [dU, eta_h, eta_l]
-//         VectorXd z = z_st(Eigen::seq(0, a - 1)); // [dU]
-//         VectorXd du = omega_u * z; 
+        // Claim solution:
+        VectorXd z_st = solver.getSolution(); // [dU, eta_h, eta_l]
+        VectorXd z = z_st(Eigen::seq(0, a - 1)); // [dU]
+        VectorXd du = omega_u * z; 
 
-//         // Store optimal du and y_pref: Before update!
-//         u_mat.col(k) = fsr.getUK();
-//         y_pred.col(k) = fsr.getY(z);
+        // Store optimal du and y_pref: Before update!
+        u_mat.col(k) = fsr.getUK();
+        y_pred.col(k) = fsr.getY(z);
 
-//         // Propagate FSR model:
-//         fsr.UpdateU(du);
+        // Propagate FSR model:
+        fsr.UpdateU(du);
 
-//         // Update MPC problem:
-//         setConstraintVectors(l, u, z_min_pop, z_max_pop, fsr, m, a); // Replace with UpdateBounds
-           //UpdateBounds(l, fsr, K_inv, Gamma, m, a); // Constrain lower bound
-           //UpdateBounds(u, fsr, K_inv, Gamma, m, a); // Constrain upper bound
-//         setGradientVector(q, fsr, Q_bar, y_ref, conf, n, k); 
+        // Update MPC problem:
+        setConstraintVectors(l, u, fsr, c_l, c_u, K_inv, Gamma, m, a);
+        setGradientVector(q, fsr, Q_bar, y_ref, conf, n, k); 
 
-//         // Check if bounds are valid:
-//         if (!solver.updateBounds(l, u)) { throw std::runtime_error("Cannot update bounds"); }
-//         if (!solver.updateGradient(q)) { throw std::runtime_error("Cannot update gradient"); }    
-//     }
+        // Check if bounds are valid:
+        if (!solver.updateBounds(l, u)) { throw std::runtime_error("Cannot update bounds"); }
+        if (!solver.updateGradient(q)) { throw std::runtime_error("Cannot update gradient"); }    
+    }
 }

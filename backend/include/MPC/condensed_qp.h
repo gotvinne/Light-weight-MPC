@@ -79,11 +79,11 @@ void setConstraintVectors(VectorXd& l, VectorXd& u, FSRModel& fsr, const VectorX
 /**
  * @brief Set the Omega U object, such that du = omega_u * z
  * 
- * @param Omega_u Sparse Matrix decomposing z
  * @param M Control horizon
  * @param n_MV number of manipulated variables
+ * @return Eigen::Sparse<double>
  */
-void setOmegaU(SparseXd& omega, int M, int n_MV);
+SparseXd setOmegaU(int M, int n_MV);
 
 /**
  * @brief Populate constraint data, enabling dynamic constraints

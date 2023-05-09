@@ -140,7 +140,6 @@ void setGradientVector(VectorXd& q, FSRModel& fsr, const SparseXd& Q_bar,
 
     q.resize(n);
     VectorXd temp = 2 * fsr.getTheta().transpose() * Q_bar * (fsr.getLambda() - tau);
-    
     // q = [2 Theta^T Q_bar (Lamba - tau),
     //      rho_{h},
     //      rho_{l}]
@@ -180,12 +179,12 @@ SparseXd setConstraintMatrix(const FSRModel& fsr, int m, int n, int a) {
     return dense.sparseView();
 }
 
-void setOmegaU(SparseXd& omega, int M, int n_MV) {
+SparseXd setOmegaU(int M, int n_MV) {
     MatrixXd omega_dense = MatrixXd::Zero(n_MV, n_MV * M);
     for (int i = 0; i < n_MV; i++) {
         omega_dense(i, i * M) = 1;
     }
-    omega = omega_dense.sparseView();
+    return omega_dense.sparseView();
 }
 
 VectorXd PopulateConstraints(const VectorXd& c, int a, int n_MV, int n_CV, int M, int P) { 
