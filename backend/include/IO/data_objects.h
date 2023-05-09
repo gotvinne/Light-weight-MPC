@@ -35,9 +35,9 @@ private:
      /**
      * @brief Filling the dobbel linked VectorXd
      * 
-     * @param s_data 
-     * @param cv 
-     * @param mv
+     * @param s_data Step response coefficients in JSON format
+     * @param cv cv indicator
+     * @param mv mv indicator
      */
     void FillSR(const json& s_data, int cv, int mv);
 

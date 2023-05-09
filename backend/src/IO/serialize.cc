@@ -15,12 +15,9 @@
 #include "model/FSRModel.h"
 
 #include <fstream>
-#include <string>
 #include <vector>
 #include <filesystem>
 #include <stdexcept>
-
-#include <nlohmann/json.hpp>
 
 //////////////////////////////////
 //** SERIALIZE SIMULATION FILE *// 
@@ -29,9 +26,9 @@
 /**
  * @brief Fill json::array() object from Eigen::MatrixXd
  * 
- * @param vector [json::array()]
- * @param mat [Eigen::MatrixXd]
- * @param row [int] Row index
+ * @param vector Vector to be filled
+ * @param mat data matrix
+ * @param row row indicator
  */
 static void FillVector(json& vector, const MatrixXd& mat, int row) {
     for (int i = 0; i < mat.cols(); i++) {
@@ -42,9 +39,9 @@ static void FillVector(json& vector, const MatrixXd& mat, int row) {
 /**
  * @brief Formats the plain data in simulation file
  * 
- * @param data [json] 
- * @param scenario [string] scenario to serialize
- * @param fsr [FSRModel]
+ * @param data json object
+ * @param scenario scenario to serialize
+ * @param fsr FSRModel
  * @param T MPC horizon
  */
 static void SerializeSimData(json& data, const string& scenario, const FSRModel& fsr, int T) {
@@ -65,17 +62,16 @@ static void SerializeSimData(json& data, const string& scenario, const FSRModel&
 /**
  * @brief Formats the CV data in the simulation file
  * 
- * @param data [json]
+ * @param data json data
  * @param cvd CDData object
- * @param z_min [Eigen::VectorXd] lower constraints
- * @param z_max [Eigen::VectorXd] upper constraints
+ * @param z_min lower constraints
+ * @param z_max upper constraints
  * @param n_CV Number of controlled variables
  * @param n_MV Number of Manipulated variables
  */
 static void SerializeSimCV(json& data, const CVData& cvd, const MatrixXd& y_pred, const MatrixXd& z_min,
                  const MatrixXd& z_max, int n_CV, int n_MV) {
     json arr = json::array(); 
-    
     std::vector<string> outputs = cvd.getOutputs();
     std::vector<string> units = cvd.getUnits();
 
@@ -120,10 +116,10 @@ static void SerializeSimCV(json& data, const CVData& cvd, const MatrixXd& y_pred
 /**
  * @brief Formats the MV data in the simulation file
  * 
- * @param data [json] 
+ * @param data json data
  * @param mvd MVData 
- * @param z_min [Eigen::VectorXd] lower constraints
- * @param z_max [Eigen::VectorXd] upper constraints
+ * @param z_min lower constraints
+ * @param z_max upper constraints
  * @param n_MV Number of manipulated variables
  */
 static void SerializeSimMV(json& data, const MVData& mvd, const MatrixXd& u, const VectorXd& z_min, const VectorXd& z_max, int n_MV) {
@@ -166,19 +162,24 @@ static void SerializeSimMV(json& data, const MVData& mvd, const MatrixXd& u, int
 //** SERIALIZE SCENARIO FILE *//
 ////////////////////////////////
 
+/**
+ * @brief 
+ * 
+ * @param data 
+ * @param mpc_m 
+ * @param Q 
+ * @param R 
+ * @param Ro 
+ * @param bias_update 
+ */
 static void SerializeMPC(json& data, std::map<string, int> mpc_m, const VectorXd& Q, const VectorXd& R, const VectorXd& Ro, bool bias_update) {
     json obj = json::object();
-
     obj[kP] = mpc_m[kP];
     obj[kM] = mpc_m[kM];
     obj[kW] = mpc_m[kW];
     obj[kBu] = bias_update;
 
-    json q = json::array();
-    json r = json::array();
-    json rol = json::array();
-    json roh = json::array();
-
+    json q = json::array(), r = json::array(), rol = json::array(), roh = json::array();
     for (int i = 0; i < Q.rows(); i++) {
         q.push_back(Q(i));
         rol.push_back(Ro(0, i));
@@ -196,6 +197,19 @@ static void SerializeMPC(json& data, std::map<string, int> mpc_m, const VectorXd
     data[kMPC] = obj;
 }
 
+/**
+ * @brief Serialize constraint data
+ * 
+ * @param data json data
+ * @param l_du lower du constraint
+ * @param l_u lower u constraint
+ * @param l_y lower y constraint
+ * @param u_du upper du constraint
+ * @param u_u upper u constraint
+ * @param u_y upper y constraint
+ * @param n_CV number of controlled variables 
+ * @param n_MV number of manipulated variables
+ */
 static void SerializeConstraints(json& data, const VectorXd& l_du, const VectorXd& l_u,
                     const VectorXd& l_y, const VectorXd& u_du, const VectorXd& u_u,
                     const VectorXd& u_y, int n_CV, int n_MV) {
@@ -221,45 +235,31 @@ static void SerializeConstraints(json& data, const VectorXd& l_du, const VectorX
     data[kC] = arr;
 }
 
-//static bool isSystem(const string& system, const string& sys_path) {
-    //string filename = system + ".json";
-    //for (const auto& file : std::filesystem::directory_iterator(sys_path)) {
-    //    if (file.path().filename() == filename) {
-    //        return true;
-    //    }
-    //}
-    //return false; 
-//}   
-
-void SerializeSimulationNew(const string& write_path, const string& scenario, const CVData& cvd, const MVData& mvd, 
-                    const MatrixXd& y_pred, const MatrixXd& u_mat, const VectorXd& z_min, const VectorXd& z_max, const FSRModel& fsr, int T) {
-    json data;
-    
-    SerializeSimData(data, scenario, fsr, T);
-    SerializeSimCV(data, cvd, y_pred, z_min, z_max, fsr.getN_CV(), fsr.getN_MV());
-    SerializeSimMV(data, mvd, u_mat, z_min, z_max, fsr.getN_MV());
-    WriteJson(data, write_path);
-}
-
 void WriteJson(const json& data, const string& filepath) {
     std::ofstream ofs(filepath);
     ofs << data.dump(4) << std::endl;
     ofs.close();
 }
 
-void SerializeSimulation(const string& write_path, const MatrixXd& y_pred, const MatrixXd& u_mat, int T) {
+void SerializeSimulationNew(const string& write_path, const string& scenario, const CVData& cvd, const MVData& mvd, 
+                    const MatrixXd& y_pred, const MatrixXd& u_mat, const VectorXd& z_min, const VectorXd& z_max, const FSRModel& fsr, int T) {
+    json data;
+    SerializeSimData(data, scenario, fsr, T);
+    SerializeSimCV(data, cvd, y_pred, z_min, z_max, fsr.getN_CV(), fsr.getN_MV());
+    SerializeSimMV(data, mvd, u_mat, z_min, z_max, fsr.getN_MV());
+    WriteJson(data, write_path);
+}
 
+void SerializeSimulation(const string& write_path, const MatrixXd& y_pred, const MatrixXd& u_mat, int T) {
     json sim_data = ReadJson(write_path); // Assume this file already exists.
     sim_data[kT] = int(sim_data.at(kT)) + T; // Update MPC horizon
 
-    json cv_data = sim_data.at(kCV);
+    json cv_data = sim_data.at(kCV), mv_data = sim_data.at(kMV);
     int i = 0;
     for (auto& cv : cv_data) {
         FillVector(cv[kY_pred], y_pred, i); // Update Y_pred
         i++;
     }
-
-    json mv_data = sim_data.at(kMV);
     i = 0;
     for (auto& mv : mv_data) {
         FillVector(mv[kU], u_mat, i); // Update U
@@ -275,7 +275,6 @@ void SerializeSimulation(const string& write_path, const MatrixXd& y_pred, const
 string SerializeSimulation(const string& scenario, const CVData& cvd, const MVData& mvd, 
                     const MatrixXd& y_pred, const MatrixXd& u_mat, const VectorXd& z_min, const VectorXd& z_max, const FSRModel& fsr, int T) {
     json data;
-    
     SerializeSimData(data, scenario, fsr, T);
     SerializeSimCV(data, cvd, y_pred, z_min, z_max, fsr.getN_CV(), fsr.getN_MV());
     SerializeSimMV(data, mvd, u_mat, z_min, z_max, fsr.getN_MV());
@@ -285,7 +284,6 @@ string SerializeSimulation(const string& scenario, const CVData& cvd, const MVDa
 void SerializeOpenLoop(const string& write_path, const string& scenario, const CVData& cvd, const MVData& mvd, 
                     const MatrixXd& y_pred, const MatrixXd& u_mat, const FSRModel& fsr, int T) {
     json data;
-    
     SerializeSimData(data, scenario, fsr, T);
     SerializeSimCV(data, cvd, y_pred, fsr.getN_CV());
     SerializeSimMV(data, mvd, u_mat, fsr.getN_MV());
@@ -297,13 +295,11 @@ void SerializeScenario(const string& write_path, const string& scenario, const s
                      const VectorXd& l_u, const VectorXd& l_y, const VectorXd& u_du, const VectorXd& u_u, const VectorXd& u_y,
                      int n_CV, int n_MV) {
     json data;
-
-    // Add additional test for M, P and length at bindings
     if (Q.rows() != n_CV) {
         throw std::out_of_range("Q matrix dimension does not match system description");
     }
     if (R.rows() != n_MV) {
-        throw std::out_of_range("Q matrix dimension does not match system description");
+        throw std::out_of_range("R matrix dimension does not match system description");
     }
     if (Ro.cols() != n_CV) {
         throw std::out_of_range("Number of Ro elements does not match system description");
@@ -318,10 +314,6 @@ void SerializeScenario(const string& write_path, const string& scenario, const s
     if (l_y.rows() != u_y.rows() || l_y.rows() != n_CV) {
         throw std::out_of_range("Number of Y constraints does not match system description");
     }
-
-    //if (!isSystem(system, sys_path)) {
-     //   throw std::invalid_argument("Invalid system");
-    //}
 
     data[kSystem] = system; // Write system
     SerializeMPC(data, mpc_m, Q, R, Ro, bias_update);

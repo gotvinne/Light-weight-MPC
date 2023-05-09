@@ -6,8 +6,6 @@
  */
 #include "MPC/condensed_qp.h"
 
-#include <string>
-#include <iostream>
 #include <limits>
 
 /**
@@ -26,13 +24,13 @@ static void blkdiag(SparseXd& blk_mat, const MatrixXd& arg, int count) {
 }
 
 /**
- * @brief Set the Tau object, sliced from @param y_ref
+ * @brief Set the Tau object, sliced from @param ref
  * 
- * @param tau Reference vector on output
- * @param y_ref Reference data
+ * @param ref Reference data
  * @param P Prediction horizon
  * @param n_CV Number of controlled variables
  * @param k MPC simulation step
+ * @return Eigen::MatrixXd tau
  */
 static VectorXd setTau(const MatrixXd& ref, int P, int n_CV, int k) { // Might need W
     VectorXd tau = VectorXd::Zero(n_CV * P);
@@ -109,7 +107,7 @@ void setConstraintVectors(VectorXd& l, VectorXd& u, FSRModel& fsr, const VectorX
     l.block(0, 0, c_l.rows(), 1) = c_l;
     u.block(0, 0, c_u.rows(), 1) = c_u, 
 
-    UpdateBounds(l, fsr, K_inv, Gamma, m, a);
+    UpdateBounds(l, fsr, K_inv, Gamma, m, a); // Update lower and upper bound
     UpdateBounds(u, fsr, K_inv, Gamma, m, a);
 }
 
@@ -139,12 +137,11 @@ void setGradientVector(VectorXd& q, FSRModel& fsr, const SparseXd& Q_bar,
                         const MatrixXd& ref, const MPCConfig& conf, int n, int k) {
     VectorXd tau = setTau(ref, fsr.getP(), fsr.getN_CV(), k);
 
-    q.resize(n);
-    VectorXd temp = 2 * fsr.getTheta().transpose() * Q_bar * (fsr.getLambda() - tau);
     // q = [2 Theta^T Q_bar (Lamba - tau),
     //      rho_{h},
     //      rho_{l}]
-
+    q.resize(n);
+    VectorXd temp = 2 * fsr.getTheta().transpose() * Q_bar * (fsr.getLambda() - tau);
     q << temp, conf.RoH, conf.RoL;
 }
 
@@ -189,11 +186,10 @@ SparseXd setOmegaU(int M, int n_MV) {
 }
 
 VectorXd PopulateConstraints(const VectorXd& c, int a, int n_MV, int n_CV, int M, int P) { 
-    VectorXd z_pop(2 * M * n_MV + P * n_CV);
-
     // z_pop = [ z - Delta U (M * N_MV), 
     //           z - U (M * N_MV),
     //           z - Y (P * N_CV)]
+    VectorXd z_pop(2 * M * n_MV + P * n_CV);
 
     for (int var = 0; var < 2 * n_MV; var++) { // Assuming same constraining, u, du if n_MV < n_CV
         z_pop.block(var * M, 0, M, 1) = VectorXd::Constant(M, c(var));

@@ -32,11 +32,11 @@ using string = std::string;
 /**
  * @brief MPC FSRM simulation given string parameters from web
  * 
- * @param sce_file [std::string] scenario data
- * @param sys_file [std::string] system data
- * @param sce [std::string] scenario name
- * @param ref_str [std::string] reference data
- * @param T [int] MPC horizon
+ * @param sce_file scenario data
+ * @param sys_file system data
+ * @param sce scenario name
+ * @param ref_str reference data
+ * @param T MPC horizon
  * @return string simulation data in JSON format 
  */
 string simulate(string sce_file, string sys_file, string sce, string ref_str, int T);

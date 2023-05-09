@@ -34,19 +34,23 @@ using string = std::string;
  */
 void WriteJson(const json& data, const string& filepath);
 
+/////////////////////////////////////////////////
+///////// SERIALIZE SIMULATION FILES ////////////
+/////////////////////////////////////////////////
+
 /**
  * @brief Serialize simulation data into simulation JSON data files
  * 
- * @param write_path [string] file path to write json file
- * @param scenario [string] scenario name
+ * @param write_path file path to write json file
+ * @param scenario scenario name
  * @param cvd CVData
  * @param mvd MVData
- * @param y_pred [Eigen::MatrixXd] matrix of CV predictions
- * @param u_mat [Eigen::MatrixXd] actuations
- * @param z_min [Eigen::VectorXd] lower constraints
- * @param z_max [Eigen::VectorXd] upper constraints
- * @param fsr [FSRModel] The finite step response model
- * @param T [int] MPC horizon
+ * @param y_pred matrix of CV predictions
+ * @param u_mat MPC actuations
+ * @param z_min lower constraints
+ * @param z_max upper constraints
+ * @param fsr The finite step response model
+ * @param T MPC horizon
  */
 void SerializeSimulationNew(const string& write_path, const string& scenario, const CVData& cvd, const MVData& mvd, 
                     const MatrixXd& y_pred, const MatrixXd& u_mat, const VectorXd& z_min, const VectorXd& z_max, const FSRModel& fsr, int T);    
@@ -55,26 +59,26 @@ void SerializeSimulationNew(const string& write_path, const string& scenario, co
  * @brief Serialize a simulation by appending data on previous simulations
  *        Simply done by reading the json file, updating it, and writing it again
  * 
- * @param write_path [string]
- * @param y_pred [M]
- * @param u_mat [Eigen::MatrixXd]
- * @param T [int] MPC horizon
+ * @param write_path file path to write json file
+ * @param y_pred matrix of CV predictions
+ * @param u_mat MPC actuations
+ * @param T MPC horizon
  */
 void SerializeSimulation(const string& write_path, const MatrixXd& y_pred, const MatrixXd& u_mat, int T);
 
 /**
- * @brief Serialize Simulation returning a JSON string
+ * @brief Serialize Simulation returning a JSON string, used in Web application
  *
- * @param scenario [string] scenario name
+ * @param scenario scenario name
  * @param cvd CVData
  * @param mvd MVData
- * @param y_pred [Eigen::MatrixXd] matrix of CV predictions
- * @param u_mat [Eigen::MatrixXd] actuations
- * @param z_min [Eigen::VectorXd] lower constraints
- * @param z_max [Eigen::VectorXd] upper constraints
- * @param fsr [FSRModel] The finite step response model
- * @param T [int] MPC horizon
- * @return string 
+ * @param y_pred matrix of CV predictions
+ * @param u_mat MPC actuations
+ * @param z_min lower constraints
+ * @param z_max upper constraints
+ * @param fsr The finite step response model
+ * @param T MPC horizon
+ * @return string JSON file
  */
 string SerializeSimulation(const string& scenario, const CVData& cvd, const MVData& mvd, 
                     const MatrixXd& y_pred, const MatrixXd& u_mat, const VectorXd& z_min, const VectorXd& z_max, const FSRModel& fsr, int T);
@@ -82,42 +86,46 @@ string SerializeSimulation(const string& scenario, const CVData& cvd, const MVDa
 /**
  * @brief Serializing an open loop simulation into simulation JSON data file
  * 
- * @param write_path [string] file path to write json file
- * @param scenario [string] scenario name
+ * @param write_path file path to write json file
+ * @param scenario scenario name
  * @param cvd CVData
  * @param mvd MVData
- * @param y_pred [Eigen::MatrixXd]
- * @param u_mat actuations
- * @param fsr [FSRModel] 
- * @param T [int] MPC horizon
+ * @param y_pred matrix of CV predictions
+ * @param u_mat MPC actuations
+ * @param fsr The finite step response model
+ * @param T MPC horizon
  */
 void SerializeOpenLoop(const string& write_path, const string& scenario, const CVData& cvd, const MVData& mvd, 
                     const MatrixXd& y_pred, const MatrixXd& u_mat, const FSRModel& fsr, int T);
 
+/////////////////////////////////////////////////
+///////// SERIALIZE SCENARIO FILES //////////////
+/////////////////////////////////////////////////
+
 /**
  * @brief Serializing a scenario file
  * 
- * @param write_path 
- * @param scenario 
- * @param system 
- * @param sys_path
- * @param mpc_m 
- * @param Q 
- * @param R 
- * @param Ro 
- * @param bias_update 
- * @param l_du 
- * @param l_u 
- * @param l_y 
- * @param u_du 
- * @param u_u 
- * @param u_y 
- * @param n_CV 
- * @param n_MV 
+ * @param write_path file path to write json file
+ * @param scenario scenario name
+ * @param system system name
+ * @param sys_path system filepath
+ * @param mpc_m model parameters
+ * @param Q output tuning 
+ * @param R input tuning
+ * @param Ro Slack variable tuning
+ * @param bias_update bool
+ * @param l_du lower du constraint
+ * @param l_u lower u constraint
+ * @param l_y lower y constraint
+ * @param u_du upper du constraint
+ * @param u_u upper u constraint
+ * @param u_y upper y constraint
+ * @param n_CV number of controlled variables
+ * @param n_MV number of manipulated variables
  */
 void SerializeScenario(const string& write_path, const string& scenario, const string& system, const string& sys_path, std::map<string, int> mpc_m,
                      const VectorXd& Q, const VectorXd& R, const VectorXd& Ro, bool bias_update, const VectorXd& l_du, 
                      const VectorXd& l_u, const VectorXd& l_y, const VectorXd& u_du, const VectorXd& u_u, const VectorXd& u_y,
                      int n_CV, int n_MV);
 
-#endif  // SERIALIZE_H
+#endif // SERIALIZE_H

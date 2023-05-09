@@ -8,12 +8,8 @@
 #include "IO/data_objects.h"
 #include "IO/json_specifiers.h"
 
-#include <vector>
 #include <stdexcept>
 #include <iostream>
-
-#include <nlohmann/json.hpp>
-#include <Eigen/Dense>
 
 /**
  * @brief Convert a nlohmann::json::array to Eigen::VectorXd

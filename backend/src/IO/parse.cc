@@ -7,7 +7,6 @@
 
 #include "IO/parse.h"
 #include "IO/json_specifiers.h"
-#include "IO/data_objects.h"
 
 #include <map>
 #include <vector>
@@ -37,7 +36,7 @@ static void ModelData(const json& sys_data, std::map<string,int>& map) {
 /**
  * @brief Checks if std::string is double or int
  * 
- * @param str 
+ * @param str string to be tested
  * @return true 
  * @return false 
  */
@@ -81,9 +80,7 @@ static void ParseSystemData(const json& sys_data, std::map<string, int>& m_map,
                     CVData& output_data, MVData& input_data) {
     try {
         ModelData(sys_data, m_map);
-        json cv_data = sys_data.at(kCV);
-        json mv_data = sys_data.at(kMV);
-
+        json cv_data = sys_data.at(kCV), mv_data = sys_data.at(kMV);
         output_data = CVData(cv_data, m_map[kN_MV], m_map[kN_CV], m_map[kN]);
         input_data = MVData(mv_data, m_map[kN_MV]); 
     }
@@ -101,8 +98,8 @@ static void ParseSystemData(const json& sys_data, std::map<string, int>& m_map,
  * @param sce_data json object of scenario file
  * @param system corresponding system file
  * @param mpc_conf MPCConfig object
- * @param z_min Eigen::VectorXF 
- * @param z_max Eigen::VectorXf
+ * @param z_min Eigen::VectorXd lower constraint
+ * @param z_max Eigen::VectorXd upper constraint 
  */
 static void ParseScenarioData(const json& sce_data, string& system, MPCConfig& mpc_config, 
                         VectorXd& z_min, VectorXd& z_max) {
@@ -208,11 +205,10 @@ void Parse(const string& sce_filepath, const string& sim_filepath, std::map<stri
     ParseSimulationData(sim_data, du_tilde, cvd, mvd);
 }
 
-void Parse(const std::string& sce_file, const std::string& sys_file, std::map<std::string, int>& m_map,
+void Parse(const string& sce_file, const string& sys_file, std::map<string, int>& m_map,
                     CVData& cvd, MVData& mvd, MPCConfig& conf, 
                         Eigen::VectorXd& z_min, Eigen::VectorXd& z_max) {
-    json sce_data = json::parse(sce_file); 
-    json sys_data = json::parse(sys_file);
+    json sce_data = json::parse(sce_file), sys_data = json::parse(sys_file); 
 
     string system; // Dummy variable
     ParseScenarioData(sce_data, system, conf, z_min, z_max);
@@ -227,8 +223,7 @@ void ParseOpenLoop(const string& system, std::map<string, int>& m_map, CVData& c
 }
 
 MatrixXd ParseReferenceStrByAllocation(string ref_str, int T, int P) {
-    json ref_data = json::parse(ref_str);
-    json ref_vec = ref_data.at(kRef);
+    json ref_data = json::parse(ref_str), ref_vec = ref_data.at(kRef);
 
     int size = int(ref_vec.size());
     MatrixXd ref = MatrixXd::Zero(size, T + P);
@@ -242,7 +237,6 @@ MatrixXd ParseReferenceStrByAllocation(string ref_str, int T, int P) {
 std::vector<double> ParseRefString(const string& ref_str, int n_CV) {
     // Remove whitespaces:
     string copy = ref_str;
-
     if (copy[0] != '[') {
         throw std::invalid_argument("Missing starting bracket in referece arg!");
     } else if (copy.back() != ']') {

@@ -23,16 +23,17 @@ int main(int argc, char **argv) {
     // Default values:
     int T = 1;
     string sys = "";
-    string ref_vec = "";
+    string ref_str = "";
     bool new_sim = false; 
 
     // Add flags: 
     app.add_option("-T", T, "MPC horizon");
     app.add_option("-s", sys, "System name");
-    app.add_option("-r", ref_vec, "Reference vector"); 
+    app.add_option("-r", ref_str, "Reference vector"); 
     app.add_flag("-n", new_sim, "New simulation");
     CLI11_PARSE(app, argc, argv);
     
     // ---- MPC Simulations ---- //
-    MPCSimFSRM(sys, ref_vec, new_sim, T);
+    //OpenLoopFSRM(sys, ref_str, T);
+    MPCSimFSRM(sys, ref_str, new_sim, T);
 }

@@ -10,13 +10,11 @@
 #define PARSE_H
 
 #include "IO/data_objects.h"
-
 #include <string>
 #include <map>
 
 #include <Eigen/Dense>
 #include <nlohmann/json.hpp>
-
 using json = nlohmann::json; 
 using VectorXd = Eigen::VectorXd;
 using MatrixXd = Eigen::MatrixXd;
@@ -46,23 +44,23 @@ void ParseNew(const string& sce_filepath, std::map<string, int>& m_map,
                         VectorXd& z_min, VectorXd& z_max);
 
 /**
- * @brief 
+ * @brief Parse system, scenario and simulation file for further simulation
  * 
- * @param sce_file 
- * @param sys_file 
- * @param m_map 
- * @param cvd 
- * @param mvd 
- * @param conf 
- * @param z_min 
- * @param z_max 
+ * @param sce_file scenario filepath
+ * @param sys_file system filepath
+ * @param m_map map of model parameters
+ * @param cvd CV system data  
+ * @param mvd MV system data
+ * @param conf MPC configuration data
+ * @param z_min lower constraints 
+ * @param z_max upper constraints
  */
 void Parse(const string& sce_file, const string& sys_file, std::map<string, int>& m_map,
                     CVData& cvd, MVData& mvd, MPCConfig& conf, 
                         VectorXd& z_min, VectorXd& z_max);
         
 /**
- * @brief Parse function taking previous simulations into account
+ * @brief Parse system, scenario and simulation file for further simulation
  * 
  * @param sce_filepath scenario filepath
  * @param sim_filepath simulation filepath
@@ -72,7 +70,7 @@ void Parse(const string& sce_file, const string& sys_file, std::map<string, int>
  * @param conf MPC configuration data
  * @param z_min lower constraints 
  * @param z_max upper constraints
- * @param du_tilde [Eigen::MatrixXd] Matrix of previous actuations
+ * @param du_tilde Matrix of previous actuations
  */
 void Parse(const string& sce_filepath, const string& sim_filepath, std::map<string, int>& m_map,
             CVData& cvd, MVData& mvd, MPCConfig& conf, 
@@ -81,10 +79,10 @@ void Parse(const string& sce_filepath, const string& sim_filepath, std::map<stri
 /**
  * @brief Parsing only the system in order to simulate open loop
  * 
- * @param system 
- * @param m_map 
- * @param cvd 
- * @param mvd 
+ * @param system system name
+ * @param m_map model parameters
+ * @param cvd CVData
+ * @param mvd MVData
  */
 void ParseOpenLoop(const string& system, std::map<string, int>& m_map, CVData& cvd, MVData& mvd);
 

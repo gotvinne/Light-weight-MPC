@@ -11,6 +11,7 @@
 #include <vector>
 #include <map>
 #include <string>
+using string = std::string;
 
 #include <Eigen/Eigen>
 using VectorXd = Eigen::VectorXd;
@@ -98,7 +99,7 @@ public:
     /**
      * @brief The constructor. Constructing the object allocating memory for the SISO prediction matric
      */
-    FSRModel(VectorXd** SR, std::map<std::string, int> m_param, int P, int M, int W,
+    FSRModel(VectorXd** SR, std::map<string, int> m_param, int P, int M, int W,
             const std::vector<double>& init_u, const std::vector<double>& init_y);
 
     /**

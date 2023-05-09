@@ -35,6 +35,4 @@ float StepResponse(float k, float tau, float theta, float dt, int i);
  */
 std::vector<float> StepCoefficients(float k, float tau, float theta, int N);
 
-void PrintCoefficients(const std::vector<float> &vec);
-
 #endif  // STEP_RESPONSE_MODEL_H

@@ -33,9 +33,9 @@ void MPCSimFSRM(const string& sys, const string& ref_vec, bool new_sim, int T);
  * @brief Open loop simulation of FSR model
  * 
  * @param sys System name
- * @param ref_vec Reference values
+ * @param ref_str Reference values
  * @param T Simulations steps
  */
-void OpenLoopFSRM(const string& sys, const std::vector<double>& ref_vec, int T);
+void OpenLoopFSRM(const string& sys, const string ref_str, int T);
 
 #endif // SIMULATIONS_H

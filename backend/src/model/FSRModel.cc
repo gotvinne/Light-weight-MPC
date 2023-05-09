@@ -8,13 +8,8 @@
 #include "IO/json_specifiers.h"
 
 #include <iostream>
-#include <vector>
-#include <map>
-#include <string>
 
-#include <Eigen/Eigen>
-
-FSRModel::FSRModel(VectorXd** SR, std::map<std::string, int> m_param, int P, int M, int W,
+FSRModel::FSRModel(VectorXd** SR, std::map<string, int> m_param, int P, int M, int W,
                    const std::vector<double>& init_u, const std::vector<double>& init_y) :
                       P_{P}, M_{M}, W_{W} {
     n_CV_ = m_param[kN_CV];

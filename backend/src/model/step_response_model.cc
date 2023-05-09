@@ -30,10 +30,3 @@ std::vector<float> StepCoefficients(float k, float tau, float theta, int N) {
     } 
     return step_coefficients_vec;
 }
-
-void PrintCoefficients(const std::vector<float> &vec) {
-    for (const auto &elem : vec) {
-        std::cout << elem << " ";
-    }
-    std::cout << std::endl;
-}

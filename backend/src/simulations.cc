@@ -46,13 +46,13 @@ static MatrixXd setStepActuation(const string& ref_str, const std::vector<double
 }
 
 /**
- * @brief 
+ * @brief set Reference variable based on string
  * 
- * @param ref_str 
- * @param T 
- * @param P 
- * @param n_CV 
- * @return MatrixXd
+ * @param ref_str reference string
+ * @param T MPC horizon
+ * @param P Prediction horizon
+ * @param n_CV number of controlled variables
+ * @return MatrixXd reference variable
  */
 static MatrixXd setRef(const string& ref_str, int T, int P, int n_CV) {
     // Split string to std::vector
@@ -146,22 +146,13 @@ void MPCSimFSRM(const string& sys, const string& ref_vec, bool new_sim, int T) {
     fsr.setDuTildeMat(du_tilde);
 
     // MPC variables:
-    MatrixXd u_mat, y_pred; /** Optimized actuation, (n_MV, T) */ /** Predicted output (n_CV, T)*/
+    MatrixXd u_mat, y_pred, ref = setRef(ref_vec, T, conf.P, m_map[kN_CV]);
+    /** Optimized actuation, (n_MV, T) */ /** Predicted output (n_CV, T)*/ /** Reference */
 
-    // Reference: 
-    MatrixXd ref = setRef(ref_vec, T, conf.P, m_map[kN_CV]);
-
-    // Solver: 
-    try {
+    try { // Solve
         SRSolver(T, u_mat, y_pred, fsr, conf, z_min, z_max, ref);
-    }
-    catch(std::exception& e) {
-        std::cout << e.what() << std::endl;
-    }
 
-    // Serializing: 
-    try {
-        if (new_sim) {
+        if (new_sim) { // Serialize
             SerializeSimulationNew(sim_path, sys, cvd, mvd, 
                y_pred, u_mat, z_min, z_max, fsr, T);
         } else {
