@@ -36,7 +36,7 @@ if(WEBASSEMBLY)
     project(webassembly VERSION 1.0 LANGUAGES CXX)
     set(BACKEND_SRC src/wasm/*.cc src/OsqpEigen/*.cpp src/IO/*.cc src/model/*.cc src/MPC/*.cc src/simulations.cc)
     file(GLOB_RECURSE SRC_FILES ${BACKEND_SRC})
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/../frontend/src") # Set webassembly output in src folder
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/${DDEST}") # Set webassembly output
     add_executable(webassembly ${SRC_FILES}) 
 
     target_include_directories(webassembly PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
