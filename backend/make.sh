@@ -2,7 +2,8 @@
 # Compiling backend directly using local data folder
 # flags: 
 #     -T int MPC horizon
-#     -s string scenario name
+#     -s string System name
+#     -r std::vector<double> reference vector
 #     -n bool new simulation
 # 
 # ex: sh make.sh -T 180 -s SingleWell -r [3800,70] -n
