@@ -39,8 +39,6 @@ $$ \underline{z}_{cd}(k) = \begin{bmatrix}
     \end{bmatrix} z_{cd} \leq \begin{bmatrix}
         \Delta \bar{U} \\ \bar{U} \\ \bar{Y} \\ \infty \\ \infty \\ \infty
     \end{bmatrix} - \begin{bmatrix} 0 \\ \mathbf{K}^{-1} \mathbf{\Gamma} U(k-1) \\ \mathbf{\Lambda}(k) \\ \mathbf{\Lambda}(k) \\ 0 \\ 0 \end{bmatrix} = \bar{z}_{cd}(k) $$
- 
-
 
 **Some matrix definitions:**
 
