@@ -38,9 +38,11 @@ class SimulationData():
             self.plot_constraint = False
         else:
             self.plot_constraint = True
+        
+        self.P = len(json_data[CV][0][Y_PRED]) - self.T
 
-        self.y = np.empty([self.n_CV, self.T])
-        self.y_pred = np.empty([self.n_CV, self.T])
+        self.y = np.empty([self.n_CV, self.T + self.P])
+        self.y_pred = np.empty([self.n_CV, self.T + self.P])
         self.u = np.ndarray([self.n_MV, self.T])
 
         self.ParseCVData(json_data)
