@@ -55,6 +55,7 @@ static MatrixXd setStepActuation(const string& ref_str, const std::vector<double
  * @return MatrixXd reference variable
  */
 static MatrixXd setRef(const string& ref_str, int T, int P, int n_CV) {
+    // ref = R^(n_CV x T + P)
     // Split string to std::vector
     std::vector<double> ref_vec = ParseRefString(ref_str, n_CV); 
     
@@ -132,9 +133,9 @@ void MPCSimFSRM(const string& sys, const string& ref_vec, bool new_sim, int T) {
     try {
         if (new_sim) {
             ParseNew(sce_path, m_map, cvd, mvd, conf, z_min, z_max);
-            du_tilde = MatrixXd::Zero(m_map[kN_MV], m_map[kN]-conf.W-1);
+            du_tilde = MatrixXd::Zero(m_map[kN_MV], m_map[kN]-1);
         } else {
-            Parse(sce_path, sim_path, m_map, cvd, mvd, conf, z_min, z_max, du_tilde);
+            Parse(sce_path, sim_path, m_map, cvd, mvd, conf, z_min, z_max, du_tilde); // Check du thilde here
         }
     }
     catch(std::exception& e) {
@@ -143,10 +144,10 @@ void MPCSimFSRM(const string& sys, const string& ref_vec, bool new_sim, int T) {
     
     // FSRM:
     FSRModel fsr(cvd.getSR(), m_map, conf.P, conf.M, conf.W, mvd.Inits, cvd.getInits());
-    fsr.setDuTildeMat(du_tilde);
+    fsr.setDuTildeMat(du_tilde); 
 
     // MPC variables:
-    MatrixXd u_mat, y_pred, ref = setRef(ref_vec, T, conf.P, m_map[kN_CV]);
+    MatrixXd u_mat, y_pred, ref = setRef(ref_vec, T, conf.P, m_map[kN_CV]); 
     /** Optimized actuation, (n_MV, T) */ /** Predicted output (n_CV, T)*/ /** Reference */
 
     try { // Solve
