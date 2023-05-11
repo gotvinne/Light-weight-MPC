@@ -13,7 +13,6 @@
 #include <OsqpEigen/OsqpEigen.h>
 
 #include <stdexcept>
-
 using SparseXd = Eigen::SparseMatrix<double>; 
 
 void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPCConfig& conf, const VectorXd& z_min, 
@@ -24,8 +23,7 @@ void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPC
     solver.settings()->setVerbosity(false); // Disable printing
 
     // MPC Scenario variables:
-    int P = fsr.getP(), M = fsr.getM(), n_MV = fsr.getN_MV(), n_CV = fsr.getN_CV(); // Prediction, Control Horizon, 
-
+    int P = fsr.getP(), M = fsr.getM(), W = fsr.getW(), n_MV = fsr.getN_MV(), n_CV = fsr.getN_CV(); 
     // Define QP sizes:
     const int n = M * n_MV + 2 * n_CV; // #Optimization variables 
     const int m = 2 * M * n_MV + 2 * P * n_CV + 2 * n_CV; // #Constraints
@@ -37,17 +35,19 @@ void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPC
     solver.data()->setNumberOfConstraints(m);
 
     // Define Cost function variables: 
-    SparseXd Q_bar, R_bar, Gamma = setGamma(fsr.getM(), fsr.getN_MV());
+    SparseXd Q_bar, R_bar, Gamma = setGamma(M, n_MV);
     MatrixXd K_inv = setKInv(a);
-    
     // Dynamic variables:
     VectorXd q, l = VectorXd::Zero(m), u = VectorXd::Zero(m); // l and u are lower and upper constraints, z_cd 
     VectorXd c_l = ConfigureConstraint(z_min_pop, m, a, false), c_u = ConfigureConstraint(z_max_pop, m, a, true);
 
+    // Cost function: NB! W-dependant
     setWeightMatrices(Q_bar, R_bar, conf);
-    SparseXd G = setHessianMatrix(Q_bar, R_bar, fsr, a, n);
-    SparseXd A = setConstraintMatrix(fsr, m, n, a);
+    SparseXd G = setHessianMatrix(Q_bar, R_bar, fsr.getTheta(W), a, n);
     setGradientVector(q, fsr, Q_bar, ref, conf, n, 0); // Initial gradient
+    
+    // Constraints:
+    SparseXd A = setConstraintMatrix(fsr.getTheta(0), m, n, a, n_CV);
     setConstraintVectors(l, u, fsr, c_l, c_u, K_inv, Gamma, m, a);
 
     if (!solver.data()->setHessianMatrix(G)) { throw std::runtime_error("Cannot initialize Hessian"); }
@@ -58,32 +58,36 @@ void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPC
     if (!solver.initSolver()) { throw std::runtime_error("Cannot initialize solver"); }
 
     u_mat = MatrixXd::Zero(n_MV, T);
-    y_pred = MatrixXd::Zero(n_CV, T);
+    y_pred = MatrixXd::Zero(n_CV, T + P);
     SparseXd omega_u = setOmegaU(M, n_MV);
 
     // MPC loop:
-    for (int k = 0; k < T; k++) { 
+    for (int k = 0; k <= T; k++) { // Simulate one step more to get predictions.
         // Optimize:
         if (solver.solveProblem() != OsqpEigen::ErrorExitFlag::NoError) { throw std::runtime_error("Cannot solve problem"); }
 
         // Claim solution:
         VectorXd z_st = solver.getSolution(); // [dU, eta_h, eta_l]
         VectorXd z = z_st(Eigen::seq(0, a - 1)); // [dU]
-        VectorXd du = omega_u * z; 
+        VectorXd du = omega_u * z; // MPC actuation
 
         // Store optimal du and y_pref: Before update!
-        u_mat.col(k) = fsr.getUK();
-        y_pred.col(k) = fsr.getY(z);
+        if (k == T) {
+            y_pred.block(0, k, n_CV, P) = fsr.getY(z, true).transpose();
+        } else {
+            u_mat.col(k) = fsr.getUK();
+            y_pred.col(k) = fsr.getY(z);
 
-        // Propagate FSR model:
-        fsr.UpdateU(du);
+            // Propagate FSR model:
+            fsr.UpdateU(du);
 
-        // Update MPC problem:
-        setConstraintVectors(l, u, fsr, c_l, c_u, K_inv, Gamma, m, a);
-        setGradientVector(q, fsr, Q_bar, ref, conf, n, k); 
+            // Update MPC problem:
+            setConstraintVectors(l, u, fsr, c_l, c_u, K_inv, Gamma, m, a);
+            setGradientVector(q, fsr, Q_bar, ref, conf, n, k); 
 
-        // Check if bounds are valid:
-        if (!solver.updateBounds(l, u)) { throw std::runtime_error("Cannot update bounds"); }
-        if (!solver.updateGradient(q)) { throw std::runtime_error("Cannot update gradient"); }    
+            // Check if bounds are valid:
+            if (!solver.updateBounds(l, u)) { throw std::runtime_error("Cannot update bounds"); }
+            if (!solver.updateGradient(q)) { throw std::runtime_error("Cannot update gradient"); }
+        }
     }
 }
