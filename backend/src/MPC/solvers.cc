@@ -63,23 +63,24 @@ void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPC
 
     // MPC loop:
     for (int k = 0; k <= T; k++) { // Simulate one step more to get predictions.
-        // Optimize:
-        if (solver.solveProblem() != OsqpEigen::ErrorExitFlag::NoError) { throw std::runtime_error("Cannot solve problem"); }
+         // Optimize:
+         if (solver.solveProblem() != OsqpEigen::ErrorExitFlag::NoError) { throw std::runtime_error("Cannot solve problem"); }
 
-        // Claim solution:
-        VectorXd z_st = solver.getSolution(); // [dU, eta_h, eta_l]
-        VectorXd z = z_st(Eigen::seq(0, a - 1)); // [dU]
-        VectorXd du = omega_u * z; // MPC actuation
+         // Claim solution:
+         VectorXd z_st = solver.getSolution(); // [dU, eta_h, eta_l]
+         VectorXd z = z_st(Eigen::seq(0, a - 1)); // [dU]
+         VectorXd du = omega_u * z; // MPC actuation
 
         // Store optimal du and y_pref: Before update!
         if (k == T) {
-            y_pred.block(0, k, n_CV, P) = fsr.getY(z, true).transpose();
+            std::cout << "hEi" << std::endl;
+            //y_pred.block(0, k, n_CV, P) = fsr.getY(z, true);
         } else {
-            u_mat.col(k) = fsr.getUK();
-            y_pred.col(k) = fsr.getY(z);
-
             // Propagate FSR model:
             fsr.UpdateU(du);
+
+            u_mat.col(k) = fsr.getUK();
+            y_pred.col(k) = fsr.getY(z);
 
             // Update MPC problem:
             setConstraintVectors(l, u, fsr, c_l, c_u, K_inv, Gamma, m, a);

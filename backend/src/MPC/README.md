@@ -8,6 +8,8 @@ The OSQP, operator splitting QP solver solves the problems of the following form
 $$ min \quad \frac{1}{2} z^T \boldsymbol{H} z+q^T z \\ 
 \text{subject to} \quad l \leq \boldsymbol{A} z \leq u $$ 
 
+[OSQP solver settings](https://osqp.org/docs/interfaces/solver_settings.html#solver-settings)
+
 ## Step Response MPC solver
 
 This solver solves the QP defining the MPC problem for a finite step response model (FSRM) in terms of only one optimization variable (condensed form). This form is obtained by using the null space method on the optimilization problem formulated by quadratic constraining the output $Y$ and input $\Delta U$: 

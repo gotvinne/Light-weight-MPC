@@ -82,10 +82,10 @@ void setWeightMatrices(SparseXd& Q_bar, SparseXd& R_bar, const MPCConfig& conf) 
     VectorXd Q_flatten = Q_replicate.reshaped<Eigen::RowMajor>().transpose();
     MatrixXd R_replicate = conf.R.replicate(1, conf.M);
     VectorXd R_flatten = R_replicate.reshaped<Eigen::RowMajor>().transpose();
-    MatrixXd Q = Q_flatten.asDiagonal();
+    MatrixXd Q_quad = Q_flatten.asDiagonal();
     MatrixXd R = R_flatten.asDiagonal();
 
-    Q_bar = Q.sparseView(); // dim(Q_bar) = n_CV * (P-W) x n_CV * (P-W)
+    Q_bar = Q_quad.sparseView(); // dim(Q_bar) = n_CV * (P-W) x n_CV * (P-W)
     R_bar = R.sparseView(); // dim(R_bar) = n_MV * M x n_MV * M
 }
 
@@ -97,16 +97,15 @@ SparseXd setHessianMatrix(const SparseXd& Q_bar, const SparseXd& R_bar, const Ma
     return g.sparseView();
 }
 
-void setGradientVector(VectorXd& q, FSRModel& fsr, const SparseXd& Q_bar,
+void setGradientVector(VectorXd& q, FSRModel& fsr, const SparseXd& Q_lin,
                         const MatrixXd& ref, const MPCConfig& conf, int n, int k) {
     int W = fsr.getW();
     VectorXd tau = setTau(ref, fsr.getP(), W, fsr.getN_CV(), k);
-    // q = [2 Theta^T Q_bar (Lamba - tau),
+    // q = [2 Theta^T Q_bar (Lambda - tau),
     //      rho_{h},
     //      rho_{l}]
     q.resize(n);
-
-    VectorXd temp = 2 * fsr.getTheta(W).transpose() * Q_bar * (fsr.getLambda(W) - tau);
+    VectorXd temp = 2 * fsr.getTheta(W).transpose() * Q_lin * (fsr.getLambda(W) - tau);
     q << temp, conf.RoH, conf.RoL;
 }
 
