@@ -73,11 +73,11 @@ void setWeightMatrices(SparseXd& Q_bar, SparseXd& R_bar, const MPCConfig& conf);
  * 
  * @param Q_bar Positive definite Eigen::MatrixXd output tuning matrix
  * @param R_bar Positive definite Eigen::MatrixXd change of input tuning matrix
- * @param fsr FSRModel Finite step response model
+ * @param theta MatrixXd Theta matrix describing output predictions
  * @param a dim(du)
  * @param n Number of optimalization variables
  */
-SparseXd setHessianMatrix(const SparseXd& Q_bar, const SparseXd& R_bar, const FSRModel& fsr, int a, int n); 
+SparseXd setHessianMatrix(const SparseXd& Q_bar, const SparseXd& R_bar, const MatrixXd& theta, int a, int n); 
 
 /**
  * @brief Set the Gradient Vector q
@@ -96,13 +96,14 @@ void setGradientVector(VectorXd& q, FSRModel& fsr, const SparseXd& Q_bar,
 /**
  * @brief Set the Constraint Matrix A
  * 
- * @param fsr Finite step response model
+ * @param theta FSRM step response predictions
  * @param m Number of constraints
  * @param n Number of optimization variables
  * @param a dim(du)
+ * @param n_CV number of controlled variables
  * @return Eigen::Sparse<double>
  */
-SparseXd setConstraintMatrix(const FSRModel& fsr, int m, int n, int a);
+SparseXd setConstraintMatrix(const MatrixXd& theta, int m, int n, int a, int n_CV);
 
 /**
  * @brief Set the Omega U object, such that du = omega_u * z
@@ -125,8 +126,5 @@ SparseXd setOmegaU(int M, int n_MV);
  * @return VectorXd, populated vector
  */
 VectorXd PopulateConstraints(const VectorXd& c, int a, int n_MV, int n_CV, int M, int P);
-
-
-
 
 #endif // CONDENSED_QP_H
