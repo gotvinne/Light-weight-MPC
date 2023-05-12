@@ -72,10 +72,8 @@ void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPC
          VectorXd du = omega_u * z; // MPC actuation
 
         // Store optimal du and y_pref: Before update!
-        if (k == T) {
-            std::cout << "hEi" << std::endl;
-            
-            //y_pred.block(0, k, n_CV, P) = fsr.getY(z, true);
+        if (k == T) {           
+            y_pred.block(0, k, n_CV, P) = fsr.getY(z, true).transpose(); // NB! Does not work for MIMO systems
         } else {
             // Propagate FSR model:
             fsr.UpdateU(du);
