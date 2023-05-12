@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import { PlotPrediction, PlotActuation } from "../../utils/plot.js";
 
 const PLOTS_PER_ROW = 2;
@@ -11,7 +11,7 @@ export function OutputCharts({CVs, T, P, refData}) {
         let odd_plot = Boolean(CVs.length % 2);
 
         return [[...Array(PLOTS_PER_ROW).keys()], [...Array(num_rows).keys()], odd_plot];   
-    }, []);
+    }, [CVs]);
 
     return (
         <div className="Scenario">
@@ -44,7 +44,7 @@ export function ActuationCharts({MVs, T, P}) {
         let odd_plot = Boolean(MVs.length % 2);
 
         return [[...Array(PLOTS_PER_ROW).keys()], [...Array(num_rows).keys()], odd_plot];   
-    }, []);
+    }, [MVs]);
 
     return (
         <div className="Scenario">

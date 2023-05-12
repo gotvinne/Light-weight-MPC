@@ -54,7 +54,7 @@ export default function Algorithm() {
                 <Typography variant="body1" gutterBottom>
                 The cost function is constrained by the model definition and relating variables. The general FSRM-MPC algorithm can be summaried as:
                 </Typography>
-                <BlockMath math={`min \\quad Y(k+(P-W))^T \\boldsymbol{\\bar{Q}} Y(k+(P-W))+\\Delta U(k+(M-1))^T \\boldsymbol{\\bar{R}} \\Delta U(k+(M-1)) \\\\\ 
+                <BlockMath math={`min \\quad Y(k+(P-W))^T \\boldsymbol{\\bar{Q}} Y(k+(P-W))+\\Delta U(k+(M-1))^T \\boldsymbol{\\bar{R}} \\Delta U(k+(M-1)) \\\\
                                         -2 \\mathcal{T}(k)^T \\boldsymbol{\\bar{Q}} Y(k+(P-W))+\\rho_h^T \\epsilon_h+\\rho_l^T \\epsilon_l,`} />
                 <Typography variant="body1" gutterBottom>
                 such that:

@@ -22,14 +22,14 @@ export function PlotPrediction(cv_data, T, P, ref) {
         }
     };
 
-    var ref = {
+    var ref_plot = {
         x: t,
         y: refData,
         name: "Reference",
         type: "line",
         line: {
             color: RED,
-            dash: "dashdot"
+            width: 0.75
         }
     };
 
@@ -50,8 +50,8 @@ export function PlotPrediction(cv_data, T, P, ref) {
         mode: 'lines',
         name: "Lower limit",
         line: {
-            dash: 'dashdot',
-            width: 2,
+            dash: 'dot',
+            width: 1,
             color: BLACK
         }
     } 
@@ -62,8 +62,8 @@ export function PlotPrediction(cv_data, T, P, ref) {
         mode: 'lines',
         name: "Upper limit",
         line: {
-            dash: 'dashdot',
-            width: 2,
+            dash: 'dot',
+            width: 1,
             color: BLACK
         }
     } 
@@ -91,7 +91,7 @@ export function PlotPrediction(cv_data, T, P, ref) {
     };
 
     return (
-        <Plot data={[prediction, prediction_pred, ref, lower_constraint, upper_constraint]} layout={layout}/>
+        <Plot data={[prediction, prediction_pred, ref_plot, lower_constraint, upper_constraint]} layout={layout}/>
     ); 
 }
 
@@ -129,8 +129,8 @@ export function PlotActuation(mv_data, T, P) {
         mode: 'lines',
         name: "Lower limit",
         line: {
-            dash: 'dashdot',
-            width: 2,
+            dash: 'dot',
+            width: 1,
             color: BLACK
         }
     } 
@@ -141,8 +141,8 @@ export function PlotActuation(mv_data, T, P) {
         mode: 'lines',
         name: "Upper limit",
         line: {
-            dash: 'dashdot',
-            width: 2,
+            dash: 'dot',
+            width: 1,
             color: BLACK
         }
     } 
