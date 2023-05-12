@@ -1,25 +1,21 @@
 /**
- * @file step_response_model.cc
+ * @file first_order_model.cc
  * @author Geir Ola Tvinnereim
  * @copyright  Released under the terms of the BSD 3-Clause License
  * @date 2022
  */
-#include "model/step_response_model.h"
-
-#include <iostream>
-#include <vector>
+#include "model/first_order_model.h"
 #include <cmath>
-#include <string> 
 
-float StepResponse(float k, float tau, float theta, float dt, int i) {
+double StepResponse(double k, double tau, double theta, double dt, int i) {
     return k * (1 - exp(-(i * dt - theta) / tau));
 }
 
-std::vector<float> StepCoefficients(float k, float tau, float theta, int N) {
-    float dt = (SETTLING_COEFFICIENT * tau + theta) / N;
+std::vector<double> StepCoefficients(double k, double tau, double theta, int N) {
+    double dt = (SETTLING_COEFFICIENT * tau + theta) / N;
 
-    std::vector<float> step_coefficients_vec;
-    step_coefficients_vec.resize(N);
+    std::vector<double> step_coefficients_vec;
+    step_coefficients_vec.resize(N); // To optimize memory consumption
 
     for (int i = 0; i < N; i++) {
         if ((i * dt) <= theta) {

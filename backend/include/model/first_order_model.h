@@ -1,11 +1,11 @@
 /**
- * @file step_response_model.h
+ * @file first_order_model.h
  * @author Geir Ola Tvinnereim
  * @copyright  Released under the terms of the BSD 3-Clause License
  * @date 2022
  */
-#ifndef STEP_RESPONSE_MODEL_H
-#define STEP_RESPONSE_MODEL_H
+#ifndef FISRT_ORDER_MODEL_H
+#define FISRT_ORDER_MODEL_H
 
 #include <vector>
 /* Module creating finite step response model for a first order system */
@@ -20,9 +20,9 @@ static const int SETTLING_COEFFICIENT = 5;
  * @param theta time delay
  * @param dt time step
  * @param i index
- * @return float 
+ * @return double 
  */
-float StepResponse(float k, float tau, float theta, float dt, int i);
+double StepResponse(double k, double tau, double theta, double dt, int i);
 
 /**
  * @brief Calculating step response coefficients given system and horizon.
@@ -31,8 +31,8 @@ float StepResponse(float k, float tau, float theta, float dt, int i);
  * @param tau time constant
  * @param theta time delay
  * @param N Number of step coefficients
- * @return std::vector<float> holding the step coefficients for the given parameters
+ * @return std::vector<double> holding the step coefficients for the given parameters
  */
-std::vector<float> StepCoefficients(float k, float tau, float theta, int N);
+std::vector<double> StepCoefficients(double k, double tau, double theta, int N);
 
-#endif  // STEP_RESPONSE_MODEL_H
+#endif  // FISRT_ORDER_MODEL_H
