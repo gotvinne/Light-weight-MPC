@@ -1,4 +1,4 @@
-from plot_func import PlotPrediction, PlotInput
+from plot_func import PlotMPC
 from SimulationData import *
 import argparse
 from matplotlib import pyplot as plt
@@ -14,12 +14,12 @@ parser.add_argument("-s", "--simulation", type=str, help="Simulation file", dest
 args = parser.parse_args()
 
 simulation_name = "/data/simulations/sim_" + args.simulation + ".json"
-Data = SimulationData(simulation_name)
+sim_data = SimulationData(simulation_name)
 
 fontsize = 10
 figsize = 12
 plt.rcParams.update({'font.size': fontsize})
+title = "MPC simulation data, CV (purple) MV (blue)"
 
-PlotPrediction(Data, "Controlled Variables", figsize)
-PlotInput(Data, "Manipulated Variables", figsize)
+PlotMPC(sim_data, title, figsize)
 input("")
