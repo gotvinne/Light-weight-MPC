@@ -57,19 +57,19 @@ static void UpdateBounds(VectorXd& bound, FSRModel& fsr, const MatrixXd& K_inv,
                 const SparseXd& Gamma, int m, int a) { 
     // c = [ 0 (a),
     //       K⁽⁻¹⁾ Gamma U(k-N) (a),
-    //       Lambda (n_CV * P),
-    //       Lambda (n_CV * P),
+    //       Lambda (n_CV * (P-W)),
+    //       Lambda (n_CV * (P-W)),
     //       0 (n_CV),
     //       0 (n_CV)]
     VectorXd c = VectorXd::Zero(m);
-    VectorXd lambda = fsr.getLambda(0);
+    int W = fsr.getW();
+    VectorXd lambda = fsr.getLambda(W);
     int size_lambda = lambda.rows();
 
     c.block(a, 0, a, 1) = K_inv * Gamma * fsr.getUK();
     c.block(2 * a, 0, size_lambda, 1) = lambda;
     c.block(2 * a + size_lambda, 0, size_lambda, 1) = lambda;
-
-    bound -= c;
+    bound -= c; // Subtract k-dependant part
 }
 
 /////////////////////////////
@@ -124,12 +124,12 @@ void setConstraintVectors(VectorXd& l, VectorXd& u, FSRModel& fsr, const VectorX
 }
 
 SparseXd setConstraintMatrix(const MatrixXd& theta, int m, int n, int a, int n_CV) {
-    // A = [ I (axa),              0 (axn_CV),         0 (axn_CV)
-    //       K⁽⁻¹⁾ (axa),          0 (axn_CV),         0 (axn_CV)
-    //       Theta (n_CV * Pxa),  -I (n_CV * Pxn_CV),  0 (n_CV * Pxn_CV)
-    //       Theta (n_CV * Pxa),   0 (n_CV * Pxn_CV),  I (n_CV * Pxn_CV)
-    //       0 (n_CVxa),           I (n_CVxn_CV),      0 (n_CVxn_CV)
-    //       0 (n_CVxa),           0 (n_CVxn_CV),      I (n_CVxn_CV)]; 
+    // A = [ I (axa),           0 (axn_CV),      0 (axn_CV)
+    //       K⁽⁻¹⁾ (axa),       0 (axn_CV),      0 (axn_CV)
+    //       Theta* (n_CV*Pxa), -I* (n_CV*Pxn_CV), 0 (n_CV*Pxn_CV)
+    //       Theta* (n_CV*Pxa),  0 (n_CV*Pxn_CV), I* (n_CV*Pxn_CV)
+    //       0 (n_CVxa),        I (n_CVxn_CV),   0 (n_CVxn_CV)
+    //       0 (n_CVxa),        0 (n_CVxn_CV),   I (n_CVxn_CV)]; 
     MatrixXd dense = MatrixXd::Zero(m, n); 
     int dim_theta = theta.rows();
 
@@ -155,15 +155,15 @@ SparseXd setConstraintMatrix(const MatrixXd& theta, int m, int n, int a, int n_C
 
 VectorXd ConfigureConstraint(const VectorXd& z_pop, int m, int a, bool upper) {
     VectorXd bound = VectorXd::Zero(m);
-    int duuy_size = z_pop.rows(); // = 2 * M * n_MV + P * n_CV = 2 * a + P * n_CV
+    int duuy_size = z_pop.rows(); // = 2 * M * n_MV + (P-W) * n_CV = 2 * a + (P-W) * n_CV
 
     if (upper) {
         bound.block(0, 0, duuy_size, 1) = z_pop;
         // Set Infinity values
-         bound.block(duuy_size, 0, m - duuy_size, 1) = VectorXd::Constant(m - duuy_size, std::numeric_limits<double>::max()); 
+        bound.block(duuy_size, 0, m - duuy_size, 1) = VectorXd::Constant(m - duuy_size, std::numeric_limits<double>::max()); 
     } else {
         // Extract lower Y constraints
-        VectorXd lower_y = z_pop(Eigen::seq(2 * a, Eigen::indexing::last)); // lower_y.rows() = P * n_CV
+        VectorXd lower_y = z_pop(Eigen::seq(2 * a, Eigen::indexing::last)); // lower_y.rows() = (P-W) * n_CV
         // Set -Infinity values
         bound.block(2 * a, 0, lower_y.rows(), 1) = VectorXd::Constant(lower_y.rows(), std::numeric_limits<double>::min());
         bound.block(duuy_size, 0, lower_y.rows(), 1) = lower_y; // Set lower Y
@@ -193,18 +193,19 @@ SparseXd setOmegaU(int M, int n_MV) {
     return omega_dense.sparseView();
 }
 
-VectorXd PopulateConstraints(const VectorXd& c, int a, int n_MV, int n_CV, int M, int P) { 
+VectorXd PopulateConstraints(const VectorXd& c, const MPCConfig& conf, int a, int n_MV, int n_CV) { 
     // z_pop = [ z - Delta U (M * N_MV), 
     //           z - U (M * N_MV),
-    //           z - Y (P * N_CV)]
-    VectorXd z_pop(2 * M * n_MV + P * n_CV);
+    //           z - Y (P-W) * N_CV)]
+    int size_y = conf.P - conf.W;
+    VectorXd z_pop(2 * conf.M * n_MV + size_y * n_CV);
 
     for (int var = 0; var < 2 * n_MV; var++) { // Assuming same constraining, u, du if n_MV < n_CV
-        z_pop.block(var * M, 0, M, 1) = VectorXd::Constant(M, c(var));
+        z_pop.block(var * conf.M, 0, conf.M, 1) = VectorXd::Constant(conf.M, c(var));
     } // Fill n first constraints, du and u, 2 * M * N_MV
 
     for (int var = 0; var < n_CV; var++) {
-        z_pop.block(2 * a + (var * P), 0, P, 1) = VectorXd::Constant(P, c(2 * n_MV + var));
-    } // Fill remaining constraints, y, P * N_CV
+        z_pop.block(2 * a + (var * size_y), 0, size_y, 1) = VectorXd::Constant(size_y, c(2 * n_MV + var));
+    } // Fill remaining constraints, y, (P-W) * N_CV
     return z_pop;
 } 

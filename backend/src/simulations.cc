@@ -145,7 +145,6 @@ void MPCSimFSRM(const string& sys, const string& ref_vec, bool new_sim, int T) {
     // FSRM:
     FSRModel fsr(cvd.getSR(), m_map, conf.P, conf.M, conf.W, mvd.Inits, cvd.getInits());
     fsr.setDuTildeMat(du_tilde); 
-
     // MPC variables:
     MatrixXd u_mat, y_pred, ref = setRef(ref_vec, T, conf.P, m_map[kN_CV]); 
     /** Optimized actuation, (n_MV, T) */ /** Predicted output (n_CV, T)*/ /** Reference */

@@ -163,7 +163,7 @@ json ReadJson(const string& filepath) {
         return json::parse(file);
     }
     catch (std::exception& e) {
-        std::cerr << "ERROR! " << e.what() << std::endl; 
+        std::cerr << "ERROR! Cannot read file: " << e.what() << std::endl; 
         return 1;
     }
 }

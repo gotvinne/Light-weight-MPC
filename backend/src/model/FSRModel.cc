@@ -18,7 +18,9 @@ FSRModel::FSRModel(VectorXd** SR, std::map<string, int> m_param, int P, int M, i
 
     u_K_ = VectorXd::Map(init_u.data(), init_u.size());
     u_ = VectorXd::Map(init_u.data(), init_u.size());
-    y_ = VectorXd::Map(init_y.data(), init_y.size());
+    uw_ = VectorXd::Map(init_u.data(), init_u.size());
+    y_ = setInitY(init_y, P_);
+    y_init_ = setInitY(init_y, P_ - W_);
 
     AllocateAndDeepCopy(SR); 
     // Setting matrix member variables
@@ -171,7 +173,7 @@ MatrixXd FSRModel::getPsi(int W) {
 
 VectorXd FSRModel::getDuTildeControl() const { // Flatteining du_tilde_mat, dependant on W
     VectorXd du_tilde = VectorXd::Zero(n_MV_*(N_-W_-1));
-    MatrixXd du_tilde_sliced = du_tilde_mat_.block(0, W_, n_CV_, N_-W_-1);
+    MatrixXd du_tilde_sliced = du_tilde_mat_.block(0, 0, n_CV_, N_-W_-1);
     for (int i = 0; i < n_MV_; i++) {
         du_tilde.block(i * (N_-W_-1), 0, N_-W_-1, 1) = du_tilde_sliced.row(i).transpose();
     }
@@ -190,8 +192,13 @@ void FSRModel::UpdateU(const VectorXd& du) { // du = omega_u * z
     // Updating U(k-1)
     u_K_ += du; 
     // Updating U(n)
-    VectorXd du_n = du_tilde_mat_.rightCols(1);
+    VectorXd du_n = du_tilde_mat_.col(N_-2); // Access last elem
     u_ += du_n;
+    if (W_ != 0) {
+        // Updating U(n-W)
+        VectorXd du_w = du_tilde_mat_.col(N_-2-W_);
+        uw_ += du_w;
+    }
     // Update du_tilde by left shift, adding the optimized du
     MatrixXd old_du = du_tilde_mat_.leftCols(N_-2);
     du_tilde_mat_.block(0, 0, n_MV_, 1) = du;
@@ -208,15 +215,22 @@ SparseXd FSRModel::getOmegaY() const {
 
 VectorXd FSRModel::getLambda(int W) { 
     if (W == 0) { // Used for prediction
-        return phi_ * getDuTilde() + psi_ * u_;
+        return phi_ * getDuTilde() + psi_ * u_ + y_;
     } else { // Used for control, called once
-        return c_phi_ * getDuTildeControl() + c_psi_ * u_; 
+        return c_phi_ * getDuTildeControl() + c_psi_ * uw_ + y_init_; 
     }
+}
+
+VectorXd FSRModel::setInitY(std::vector<double> init_y, int predictions) {
+    VectorXd y_init = VectorXd::Zero(n_CV_ * predictions);
+    for (int cv = 0; cv < n_CV_; cv++) {
+        y_init.block(cv * predictions, 0, predictions, 1) = VectorXd::Constant(predictions, init_y[cv]);
+    }
+    return y_init;
 }
 
 // Print functions: 
 void FSRModel::PrintTheta() const {
-    std::cout << pp_SR_mat_[0][0] << std::endl;
     std::cout << "Theta: " << "(" << theta_.rows() << ", " << theta_.cols() << ")" << std::endl; 
     std::cout << theta_ << std::endl; 
     std::cout << std::endl;
@@ -229,11 +243,11 @@ void FSRModel::PrintPhi() const {
     std::cout << "Phi : " << "(" << phi_.rows() << ", " << phi_.cols() << ")" << std::endl;
     std::cout << "Control Phi : " << "(" << c_phi_.rows() << ", " << c_phi_.cols() << ")" << std::endl;
     
-    for (int i = 0; i < phi_.rows(); i++) {
+    for (int i = 0; i < c_phi_.rows(); i++) {
         std::cout << "Row = pad: " << i << std::endl;
-        std::cout << phi_(i, Eigen::seq(0, N_-W_-1-1)) << std::endl;
+        std::cout << c_phi_(i, Eigen::seq(0, N_-W_-1-1)) << std::endl;
         std::cout << std::endl;
-        std::cout << phi_(i, Eigen::seq(N_-W_-1, Eigen::indexing::last)) << std::endl;
+        std::cout << c_phi_(i, Eigen::seq(N_-W_-1, Eigen::indexing::last)) << std::endl;
         std::cout << std::endl;
     }
 }
@@ -256,4 +270,6 @@ void FSRModel::PrintActuation() const {
     std::cout << std::endl;
     std::cout << "U(k-N):" << std::endl;
     std::cout << u_ << std::endl;
+     std::cout << "U(k-W-N):" << std::endl;
+    std::cout << uw_ << std::endl;
 }

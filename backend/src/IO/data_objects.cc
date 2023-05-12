@@ -134,7 +134,7 @@ MPCConfig::MPCConfig(const json& sce_data) {
             throw std::invalid_argument("Negative turning arguments in Q and R");
         } else {
             RoH(i) = mpc_data.at(kRoH).at(i);
-            RoL(i) = mpc_data.at(kRoH).at(i);
+            RoL(i) = mpc_data.at(kRoL).at(i);
         }
     }
     for (int i = 0; i < n_MV; i++) {

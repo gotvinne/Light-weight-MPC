@@ -29,8 +29,8 @@ private:
     int N_; /** Number of step response coefficients */
     int P_, M_, W_; /** Horizons */
 
-    VectorXd u_, u_K_; /** Manipulated variables, U(k-N), n_MV */ /** Denotes U(k-1), n_MV */
-    VectorXd y_; /** Controlled variables n_CV */ 
+    VectorXd u_, uw_, u_K_; /** Manipulated variables, U(k-N), n_MV */ /** Denotes U(k+W-1) /** Denotes U(k-1), n_MV */
+    VectorXd y_, y_init_; /** Controlled variables n_CV * P, n_CV * (P-W) */ 
     MatrixXd du_tilde_mat_; /** Post change in actuation matrix (n_MV, (N-1)) */
 
     VectorXd** pp_SR_vec_; /** Matrix of Eigen::VectorXd holding every n_CV * n_MV step response */
@@ -123,6 +123,8 @@ private:
      * @return SparseXd 
      */
     SparseXd getOmegaY() const;
+
+    VectorXd setInitY(std::vector<double> init_y, int predictions);
     
 public: 
 
@@ -161,7 +163,14 @@ public:
      */
     ~FSRModel();
 
-    void setDuTildeMat(const MatrixXd& mat) { du_tilde_mat_ = mat; }
+    void setDuTildeMat(const MatrixXd& mat) { 
+        du_tilde_mat_ = mat; 
+        // Update uw_
+        for (int i = 0; i < W_; i++) {
+            VectorXd vec = du_tilde_mat_.col(N_-W_-2+i);
+            uw_ += vec;
+        }
+    }
 
     /** Get functions */
     int getP() const { return P_; }
@@ -191,9 +200,9 @@ public:
      * @return VectorXd predicted output, one step, k+1 ahead. 
      */
     MatrixXd getY(const VectorXd& du, bool all_pred = false) {
-        if (all_pred) {
+        if (all_pred) { // Get all P predictions
             return (theta_ * du + getLambda(0)).reshaped<Eigen::RowMajor>(n_CV_, P_);
-        } else {
+        } else { // Get next prediction
             return getOmegaY() * (theta_ * du + getLambda(0));
         }
     } 

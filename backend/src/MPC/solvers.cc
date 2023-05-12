@@ -13,6 +13,7 @@
 #include <OsqpEigen/OsqpEigen.h>
 
 #include <stdexcept>
+#include <iostream>
 using SparseXd = Eigen::SparseMatrix<double>; 
 
 void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPCConfig& conf, const VectorXd& z_min, 
@@ -25,10 +26,10 @@ void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPC
     // MPC Scenario variables:
     int P = fsr.getP(), M = fsr.getM(), W = fsr.getW(), n_MV = fsr.getN_MV(), n_CV = fsr.getN_CV(); 
     // Define QP sizes:
-    const int n = M * n_MV + 2 * n_CV; // #Optimization variables 
-    const int m = 2 * M * n_MV + 2 * P * n_CV + 2 * n_CV; // #Constraints
+    const int n = M * n_MV + 2 * n_CV; // #Optimization variables, dim(z_cd)
+    const int m = 2 * M * n_MV + 2 * (P-W) * n_CV + 2 * n_CV; // #Constraints, dim(z_st)
     const int a = M * n_MV; // dim(du)
-    const VectorXd z_max_pop = PopulateConstraints(z_max, a, n_MV, n_CV, M, P), z_min_pop = PopulateConstraints(z_min, a, n_MV, n_CV, M, P);
+    const VectorXd z_max_pop = PopulateConstraints(z_max, conf, a, n_MV, n_CV), z_min_pop = PopulateConstraints(z_min, conf, a, n_MV, n_CV);
     // z_min_max_pop are respectively lower and upper populated constraints
 
     solver.data()->setNumberOfVariables(n);
@@ -36,18 +37,16 @@ void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPC
 
     // Define Cost function variables: 
     SparseXd Q_bar, R_bar, Gamma = setGamma(M, n_MV);
-    MatrixXd K_inv = setKInv(a);
+    MatrixXd K_inv = setKInv(a), theta = fsr.getTheta(W);
     // Dynamic variables:
     VectorXd q, l = VectorXd::Zero(m), u = VectorXd::Zero(m); // l and u are lower and upper constraints, z_cd 
     VectorXd c_l = ConfigureConstraint(z_min_pop, m, a, false), c_u = ConfigureConstraint(z_max_pop, m, a, true);
 
-    // Cost function: NB! W-dependant
+    // NB! W-dependant
     setWeightMatrices(Q_bar, R_bar, conf);
-    SparseXd G = setHessianMatrix(Q_bar, R_bar, fsr.getTheta(W), a, n);
+    SparseXd G = setHessianMatrix(Q_bar, R_bar, theta, a, n);
     setGradientVector(q, fsr, Q_bar, ref, conf, n, 0); // Initial gradient
-    
-    // Constraints:
-    SparseXd A = setConstraintMatrix(fsr.getTheta(0), m, n, a, n_CV);
+    SparseXd A = setConstraintMatrix(theta, m, n, a, n_CV);
     setConstraintVectors(l, u, fsr, c_l, c_u, K_inv, Gamma, m, a);
 
     if (!solver.data()->setHessianMatrix(G)) { throw std::runtime_error("Cannot initialize Hessian"); }
@@ -90,4 +89,5 @@ void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPC
             if (!solver.updateGradient(q)) { throw std::runtime_error("Cannot update gradient"); }
         }
     }
+    fsr.PrintActuation();
 }

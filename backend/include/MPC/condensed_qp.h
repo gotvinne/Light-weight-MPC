@@ -118,13 +118,12 @@ SparseXd setOmegaU(int M, int n_MV);
  * @brief Populate constraint data, enabling dynamic constraints
  * 
  * @param c Constrain vector data
+ * @param conf
  * @param a dim(du)
  * @param n_MV Number of manipulated variables
  * @param n_CV Number of constrained variables
- * @param M Control horizon
- * @param P Prediction horizon
  * @return VectorXd, populated vector
  */
-VectorXd PopulateConstraints(const VectorXd& c, int a, int n_MV, int n_CV, int M, int P);
+VectorXd PopulateConstraints(const VectorXd& c, const MPCConfig& conf, int a, int n_MV, int n_CV);
 
 #endif // CONDENSED_QP_H
