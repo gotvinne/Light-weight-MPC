@@ -8,6 +8,7 @@ SCENARIO = "scenario"
 T = "T"
 N_CV = "n_CV"
 N_MV = "n_MV"
+P = "P"
 
 CV = "CV"
 MV = "MV"
@@ -17,6 +18,7 @@ UNIT = "unit"
 CONSTRAINT = "c"
 Y = "y"
 Y_PRED = "y_pred"
+REF = "ref"
 U = "u"
 
 
@@ -33,16 +35,16 @@ class SimulationData():
         self.T = json_data[T]
         self.n_CV = json_data[N_CV]
         self.n_MV = json_data[N_MV]
+        self.P = json_data[P]
 
         if (json_data[CV][0].get(CONSTRAINT) is None): # Assume if this is correct for the first then the rest aswell
             self.plot_constraint = False
         else:
             self.plot_constraint = True
-        
-        self.P = len(json_data[CV][0][Y_PRED]) - self.T
 
         self.y = np.empty([self.n_CV, self.T + self.P])
         self.y_pred = np.empty([self.n_CV, self.T + self.P])
+        self.ref = np.empty([self.n_CV, self.T + self.P])
         self.u = np.ndarray([self.n_MV, self.T])
 
         self.ParseCVData(json_data)
@@ -73,6 +75,7 @@ class SimulationData():
 
             # Fill nparray
             # self.y.T[..., index] = elem[Y] # Have not implemented reference model yet
+            self.ref.T[..., index] = elem[REF]
             self.y_pred.T[..., index] = elem[Y_PRED]
         self.outputs, self.cv_units, self.cv_constraints = outputs, cv_units, cv_constraints
 

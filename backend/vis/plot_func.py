@@ -1,26 +1,33 @@
 from matplotlib import pyplot as plt
 from SimulationData import *
 
+# Colors:
+PURPLE = "m"
+BLUE = "b"
+RED = "r"
+BLACK = "k"
+
 def PlotPrediction(sim_data, title, FIG_SIZE = 14):
     """
     Plotting the n_CV different predicted outputs along with the reference model output
     :param sim_data: SimulationData object holding the simulation information
     :param title: The main title of the plots
     """
-    plot_horizon = sim_data.T + sim_data.P
-    t = np.arange(0, plot_horizon, dtype=int) # Also plotting predictions
+    plot_horizon = sim_data.T + sim_data.P # Also plotting predictions
+    t = np.arange(0, plot_horizon, dtype=int) 
     fig = plt.figure(num = 1, figsize=(FIG_SIZE, FIG_SIZE)) 
     for i in range(sim_data.n_CV):
         fig.add_subplot(1, sim_data.n_CV, i + 1)
         # plt.plot(t, sim_data.y[i, :], "b", label="System output")
-        plt.plot(t, sim_data.y_pred[i, :], "m", label="Predicted output") # m is magneta color
+        plt.plot(t, sim_data.y_pred[i, :], PURPLE, label="Predicted output") 
+        plt.plot(t, sim_data.ref[i, :], RED, label="Reference") 
         
         # Constraints 
         if sim_data.plot_constraint:
             upper = sim_data.cv_constraints[i][1] * np.ones(plot_horizon)
             lower = sim_data.cv_constraints[i][0] * np.ones(plot_horizon)
-            plt.plot(t, upper, "k", linestyle="--", label="Upper constraint")
-            plt.plot(t, lower, "k", linestyle="--", label="Lower constraint")
+            plt.plot(t, upper, BLACK, linestyle="--", label="Upper constraint")
+            plt.plot(t, lower, BLACK, linestyle="--", label="Lower constraint")
 
         plt.xlabel("MPC horizon, t")
         plt.ylabel(sim_data.cv_units[i])
@@ -44,13 +51,13 @@ def PlotInput(sim_data, title, FIG_SIZE = 14):
     fig = plt.figure(num = 2, figsize=(FIG_SIZE, FIG_SIZE)) 
     for i in range(sim_data.n_MV):
         fig.add_subplot(1, sim_data.n_MV, i + 1)
-        plt.step(t, sim_data.u[i, :], "b", label="Optimized actuation")
+        plt.step(t, sim_data.u[i, :], BLUE, label="Optimized actuation")
 
         if sim_data.plot_constraint:
             upper = sim_data.mv_constraints[i][1] * np.ones(sim_data.T)
             lower = sim_data.mv_constraints[i][0] * np.ones(sim_data.T)
-            plt.plot(t, upper, "k", linestyle="--", label="Upper constraint")
-            plt.plot(t, lower, "k", linestyle="--", label="Lower constraint")
+            plt.plot(t, upper, BLACK, linestyle="--", label="Upper constraint")
+            plt.plot(t, lower, BLACK, linestyle="--", label="Lower constraint")
 
         plt.xlabel("MPC horizon, t")
         plt.ylabel(sim_data.mv_units[i])
