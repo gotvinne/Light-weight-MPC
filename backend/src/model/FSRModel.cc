@@ -206,14 +206,6 @@ SparseXd FSRModel::getOmegaY() const {
     return omega_dense.sparseView();
 }  
 
-SparseXd FSRModel::getOmegaYPred() const {
-    MatrixXd omega_dense = MatrixXd::Zero(n_CV_ * P_, P_);
-    for (int i = 0; i < n_CV_; i++) {
-        omega_dense.block(i * P_, 0, P_, P_) = MatrixXd::Identity(P_, P_); 
-    }
-    return omega_dense.sparseView();
-}
-
 VectorXd FSRModel::getLambda(int W) { 
     if (W == 0) { // Used for prediction
         return phi_ * getDuTilde() + psi_ * u_;

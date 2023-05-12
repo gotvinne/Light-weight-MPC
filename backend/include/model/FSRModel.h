@@ -123,13 +123,6 @@ private:
      * @return SparseXd 
      */
     SparseXd getOmegaY() const;
-
-    /**
-     * @brief Get the Omega Y Pred object
-     * 
-     * @return SparseXd 
-     */
-    SparseXd getOmegaYPred() const;
     
 public: 
 
@@ -197,9 +190,9 @@ public:
      * @param du [Eigen::VectorXd] dim(du) = a = n_MV * M
      * @return VectorXd predicted output, one step, k+1 ahead. 
      */
-    VectorXd getY(const VectorXd& du, bool all_pred = false) {
+    MatrixXd getY(const VectorXd& du, bool all_pred = false) {
         if (all_pred) {
-            return getOmegaYPred() * (theta_ * du + getLambda(0));
+            return (theta_ * du + getLambda(0)).reshaped<Eigen::RowMajor>(n_CV_, P_);
         } else {
             return getOmegaY() * (theta_ * du + getLambda(0));
         }

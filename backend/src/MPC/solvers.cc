@@ -73,7 +73,7 @@ void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPC
 
         // Store optimal du and y_pref: Before update!
         if (k == T) {           
-            y_pred.block(0, k, n_CV, P) = fsr.getY(z, true).transpose(); // NB! Does not work for MIMO systems
+            y_pred.block(0, k, n_CV, P) = fsr.getY(z, true);
         } else {
             // Propagate FSR model:
             fsr.UpdateU(du);

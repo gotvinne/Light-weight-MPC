@@ -19,20 +19,20 @@ def PlotMPC(sim_data, title, FIG_SIZE=14):
     else:
         mv_rows = ceil(sim_data.n_MV / 2) 
 
-    if (mv_rows == 1 and cv_rows == 1):
+    if (sim_data.n_CV == 1 and sim_data.n_MV == 1):
         cols = 1
     else:
         cols = 2
 
     fig, axs = plt.subplots(cv_rows + mv_rows, cols, figsize=(FIG_SIZE, FIG_SIZE)) 
     fig.suptitle(title)
-    PlotPrediction(axs, sim_data, toggling=(cols == 2))
-    PlotActuation(axs, sim_data, toggling=(cols == 2))
+    PlotPrediction(axs, sim_data, cv_rows, toggling=(cols == 2))
+    PlotActuation(axs, sim_data, cv_rows, mv_rows, toggling=(cols == 2))
     plt.show(block=False) # Avoid blocking 
 
     return fig
 
-def PlotPrediction(axs, sim_data, toggling):
+def PlotPrediction(axs, sim_data, cv_rows, toggling):
     """
     Plotting the n_CV different predicted outputs along with the reference model output
     :param sim_data: SimulationData object holding the simulation information
@@ -42,28 +42,27 @@ def PlotPrediction(axs, sim_data, toggling):
     t = np.arange(0, plot_horizon, dtype=int) 
 
     if toggling:
-        toggle = 0
-        for i in range(sim_data.n_CV):
+        index = 0
+        for i in range(cv_rows):
+            for toggle in range(2):
+                axs[i, toggle].axvline(x = sim_data.T, color = BLACK, label = "Prediction axis")
+                # plt.plot(t, sim_data.y[i, :], "b", label="System output")
+                axs[i, toggle].plot(t[0:sim_data.T], sim_data.y_pred[index, 0:sim_data.T], PURPLE, label="Output") 
+                axs[i, toggle].plot(t[sim_data.T:], sim_data.y_pred[index, sim_data.T:], PURPLE, linestyle="--", label="Predicted output") 
+                axs[i, toggle].plot(t, sim_data.ref[index, :], RED, label="Reference") 
+                
+                # Constraints 
+                upper = sim_data.cv_constraints[index][1] * np.ones(plot_horizon)
+                lower = sim_data.cv_constraints[index][0] * np.ones(plot_horizon)
+                axs[i, toggle].plot(t, upper, BLACK, linestyle="--", label="Upper constraint")
+                axs[i, toggle].plot(t, lower, BLACK, linestyle="--", label="Lower constraint")
 
-            axs[i, toggle].axvline(x = sim_data.T, color = BLACK, label = "Prediction axis")
-            # plt.plot(t, sim_data.y[i, :], "b", label="System output")
-            axs[i, toggle].plot(t[0:sim_data.T], sim_data.y_pred[i, 0:sim_data.T], PURPLE, label="Output") 
-            axs[i, toggle].plot(t[sim_data.T:], sim_data.y_pred[0, sim_data.T:], PURPLE, linestyle="--", label="Predicted output") 
-            axs[i, toggle].plot(t, sim_data.ref[i, :], RED, label="Reference") 
-            
-            # Constraints 
-            upper = sim_data.cv_constraints[i][1] * np.ones(plot_horizon)
-            lower = sim_data.cv_constraints[i][0] * np.ones(plot_horizon)
-            axs[i, toggle].plot(t, upper, BLACK, linestyle="--", label="Upper constraint")
-            axs[i, toggle].plot(t, lower, BLACK, linestyle="--", label="Lower constraint")
-
-            axs[i, toggle].set_xlabel("MPC horizon, t")
-            axs[i, toggle].set_ylabel(sim_data.cv_units[i])
-            axs[i, toggle].legend()
-            axs[i, toggle].grid()
-            axs[i, toggle].set_title(sim_data.outputs[i])
-
-            toggle = 1 - toggle
+                axs[i, toggle].set_xlabel("MPC horizon, t")
+                axs[i, toggle].set_ylabel(sim_data.cv_units[index])
+                axs[i, toggle].legend()
+                axs[i, toggle].grid()
+                axs[i, toggle].set_title(sim_data.outputs[index])
+                index += 1
     else: 
         axs[0].axvline(x = sim_data.T, color = BLACK, label = "Prediction axis")
         # axs[0].plot(t, sim_data.y[i, :], "b", label="System output")
@@ -84,7 +83,7 @@ def PlotPrediction(axs, sim_data, toggling):
         axs[0].set_title(sim_data.outputs[0])
 
 
-def PlotActuation(axs, sim_data, toggling):
+def PlotActuation(axs, sim_data, cv_rows, mv_rows, toggling):
     """
     Plotting the n_MV different optimized inputs
     :param sim_data: SimulationData object holding the simulation information
@@ -92,21 +91,21 @@ def PlotActuation(axs, sim_data, toggling):
     """
     t = np.arange(0, sim_data.T, dtype=int)
     if toggling:
-        toggle = 0
-        for i in range(sim_data.n_MV):
-            axs[i, toggle].step(t, sim_data.u[i, :], BLUE, label="Optimized actuation")
+        index = 0
+        for i in range(cv_rows, cv_rows + mv_rows):
+            for toggle in range(2):
+                axs[i, toggle].step(t, sim_data.u[index, :], BLUE, label="Optimized actuation")
 
-            upper = sim_data.mv_constraints[i][1] * np.ones(sim_data.T)
-            lower = sim_data.mv_constraints[i][0] * np.ones(sim_data.T)
-            axs[i, toggle].plot(t, upper, BLACK, linestyle="--", label="Upper constraint")
-            axs[i, toggle].plot(t, lower, BLACK, linestyle="--", label="Lower constraint")
-            axs[i, toggle].set_xlabel("MPC horizon, t")
-            axs[i, toggle].set_ylabel(sim_data.mv_units[i])   
-            axs[i, toggle].legend()
-            axs[i, toggle].grid()
-            axs[i, toggle].set_title(sim_data.inputs[i])
-
-            toggle = 1 - toggle
+                upper = sim_data.mv_constraints[index][1] * np.ones(sim_data.T)
+                lower = sim_data.mv_constraints[index][0] * np.ones(sim_data.T)
+                axs[i, toggle].plot(t, upper, BLACK, linestyle="--", label="Upper constraint")
+                axs[i, toggle].plot(t, lower, BLACK, linestyle="--", label="Lower constraint")
+                axs[i, toggle].set_xlabel("MPC horizon, t")
+                axs[i, toggle].set_ylabel(sim_data.mv_units[index])   
+                axs[i, toggle].legend()
+                axs[i, toggle].grid()
+                axs[i, toggle].set_title(sim_data.inputs[index])
+                index += 1
     else: 
         axs[1].step(t, sim_data.u[0, :], BLUE, label="Optimized actuation") 
         
