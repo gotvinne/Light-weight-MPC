@@ -19,10 +19,6 @@
 #include <filesystem>
 #include <stdexcept>
 
-//////////////////////////////////
-//** SERIALIZE SIMULATION FILE *// 
-//////////////////////////////////
-
 /**
  * @brief Fill json::array() object from Eigen::MatrixXd
  * 
@@ -49,6 +45,7 @@ static void SerializeSimData(json& data, const string& scenario, const FSRModel&
     data[kT] = T;
     data[kN_CV] = fsr.getN_CV();
     data[kN_MV] = fsr.getN_MV(); 
+    data[kP] = fsr.getP();
 
     json du_tilde = json::array();
     for (int i = 0; i < fsr.getN_MV(); i++) {
@@ -66,11 +63,12 @@ static void SerializeSimData(json& data, const string& scenario, const FSRModel&
  * @param cvd CDData object
  * @param z_min lower constraints
  * @param z_max upper constraints
+ * @param ref
  * @param n_CV Number of controlled variables
  * @param n_MV Number of Manipulated variables
  */
 static void SerializeSimCV(json& data, const CVData& cvd, const MatrixXd& y_pred, const MatrixXd& z_min,
-                 const MatrixXd& z_max, int n_CV, int n_MV) {
+                 const MatrixXd& z_max, const MatrixXd& ref, int n_CV, int n_MV) {
     json arr = json::array(); 
     std::vector<string> outputs = cvd.getOutputs();
     std::vector<string> units = cvd.getUnits();
@@ -80,9 +78,14 @@ static void SerializeSimCV(json& data, const CVData& cvd, const MatrixXd& y_pred
         obj[kOutput] = outputs[i];
         obj[kUnit] = units[i];
 
+        // Fill ref
+        json ref_vec = json::array();
+        FillVector(ref_vec, ref, i);
+        obj[kRef] = ref_vec;
+
         obj[kC] = json::array({z_min(2 * n_MV + i), z_max(2 * n_MV + i)}); // Y constraints
 
-        // Fill inn y
+        // Fill y
         json y_pred_vec = json::array();
         FillVector(y_pred_vec, y_pred, i);
         obj[kY_pred] = y_pred_vec;
@@ -92,6 +95,7 @@ static void SerializeSimCV(json& data, const CVData& cvd, const MatrixXd& y_pred
     data[kCV] = arr;
 }
 
+// Open loop serialization
 static void SerializeSimCV(json& data, const CVData& cvd, const MatrixXd& y_pred, int n_CV) {
     json arr = json::array(); 
     
@@ -158,45 +162,6 @@ static void SerializeSimMV(json& data, const MVData& mvd, const MatrixXd& u, int
     data[kMV] = arr;
 }
 
-////////////////////////////////
-//** SERIALIZE SCENARIO FILE *//
-////////////////////////////////
-
-/**
- * @brief 
- * 
- * @param data 
- * @param mpc_m 
- * @param Q 
- * @param R 
- * @param Ro 
- * @param bias_update 
- */
-static void SerializeMPC(json& data, std::map<string, int> mpc_m, const VectorXd& Q, const VectorXd& R, const VectorXd& Ro, bool bias_update) {
-    json obj = json::object();
-    obj[kP] = mpc_m[kP];
-    obj[kM] = mpc_m[kM];
-    obj[kW] = mpc_m[kW];
-    obj[kBu] = bias_update;
-
-    json q = json::array(), r = json::array(), rol = json::array(), roh = json::array();
-    for (int i = 0; i < Q.rows(); i++) {
-        q.push_back(Q(i));
-        rol.push_back(Ro(0, i));
-        roh.push_back(Ro(1, i));
-    }
-    for (int i = 0; i < R.rows(); i++) {
-        r.push_back(R(i));
-    }
-
-    obj[kQ] = q;
-    obj[kR] = r;
-    obj[kRoL] = rol;
-    obj[kRoH] = roh;
-
-    data[kMPC] = obj;
-}
-
 /**
  * @brief Serialize constraint data
  * 
@@ -235,22 +200,65 @@ static void SerializeConstraints(json& data, const VectorXd& l_du, const VectorX
     data[kC] = arr;
 }
 
+/**
+ * @brief 
+ * 
+ * @param data 
+ * @param mpc_m 
+ * @param Q 
+ * @param R 
+ * @param Ro 
+ * @param bias_update 
+ */
+static void SerializeMPC(json& data, std::map<string, int> mpc_m, const VectorXd& Q, const VectorXd& R, const VectorXd& Ro, bool bias_update) {
+    json obj = json::object();
+    obj[kP] = mpc_m[kP];
+    obj[kM] = mpc_m[kM];
+    obj[kW] = mpc_m[kW];
+    obj[kBu] = bias_update;
+
+    json q = json::array(), r = json::array(), rol = json::array(), roh = json::array();
+    for (int i = 0; i < Q.rows(); i++) {
+        q.push_back(Q(i));
+        rol.push_back(Ro(0, i));
+        roh.push_back(Ro(1, i));
+    }
+    for (int i = 0; i < R.rows(); i++) {
+        r.push_back(R(i));
+    }
+
+    obj[kQ] = q;
+    obj[kR] = r;
+    obj[kRoL] = rol;
+    obj[kRoH] = roh;
+
+    data[kMPC] = obj;
+}
+
 void WriteJson(const json& data, const string& filepath) {
     std::ofstream ofs(filepath);
     ofs << data.dump(4) << std::endl;
     ofs.close();
 }
 
+//////////////////////////////////
+//** SERIALIZE SIMULATION FILE *// 
+//////////////////////////////////
+
+// Serialize for new simulation
 void SerializeSimulationNew(const string& write_path, const string& scenario, const CVData& cvd, const MVData& mvd, 
-                    const MatrixXd& y_pred, const MatrixXd& u_mat, const VectorXd& z_min, const VectorXd& z_max, const FSRModel& fsr, int T) {
+                    const MatrixXd& y_pred, const MatrixXd& u_mat, const VectorXd& z_min, const VectorXd& z_max, 
+                    const MatrixXd& ref, const FSRModel& fsr, int T) {
     json data;
     SerializeSimData(data, scenario, fsr, T);
-    SerializeSimCV(data, cvd, y_pred, z_min, z_max, fsr.getN_CV(), fsr.getN_MV());
+    SerializeSimCV(data, cvd, y_pred, z_min, z_max, ref, fsr.getN_CV(), fsr.getN_MV());
     SerializeSimMV(data, mvd, u_mat, z_min, z_max, fsr.getN_MV());
     WriteJson(data, write_path);
 }
 
-void SerializeSimulation(const string& write_path, const MatrixXd& y_pred, const MatrixXd& u_mat, int T) {
+// Update simulation file for further simulation
+void SerializeSimulation(const string& write_path, const MatrixXd& y_pred, const MatrixXd& u_mat, 
+                        const MatrixXd& ref, int T) {
     json sim_data = ReadJson(write_path); // Assume this file already exists.
     sim_data[kT] = int(sim_data.at(kT)) + T; // Update MPC horizon
 
@@ -258,6 +266,11 @@ void SerializeSimulation(const string& write_path, const MatrixXd& y_pred, const
     int i = 0;
     for (auto& cv : cv_data) {
         FillVector(cv[kY_pred], y_pred, i); // Update Y_pred
+        json old_ref = cv[kRef]; // Update reference
+        json new_ref = json::array();
+        FillVector(new_ref, ref, i);
+        old_ref.insert(old_ref.end(), new_ref.begin(), new_ref.end()); // Append new ref
+        cv[kRef] = old_ref; 
         i++;
     }
     i = 0;
@@ -272,11 +285,13 @@ void SerializeSimulation(const string& write_path, const MatrixXd& y_pred, const
     WriteJson(sim_data, write_path);
 }
 
+// Serialization for Web application
 string SerializeSimulation(const string& scenario, const CVData& cvd, const MVData& mvd, 
-                    const MatrixXd& y_pred, const MatrixXd& u_mat, const VectorXd& z_min, const VectorXd& z_max, const FSRModel& fsr, int T) {
+                    const MatrixXd& y_pred, const MatrixXd& u_mat, const VectorXd& z_min, const VectorXd& z_max,
+                    const MatrixXd& ref, const FSRModel& fsr, int T) {
     json data;
     SerializeSimData(data, scenario, fsr, T);
-    SerializeSimCV(data, cvd, y_pred, z_min, z_max, fsr.getN_CV(), fsr.getN_MV());
+    SerializeSimCV(data, cvd, y_pred, z_min, z_max, ref, fsr.getN_CV(), fsr.getN_MV());
     SerializeSimMV(data, mvd, u_mat, z_min, z_max, fsr.getN_MV());
     return to_string(data);
 }
@@ -289,6 +304,10 @@ void SerializeOpenLoop(const string& write_path, const string& scenario, const C
     SerializeSimMV(data, mvd, u_mat, fsr.getN_MV());
     WriteJson(data, write_path);
 }
+
+////////////////////////////////
+//** SERIALIZE SCENARIO FILE *//
+////////////////////////////////
 
 void SerializeScenario(const string& write_path, const string& scenario, const string& system, const string& sys_path, std::map<string, int> mpc_m,
                      const VectorXd& Q, const VectorXd& R, const VectorXd& Ro, bool bias_update, const VectorXd& l_du, 

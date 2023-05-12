@@ -53,7 +53,7 @@ string simulate(string sce_file, string sys_file, string sce, string ref_str, in
     }
     
     return SerializeSimulation(sce, cvd, mvd, 
-              y_pred, u_mat, z_min, z_max, fsr, T);
+              y_pred, u_mat, z_min, z_max, ref, fsr, T);
 }
 
 // webassembly.mjs: Functions added into EMCRIPTEN_BINDINGS are compiled to JS using Webassembly.

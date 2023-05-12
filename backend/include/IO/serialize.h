@@ -49,11 +49,13 @@ void WriteJson(const json& data, const string& filepath);
  * @param u_mat MPC actuations
  * @param z_min lower constraints
  * @param z_max upper constraints
+ * @param ref
  * @param fsr The finite step response model
  * @param T MPC horizon
  */
 void SerializeSimulationNew(const string& write_path, const string& scenario, const CVData& cvd, const MVData& mvd, 
-                    const MatrixXd& y_pred, const MatrixXd& u_mat, const VectorXd& z_min, const VectorXd& z_max, const FSRModel& fsr, int T);    
+                    const MatrixXd& y_pred, const MatrixXd& u_mat, const VectorXd& z_min, const VectorXd& z_max, 
+                    const MatrixXd& ref, const FSRModel& fsr, int T);    
 
 /**
  * @brief Serialize a simulation by appending data on previous simulations
@@ -62,9 +64,11 @@ void SerializeSimulationNew(const string& write_path, const string& scenario, co
  * @param write_path file path to write json file
  * @param y_pred matrix of CV predictions
  * @param u_mat MPC actuations
+ * @param ref
  * @param T MPC horizon
  */
-void SerializeSimulation(const string& write_path, const MatrixXd& y_pred, const MatrixXd& u_mat, int T);
+void SerializeSimulation(const string& write_path, const MatrixXd& y_pred, const MatrixXd& u_mat,
+                        const MatrixXd& ref, int T);
 
 /**
  * @brief Serialize Simulation returning a JSON string, used in Web application
@@ -76,12 +80,14 @@ void SerializeSimulation(const string& write_path, const MatrixXd& y_pred, const
  * @param u_mat MPC actuations
  * @param z_min lower constraints
  * @param z_max upper constraints
+ * @param ref
  * @param fsr The finite step response model
  * @param T MPC horizon
  * @return string JSON file
  */
 string SerializeSimulation(const string& scenario, const CVData& cvd, const MVData& mvd, 
-                    const MatrixXd& y_pred, const MatrixXd& u_mat, const VectorXd& z_min, const VectorXd& z_max, const FSRModel& fsr, int T);
+                    const MatrixXd& y_pred, const MatrixXd& u_mat, const VectorXd& z_min, const VectorXd& z_max,
+                    const MatrixXd& ref, const FSRModel& fsr, int T);
 
 /**
  * @brief Serializing an open loop simulation into simulation JSON data file
