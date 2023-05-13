@@ -11,7 +11,7 @@ export default function Header() {
         <div className="Header">
             <Box sx={{width: "inherit", pt: 1, pb: 1, display: "flex", flexDirection: "row"}}>
                 <Box sx={{pl: "40%", width: "20%"}} >
-                    <Typography variant="h4" color="#ff1344" sx={{pt: "3%", fontWeight: 'bold'}}>
+                    <Typography variant="h4" color="#ec4335" sx={{pt: "3%", fontWeight: 'bold'}}>
                         Light-weight MPC
                     </Typography>
                 </Box>
