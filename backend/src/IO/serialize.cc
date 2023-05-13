@@ -32,6 +32,20 @@ static void FillVector(json& vector, const MatrixXd& mat, int row) {
     }
 }
 
+static json SliceVector(json& vector, int start, int end) {
+    json vec = json::array();
+
+    if (start > end) {
+        std::invalid_argument("Start index is higher than end index");
+    } if (end > vector.size()) {
+        std::out_of_range("End index is out of range");
+    }
+    for (int i = start; i < end; i++) {
+        vec.push_back(vector[i]);
+    }
+    return vec;
+}
+
 /**
  * @brief Formats the plain data in simulation file
  * 
@@ -260,22 +274,28 @@ void SerializeSimulationNew(const string& write_path, const string& scenario, co
 void SerializeSimulation(const string& write_path, const MatrixXd& y_pred, const MatrixXd& u_mat, 
                         const MatrixXd& ref, int T) {
     json sim_data = ReadJson(write_path); // Assume this file already exists.
-    sim_data[kT] = int(sim_data.at(kT)) + T; // Update MPC horizon
+    int old_P = int(sim_data.at(kP));
+    int old_T = int(sim_data.at(kT));
 
+    sim_data[kT] = old_T + T; // Update MPC horizon
+    
     json cv_data = sim_data.at(kCV), mv_data = sim_data.at(kMV);
     int i = 0;
     for (auto& cv : cv_data) {
-        FillVector(cv[kY_pred], y_pred, i); // Update Y_pred
-        json old_ref = cv[kRef]; // Update reference
-        json new_ref = json::array();
-        FillVector(new_ref, ref, i);
-        old_ref.insert(old_ref.end(), new_ref.begin(), new_ref.end()); // Append new ref
+        json old_predictions = SliceVector(cv[kY_pred], 0, old_T); // Slice away Predictions
+        FillVector(old_predictions, y_pred, i); // Update Y_pred
+        cv[kY_pred] = old_predictions;
+
+        json old_ref = SliceVector(cv[kRef], 0, old_T); // Update reference
+        FillVector(old_ref, ref, i);
         cv[kRef] = old_ref; 
         i++;
     }
     i = 0;
     for (auto& mv : mv_data) {
-        FillVector(mv[kU], u_mat, i); // Update U
+        json old_actuations = SliceVector(mv[kU], 0, old_T);
+        FillVector(old_actuations, u_mat, i); // Update U
+        mv[kU] = old_actuations; 
         i++;
     }
 
