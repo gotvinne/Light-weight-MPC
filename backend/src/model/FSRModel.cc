@@ -34,7 +34,7 @@ FSRModel::FSRModel(VectorXd** SR, std::map<std::string, int> m_param, const std:
     n_MV_ = m_param[kN_MV];  
     N_ = m_param[kN];
 
-    u_K_ = VectorXd::Map(init_u.data(), init_u.size());
+    u_K_ = VectorXd::Map(init_u.data(), init_u.size()); 
     u_ = VectorXd::Map(init_u.data(), init_u.size());
     y_ = VectorXd::Map(init_y.data(), init_y.size());
 
@@ -196,9 +196,9 @@ VectorXd FSRModel::setInitY(std::vector<double> init_y, int predictions) {
 
 void FSRModel::setDuTildeMat(const MatrixXd& mat) { 
     // Update u_
-    for (int i = 0; i < W_; i++) {
-        VectorXd vec = du_tilde_mat_.col(N_-W_-2+i);
-        u_ += vec;
+    for (int i = 0; i < mat.cols(); i++) {
+        VectorXd vec = mat.col(i);
+        u_ -= vec;
     }
     du_tilde_mat_ = mat.block(0, 0, n_CV_, N_-1-W_); 
 }
