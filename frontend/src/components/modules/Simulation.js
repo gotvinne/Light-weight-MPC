@@ -49,7 +49,7 @@ export default function Simulation({simData}) {
 
             : <Box sx={{width: "inherit", pt: 3}}>
                 <Box sx={{pl: "2%"}}>
-                    <Typography variant="h5"> No simulation avaliable! </Typography>
+                    <Typography variant="h5"> Scenario: No simulation avaliable! </Typography>
                 </Box>
             </Box>
         }
