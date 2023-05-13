@@ -35,10 +35,10 @@ export default function Reference({cv, mv, value, handler}) {
                     {variableRender(cv[0].length, "CV")}
                 </Box>
             </Box>
-            <Box sx={{pt: 2, height: "30%", display: "flex", flexDirection: "row" }} >
+            <Box sx={{pt: 2, height: "35%", display: "flex", flexDirection: "row" }} >
                 <Box sx={{width: "15%", pt: 2, display: "flex", flexDirection: "row"}}> 
                 </Box>
-                <Box sx={{width: "20%"}}> 
+                <Box sx={{width: "25%"}}> 
                     {cv[0].map((course, index) => {
                         return (
                         <Box key={index} sx={{width: "80%", height: "27%", pt: 2}}> 
@@ -47,7 +47,7 @@ export default function Reference({cv, mv, value, handler}) {
                         )
                     })}
                 </Box>
-                <Box sx={{width: "30%"}}> 
+                <Box sx={{width: "35%"}}> 
                     {cv[0].map((course, index) => {
                         return (
                         <Box key={index}> 
@@ -56,7 +56,7 @@ export default function Reference({cv, mv, value, handler}) {
                         )
                     })}
                 </Box>
-                <Box sx={{width: "15%"}}> 
+                <Box sx={{width: "20%"}}> 
                     {cv[1].map((unit, index) => {
                         return (
                         <Box key={index} sx={{width: "80%", height: "27%", pt: 2}}> 
@@ -74,7 +74,7 @@ export default function Reference({cv, mv, value, handler}) {
             <Box sx={{pt: 2, height: "30%", display: "flex", flexDirection: "row" }} >
                 <Box sx={{width: "15%", pt: 2, display: "flex", flexDirection: "row"}}> 
                 </Box>
-                <Box sx={{width: "35%"}}> 
+                <Box sx={{width: "50%"}}> 
                     {mv[0].map((course, index) => {
                         return (
                         <Box key={index} sx={{width: "80%", height: "27%", pt: 2}}> 

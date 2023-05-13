@@ -97,9 +97,9 @@ export default function Scenario({simHook}) {
         <div className="Scenario">
         <Box sx={{ width: "inherit", pt: 3, flexDirection: "row", display: "flex"}}>
            
-            <Box sx={{width: "50%", pl: "2%"}}> 
+            <Box sx={{width: "45%", pl: "2%"}}> 
                 <Box sx={{pt: 2, display: "flex", flexDirection: "row"}}>
-                    <FormControl style={{minWidth: "20%"}}>
+                    <FormControl style={{minWidth: "27%"}}>
                         <InputLabel id={KEYS[0]}> System name </InputLabel>
                         <Select id={KEYS[0]} value={sce[KEYS[0]]} label="System name" onChange={handleSelect} >   
                             {systemNames.map((course, index) => {
@@ -110,17 +110,14 @@ export default function Scenario({simHook}) {
                 
                     <TextField id={KEYS[1]} variant="outlined" helperText={"Scenario name, string"} value={sce[KEYS[1]]} onChange={handleTextField} required/>
                     <Box sx={{pl: 2}}/>
-                    <TextField error={error[KEYS[2]]} sx={{width: "20%"}} id={KEYS[2]} variant="outlined" helperText={"MPC horizon T, int"} value={sce[KEYS[2]]} onChange={handleTextField} required/>
-                    <Box sx={{pl: "3%"}}/>
-                    <Button variant="contained" size="large" color={"success"} disabled={buttonDisable} onClick={handleSimulatonClick}> RUN SIMULATION </Button>
+                    <TextField error={error[KEYS[2]]} sx={{width: "30%"}} id={KEYS[2]} variant="outlined" helperText={"MPC horizon T, int"} value={sce[KEYS[2]]} onChange={handleTextField} required/>
                 </Box>
 
                 <Tuning keys={KEYS} ncv={cv[0].length} nmv={mv[0].length} error={error} scenario={sce} handler={handleTextField} />
                 <Constraints keys={KEYS} nmv={mv[0].length} ncv={cv[0].length} error={error} scenario={sce} handler={handleTextField} />
-            
             </Box>
             
-            <Box sx={{pt: 2, width: "45%"}}>
+            <Box sx={{pl: "1%", pt: "1%", width: "36%"}}>
                 <Reference cv={cv} mv={mv} value={ref} handler={handleReference}/>
 
                 <Box sx={{pt: 2, height: "5%", display: "flex", flexDirection: "row"}} >
@@ -128,6 +125,10 @@ export default function Scenario({simHook}) {
                         {simStatus.error}
                     </Typography>
                 </Box>
+            </Box>
+
+            <Box textAlign="left" sx={{pl: "1%", pt: "1%", width: "25%"}}>
+                <Button variant="contained" size="large" sx={{minWidth: "50%", minHeight: "12%"}} color={"success"} disabled={buttonDisable} onClick={handleSimulatonClick}> RUN SIMULATION </Button>
             </Box>
             
         </Box>

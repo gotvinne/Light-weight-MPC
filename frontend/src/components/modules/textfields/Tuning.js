@@ -8,7 +8,7 @@ import { Box, Typography, TextField } from '@mui/material';
 export default function Tuning({keys, ncv, nmv, error, scenario, handler}) {
     return (
         <div> 
-            <Box align="left" sx={{pl: "16%", pt: 2}}>
+            <Box align="left" sx={{pl: "23%", pt: 2}}>
                 <Typography variant="h5" sx={{fontWeight: 'bold'}}> Model Predictive Controller: </Typography>
             </Box>
         

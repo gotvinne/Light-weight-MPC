@@ -11,7 +11,7 @@ const FORMULAS = [`\\leq \\Delta U \\leq`, `\\leq U \\leq`, `\\leq Y \\leq`];
 export default function Constraints({keys, nmv, ncv, scenario, error, handler}) {
     return (
         <div>
-            <Box align="left" sx={{pl: "27%", pt: 2}}>
+            <Box align="left" sx={{pl: "32%", pt: 2}}>
                 <Typography variant="h5" sx={{fontWeight: 'bold'}}> Constraints: </Typography>
             </Box>
             <Box sx={{pl: "3%", display: "flex", flexDirection: "row"}}>

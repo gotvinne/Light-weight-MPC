@@ -41,7 +41,7 @@ export default function Algorithm() {
                 <Typography variant="body1" gutterBottom>
                 The OSQP, operator splitting QP solver solves the problems of the following form:
                 </Typography>
-                <BlockMath math={`min \\frac{1}{2} z^T \\boldsymbol{H} z+q^T z \\quad s.t. \\quad \\ l \\leq \\boldsymbol{A} z \\leq u `} />
+                <BlockMath math={`min \\frac{1}{2} z^T \\boldsymbol{G} z+q^T z \\quad s.t. \\quad \\ l \\leq \\boldsymbol{A} z \\leq u `} />
                 <Typography> 
                     Given, <InlineMath math={"H"} /> is a positive definite matrix, yielding a convex quadratic program. The OSQP solver uses an custom ADMM-based first order method and is one of the fastest QP solvers avaliable. 
                 </Typography>
@@ -50,7 +50,7 @@ export default function Algorithm() {
                 This MPC controller is defined as a standard quadratic program (QP) where the cost aims to minimize the error between the output <InlineMath math={"Y"}/> and the reference <InlineMath math={"r_y"} />:
                 </Typography>
 
-                <BlockMath math={`\\min \\sum_{j=W}^{P}\\left|(y(k+j \\mid k)-r_y(k+j))\\right|_{\\bar{Q}}^2+ \\sum_{j=0}^{(M-1)} \\left|\\Delta u(k+j)\\right|_{\\bar{R}}^2+\\bar{\\rho} \\bar{\\epsilon}+\\underline{\\rho} \\underline{\\epsilon}`} />
+                <BlockMath math={`\\min \\sum_{j=W+1}^{P}\\left|(y(k+j \\mid k)-r_y(k+j))\\right|_{\\bar{Q}}^2+ \\sum_{j=0}^{(M-1)} \\left|\\Delta u(k+j)\\right|_{\\bar{R}}^2+\\bar{\\rho} \\bar{\\epsilon}+\\underline{\\rho} \\underline{\\epsilon}`} />
                 <Typography variant="body1" gutterBottom>
                 The cost function is constrained by the model definition and relating variables. The general FSRM-MPC algorithm can be summaried as:
                 </Typography>
@@ -63,10 +63,16 @@ export default function Algorithm() {
                                      = \\boldsymbol{\\Theta} \\Delta U(k)+ \\hat{\\boldsymbol{Y}}^{\\boldsymbol{o}}(k+P) + B(k), \\
                                     = \\boldsymbol{\\Theta} \\Delta U(k)+ \\boldsymbol{\\Lambda}(k),`} />
                 <BlockMath math={`U(k) = \\boldsymbol{K}^{-1}(\\Gamma \\tilde{U}(k-1) + \\Delta U(k)), \\quad B(k) = Y(k) - \\hat{Y}(k), \\quad \\boldsymbol{K} \\succ 0`} />
-                <BlockMath math={`Y(k+j) = Y(k+j) + B(k), \\quad j \\in\\left\\{W, \\ldots, P\\right\\}`} />
+                <BlockMath math={`Y(k+j) = Y(k+j) + B(k), \\quad j \\in\\left\\{W+1, \\ldots, P\\right\\}`} />
                 <BlockMath math={`\\Delta \\underline{U} \\leq \\Delta U(k+j) \\leq \\Delta \\overline{U}, \\quad j \\in\\left\\{0, \\ldots, M-1\\right\\}`} />
                 <BlockMath math={`\\underline{U} \\leq U(k+j) \\leq \\bar{U}, \\quad j \\in\\left\\{0, \\ldots, M-1\\right\\}`} />
-                <BlockMath math={`\\underline{Y}- \\epsilon_l \\leq Y(k+j) \\leq \\bar{Y}+ \\epsilon_h, \\quad \\epsilon_h \\geq 0, \\epsilon_l \\geq 0, \\quad j \\in\\left\\{W, \\ldots, P\\right\\}`} />
+                <BlockMath math={`\\underline{Y}- \\epsilon_l \\leq Y(k+j) \\leq \\bar{Y}+ \\epsilon_h, \\quad \\epsilon_h \\geq 0, \\epsilon_l \\geq 0, \\quad j \\in\\left\\{W+1, \\ldots, P\\right\\}`} />
+
+                <Typography variant="subtitle1" sx={{fontWeight: "bold"}}> Tuning approaches: </Typography>
+                <Typography variant="body1" gutterBottom>
+                For this model based controller description, a total of 7 variables are determing the performance. The horizons, <InlineMath math={"P > 0, M > 0, W \\geq 0"} />, are all present in the cost function. The prediction horizon <InlineMath math={"P"}/> determines the closed loop stability.
+                
+                </Typography>
 
                 <Typography variant="subtitle1" sx={{fontWeight: "bold"}}> Condensed Form: </Typography>
                 <Typography variant="body1" gutterBottom>
