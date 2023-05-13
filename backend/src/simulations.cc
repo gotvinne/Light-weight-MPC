@@ -134,7 +134,7 @@ void MPCSimFSRM(const string& sys, const string& ref_vec, bool new_sim, int T) {
         if (new_sim) {
             ParseNew(sce_path, m_map, cvd, mvd, conf, z_min, z_max);
         } else {
-            // In order to change offset in u and y, this cvd and mvd needs to ge update here.
+            // In order to change offset in u and y, this cvd, mvd and du_tilde need to be update here.
             Parse(sce_path, sim_path, m_map, cvd, mvd, conf, z_min, z_max, du_tilde); 
         }
     }
@@ -145,7 +145,7 @@ void MPCSimFSRM(const string& sys, const string& ref_vec, bool new_sim, int T) {
     // FSRM:
     MPCConfig sim_conf = conf;
     FSRModel* fsr_cost;
-    bool reduced_cost = (conf.W != 0);
+    bool reduced_cost = (conf.W != 0); // Simulate smaller QP
     if (reduced_cost) {
         fsr_cost = new FSRModel(cvd.getSR(), m_map, conf, mvd.Inits, cvd.getInits());
         sim_conf.W = 0;
@@ -154,9 +154,8 @@ void MPCSimFSRM(const string& sys, const string& ref_vec, bool new_sim, int T) {
     if (!new_sim) {
         fsr_sim.setDuTildeMat(du_tilde); 
         if (reduced_cost) {fsr_cost->setDuTildeMat(du_tilde); }
-        fsr_sim.PrintActuation();
-        fsr_cost->PrintActuation();
     }
+    fsr_sim.PrintTheta();
     
     // MPC variables:
     // MatrixXd u_mat, y_pred, ref = setRef(ref_vec, T, conf.P, m_map[kN_CV]); 

@@ -39,7 +39,7 @@ private:
 
     // Model matrices: 
     MatrixXd theta_; /** Matrix of all SISO predictions (n_CV*(P-W), n_MV*M) */
-    MatrixXd phi_; /** Past step coefficients (n_CV*(P-W), n_MV*(N-1)) */
+    MatrixXd phi_; /** Past step coefficients (n_CV*(P-W), sum N_CV {(N-W-1)}) */
     MatrixXd psi_; /** Last step coefficient matrix, (n_CV*(P-W), n_MV)*/
 
     /**

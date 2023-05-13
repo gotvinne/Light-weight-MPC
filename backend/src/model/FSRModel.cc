@@ -157,7 +157,7 @@ MatrixXd FSRModel::getPsi(int W) {
     return tmp_psi;
 }
 
-VectorXd FSRModel::getDuTilde() const { // Flatteining du_tilde_mat, dependant on W
+VectorXd FSRModel::getDuTilde() const { // Flattning du_tilde_mat, dependant on W
     VectorXd du_tilde = VectorXd::Zero(n_MV_*(N_-W_-1));
     MatrixXd du_tilde_sliced = du_tilde_mat_.block(0, 0, n_CV_, N_-W_-1);
     for (int i = 0; i < n_MV_; i++) {
