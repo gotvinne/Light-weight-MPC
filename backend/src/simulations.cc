@@ -133,7 +133,6 @@ void MPCSimFSRM(const string& sys, const string& ref_vec, bool new_sim, int T) {
     try {
         if (new_sim) {
             ParseNew(sce_path, m_map, cvd, mvd, conf, z_min, z_max);
-            du_tilde = MatrixXd::Zero(m_map[kN_MV], m_map[kN]-1);
         } else {
             Parse(sce_path, sim_path, m_map, cvd, mvd, conf, z_min, z_max, du_tilde); // Check du thilde here
         }
@@ -143,18 +142,34 @@ void MPCSimFSRM(const string& sys, const string& ref_vec, bool new_sim, int T) {
     }
     
     // FSRM:
-    FSRModel fsr(cvd.getSR(), m_map, conf.P, conf.M, conf.W, mvd.Inits, cvd.getInits());
-    fsr.setDuTildeMat(du_tilde); 
+    MPCConfig sim_conf = conf;
+    FSRModel* fsr_cost;
+    bool reduced_cost = (conf.W != 0);
+    if (reduced_cost) {
+        fsr_cost = new FSRModel(cvd.getSR(), m_map, conf, mvd.Inits, cvd.getInits());
+        sim_conf.W = 0;
+    } 
+    FSRModel fsr_sim(cvd.getSR(), m_map, sim_conf, mvd.Inits, cvd.getInits());
+    if (!new_sim) {
+        fsr_sim.setDuTildeMat(du_tilde); 
+        if (reduced_cost) {fsr_cost->setDuTildeMat(du_tilde); }
+    }
+    
     // MPC variables:
     MatrixXd u_mat, y_pred, ref = setRef(ref_vec, T, conf.P, m_map[kN_CV]); 
     /** Optimized actuation, (n_MV, T) */ /** Predicted output (n_CV, T)*/ /** Reference */
 
     try { // Solve
-        SRSolver(T, u_mat, y_pred, fsr, conf, z_min, z_max, ref);
-
+        if (reduced_cost) {
+            SRSolver(T, u_mat, y_pred, fsr_sim, *fsr_cost, conf, z_min, z_max, ref);
+            delete fsr_cost;
+        } else {
+            SRSolver(T, u_mat, y_pred, fsr_sim, conf, z_min, z_max, ref);
+        }
+        
         if (new_sim) { // Serialize
             SerializeSimulationNew(sim_path, sys, cvd, mvd, 
-               y_pred, u_mat, z_min, z_max, ref, fsr, T);
+               y_pred, u_mat, z_min, z_max, ref, fsr_sim, T);
         } else {
             SerializeSimulation(sim_path, y_pred, u_mat, ref, T);
         }

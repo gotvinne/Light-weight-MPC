@@ -63,7 +63,7 @@ static void UpdateBounds(VectorXd& bound, FSRModel& fsr, const MatrixXd& K_inv,
     //       0 (n_CV)]
     VectorXd c = VectorXd::Zero(m);
     int W = fsr.getW();
-    VectorXd lambda = fsr.getLambda(W);
+    VectorXd lambda = fsr.getLambda();
     int size_lambda = lambda.rows();
 
     c.block(a, 0, a, 1) = K_inv * Gamma * fsr.getUK();
@@ -97,7 +97,7 @@ SparseXd setHessianMatrix(const SparseXd& Q_bar, const SparseXd& R_bar, const Ma
     return g.sparseView();
 }
 
-void setGradientVector(VectorXd& q, FSRModel& fsr, const SparseXd& Q_lin,
+void setGradientVector(VectorXd& q, FSRModel& fsr, const SparseXd& Q_bar,
                         const MatrixXd& ref, const MPCConfig& conf, int n, int k) {
     int W = fsr.getW();
     VectorXd tau = setTau(ref, fsr.getP(), W, fsr.getN_CV(), k);
@@ -105,7 +105,7 @@ void setGradientVector(VectorXd& q, FSRModel& fsr, const SparseXd& Q_lin,
     //      rho_{h},
     //      rho_{l}]
     q.resize(n);
-    VectorXd temp = 2 * fsr.getTheta(W).transpose() * Q_lin * (fsr.getLambda(W) - tau);
+    VectorXd temp = 2 * fsr.getTheta().transpose() * Q_bar * (fsr.getLambda() - tau);
     q << temp, conf.RoH, conf.RoL;
 }
 

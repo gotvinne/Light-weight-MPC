@@ -7,34 +7,25 @@
 #include "model/FSRModel.h"
 #include "IO/json_specifiers.h"
 
-#include <iostream>
-
-FSRModel::FSRModel(VectorXd** SR, std::map<string, int> m_param, int P, int M, int W,
+FSRModel::FSRModel(VectorXd** SR, std::map<string, int> m_param, const MPCConfig& conf,
                    const std::vector<double>& init_u, const std::vector<double>& init_y) :
-                      P_{P}, M_{M}, W_{W} {
+                      P_{conf.P}, M_{conf.M}, W_{conf.W} {
     n_CV_ = m_param[kN_CV];
     n_MV_ = m_param[kN_MV];  
     N_ = m_param[kN];
 
     u_K_ = VectorXd::Map(init_u.data(), init_u.size());
     u_ = VectorXd::Map(init_u.data(), init_u.size());
-    uw_ = VectorXd::Map(init_u.data(), init_u.size());
-    y_ = setInitY(init_y, P_);
-    y_init_ = setInitY(init_y, P_ - W_);
+    y_ = setInitY(init_y, P_ - W_);
 
     AllocateAndDeepCopy(SR); 
     // Setting matrix member variables
     setSRMatrix();
-    theta_ = getThetaMatrix();
-    phi_ = getPhiMatrix();
-    psi_ = getPsi();
+    theta_ = getThetaMatrix(W_);
+    phi_ = getPhiMatrix(W_);
+    psi_ = getPsi(W_);
 
-    if (W_ != 0) {
-        c_theta_ = getThetaMatrix(W_);
-        c_phi_ = getPhiMatrix(W_);
-        c_psi_ = getPsi(W_);
-    }
-    du_tilde_mat_ = MatrixXd::Zero(n_MV_, N_-1);  
+    du_tilde_mat_ = MatrixXd::Zero(n_MV_, N_-W_-1);  
 }
 
 FSRModel::FSRModel(VectorXd** SR, std::map<std::string, int> m_param, const std::vector<double>& init_u, 
@@ -54,12 +45,7 @@ FSRModel::FSRModel(VectorXd** SR, std::map<std::string, int> m_param, const std:
     phi_ = getPhiMatrix();
     psi_ = getPsi();
 
-    if (W_ != 0) {
-        c_theta_ = getThetaMatrix(W_);
-        c_phi_ = getPhiMatrix(W_);
-        c_psi_ = getPsi(W_);
-    }
-    du_tilde_mat_ = MatrixXd::Zero(n_MV_, N_-1); 
+    du_tilde_mat_ = MatrixXd::Zero(n_MV_, N_-W_-1); 
 }    
 
 FSRModel::~FSRModel() {
@@ -171,7 +157,7 @@ MatrixXd FSRModel::getPsi(int W) {
     return tmp_psi;
 }
 
-VectorXd FSRModel::getDuTildeControl() const { // Flatteining du_tilde_mat, dependant on W
+VectorXd FSRModel::getDuTilde() const { // Flatteining du_tilde_mat, dependant on W
     VectorXd du_tilde = VectorXd::Zero(n_MV_*(N_-W_-1));
     MatrixXd du_tilde_sliced = du_tilde_mat_.block(0, 0, n_CV_, N_-W_-1);
     for (int i = 0; i < n_MV_; i++) {
@@ -180,29 +166,16 @@ VectorXd FSRModel::getDuTildeControl() const { // Flatteining du_tilde_mat, depe
     return du_tilde;
 }
 
-VectorXd FSRModel::getDuTilde() const { // Flattening du_tilde_mat 
-    VectorXd du_tilde = VectorXd::Zero(n_MV_*(N_-1));
-    for (int i = 0; i < n_MV_; i++) {
-        du_tilde.block(i * (N_-1), 0, N_-1, 1) = du_tilde_mat_.row(i).transpose();
-    }
-    return du_tilde;
-}
-
 void FSRModel::UpdateU(const VectorXd& du) { // du = omega_u * z
     // Updating U(k-1)
     u_K_ += du; 
     // Updating U(n)
-    VectorXd du_n = du_tilde_mat_.col(N_-2); // Access last elem
+    VectorXd du_n = du_tilde_mat_.col(N_-2-W_); // Access last - W elem 
     u_ += du_n;
-    if (W_ != 0) {
-        // Updating U(n-W)
-        VectorXd du_w = du_tilde_mat_.col(N_-2-W_);
-        uw_ += du_w;
-    }
     // Update du_tilde by left shift, adding the optimized du
-    MatrixXd old_du = du_tilde_mat_.leftCols(N_-2);
+    MatrixXd old_du = du_tilde_mat_.leftCols(N_-2-W_);
     du_tilde_mat_.block(0, 0, n_MV_, 1) = du;
-    du_tilde_mat_.block(0, 1, n_MV_, N_-2) = old_du;
+    du_tilde_mat_.block(0, 1, n_MV_, N_-2-W_) = old_du;
 }
 
 SparseXd FSRModel::getOmegaY() const {
@@ -213,14 +186,6 @@ SparseXd FSRModel::getOmegaY() const {
     return omega_dense.sparseView();
 }  
 
-VectorXd FSRModel::getLambda(int W) { 
-    if (W == 0) { // Used for prediction
-        return phi_ * getDuTilde() + psi_ * u_ + y_;
-    } else { // Used for control, called once
-        return c_phi_ * getDuTildeControl() + c_psi_ * uw_ + y_init_; 
-    }
-}
-
 VectorXd FSRModel::setInitY(std::vector<double> init_y, int predictions) {
     VectorXd y_init = VectorXd::Zero(n_CV_ * predictions);
     for (int cv = 0; cv < n_CV_; cv++) {
@@ -229,25 +194,29 @@ VectorXd FSRModel::setInitY(std::vector<double> init_y, int predictions) {
     return y_init;
 }
 
+void FSRModel::setDuTildeMat(const MatrixXd& mat) { 
+    // Update u_
+    for (int i = 0; i < W_; i++) {
+        VectorXd vec = du_tilde_mat_.col(N_-W_-2+i);
+        u_ += vec;
+    }
+    du_tilde_mat_ = mat.block(0, 0, n_CV_, N_-1-W_); 
+}
+
 // Print functions: 
 void FSRModel::PrintTheta() const {
     std::cout << "Theta: " << "(" << theta_.rows() << ", " << theta_.cols() << ")" << std::endl; 
     std::cout << theta_ << std::endl; 
     std::cout << std::endl;
-    std::cout << "Control Theta: " << "(" << c_theta_.rows() << ", " << c_theta_.cols() << ")" << std::endl; 
-    std::cout << c_theta_ << std::endl; 
-    std::cout << std::endl;
 }
 
 void FSRModel::PrintPhi() const {
     std::cout << "Phi : " << "(" << phi_.rows() << ", " << phi_.cols() << ")" << std::endl;
-    std::cout << "Control Phi : " << "(" << c_phi_.rows() << ", " << c_phi_.cols() << ")" << std::endl;
-    
-    for (int i = 0; i < c_phi_.rows(); i++) {
+    for (int i = 0; i < phi_.rows(); i++) {
         std::cout << "Row = pad: " << i << std::endl;
-        std::cout << c_phi_(i, Eigen::seq(0, N_-W_-1-1)) << std::endl;
+        std::cout << phi_(i, Eigen::seq(0, N_-W_-1-1)) << std::endl;
         std::cout << std::endl;
-        std::cout << c_phi_(i, Eigen::seq(N_-W_-1, Eigen::indexing::last)) << std::endl;
+        std::cout << phi_(i, Eigen::seq(N_-W_-1, Eigen::indexing::last)) << std::endl;
         std::cout << std::endl;
     }
 }
@@ -255,9 +224,6 @@ void FSRModel::PrintPhi() const {
 void FSRModel::PrintPsi() const {
     std::cout << "Psi : " << "(" << psi_.rows() << ", " << psi_.cols() << ")" << std::endl;
     std::cout << psi_ << std::endl; 
-    std::cout << std::endl;
-    std::cout << "Control Psi : " << "(" << c_psi_.rows() << ", " << c_psi_.cols() << ")" << std::endl;
-    std::cout << c_psi_ << std::endl; 
     std::cout << std::endl;
 }
 
@@ -268,8 +234,7 @@ void FSRModel::PrintActuation() const {
     std::cout << "U_tilde:" << std::endl;
     std::cout << du_tilde_mat_ << std::endl;
     std::cout << std::endl;
-    std::cout << "U(k-N):" << std::endl;
+    std::cout << "U(k+W-N):" << std::endl;
     std::cout << u_ << std::endl;
-     std::cout << "U(k-W-N):" << std::endl;
-    std::cout << uw_ << std::endl;
+
 }

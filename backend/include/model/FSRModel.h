@@ -8,11 +8,12 @@
 #ifndef FSR_MODEL_H
 #define FSR_MODEL_H
 
+#include "IO/data_objects.h"
+
 #include <vector>
 #include <map>
 #include <string>
 using string = std::string;
-
 #include <iostream>
 
 #include <Eigen/Eigen>
@@ -29,20 +30,17 @@ private:
     int N_; /** Number of step response coefficients */
     int P_, M_, W_; /** Horizons */
 
-    VectorXd u_, uw_, u_K_; /** Manipulated variables, U(k-N), n_MV */ /** Denotes U(k+W-1) /** Denotes U(k-1), n_MV */
-    VectorXd y_, y_init_; /** Controlled variables n_CV * P, n_CV * (P-W) */ 
-    MatrixXd du_tilde_mat_; /** Post change in actuation matrix (n_MV, (N-1)) */
+    VectorXd u_, u_K_; /** Manipulated variables, U(k-N+W), n_MV */ /** Denotes U(k-1), n_MV */
+    VectorXd y_; /** Controlled variables n_CV * (P-W) */ 
+    MatrixXd du_tilde_mat_; /** Post change in actuation matrix (n_MV, (N-1-W)) */
 
     VectorXd** pp_SR_vec_; /** Matrix of Eigen::VectorXd holding every n_CV * n_MV step response */
     MatrixXd** pp_SR_mat_; /** Tensor of Eigen::MatrixXd representing the SISO prediction (P,M) times (n_CV, n_MV) */
 
     // Model matrices: 
-    MatrixXd theta_; /** Matrix of all SISO predictions (n_CV*P, n_MV*M) */
-    MatrixXd phi_; /** Past step coefficients (n_CV*P, n_MV*(N-1)) */
-    MatrixXd psi_; /** Last step coefficient matrix, (n_CV*P, n_MV)*/
-
-    // Control matrices: W-dependant
-    MatrixXd c_phi_, c_psi_, c_theta_; // (n_CV*(P-W), n_MV*(N-1)), (n_CV*(P-W), n_MV), (n_CV*(P-W), n_MV*M)
+    MatrixXd theta_; /** Matrix of all SISO predictions (n_CV*(P-W), n_MV*M) */
+    MatrixXd phi_; /** Past step coefficients (n_CV*(P-W), n_MV*(N-1)) */
+    MatrixXd psi_; /** Last step coefficient matrix, (n_CV*(P-W), n_MV)*/
 
     /**
      * @brief Helper function allocating and performing deep copy of Eigen::VectorXd** 
@@ -111,13 +109,6 @@ private:
     VectorXd getDuTilde() const;
 
     /**
-     * @brief Get du tilde, past actuations, taking W into account
-     * 
-     * @return VectorXd 
-     */
-    VectorXd getDuTildeControl() const;
-
-    /**
      * @brief Get the Omega Y object
      * 
      * @return SparseXd 
@@ -145,7 +136,7 @@ public:
      * @param init_u 
      * @param init_y 
      */
-    FSRModel(VectorXd** SR, std::map<string, int> m_param, int P, int M, int W,
+    FSRModel(VectorXd** SR, std::map<string, int> m_param, const MPCConfig& conf,
             const std::vector<double>& init_u, const std::vector<double>& init_y);
 
     /**
@@ -163,14 +154,7 @@ public:
      */
     ~FSRModel();
 
-    void setDuTildeMat(const MatrixXd& mat) { 
-        du_tilde_mat_ = mat; 
-        // Update uw_
-        for (int i = 0; i < W_; i++) {
-            VectorXd vec = du_tilde_mat_.col(N_-W_-2+i);
-            uw_ += vec;
-        }
-    }
+    void setDuTildeMat(const MatrixXd& mat);
 
     /** Get functions */
     int getP() const { return P_; }
@@ -181,7 +165,6 @@ public:
 
     MatrixXd getDuTildeMat() const { return du_tilde_mat_; }
     VectorXd getUK() const { return u_K_; } // Returns most recent U
-    VectorXd getU() const { return u_; }
 
     /** MPC functionality*/
     /**
@@ -201,9 +184,9 @@ public:
      */
     MatrixXd getY(const VectorXd& du, bool all_pred = false) {
         if (all_pred) { // Get all P predictions
-            return (theta_ * du + getLambda(0)).reshaped<Eigen::RowMajor>(n_CV_, P_);
+            return (theta_ * du + getLambda()).reshaped<Eigen::RowMajor>(n_CV_, P_);
         } else { // Get next prediction
-            return getOmegaY() * (theta_ * du + getLambda(0));
+            return getOmegaY() * (theta_ * du + getLambda());
         }
     } 
 
@@ -213,13 +196,7 @@ public:
      * @param W 
      * @return MatrixXd 
      */
-    MatrixXd getTheta(int W) const {
-        if (W == 0) {
-            return theta_;
-        } else {
-            return c_theta_;
-        }
-    }
+    MatrixXd getTheta() const { return theta_; }
 
     /**
      * @brief Get the Lambda object, Lambda = Phi * Delta U_tilde + Psi * U
@@ -227,7 +204,7 @@ public:
      * @param W
      * @return VectorXd 
      */
-    VectorXd getLambda(int W); 
+    VectorXd getLambda() const { return phi_ * getDuTilde() + psi_ * u_ + y_; }; 
 
     /** Print functions */
     void PrintTheta() const;

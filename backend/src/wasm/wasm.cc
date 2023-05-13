@@ -35,7 +35,7 @@ string simulate(string sce_file, string sys_file, string sce, string ref_str, in
     MatrixXd du_tilde = MatrixXd::Zero(m_map[kN_MV], m_map[kN]-conf.W-1);
 
     // Select dynamical model: 
-    FSRModel fsr(cvd.getSR(), m_map, conf.P, conf.M, conf.W, mvd.Inits, cvd.getInits());
+    FSRModel fsr(cvd.getSR(), m_map, conf, mvd.Inits, cvd.getInits());
     fsr.setDuTildeMat(du_tilde);
 
     // MPC variables:

@@ -33,4 +33,20 @@ using MatrixXd = Eigen::MatrixXd;
 void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPCConfig& conf, const VectorXd& z_min, 
              const VectorXd& z_max, const MatrixXd& ref);
 
+/**
+ * @brief 
+ * 
+ * @param T 
+ * @param u_mat 
+ * @param y_pred 
+ * @param fsr_sim 
+ * @param fsr_cost 
+ * @param conf 
+ * @param z_min 
+ * @param z_max 
+ * @param ref 
+ */
+void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr_sim, FSRModel& fsr_cost, const MPCConfig& conf, const VectorXd& z_min, 
+             const VectorXd& z_max, const MatrixXd& ref);
+
 #endif // SOLVERS_H
