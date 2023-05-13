@@ -134,8 +134,8 @@ void MPCSimFSRM(const string& sys, const string& ref_vec, bool new_sim, int T) {
         if (new_sim) {
             ParseNew(sce_path, m_map, cvd, mvd, conf, z_min, z_max);
         } else {
+            // In order to change offset in u and y, this cvd and mvd needs to ge update here.
             Parse(sce_path, sim_path, m_map, cvd, mvd, conf, z_min, z_max, du_tilde); 
-        }
     }
     catch(std::exception& e) {
         std::cout << e.what() << std::endl;

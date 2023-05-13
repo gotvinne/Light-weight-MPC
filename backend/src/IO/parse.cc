@@ -119,10 +119,9 @@ static void ParseScenarioData(const json& sce_data, string& system, MPCConfig& m
  * 
  * @param sim_data [json] object holding json data
  * @param du_tilde [Eigen::MatrixXd] matrix holding previous actuations
- * @param cvd CVData
  * @param mvd MVData
  */
-static void ParseSimulationData(const json& sim_data, MatrixXd& du_tilde, CVData& cvd, MVData& mvd) {
+static void ParseSimulationData(const json& sim_data, MatrixXd& du_tilde, MVData& mvd) {
     try {               
         // Read du_tilde and yT, dT
         json du_tilde_data = sim_data.at(kDuTilde);
@@ -136,16 +135,8 @@ static void ParseSimulationData(const json& sim_data, MatrixXd& du_tilde, CVData
             }
         }
 
-        json cv_data = sim_data.at(kCV);
+        json mv_data = sim_data.at(kMV); // Only need information about du and u to simulate further
         int i = 0;
-        for (auto& cv : cv_data) {
-            json y_arr = cv.at(kY_pred); // Should be changed to "y"
-            cvd.setInits(y_arr.at(y_arr.size()-1), i);
-            i++;
-        }
-
-        json mv_data = sim_data.at(kMV);
-        i = 0;
         for (auto& mv : mv_data) {
             json u_arr = mv.at(kU);
             mvd.setInits(u_arr.at(u_arr.size()-1), i);
@@ -202,7 +193,7 @@ void Parse(const string& sce_filepath, const string& sim_filepath, std::map<stri
 
     // Parse simulation file:
     json sim_data = ReadJson(sim_filepath);
-    ParseSimulationData(sim_data, du_tilde, cvd, mvd);
+    ParseSimulationData(sim_data, du_tilde, mvd);
 }
 
 void Parse(const string& sce_file, const string& sys_file, std::map<string, int>& m_map,

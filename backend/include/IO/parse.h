@@ -94,7 +94,7 @@ void ParseOpenLoop(const string& system, std::map<string, int>& m_map, CVData& c
  * @param P Prediction horizon
  * @return Allocated Eigen::MatrixXd holding references
  */
-MatrixXd ParseReferenceStrByAllocation(string ref_str, int T, int P);
+MatrixXd ParseReferenceStr(string ref_str, int T, int P);
 
 /**
  * @brief Parse string to std::vector<double>. Throws errors if invalid arg.
