@@ -162,7 +162,8 @@ export function readSimParams(sim) {
     scenario: sim["scenario"],
     T: sim["T"],
     nCV: sim["n_CV"],
-    nMV: sim["n_MV"]
+    nMV: sim["n_MV"],
+    P: sim["P"],
   }
   return simParam; 
 }
@@ -176,7 +177,8 @@ export function readSimCV(sim) {
         output: data["output"],
         unit: data["unit"],
         c: data["c"],
-        y_pred: data["y_pred"]
+        y_pred: data["y_pred"],
+        ref: data["ref"]
       }
       CVs.push(elem);
     }

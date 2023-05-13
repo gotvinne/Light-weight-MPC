@@ -4,7 +4,7 @@ import { PlotPrediction, PlotActuation } from "../../utils/plot.js";
 
 const PLOTS_PER_ROW = 2;
 
-export function OutputCharts({CVs, T, P, refData}) {
+export function OutputCharts({CVs, T, P}) {
 
     const [cols, rows, odd_plot] = useMemo(() => {
         let num_rows = Math.floor((CVs.length + 1) / PLOTS_PER_ROW);
@@ -12,7 +12,7 @@ export function OutputCharts({CVs, T, P, refData}) {
 
         return [[...Array(PLOTS_PER_ROW).keys()], [...Array(num_rows).keys()], odd_plot];   
     }, [CVs]);
-
+    // Keys are set randomly to avoid warning
     return (
         <div className="Scenario">
             {rows.map((i) => {
@@ -20,11 +20,11 @@ export function OutputCharts({CVs, T, P, refData}) {
                 <Box key={i} sx={{pl:"10%", width: "45%", display: "flex", flexDirection: "row"}}>
                     {cols.map((j) => {
                         return (
-                            <div>
+                            <div key={10+j}>
                                 {(odd_plot && (i+1) === (rows.length) && j === 1) 
-                                ?  <Box key={"unique"} /> 
-                                : <Box key={j}> 
-                                        {PlotPrediction(CVs[j * (i+1)], T, P, refData[j * (i+1)])}
+                                ?  <Box key={j+i} /> 
+                                : <Box key={j+i}> 
+                                        {PlotPrediction(CVs[j * (i+1)], T, P)}
                                     </Box>
                                 }
                             </div>
@@ -37,7 +37,7 @@ export function OutputCharts({CVs, T, P, refData}) {
     );
 }
 
-export function ActuationCharts({MVs, T, P}) {
+export function ActuationCharts({MVs, T}) {
     
     const [cols, rows, odd_plot] = useMemo(() => {
         let num_rows = Math.floor((MVs.length + 1) / PLOTS_PER_ROW);
@@ -45,7 +45,7 @@ export function ActuationCharts({MVs, T, P}) {
 
         return [[...Array(PLOTS_PER_ROW).keys()], [...Array(num_rows).keys()], odd_plot];   
     }, [MVs]);
-
+    // Keys are set randomly to avoid warning
     return (
         <div className="Scenario">
             {rows.map((i) => {
@@ -53,11 +53,11 @@ export function ActuationCharts({MVs, T, P}) {
                 <Box key={i} sx={{pl:"10%", width: "45%", display: "flex", flexDirection: "row"}}>
                     {cols.map((j) => {
                         return (
-                            <div>
+                            <div key={10+j}>
                                 {(odd_plot && (i+1) === (rows.length) && j === 1) 
-                                ?  <Box key={"unique"} /> 
-                                : <Box key={j}> 
-                                        {PlotActuation(MVs[j * (i+1)], T, P)}
+                                ?  <Box key={j+i} /> 
+                                : <Box key={j+i}> 
+                                        {PlotActuation(MVs[j * (i+1)], T)}
                                     </Box>
                                 }
                             </div>

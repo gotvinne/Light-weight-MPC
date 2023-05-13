@@ -6,15 +6,14 @@ const BLACK = 'rgb(0, 0, 0)';
 const BLUE = 'rgb(0, 0, 255)';
 const RED = 'rgb(255, 0, 0)';
 
-export function PlotPrediction(cv_data, T, P, ref) {
-    let t = Array.from({ length: T }, (value, index) => index);
-    let lower = Array(T).fill(cv_data.c[0]);
-    let upper = Array(T).fill(cv_data.c[1]);
-    let refData = Array(T).fill(ref);
+export function PlotPrediction(cv_data, T, P) {
+    let t = Array.from({ length: T+P }, (value, index) => index);
+    let lower = Array(T+P).fill(cv_data.c[0]);
+    let upper = Array(T+P).fill(cv_data.c[1]);
 
-    var prediction = {
-        x: t.slice(0, T-P),
-        y: cv_data.y_pred.slice(0, T-P),
+    var output = {
+        x: t.slice(0, T),
+        y: cv_data.y_pred.slice(0, T),
         name: "Output",
         type: "line",
         line: {
@@ -24,7 +23,7 @@ export function PlotPrediction(cv_data, T, P, ref) {
 
     var ref_plot = {
         x: t,
-        y: refData,
+        y: cv_data.ref,
         name: "Reference",
         type: "line",
         line: {
@@ -33,9 +32,9 @@ export function PlotPrediction(cv_data, T, P, ref) {
         }
     };
 
-    var prediction_pred = {
-        x: t.slice(T-P, t.lenght),
-        y: cv_data.y_pred.slice(T-P, t.length),
+    var output_pred = {
+        x: t.slice(T, t.length),
+        y: cv_data.y_pred.slice(T, t.length),
         name: "Pred Output",
         type: "line",
         line: {
@@ -79,9 +78,9 @@ export function PlotPrediction(cv_data, T, P, ref) {
         shapes: [{ //line vertical
             yref: "paper",
             type: 'line',
-            x0: T-P,
+            x0: T,
             y0: 0,
-            x1: T-P,
+            x1: T,
             y1: 1,
             line: { 
                 color: BLACK,
@@ -91,18 +90,18 @@ export function PlotPrediction(cv_data, T, P, ref) {
     };
 
     return (
-        <Plot data={[prediction, prediction_pred, ref_plot, lower_constraint, upper_constraint]} layout={layout}/>
+        <Plot data={[output, output_pred, ref_plot, lower_constraint, upper_constraint]} layout={layout}/>
     ); 
 }
 
-export function PlotActuation(mv_data, T, P) {
+export function PlotActuation(mv_data, T) {
     let t = Array.from({ length: T }, (value, index) => index);
     let lower = Array(T).fill(mv_data.c[0]);
     let upper = Array(T).fill(mv_data.c[1]);
 
     var actuation = {
-        x: t.slice(0, T-P),
-        y: mv_data.u.slice(0, T-P),
+        x: t.slice(0, T),
+        y: mv_data.u.slice(0, T),
         name: "Actuation",
         type: 'scatter',
         line: {
@@ -112,8 +111,8 @@ export function PlotActuation(mv_data, T, P) {
     };
 
     var actuation_pred = {
-        x: t.slice(T-P, t.length),
-        y: mv_data.u.slice(T-P, t.length),
+        x: t.slice(T, t.length),
+        y: mv_data.u.slice(T, t.length),
         name: "Pred actuation",
         type: "scatter",
         line: {
@@ -158,9 +157,9 @@ export function PlotActuation(mv_data, T, P) {
         shapes: [{ //line vertical
             yref: "paper",
             type: 'line',
-            x0: T-P,
+            x0: T,
             y0: 0,
-            x1: T-P,
+            x1: T,
             y1: 1,
             line: { 
                 color: BLACK,

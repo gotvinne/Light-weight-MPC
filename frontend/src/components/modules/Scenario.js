@@ -19,7 +19,7 @@ const KEYS = Object.keys(TEXT_FIELDS);
  * Module defining MPC scenario
  * @param {React.useState} simHook hook to store simulation data  
  */
-export default function Scenario({simHook, setP, setSimRef}) {
+export default function Scenario({simHook}) {
     //** HOOKS */
     const [sce, setSce] = useState(TEXT_FIELDS);
     const [systemNames] = useState(importSystems());
@@ -71,9 +71,6 @@ export default function Scenario({simHook, setP, setSimRef}) {
         const sys_file = readSystem(sce[KEYS[0]]);
         const sce_file = serializeScenario(sce);
         const ref_str = serializeRef(ref);
-
-        setP(() => { return sce[KEYS[3]]}); 
-        setSimRef(() => { return ref.map(Number)}); 
 
         // MPC simulation:
         console.log("Simulating...");
