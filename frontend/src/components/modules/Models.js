@@ -37,6 +37,9 @@ export default function Models() {
                 <Typography variant="subtitle1" sx={{fontWeight: "bold"}}> Output prediction equation: </Typography>
                 <BlockMath math={`\\tilde{Y}(k+P) = \\boldsymbol{\\Theta} \\Delta U(k+M)+ \\boldsymbol{\\Phi} \\Delta \\tilde{U}(k)+\\boldsymbol{\\Psi} \\tilde{U}(k-N)+B(k) = \\boldsymbol{\\Theta} \\Delta U(k+M) + \\boldsymbol{\\Lambda}(k) `} />
                 
+                <Typography>
+                    When using the FSRM in an MPC optimization problem, the model prediction matrices is defined as follows: 
+                </Typography>
                 <Box sx={{pl: "3%", pt: 2, display: "flex", flexDirection: "row"}}>
                     <BlockMath math={`\\boldsymbol{\\Theta} \\triangleq\\left[\\begin{array}{cccc}
                                         \\boldsymbol{S}_{11} & \\boldsymbol{S}_{12} & \\cdots & \\boldsymbol{S}_{1 n_{MV}} \\\\\n
@@ -62,14 +65,14 @@ export default function Models() {
                                     \\boldsymbol{\\Phi_{2,1}} & \\boldsymbol{\\Phi_{2,2}} & \\cdots & \\boldsymbol{\\Phi_{2, n_{M V}}} \\\\\n
                                     \\vdots & \\vdots & \\ddots & \\vdots \\\\\n
                                     \\boldsymbol{\\Phi_{n_{C V}, 1}} & \\boldsymbol{\\Phi_{n_{C V}, 2}} & \\cdots & \\boldsymbol{\\Phi_{n_{C V}, n_{M V}}}
-                                    \\end{array}\\right]_{n_{C V}\\left(P-W+1\\right) \\times \\sum_{j=1}^{n_{M V}}\\left(N-W-1\\right)}, `} />
+                                    \\end{array}\\right]_{n_{C V}\\left(P-W\\right) \\times \\sum_{j=1}^{n_{M V}}\\left(N-W-1\\right)}, `} />
                     <Box width={"2%"}/>
                     <BlockMath math={`\\boldsymbol{\\Phi_{i, j}} =\\left[\\begin{array}{ccccc}
                                     s_{W+1} & s_{W+2} & \\ldots & s_{N-2} & s_{N-1} \\\\\n
                                     s_{W+2} & s_{W+3} & \\ldots & s_{N-1} & s_{N}\\\\\n
                                     \\vdots & \\vdots & \\vdots & \\vdots & \\vdots \\\\\n
                                     s_{P+1} & s_{P+2} & \\ldots & s_{N} & s_{N}
-                                    \\end{array}\\right]_{\\left(P-W+1\\right) \\times N-W-1} `} />
+                                    \\end{array}\\right]_{\\left(P-W\\right) \\times N-W-1} `} />
 
                 </Box>
                 
@@ -79,14 +82,14 @@ export default function Models() {
                                     \\Psi_{2,1} & \\Psi_{2,2} & \\cdots & \\Psi_{2, n_{M V}} \\\\\n
                                     \\vdots & \\vdots & \\ddots & \\vdots \\\\\n
                                     \\Psi_{n_{C V}, 1} & \\Psi_{n_{C V}, 2} & \\cdots & \\Psi_{n_{C V}, n_{M V}}
-                                    \\end{array}\\right]_{n_{C V}\\left(P-W+1\\right) \\times n_{M V}}, `} />
+                                    \\end{array}\\right]_{n_{C V}\\left(P-W\\right) \\times n_{M V}}, `} />
                     <Box width={"2%"}/>
                     <BlockMath math={`\\Psi_{i, j} =\\left[\\begin{array}{c}
                                     s_{N} \\\\\n
                                     s_{N} \\\\\n
                                     \\vdots \\\\\n
                                     s_{N}
-                                    \\end{array}\\right]_{\\left(P-W+1\\right) \\times 1} `} />
+                                    \\end{array}\\right]_{\\left(P-W\\right) \\times 1} `} />
 
                 </Box>
             </Box>
