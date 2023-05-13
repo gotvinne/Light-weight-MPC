@@ -36,7 +36,7 @@ export function PlotPrediction(cv_data, T, P) {
         x: t.slice(T, t.length),
         y: cv_data.y_pred.slice(T, t.length),
         name: "Pred Output",
-        type: "line",
+        mode: 'lines',
         line: {
             color: 'rgb(128, 0, 128)',
             dash: "dot"
