@@ -75,6 +75,7 @@ export default function Scenario({simHook}) {
         // MPC simulation:
         console.log("Simulating...");
         setSimStatus(simStatus => { return {...simStatus, status: "Simulating..."} });
+        simHook("Simulating");
         simulate(sce_file, sys_file, sce[KEYS[1]], ref_str, parseInt(sce[KEYS[2]]), simHook, setSimStatus);
     };
 
@@ -122,11 +123,6 @@ export default function Scenario({simHook}) {
             <Box sx={{pt: 2, width: "45%"}}>
                 <Reference cv={cv} mv={mv} value={ref} handler={handleReference}/>
 
-                <Box sx={{pt: 2, height: "5%", display: "flex", flexDirection: "row"}} >
-                    <Typography variant="h4">
-                        {simStatus.status}
-                    </Typography>
-                </Box>
                 <Box sx={{pt: 2, height: "5%", display: "flex", flexDirection: "row"}} >
                     <Typography color={"#d40808"}>
                         {simStatus.error}

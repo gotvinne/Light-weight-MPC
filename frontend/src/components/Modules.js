@@ -7,6 +7,7 @@ import Algorithm from "./modules/Algorithm";
 import Models from "./modules/Models";
 import Simulation from "./modules/Simulation";
 import TabPanel from "./TabPanel";
+import ProgressCircle from "./modules/ProgressCircle";
 
 // Mapping MODULES:
 const MODULES = {"scenario": 0, "simulation": 1, "algorithm": 2, "models": 3, "about": 4};
@@ -18,6 +19,7 @@ export default function Modules() {
     
     const [module, setModule] = useState(MODULES["scenario"]); 
     const [sim, setSim] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const handleChange = (event: React.SyntheticEvent, newModule: number) => { 
         setModule(newModule); 
@@ -26,8 +28,13 @@ export default function Modules() {
     useMemo(() => { // Change module when simulation is received
         if (sim === "") {
             return; 
-        } else {
+        } else if (sim === "Simulating") {
+            setLoading(true);
+        } else if (sim === "SIM ERROR") {
+            setLoading(false);
+        } else { 
             setModule(MODULES["simulation"]); 
+            setLoading(false);
         }
     }, [sim]);
     
@@ -50,7 +57,10 @@ export default function Modules() {
             </AppBar>
 
             <TabPanel value={module} width={"inherit"} index={0}>
-                <Scenario simHook={setSim} />
+                {loading 
+                    ? <ProgressCircle/>
+                    : <Scenario simHook={setSim} />
+                    }
             </TabPanel>
             <TabPanel value={module} index={1}>
                 <Simulation simData={sim}/>
