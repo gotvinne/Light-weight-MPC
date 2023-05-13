@@ -134,7 +134,7 @@ void MPCSimFSRM(const string& sys, const string& ref_vec, bool new_sim, int T) {
         if (new_sim) {
             ParseNew(sce_path, m_map, cvd, mvd, conf, z_min, z_max);
         } else {
-            Parse(sce_path, sim_path, m_map, cvd, mvd, conf, z_min, z_max, du_tilde); // Check du thilde here
+            Parse(sce_path, sim_path, m_map, cvd, mvd, conf, z_min, z_max, du_tilde); 
         }
     }
     catch(std::exception& e) {
