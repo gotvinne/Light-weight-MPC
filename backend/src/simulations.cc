@@ -155,28 +155,27 @@ void MPCSimFSRM(const string& sys, const string& ref_vec, bool new_sim, int T) {
         fsr_sim.setDuTildeMat(du_tilde); 
         if (reduced_cost) {fsr_cost->setDuTildeMat(du_tilde); }
     }
-    fsr_sim.PrintTheta();
     
     // MPC variables:
-    // MatrixXd u_mat, y_pred, ref = setRef(ref_vec, T, conf.P, m_map[kN_CV]); 
-    // /** Optimized actuation, (n_MV, T) */ /** Predicted output (n_CV, T)*/ /** Reference */
+    MatrixXd u_mat, y_pred, ref = setRef(ref_vec, T, conf.P, m_map[kN_CV]); 
+    /** Optimized actuation, (n_MV, T) */ /** Predicted output (n_CV, T)*/ /** Reference */
 
-    // try { // Solve
-    //     if (reduced_cost) {
-    //         SRSolver(T, u_mat, y_pred, fsr_sim, *fsr_cost, conf, z_min, z_max, ref);
-    //         delete fsr_cost;
-    //     } else {
-    //         SRSolver(T, u_mat, y_pred, fsr_sim, conf, z_min, z_max, ref);
-    //     }
+    try { // Solve
+        if (reduced_cost) {
+            SRSolver(T, u_mat, y_pred, fsr_sim, *fsr_cost, conf, z_min, z_max, ref);
+            delete fsr_cost;
+        } else {
+            SRSolver(T, u_mat, y_pred, fsr_sim, conf, z_min, z_max, ref);
+        }
         
-    //     if (new_sim) { // Serialize
-    //         SerializeSimulationNew(sim_path, sys, cvd, mvd, 
-    //            y_pred, u_mat, z_min, z_max, ref, fsr_sim, T);
-    //     } else {
-    //         SerializeSimulation(sim_path, y_pred, u_mat, ref, T);
-    //     }
-    // }
-    // catch(std::exception& e) {
-    //     std::cout << e.what() << std::endl;
-    // }
+        if (new_sim) { // Serialize
+            SerializeSimulationNew(sim_path, sys, cvd, mvd, 
+               y_pred, u_mat, z_min, z_max, ref, fsr_sim, T);
+        } else {
+            SerializeSimulation(sim_path, y_pred, u_mat, ref, T);
+        }
+    }
+    catch(std::exception& e) {
+        std::cout << e.what() << std::endl;
+    }
 }

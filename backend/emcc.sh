@@ -29,4 +29,4 @@ emcmake cmake .. -DEMCC_FORCE_STDLIBS=1 -DWEBASSEMBLY=ON -DDEST=$dest
 emmake make 
 
 # Update modified js file to ignore eslint errors
-sed -i '1i/* eslint-disable */' ../$dest/webassembly.mjs
+sed -i '1i/* eslint-disable */' ../$dest/mpc_core.mjs

@@ -1,4 +1,4 @@
-import backend from "../webassembly.mjs";
+import mpc_core from "../mpc_core.mjs";
 
 /**
  * Calling Webassembly compiled C++ simulation
@@ -10,7 +10,7 @@ import backend from "../webassembly.mjs";
  */
 export function simulate(sce_file, sys_file, sce, ref_str, T, setSimHook, errorHook) {
     let wasm: any;
-    backend()
+    mpc_core()
     .then((module) => {
         wasm = module;
         setSimHook(wasm.simulate(sce_file, sys_file, sce, ref_str, T));

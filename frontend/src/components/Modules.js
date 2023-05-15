@@ -7,7 +7,7 @@ import Algorithm from "./modules/Algorithm";
 import Models from "./modules/Models";
 import Simulation from "./modules/Simulation";
 import TabPanel from "./TabPanel";
-import ProgressCircle from "./modules/ProgressCircle";
+import LoadingCircle from "./modules/LoadingCircle";
 
 // Mapping MODULES:
 const MODULES = {"scenario": 0, "simulation": 1, "algorithm": 2, "models": 3, "about": 4};
@@ -58,7 +58,7 @@ export default function Modules() {
 
             <TabPanel value={module} width={"inherit"} index={0}>
                 {loading 
-                    ? <ProgressCircle/>
+                    ? <LoadingCircle/>
                     : <Scenario simHook={setSim} />
                     }
             </TabPanel>
