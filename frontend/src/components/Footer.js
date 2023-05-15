@@ -5,7 +5,7 @@ import CopyrightIcon from '@mui/icons-material/Copyright';
 import "../css/App.css"
 
 /**
- * Defining the frontend footer
+ * Defining the App footer
  */
 export default function Footer() {
     return (

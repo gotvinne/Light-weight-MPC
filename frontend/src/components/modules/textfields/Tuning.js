@@ -3,9 +3,13 @@ import { Box, Typography, TextField } from '@mui/material';
 
 /**
  * Displaying the MPC tuning TextFields
- * @param {*} param0 
+ * @param {Number} ncv Number of controlled variables
+ * @param {Number} nmv Number of manipulated variables  
+ * @param {React.useState} error hook
+ * @param {React.useState} sce hook
+ * @param {Function} handler callback function
  */
-export default function Tuning({keys, ncv, nmv, error, scenario, handler}) {
+export default function Tuning({ncv, nmv, error, sce, handler}) {
     return (
         <div> 
             <Box align="left" sx={{pl: "23%", pt: 2}}>
@@ -14,21 +18,21 @@ export default function Tuning({keys, ncv, nmv, error, scenario, handler}) {
         
             <Box sx={{pt: 2, display: "flex", flexDirection: "row"}}>
                 <Box sx ={{pt:2, pl: 7}}>
-                    <TextField error={error[keys[3]]} sx={{width: "90%"}} id={keys[3]} variant="outlined" helperText={"Prediction horizon P, int"} value={scenario[keys[3]]} onChange={handler} required/>
+                    <TextField error={error["P"]} sx={{width: "90%"}} id={"P"} variant="outlined" helperText={"Prediction horizon P, int"} value={sce["P"]} onChange={handler} required/>
                     <Box />
-                    <TextField error={error[keys[4]]} sx={{width: "90%"}} id={keys[4]} variant="outlined" helperText={"Control horizon M, int"} value={scenario[keys[4]]} onChange={handler} required/>
+                    <TextField error={error["M"]} sx={{width: "90%"}} id={"M"} variant="outlined" helperText={"Control horizon M, int"} value={sce["M"]} onChange={handler} required/>
                     <Box />
-                    <TextField error={error[keys[5]]} sx={{width: "90%"}} id={keys[5]} variant="outlined" helperText={"Time delay, W, int"} value={scenario[keys[5]]} onChange={handler} required/>
+                    <TextField error={error["W"]} sx={{width: "90%"}} id={"W"} variant="outlined" helperText={"Time delay, W, int"} value={sce["W"]} onChange={handler} required/>
                 </Box>
 
                 <Box sx={{pt:2}}>
-                    <TextField error={error[keys[6]]} sx={{width: "90%"}} id={keys[6]} variant="outlined" helperText={"Q, vector<double>, length: "+ ncv.toString()} value={scenario[keys[6]]} onChange={handler} required/>
+                    <TextField error={error["Q"]} sx={{width: "90%"}} id={"Q"} variant="outlined" helperText={"Q, vector<double>, length: "+ ncv.toString()} value={sce["Q"]} onChange={handler} required/>
                     <Box />
-                    <TextField error={error[keys[7]]} sx={{width: "90%"}} id={keys[7]} variant="outlined" helperText={"R, vector<double>, length: "+ nmv.toString()} value={scenario[keys[7]]} onChange={handler} required/>
+                    <TextField error={error["R"]} sx={{width: "90%"}} id={"R"} variant="outlined" helperText={"R, vector<double>, length: "+ nmv.toString()} value={sce["R"]} onChange={handler} required/>
                     <Box />
-                    <TextField error={error[keys[8]]} sx={{width: "90%"}} id={keys[8]} variant="outlined" helperText={"RoH, vector<double>, length: "+ ncv.toString()} value={scenario[keys[8]]} onChange={handler} required/>
+                    <TextField error={error["RoH"]} sx={{width: "90%"}} id={"RoH"} variant="outlined" helperText={"RoH, vector<double>, length: "+ ncv.toString()} value={sce["RoH"]} onChange={handler} required/>
                     <Box />
-                    <TextField error={error[keys[9]]} sx={{width: "90%"}} id={keys[9]} variant="outlined" helperText={"RoL, vector<double>, length: "+ ncv.toString()} value={scenario[keys[9]]} onChange={handler} required/>
+                    <TextField error={error["RoL"]} sx={{width: "90%"}} id={"RoH"} variant="outlined" helperText={"RoL, vector<double>, length: "+ ncv.toString()} value={sce["RoH"]} onChange={handler} required/>
                 </Box>
             </Box>
         </div>

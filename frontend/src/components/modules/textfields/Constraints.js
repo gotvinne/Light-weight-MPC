@@ -2,13 +2,17 @@ import React from "react";
 import { Box, Typography, TextField } from '@mui/material';
 import { BlockMath } from 'react-katex';
 
-const FORMULAS = [`\\leq \\Delta U \\leq`, `\\leq U \\leq`, `\\leq Y \\leq`];
+const SYMBOLS = [`\\leq \\Delta U \\leq`, `\\leq U \\leq`, `\\leq Y \\leq`];
 
 /**
  * Displaying the MPC constraint TextFields
- * @param {*} param0 
+ * @param {Number} nmv Number of manipulated variables
+ * @param {Number} ncv Number of controlled variables
+ * @param {React.useState} scescenario hook
+ * @param {React.useState} error error hook
+ * @param {Function} handler Callback function
  */
-export default function Constraints({keys, nmv, ncv, scenario, error, handler}) {
+export default function Constraints({nmv, ncv, sce, error, handler}) {
     return (
         <div>
             <Box align="left" sx={{pl: "32%", pt: 2}}>
@@ -16,30 +20,30 @@ export default function Constraints({keys, nmv, ncv, scenario, error, handler}) 
             </Box>
             <Box sx={{pl: "3%", display: "flex", flexDirection: "row"}}>
                 <Box sx ={{pt:2}}>
-                    <TextField error={error[keys[10]]} sx={{width: "90%"}} id={keys[10]} variant="outlined" helperText={"vector<double>, length: " + nmv.toString()} value={scenario[keys[10]]} onChange={handler} required/>
+                    <TextField error={error["ldu"]} sx={{width: "90%"}} id={"ldu"} variant="outlined" helperText={"vector<double>, length: " + nmv.toString()} value={sce["ldu"]} onChange={handler} required/>
                     <Box />
-                    <TextField error={error[keys[11]]} sx={{width: "90%"}} id={keys[11]} variant="outlined" helperText={"vector<double>, length: " + nmv.toString()} value={scenario[keys[11]]} onChange={handler} required/>
+                    <TextField error={error["lu"]} sx={{width: "90%"}} id={"lu"} variant="outlined" helperText={"vector<double>, length: " + nmv.toString()} value={sce["lu"]} onChange={handler} required/>
                     <Box />
-                    <TextField error={error[keys[12]]} sx={{width: "90%"}} id={keys[12]} variant="outlined" helperText={"vector<double>, length: "  + ncv.toString()} value={scenario[keys[12]]} onChange={handler} required/>
+                    <TextField error={error["ly"]} sx={{width: "90%"}} id={"ly"} variant="outlined" helperText={"vector<double>, length: "  + ncv.toString()} value={sce["ly"]} onChange={handler} required/>
                 </Box>
 
                 <Box >
                     <div className="katex">
                         <Box sx={{pt: 1}}/>
-                        <BlockMath math={FORMULAS[0]} />
+                        <BlockMath math={SYMBOLS[0]} />
                         <Box sx={{pt: 1}}/>
-                        <BlockMath math={FORMULAS[1]} />
+                        <BlockMath math={SYMBOLS[1]} />
                         <Box sx={{pt: 1}}/>
-                        <BlockMath math={FORMULAS[2]} />
+                        <BlockMath math={SYMBOLS[2]} />
                     </div>
                 </Box >
                     
                 <Box sx ={{pt: 2}}>
-                    <TextField error={error[keys[13]]} sx={{width: "90%"}} id={keys[13]} variant="outlined" helperText={"vector<double>, length: " + nmv.toString()} value={scenario[keys[13]]} onChange={handler} required/>
+                    <TextField error={error["udu"]} sx={{width: "90%"}} id={"udu"} variant="outlined" helperText={"vector<double>, length: " + nmv.toString()} value={sce["udu"]} onChange={handler} required/>
                     <Box />
-                    <TextField error={error[keys[14]]} sx={{width: "90%"}} id={keys[14]} variant="outlined" helperText={"vector<double>, length: " + nmv.toString()} value={scenario[keys[14]]} onChange={handler} required/>
+                    <TextField error={error["uu"]} sx={{width: "90%"}} id={"uu"} variant="outlined" helperText={"vector<double>, length: " + nmv.toString()} value={sce["uu"]} onChange={handler} required/>
                     <Box />
-                    <TextField error={error[keys[15]]} sx={{width: "90%"}} id={keys[15]} variant="outlined" helperText={"vector<double>, length: " + ncv.toString()} value={scenario[keys[15]]} onChange={handler} required/>
+                    <TextField error={error["uy"]} sx={{width: "90%"}} id={"uy"} variant="outlined" helperText={"vector<double>, length: " + ncv.toString()} value={sce["uy"]} onChange={handler} required/>
                 </Box>
             </Box>
         </div>

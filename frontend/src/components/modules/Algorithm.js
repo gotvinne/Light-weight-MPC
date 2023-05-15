@@ -13,7 +13,7 @@ function createData(
     return { name, num };
   }
   
-  const rows = [
+  const tableData = [
     createData('z_{cd}', `M \\cdot n_{MV} + 2 \\cdot n_{CV}`),
     createData('\\boldsymbol{\\bar{Q}}', `n_{CV} \\cdot (P - W) \\times n_{CV} \\cdot (P - W)`),
     createData('\\boldsymbol{\\bar{R}}', `M \\cdot n_{MV}  \\times M \\cdot n_{MV}`),
@@ -50,7 +50,7 @@ export default function Algorithm() {
                 This MPC controller is defined as a standard quadratic program (QP) where the cost aims to minimize the error between the output <InlineMath math={"Y"}/> and the reference <InlineMath math={"r_y"} />:
                 </Typography>
 
-                <BlockMath math={`\\min \\sum_{j=W+1}^{P}\\left|(y(k+j \\mid k)-r_y(k+j))\\right|_{\\bar{\\boldsymbol{Q}}}^2+ \\sum_{j=0}^{(M-1)} \\left|\\Delta u(k+j)\\right|_{\\boldsymbol{R}}^2+\\bar{\\rho} \\bar{\\epsilon}+\\underline{\\rho} \\underline{\\epsilon}`} />
+                <BlockMath math={`\\min \\sum_{j=W+1}^{P}\\left|(y(k+j \\mid k)-r_y(k+j))\\right|_{\\bar{\\boldsymbol{Q}}}^2+ \\sum_{j=0}^{(M-1)} \\left|\\Delta u(k+j)\\right|_{\\boldsymbol{\\bar{R}}}^2+\\bar{\\rho} \\bar{\\epsilon}+\\underline{\\rho} \\underline{\\epsilon}`} />
                 <Typography variant="body1" gutterBottom>
                 The cost function is constrained by the model definition and relating variables. The general FSRM-MPC algorithm can be summaried as:
                 </Typography>
@@ -120,7 +120,7 @@ export default function Algorithm() {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {rows.map((row) => (
+                                {tableData.map((row) => (
                                     <TableRow
                                         key={row.name}
                                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}

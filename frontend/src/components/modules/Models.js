@@ -5,7 +5,6 @@ import { BlockMath, InlineMath } from 'react-katex';
 import "../../css/Modules.css"
 import 'katex/dist/katex.min.css';
 
-
 /**
  * Informative component describing the dynamical models
  */

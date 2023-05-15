@@ -1,9 +1,11 @@
-import * as React from 'react';
-import CircularProgress from '@mui/material/CircularProgress';
-import { Box, Typography } from '@mui/material';
+import React from 'react';
+import { Box, Typography, CircularProgress } from '@mui/material';
 
 import "../../css/Modules.css"
 
+/**
+ * Displaying loading module
+ */
 export default function ProgressCircle() {
   return (
     <div className='Scenario'>

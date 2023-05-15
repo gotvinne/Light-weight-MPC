@@ -2,11 +2,11 @@ import backend from "../webassembly.mjs";
 
 /**
  * Calling Webassembly compiled C++ simulation
- * @param {string} sce_file 
- * @param {string} sys_file 
- * @param {string} sce 
- * @param {number} T 
- * @param {React.useState} setSimHook
+ * @param {String} sce_file Scenario file
+ * @param {String} sys_file System file
+ * @param {String} sce Scenario name
+ * @param {Number} T MPC horizon
+ * @param {React.useState} setSimHook Simulation hook
  */
 export function simulate(sce_file, sys_file, sce, ref_str, T, setSimHook, errorHook) {
     let wasm: any;

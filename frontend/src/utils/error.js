@@ -1,14 +1,14 @@
-
+/** MPC input error checking */
 import { convertArr } from './IO.js'
 
 /**
- * Checks if array contains onlu numbers or number strings
- * @param {*} arr 
- * @returns 
+ * Checks if array contains only numbers or number strings
+ * @param {Array} arr 
+ * @returns Boolean
  */
 export function onlyNumbers(arr) { 
     return arr.every(element => {
-        if (!isNaN(element) && element !== "0") {
+        if (!isNaN(element) && element !== "0" && element !== "") {
             return true;
         } else {
             return false;
@@ -16,17 +16,30 @@ export function onlyNumbers(arr) {
     });
 }
 
-export function updateError(scenario, error, ncv, nmv) {
+/**
+ * Updating error hook
+ * @param {React.useState} sce MPC scenario hook
+ * @param {React.useState} error Error hook
+ * @param {Number} ncv number of controlled variables
+ * @param {Number} nmv number of manipulated variables
+ * @returns Updated error hook
+ */
+export function updateError(sce, error, ncv, nmv) {
     var curr_err = error;
 
-    updateHorizons(scenario, curr_err);
-    updateTunings(scenario, curr_err, ncv);
-    updateConstraints(scenario, curr_err, ncv, nmv);
+    updateHorizons(sce, curr_err);
+    updateTunings(sce, curr_err, ncv);
+    updateConstraints(sce, curr_err, ncv, nmv);
     return curr_err;
 }
 
-function updateHorizons(scenario, error) {
-    const data = [parseInt(scenario["T"]), parseInt(scenario["P"]), parseInt(scenario["M"]), parseInt(scenario["W"])];
+/**
+ * updateError helper function, checking horizons
+ * @param {React.useState} sce MPC scenario hook
+ * @param {React.useState} error Error hook
+ */
+function updateHorizons(sce, error) {
+    const data = [parseInt(sce["T"]), parseInt(sce["P"]), parseInt(sce["M"]), parseInt(sce["W"])];
     // Check T: 
     if (Math.max(...data) === data[0] && data[0] > 0) {
         error["T"] = false;
@@ -45,11 +58,17 @@ function updateHorizons(scenario, error) {
     }
 }
 
-function updateTunings(scenario, error, ncv) {
+/**
+ * updateError helper function, checking tuning parameters
+ * @param {React.useState} sce MPC scenario hook
+ * @param {React.useState} error Error hook
+ * @param {Number} ncv number of controlled variables
+ */
+function updateTunings(sce, error, ncv) {
     const tuning_arr = ["Q", "R", "RoH", "RoL"];
     
     tuning_arr.forEach((tuning) => {
-        const data = convertArr(scenario[tuning]);
+        const data = convertArr(sce[tuning]);
         if (data.length === ncv) { // If size is correct
             if (data.some(v => v < 0) === false) { // Only positive elements
                 error[tuning] = false;
@@ -60,20 +79,28 @@ function updateTunings(scenario, error, ncv) {
     })
 }
 
-function updateConstraints(scenario, error, ncv, nmv) {
+/**
+ * updateError helper function, checking constraints
+ * @param {React.useState} sce MPC scenario hook
+ * @param {React.useState} error Error hook
+ * @param {Number} ncv number of controlled variables
+ * @param {Number} nmv number of manipulated variables
+ */
+function updateConstraints(sce, error, ncv, nmv) {
     const constraint_arr = ["ldu", "lu", "ly", "udu", "uu", "uy"];
     const size_arr = [nmv, nmv, ncv];
-    let data_arr = [];
 
+    let data_arr = []; // Storing sce data
     constraint_arr.forEach((elem) => {
-        data_arr.push(convertArr(scenario[elem])); 
+        data_arr.push(convertArr(sce[elem])); 
     })
+
     const c_size = constraint_arr.length / 2;
     for (let i = 0; i < c_size; i++) { // Iterating over constraint vec
         let lower = data_arr[i];
         let upper = data_arr[i + c_size];
 
-        if ((lower.length !== size_arr[i]) || (upper.length !== size_arr[i])) { // Size incorrect
+        if ((lower.length !== size_arr[i]) || (upper.length !== size_arr[i])) { // If size incorrect
             error[constraint_arr[i]] = true;
             error[constraint_arr[i + c_size]] = true;
         } else {

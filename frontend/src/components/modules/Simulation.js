@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 
-import { readSimParams, readSimCV, readSimMV } from "../../utils/IO.js";
-import { OutputCharts, ActuationCharts } from "./LineChart.js";
+import { readSimModelParams, readSimCV, readSimMV } from "../../utils/IO.js";
+import { OutputCharts, ActuationCharts } from "./Plotly/LineChart.js";
 import "../../css/Modules.css"
 
 const initSimParam = {scenario: "", T: 0, nCV: 0, nMV: 0};
-
 /**
  * Describe the simulation module for plotting data
  * @param {React.useState} simData MPC simulation data  
  */
 export default function Simulation({simData}) {
-
     const [simAvaliable, setSimAvaliable] = useState(false);
     const [simParam, setSimParam] = useState(initSimParam);
     const [CVs, setCVs] = useState([]);
@@ -24,7 +22,7 @@ export default function Simulation({simData}) {
         } else {
             console.log(simData)
             const json_sim = JSON.parse(simData);
-            setSimParam(readSimParams(json_sim));
+            setSimParam(readSimModelParams(json_sim));
             setCVs(readSimCV(json_sim));
             setMVs(readSimMV(json_sim));
         }

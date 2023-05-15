@@ -4,7 +4,7 @@ import { Box, Typography } from "@mui/material";
 import "../css/App.css"
 
 /**
- * Defining the frontend header
+ * Defining the App Header
  */
 export default function Header() {
     return (

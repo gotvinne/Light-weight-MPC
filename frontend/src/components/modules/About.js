@@ -2,7 +2,6 @@ import React from 'react'
 import { Box, Typography, Link } from '@mui/material';
 
 import "../../css/Modules.css"
-
 /**
  * Module describing the background of the project
  */

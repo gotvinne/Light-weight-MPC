@@ -10,10 +10,10 @@ import Constraints from "./textfields/Constraints.js";
 import Tuning from "./textfields/Tuning.js";
 
 const SCENARIO_STORAGE_KEY = 'scenario.storage';
- 
+
+// Initial states
 const TEXT_FIELDS = { "System": "", "Scenario": "", "T": "0", "P": "0", "M": "0", "W": "0", "Q": "[]", "R": "[]", "RoH": "[]", "RoL": "[]", "ldu": "[]", "lu": "[]", "ly": "[]", "udu": "[]", "uu": "[]", "uy": "[]"};
 const ERROR = {"T": false, "P": false, "M": false, "W": false, "Q": false, "R": false, "RoH": false, "RoL": false, "ldu": false, "lu": false, "ly": false, "udu": false, "uu": false, "uy": false};
-const KEYS = Object.keys(TEXT_FIELDS); 
 
 /**
  * Module defining MPC scenario
@@ -28,22 +28,24 @@ export default function Scenario({simHook}) {
     const [buttonDisable, setButtonDisable] = useState(true);
     const [simStatus, setSimStatus] = useState({status: "", error: ""});
         
-    const [cv, mv] = useMemo(() => { // When system is selected 
-        if (sce[KEYS[0]] === "") {
+    const [cv, mv] = useMemo(() => { // When system is selected, c/mv[0] = data, units
+        if (sce["System"] === "") {
             return [[[], []], [[], []]];
         } else {
-            let cv_data = readModelParams(sce[KEYS[0]], "CV");
+            let cv_data = readModelParams(sce["System"], "CV");
             setRef(() => {return Array(cv_data[0].length).fill("0")});
 
             setSce(sce => {
                 const resource = require(`./default_tuning.json`); 
-                if (resource.hasOwnProperty(sce[KEYS[0]])) {
-                    return resource[sce[KEYS[0]]];
-                } else { return sce; }
+                if (resource.hasOwnProperty(sce["System"])) {
+                    return resource[sce["System"]];
+                } else { 
+                    return sce; 
+                }
             })
-            return [cv_data, readModelParams(sce[KEYS[0]], "MV")];
+            return [cv_data, readModelParams(sce["System"], "MV")];
         }
-    }, [sce[KEYS[0]]]);
+    }, [sce["System"]]);
 
     //** USE EFFECTS */
     useEffect(() => { // Fetch storage
@@ -56,9 +58,9 @@ export default function Scenario({simHook}) {
             localStorage.setItem(SCENARIO_STORAGE_KEY, JSON.stringify(sce));
         }
         
-        if (sce[KEYS[0]] !== "") { // Sce check
+        if (sce["System"] !== "") { // Check is system update
             setError({...updateError(sce, error, cv[0].length, mv[0].length)});
-            if (Object.values(error).every((v) => v === false) && sce[KEYS[0]] !== "" && onlyNumbers(ref)) {
+            if (Object.values(error).every((v) => v === false) && sce["System"] !== "" && onlyNumbers(ref)) {
                 setButtonDisable(false);
             } else {
                 setButtonDisable(true);
@@ -68,7 +70,7 @@ export default function Scenario({simHook}) {
     
     //** HANDLER FUNCTIONS */ 
     const handleSimulatonClick = () => {
-        const sys_file = readSystem(sce[KEYS[0]]);
+        const sys_file = readSystem(sce["System"]);
         const sce_file = serializeScenario(sce);
         const ref_str = serializeRef(ref);
 
@@ -76,7 +78,7 @@ export default function Scenario({simHook}) {
         console.log("Simulating...");
         setSimStatus(simStatus => { return {...simStatus, status: "Simulating..."} });
         simHook("Simulating");
-        simulate(sce_file, sys_file, sce[KEYS[1]], ref_str, parseInt(sce[KEYS[2]]), simHook, setSimStatus);
+        simulate(sce_file, sys_file, sce["Scenario"], ref_str, parseInt(sce["T"]), simHook, setSimStatus);
     };
 
     const handleTextField = e => { 
@@ -84,7 +86,7 @@ export default function Scenario({simHook}) {
     }
 
     const handleSelect = e => { 
-        setSce(sce => { return {...sce, [KEYS[0]]: e.target.value} });
+        setSce(sce => { return {...sce, ["System"]: e.target.value} });
     };
 
     const handleReference = e => {
@@ -100,25 +102,25 @@ export default function Scenario({simHook}) {
             <Box sx={{width: "45%", pl: "2%"}}> 
                 <Box sx={{pt: 2, display: "flex", flexDirection: "row"}}>
                     <FormControl style={{minWidth: "27%"}}>
-                        <InputLabel id={KEYS[0]}> System name </InputLabel>
-                        <Select id={KEYS[0]} value={sce[KEYS[0]]} label="System name" onChange={handleSelect} >   
+                        <InputLabel id={"System"}> System name </InputLabel>
+                        <Select id={"System"} value={sce["System"]} label="System name" onChange={handleSelect} >   
                             {systemNames.map((course, index) => {
                                 return ( <MenuItem value={course} key={index}> {course} </MenuItem> )
                             })}
                         </Select>
                     </FormControl>
                 
-                    <TextField id={KEYS[1]} variant="outlined" helperText={"Scenario name, string"} value={sce[KEYS[1]]} onChange={handleTextField} required/>
+                    <TextField id={"Scenario"} variant="outlined" helperText={"Scenario name, string"} value={sce["Scenario"]} onChange={handleTextField} required/>
                     <Box sx={{pl: 2}}/>
-                    <TextField error={error[KEYS[2]]} sx={{width: "30%"}} id={KEYS[2]} variant="outlined" helperText={"MPC horizon T, int"} value={sce[KEYS[2]]} onChange={handleTextField} required/>
+                    <TextField error={error["T"]} sx={{width: "30%"}} id={"T"} variant="outlined" helperText={"MPC horizon T, int"} value={sce["T"]} onChange={handleTextField} required/>
                 </Box>
 
-                <Tuning keys={KEYS} ncv={cv[0].length} nmv={mv[0].length} error={error} scenario={sce} handler={handleTextField} />
-                <Constraints keys={KEYS} nmv={mv[0].length} ncv={cv[0].length} error={error} scenario={sce} handler={handleTextField} />
+                <Tuning ncv={cv[0].length} nmv={mv[0].length} error={error} sce={sce} handler={handleTextField} />
+                <Constraints nmv={mv[0].length} ncv={cv[0].length} error={error} sce={sce} handler={handleTextField} />
             </Box>
             
             <Box sx={{pl: "1%", pt: "1%", width: "36%"}}>
-                <Reference cv={cv} mv={mv} value={ref} handler={handleReference}/>
+                <Reference cv={cv} mv={mv} ref_value={ref} handler={handleReference}/>
 
                 <Box sx={{pt: 2, height: "5%", display: "flex", flexDirection: "row"}} >
                     <Typography color={"#d40808"}>

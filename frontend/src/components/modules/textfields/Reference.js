@@ -4,9 +4,9 @@ import { InlineMath } from 'react-katex';
 
 /**
  * Render variables in mathematical format
- * @param {number} length 
- * @param {string} identifier 
- * @returns 
+ * @param {Number} length 
+ * @param {String} identifier 
+ * @returns Mathematical rendering of length and identifier
  */
 export function variableRender(length, identifier) {
     if (length === 0) {
@@ -22,9 +22,12 @@ export function variableRender(length, identifier) {
 
 /**
  * Display Reference TextFields
- * @param {*} param0 
+ * @param {Array} cv 
+ * @param {Array} mv 
+ * @param {React.useState} ref_value
+ * @param {Function} handler callback function
  */
-export default function Reference({cv, mv, value, handler}) {
+export default function Reference({cv, mv, ref_value, handler}) {
     return (
         <div>
             <Typography variant="h5" sx={{fontWeight: 'bold'}} >
@@ -51,7 +54,7 @@ export default function Reference({cv, mv, value, handler}) {
                     {cv[0].map((course, index) => {
                         return (
                         <Box key={index}> 
-                            <TextField sx={{width: "90%"}} id={index.toString()} variant="outlined" helperText={course + " reference, int"} value={value[index]} onChange={handler} required/>
+                            <TextField sx={{width: "90%"}} id={index.toString()} variant="outlined" helperText={course + " reference, int"} value={ref_value[index]} onChange={handler} required/>
                         </Box>
                         )
                     })}

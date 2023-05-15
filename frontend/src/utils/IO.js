@@ -1,4 +1,4 @@
-/** SYSTEM IO */
+/** JSON formatting module, parsing systems, serializing scenario and simulation */
 
 /**
  * Convert string array to number array
@@ -6,7 +6,6 @@
  * @returns Array
  */
 export function convertArr(str_arr) {
-
   // Removing brackets: 
   let arr = str_arr.replace('[', '');
   arr = arr.replace(']', '');
@@ -15,15 +14,17 @@ export function convertArr(str_arr) {
     return [];
   } else if (!isNaN(arr)) { // If only one number
     return [parseFloat(arr)];
-  } else { // For many variables
+  } else { // If many elements
     return arr.split(",").map(Number);
   }
 }
 
+/** SYSTEM IO*/
+
 /**
  * 
- * @param {Array} l_arr 
- * @param {Array} u_arr 
+ * @param {Array} l_arr lower constraints 
+ * @param {Array} u_arr upper constraints
  * @param {string} identifier 
  * @returns Array
  */
@@ -44,6 +45,7 @@ function processConstraints(l_arr, u_arr, identifier) {
 
 /**
  * Import avaliable system filenames
+ * @returns array of avaliable systems
  */
 export function importSystems() {
     const context = require.context('./../systems', false, /.json$/); // Read files in folder.
@@ -51,7 +53,6 @@ export function importSystems() {
     for (let i = 0; i < context.keys().length; i++) {
         const key = context.keys()[i];
         const fileName = key.replace('./', '');
-        
         const namespace = fileName.replace('.json', '');
         arr.push(namespace);
     }  
@@ -61,7 +62,8 @@ export function importSystems() {
 /**
  * Read model parameters from system JSON file
  * @param {string} fileName 
- * @param {string} identifier 
+ * @param {string} identifier CV/MV identifier
+ * @return array, first index is CV/MV data second is corresponding units
  */
 export function readModelParams(fileName, identifier) {
   const resource = require(`./../systems/${fileName}.json`); // Load file
@@ -91,8 +93,9 @@ export function readModelParams(fileName, identifier) {
 }
 
 /**
- * Read JSON file from systems database
+ * Read JSON file from local system folder
  * @param {string} fileName 
+ * @return JSON formatted Object
  */
 export function readSystem(fileName) {
   const resource = require(`./../systems/${fileName}.json`); // Load file
@@ -104,9 +107,9 @@ export function readSystem(fileName) {
 /**
  * Serialize Scenario JSON file based on scenario
  * @param {React.useState} sce 
+ * @return Serialized scenario JSON object
  */
 export function serializeScenario(sce) {
- 
   const q_arr = convertArr(sce["Q"]); 
   const r_arr = convertArr(sce["R"]);
   const roh_arr = convertArr(sce["RoH"]);
@@ -137,7 +140,6 @@ export function serializeScenario(sce) {
       processConstraints(lu_arr, uu_arr, "u"),
       processConstraints(ly_arr, uy_arr, "y"))
   }
-
   const json = JSON.stringify(scenario);
   return json;
 }
@@ -153,11 +155,11 @@ export function serializeRef(ref) {
 
 /** SIMULATION IO */
 /**
- * 
- * @param {*} sim 
- * @returns 
+ * Read model parameters
+ * @param {String} sim JSON simulation
+ * @returns Object of model parameters
  */
-export function readSimParams(sim) {
+export function readSimModelParams(sim) {
     const simParam = {
     scenario: sim["scenario"],
     T: sim["T"],
@@ -168,9 +170,14 @@ export function readSimParams(sim) {
   return simParam; 
 }
 
+/**
+ * Read CVs from simulation file
+ * @param {String} sim JSON simulation
+ * @returns Array of CV data
+ */
 export function readSimCV(sim) {
-  const CVs = []; // Declare array of CV
-  const cv_data = sim["CV"]; // Array
+  const CVs = []; 
+  const cv_data = sim["CV"]; 
 
   cv_data.forEach((data) => {
       const elem = {
@@ -180,15 +187,20 @@ export function readSimCV(sim) {
         y_pred: data["y_pred"],
         ref: data["ref"]
       }
-      CVs.push(elem);
+      CVs.push(elem); // Store CV objects
     }
   ); 
   return CVs;
 }
 
+/**
+ * Read MVs from simulation file
+ * @param {String} sim JSON simulation
+ * @returns Array of MV data
+ */
 export function readSimMV(sim) {
-  const MVs = []; // Declare array of CV
-  const mv_data = sim["MV"]; // Array
+  const MVs = []; 
+  const mv_data = sim["MV"];
 
   mv_data.forEach((data) => {
       const elem = {
@@ -197,7 +209,7 @@ export function readSimMV(sim) {
         c: data["c"],
         u: data["u"]
       }
-      MVs.push(elem);
+      MVs.push(elem); // Store MV objects
     }
   );
   return MVs;
