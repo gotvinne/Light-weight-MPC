@@ -9,7 +9,6 @@ option(WEBASSEMBLY "Compile to WebAssembly" OFF)
 
 if(WEBASSEMBLY)
     set(CMAKE_CXX_FLAGS "--no-entry -fPIC")
-
     # Fetch nlohmann_json, Eigen3 and osqp
     include(FetchContent)
     FetchContent_Declare(nlohmann_json
@@ -19,7 +18,7 @@ if(WEBASSEMBLY)
 
     FetchContent_Declare(Eigen
         GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
-        GIT_TAG master
+        GIT_TAG 3.4.0
         GIT_SHALLOW TRUE
         GIT_PROGRESS TRUE
     )
@@ -29,6 +28,7 @@ if(WEBASSEMBLY)
 
     FetchContent_Declare(osqp
         GIT_REPOSITORY https://github.com/osqp/osqp
+        GIT_TAG v0.6.2
     )
 
     FetchContent_MakeAvailable(nlohmann_json Eigen osqp)
