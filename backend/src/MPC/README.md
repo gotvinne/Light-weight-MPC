@@ -8,15 +8,17 @@ The OSQP, operator splitting QP solver solves the problems of the following form
 $$ min \quad \frac{1}{2} z^T \boldsymbol{H} z+q^T z \\ 
 \text{subject to} \quad l \leq \boldsymbol{A} z \leq u $$ 
 
-[OSQP solver settings](https://osqp.org/docs/interfaces/solver_settings.html#solver-settings)
+The solver software can be customized: 
+- [OSQP solver settings](https://osqp.org/docs/interfaces/solver_settings.html#solver-settings)
+- [Status values and errors](https://osqp.org/docs/interfaces/status_values.html)
 
 ## Step Response MPC solver
 
-This solver solves the QP defining the MPC problem for a finite step response model (FSRM) in terms of only one optimization variable (condensed form). This form is obtained by using the null space method on the optimilization problem formulated by quadratic constraining the output $Y$ and input $\Delta U$: 
+This solver solves the QP defining the MPC problem for a finite step response model (FSRM) in terms of only one optimization variable (condensed form). This form is obtained by using the null space method on the optimilization problem formulated by quadratic constraining the output $Y$ and input $\Delta U$. The number of parameters considered in the cost function is dependant on the horizons $P \succ 0$, $M \succ 0$ and $W \geq 0$.
 
-$$ \min \sum_{j=W}^{P}\left\|(y(k+j \mid k)-r_y(k+j))\right\|_{\bar{Q}}^2+ \sum_{j=0}^{(M-1)} \left\|\Delta u(k+j)\right\|_{\bar{R}}^2+\bar{\rho} \bar{\epsilon}+\underline{\rho} \underline{\epsilon} $$ 
+$$ \min \sum_{j=W+1}^{P}\left\|(y(k+j \mid k)-r_y(k+j))\right\|_{\bar{Q}}^2+ \sum_{j=0}^{(M-1)} \left\|\Delta u(k+j)\right\|_{\bar{R}}^2+\bar{\rho} \bar{\epsilon}+\underline{\rho} \underline{\epsilon} $$ 
 
-$$ min \quad Y(k+w)^TQY(k+w) + \Delta U(k+i)^TR\Delta U(k+i) $$
+$$ min \quad Y(k+(P-W))^TQY(k+(P-W)) + \Delta U(k+(M-1))^TR\Delta U(k+(M-1)) $$
 
 *Condensed form:*
 
@@ -27,6 +29,8 @@ where
 $$ \boldsymbol{G_{cd}} = 2 \cdot blkdiag( \boldsymbol{\Theta}^{T} \boldsymbol{\bar{Q}} \boldsymbol{\Theta} + \boldsymbol{\bar{R}}, \boldsymbol{0}, \boldsymbol{0}), $$
 
 $$ q_{cd}(k) = \begin{bmatrix} 2 \cdot \boldsymbol{\Theta}^T\boldsymbol{\bar{Q}}(\Lambda(k) - \mathcal{T}(k)) \\ \rho_{h} \\ \rho_{l} \end{bmatrix}, $$ 
+
+s.t.
 
 $$ \underline{z}_{cd}(k) = \begin{bmatrix}
         \Delta \underline{U} \\ \underline{U} \\ -\infty \\ \underline{Y} \\ 0 \\ 0
@@ -71,15 +75,16 @@ $$ K_j=\left[\begin{array}{ccccc}
 | :-: | :-: |
 | $Y$ | $P \times n_{CV}$  |
 | $\Delta U$ | $M \times n_{MV}$  |
-| $z_{cd}$  | $M \cdot n_{MV} + dim(\epsilon)$  |
-| $\boldsymbol{\bar{Q}}$ | $n_{CV} \cdot (P - W + 1) \times n_{CV} \cdot (P - W + 1)$  |
+| $z_{cd}$  | $M \cdot n_{MV} + 2 \cdot n_{CV} $  |
+| $\boldsymbol{\bar{Q}}$ | $n_{CV} \cdot (P - W) \times n_{CV} \cdot (P - W)$  |
 | $\boldsymbol{\bar{R}}$ | $M \cdot n_{MV}  \times M \cdot n_{MV}$ |
 | $\boldsymbol{\Theta}$  | $n_{CV} \cdot (P-W) \times M \cdot n_{MV}$ |
-| $\boldsymbol{\Phi}$ | $n_{C V}\left(P-W+1\right) \times \sum_{j=1}^{n_{M V}}\left(N-W-1\right)$ |
-| $\boldsymbol{\Psi}$ | $n_{C V}\left(P-W+1\right) \times n_{M V}$ |
+| $\boldsymbol{\Phi}$ | $n_{C V}\left(P-W\right) \times \sum_{j=1}^{n_{M V}}\left(N-W-1\right)$ |
+| $\boldsymbol{\Psi}$ | $n_{C V}\left(P-W\right) \times n_{M V}$ |
 | $\boldsymbol{K}$ | $M \cdot n_{MV} \times M \cdot n_{MV}$ |
-| $\boldsymbol{A}$ | $2M \cdot n_{MV} + P \cdot n_{CV } \times M \cdot n_{MV}$|
 | $\boldsymbol{\Gamma}$ | $M \cdot n_{MV} \times n_{MV}$  |
-
+| $\boldsymbol{A}$ | $n_{MV} + (P - W) \cdot n_{CV} + 2 n_{CV} \times M \cdot n_{MV} + 2 n_{CV}$ |
+| $\boldsymbol{G_{cd}}$ | $M \cdot n_{MV} + 2 n_{CV} \times M \cdot n_{MV} + 2 n_{CV}$ |
+| $q_{cd}$ | $M \cdot n_{MV} + 2 \cdot n_{CV}$ |
 
 </div>

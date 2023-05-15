@@ -58,7 +58,7 @@ The [nlohmann/json](https://json.nlohmann.me/api/basic_json/) library is used in
 *Scenario file*:
 ```json  
 {
- "system": "system_name", (sr - step response / ss - state space)
+ "system": "system_name", 
  
  "MPC": {
    "P": int, (Prediction horizon)
@@ -121,7 +121,7 @@ NB! The indicator for the constraints is only used for readability and is not pa
          "c": [low, high] (double),
          "y": [y1, y2, y3, ... , yT], (Reference model simulation)
          "y_pred": [y1, y2, y3, ... , yT], (Predicted model simulation)
-         "ref": [r1, r2, ..., rT]
+         "ref": [r1, r2, ..., rT] (reference data)
       }, 
          ... , 
       { 
@@ -130,7 +130,7 @@ NB! The indicator for the constraints is only used for readability and is not pa
          "c": [low, high] (double),
          "y": [y1, y2, y3, ... , yT], (Reference model simulation)
          "y_pred": [y1, y2, y3, ... , yT], (Predicted model simulation)
-         "ref": [r1, r2, ..., rT]
+         "ref": [r1, r2, ..., rT] (reference data)
       }
    ],
 
