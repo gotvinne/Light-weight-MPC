@@ -7,6 +7,7 @@ This is a simulation software base for automating MPC simulations on Finite Step
 - [model](src/model/README.md): Generating a Finite Step Response Model. 
 - [IO](src/IO/README.md): Parsing and serializing respectively input and output data.
 - [vis](vis/README.md): Visualizing simulations in jupyter notebook
+
 OsqpEigen is a folder holding the [osqp-eigen](https://github.com/robotology/osqp-eigen) software. 
 
 ### Dependancies:

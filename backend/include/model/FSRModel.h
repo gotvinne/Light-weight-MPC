@@ -67,20 +67,20 @@ private:
      * If W_ is not equation to 0, the FSRM needs to declare simulation matrices. 
      * Implementing equation ... Light-weight MPC master thesis
      * 
-     * @param W
+     * @param W Start horizon
      * 
      * @return MatrixXd
      */
-    MatrixXd getThetaMatrix(int W = 0);
+    MatrixXd getThetaMatrix(int W);
 
     /**
      * @brief Set the Phi Matrix object holding the previous step coefficients
      * Implementing equation ... Light-weight MPC master thesis
      * 
-     * @param W
+     * @param W Start horizon
      * @return MatrixXd
      */
-    MatrixXd getPhiMatrix(int W = 0);
+    MatrixXd getPhiMatrix(int W);
 
     /**
      * @brief Pad the vector, by appending Sn (last element of vec) pad times
@@ -96,10 +96,10 @@ private:
      * @brief Set the Psi
      * Implementing equation ... Light-weight MPC master thesis
      * 
-     * @param W
+     * @param W Start horizon
      * @return MatrixXd
      */
-    MatrixXd getPsi(int W = 0);
+    MatrixXd getPsi(int W);
 
     /**
      * @brief Get the Du Tilde object, past actuations, by flattening du_tilde_mat
@@ -126,15 +126,13 @@ public:
     FSRModel() : n_CV_{0}, n_MV_{0} {}
     
     /**
-     * @brief Construct a new FSRModel object
+     * @brief FSRModel constructor
      * 
-     * @param SR 
-     * @param m_param 
-     * @param P 
-     * @param M 
-     * @param W 
-     * @param init_u 
-     * @param init_y 
+     * @param SR step coefficient matric
+     * @param m_param model parameters
+     * @param conf MPC configuration
+     * @param init_u initial actuation
+     * @param init_y initial output
      */
     FSRModel(VectorXd** SR, std::map<string, int> m_param, const MPCConfig& conf,
             const std::vector<double>& init_u, const std::vector<double>& init_y);
@@ -142,10 +140,10 @@ public:
     /**
      * @brief Construct a new FSRModel object, Open loop constructor
      * 
-     * @param SR 
-     * @param m_param 
-     * @param init_u 
-     * @param init_y 
+     * @param SR step coefficient matric
+     * @param m_param model parameters
+     * @param init_u initial actuation
+     * @param init_y initial output
      */
     FSRModel(VectorXd** SR, std::map<std::string, int> m_param,
             const std::vector<double>& init_u, const std::vector<double>& init_y);
@@ -162,9 +160,8 @@ public:
     int getW() const { return W_; }
     int getN_CV() const { return n_CV_; }
     int getN_MV() const { return n_MV_; }
-
     MatrixXd getDuTildeMat() const { return du_tilde_mat_; }
-    VectorXd getUK() const { return u_K_; } // Returns most recent U
+    VectorXd getUK() const { return u_K_; }
 
     /** MPC functionality*/
     /**
@@ -180,6 +177,7 @@ public:
      * Y is a vector containing every (P-W) * n_CV predictions further in time
      * 
      * @param du [Eigen::VectorXd] dim(du) = a = n_MV * M
+     * @param all_pred boolean, if true return P predictions, if false return k+1
      * @return VectorXd predicted output, one step, k+1 ahead. 
      */
     MatrixXd getY(const VectorXd& du, bool all_pred = false) {
@@ -193,15 +191,13 @@ public:
     /**
      * @brief Get the Theta object
      * 
-     * @param W 
      * @return MatrixXd 
      */
     MatrixXd getTheta() const { return theta_; }
 
     /**
-     * @brief Get the Lambda object, Lambda = Phi * Delta U_tilde + Psi * U
+     * @brief Get the Lambda object, Lambda = Phi * Delta U_tilde + Psi * U + y_0
      * 
-     * @param W
      * @return VectorXd 
      */
     VectorXd getLambda() const { return phi_ * getDuTilde() + psi_ * u_ + y_; }; 

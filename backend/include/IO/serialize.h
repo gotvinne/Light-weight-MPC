@@ -64,7 +64,7 @@ void SerializeSimulationNew(const string& write_path, const string& scenario, co
  * @param write_path file path to write json file
  * @param y_pred matrix of CV predictions
  * @param u_mat MPC actuations
- * @param ref
+ * @param ref Reference data
  * @param T MPC horizon
  */
 void SerializeSimulation(const string& write_path, const MatrixXd& y_pred, const MatrixXd& u_mat,
@@ -80,7 +80,7 @@ void SerializeSimulation(const string& write_path, const MatrixXd& y_pred, const
  * @param u_mat MPC actuations
  * @param z_min lower constraints
  * @param z_max upper constraints
- * @param ref
+ * @param ref reference data
  * @param fsr The finite step response model
  * @param T MPC horizon
  * @return string JSON file

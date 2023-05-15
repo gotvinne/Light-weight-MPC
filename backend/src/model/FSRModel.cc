@@ -41,9 +41,9 @@ FSRModel::FSRModel(VectorXd** SR, std::map<std::string, int> m_param, const std:
     AllocateAndDeepCopy(SR); 
     // set FSRM matrix variables
     setSRMatrix();
-    theta_ = getThetaMatrix();
-    phi_ = getPhiMatrix();
-    psi_ = getPsi();
+    theta_ = getThetaMatrix(W_);
+    phi_ = getPhiMatrix(W_);
+    psi_ = getPsi(W_);
 
     du_tilde_mat_ = MatrixXd::Zero(n_MV_, N_-W_-1); 
 }    
