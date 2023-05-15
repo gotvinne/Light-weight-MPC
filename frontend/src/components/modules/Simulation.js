@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 
 import { readSimModelParams, readSimCV, readSimMV } from "../../utils/IO.js";
-import { OutputCharts, ActuationCharts } from "./Plotly/LineChart.js";
+import { OutputCharts, ActuationCharts } from "./plotly/LineChart.js";
 import "../../css/Modules.css"
 
 const initSimParam = {scenario: "", T: 0, nCV: 0, nMV: 0};
