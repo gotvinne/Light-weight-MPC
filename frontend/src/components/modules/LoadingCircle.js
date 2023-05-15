@@ -6,7 +6,7 @@ import "../../css/Modules.css"
 /**
  * Displaying loading module
  */
-export default function ProgressCircle() {
+export default function LoadingCircle() {
   return (
     <div className='Scenario'>
         <Box sx={{pt: "15%"}}>
