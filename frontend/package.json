@@ -15,7 +15,6 @@
         "@types/react-dom": "^18.2.1",
         "assert": "^2.0.0",
         "buffer": "^6.0.3",
-        "fs": "^0.0.1-security",
         "plotly.js": "^2.22.0",
         "react": "^18.2.0",
         "react-app-polyfill": "^3.0.0",
