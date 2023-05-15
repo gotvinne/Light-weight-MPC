@@ -18,14 +18,6 @@ src
 package-lock.json
 package.json
 ```
-
-**public**: 
-
-**src**: 
-The source code defining the user interface. *Components* folder holds all react components rendered in the application 
-
-**package.json**: This is a json file describing all react packages needed in order to deploy the application. 
-
 ### React packages
 In order to run the application, Download Node.js and npm from [here](https://nodejs.org/en/download). Check package.json for react dependancies.
 
