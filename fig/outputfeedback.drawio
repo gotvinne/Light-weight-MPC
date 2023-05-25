@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2023-05-25T13:14:10.603Z" agent="Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/113.0" etag="CHQWC3gEhY-oF1afrPTc" version="21.3.3" type="github">
+<mxfile host="app.diagrams.net" modified="2023-05-25T13:21:07.959Z" agent="Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/113.0" etag="EI1zUJXuSJrzTruyGuvn" version="21.3.3" type="github">
   <diagram name="Page-1" id="lL7mC4RVFXEto7MLpvFA">
     <mxGraphModel dx="1360" dy="915" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
@@ -15,7 +15,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="8dqxaz00r-WmeCq21K9j-1" value="Plant model" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="8dqxaz00r-WmeCq21K9j-1" value="Plant" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="480" y="291" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="8dqxaz00r-WmeCq21K9j-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="8dqxaz00r-WmeCq21K9j-2" target="8dqxaz00r-WmeCq21K9j-3" edge="1">
