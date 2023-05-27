@@ -1,4 +1,4 @@
-# MPC-core: C++, Python, Webassembly
+# MPC-simulator: C++, Python, Webassembly
 This is a simulation software base for automating MPC simulations on Finite Step Response Models. All data files, including the model description and controller definition, are defined using JSON format making the software easily integratable. Having defined the input files, one can simulate the controller from the command line, calling make.sh using CMake and GNU compiler. In order to visualize the simulation data, plotting functionality is implemented in Python. Additionally, in order to interface the software to web-applications, the software is compiled to wasm format calling emcc.sh using the Emscripten compiler. 
 
 ## Modules
@@ -45,12 +45,11 @@ conda install -n env -c anaconda cmake
 conda install -n env -c conda-forge osqp-eigen
 conda install -n env -c conda-forge nlohmann_json
 conda install -n env -c conda-forge cli11
-conda install -n env -c conda-forge boost
 ```
 ```console
 conda env export > conda/env.yml
 ```
-- Build and run program, NB! make.sh calls binary ./mpc_core
+- Build and run program, NB! make.sh calls binary ./mpc_simulator
 Arguments:
 - [-T int] mpc_horizon: Simulate scenario for the given mpc_horizon
 - [-s string] scenario_name: Scenario file to be simulated
@@ -77,7 +76,7 @@ Or for MacOS, download via Brew
 brew install emscripten
 ```
 
-Before building and running the compiler, the enscripten compiler needs to be sourced to terminal. Afterwards, emcc.sh can be run. The output, *webassembly.mjs* is stored in the Front-End's src-folder. emcc.sh takes an argument [-d dest] with is the filepath to the webassembly file
+Before building and running the compiler, the enscripten compiler needs to be sourced to terminal. Afterwards, emcc.sh can be run. The output, *mpc_simulator.mjs* is stored in the Front-End's src-folder. emcc.sh takes an argument [-d dest] with is the filepath to the webassembly file
 ```console
 source ./emsdk_env.sh
 sh emcc.sh -d ../frontend/src
