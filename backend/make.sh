@@ -35,6 +35,9 @@ cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX
 make
 
+RED='\033[0;31m' # Enable color
+NC='\033[0m' 
+
 # $? denote exit code
 if [ $? -eq 0 ]; then #Build successful
     echo 
@@ -48,12 +51,9 @@ if [ $? -eq 0 ]; then #Build successful
     if [ $? -eq 0 ]; then #Running successfull
         echo
     else
-       RED='\033[0;31m'
-       NC='\033[0m' 
-       echo "${RED}RUNTIME ERROR! ${NC}\n"
+       
+       echo -e "${RED}RUNTIME ERROR! ${NC}\n"
     fi
 else
-    RED='\033[0;31m'
-    NC='\033[0m' 
-    echo "${RED}BUILD ERROR! ${NC}\n"
+    echo -e "${RED}BUILD ERROR! ${NC}\n"
 fi
