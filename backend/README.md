@@ -47,7 +47,7 @@ conda install -n env -c conda-forge nlohmann_json
 conda install -n env -c conda-forge cli11
 ```
 ```console
-conda env export > conda/env.yml
+conda env export > env/env.yml
 ```
 - Build and run program, NB! make.sh calls binary ./mpc_simulator
 Arguments:
@@ -57,7 +57,7 @@ Arguments:
 - [-n bool] new simulation
 ```console
 chmod +x setup.sh                       // Set execute permission
-sh make.sh -T mpc_horizon -s sce -r ref -n
+sh make.sh -T mpc_horizon -s sce -r [ref] -n
 ```
 ### Webassembly
 Light-weight MPC uses the *Emscripten* compiler in order to compile the C++-code to *Webassembly* which can be reached from a website using JavaScript.
@@ -83,7 +83,7 @@ sh emcc.sh -d ../frontend/src
 ```
 
 ### Visualization
-MPC-core has an secondary code base providing plot functionality. This software is developed in Python, and can be installed using [conda](https://docs.conda.io/en/latest/#). The visualization tool is found in the folder named */vis*
+MPC-core has an secondary code base providing plot functionality. This software is developed in Python, and can be installed using [conda](https://docs.conda.io/en/latest/#). The visualization tool is found in the folder named *vis*
 
 ```console
 conda install -n env -c anaconda jupyter
@@ -91,7 +91,7 @@ conda install -n env -c anaconda numpy
 conda install -n env -c conda-forge matplotlib
 ```
 
-One can choose to either open Jupyter-Notebook and run *vis.ipynb*. Alternatively, can the plots be produced in by a terminal command from root (Linux operating system):
+One can choose to either open Jupyter-Notebook and run *vis.ipynb*. Alternatively, can the plots be produced in by a terminal command from root:
 
 ```console
 python3 vis/plot.py -s "Simulation"
