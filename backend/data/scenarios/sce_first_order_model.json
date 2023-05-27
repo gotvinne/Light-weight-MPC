@@ -1,10 +1,10 @@
 {
-    "system": "siso_test",
+    "system": "first_order_model",
     
     "MPC": {
       "P": 50,
       "M": 30,
-      "W": 5,
+      "W": 20,
 
       "Q": [1],
       "R": [100], 
