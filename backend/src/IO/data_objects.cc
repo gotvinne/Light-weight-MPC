@@ -24,10 +24,23 @@ static void EigenFromJson(VectorXd& vec, const json& arr) {
     }
 }
 
-/* Error handling:
-    Check that S is correct with N_MV and N_CV
-    Check that number of S is correct with N
-*/
+void CVData::PaddSData(json& s_data, int cv) {
+    if (s_data.size() != n_MV_) {
+        throw std::invalid_argument("CV number "+ std::to_string(cv)+" does not have n_MV step coefficients!");
+    }
+    for (int mv = 0; mv < n_MV_; mv++) {
+        json response = s_data.at(mv); 
+        int size = response.size();
+        if (size > N_) {
+            throw std::invalid_argument("N is wrongly defined, there exist longer s-responses!");
+        } else if (size < N_) {
+            double sn = *(response.end() - 1); // Accessing S(N)
+            response.insert(response.end(), N_ - size, sn); 
+            s_data.at(mv) = response;
+        }
+    }
+}
+
 CVData::CVData(const json& cv_data, int n_MV, int n_CV, int N) : n_CV_{n_CV}, n_MV_{n_MV}, N_{N} {
     int n_outputs = cv_data.size();
     if (n_outputs != n_CV) {
@@ -35,14 +48,16 @@ CVData::CVData(const json& cv_data, int n_MV, int n_CV, int N) : n_CV_{n_CV}, n_
     }
     AllocateVectors();
     
-    int i = 0;
+    int i = 0; // cv counter
     for (auto& cv : cv_data) {
         outputs_.push_back(cv.at(kOutput));
         inits_.push_back(cv.at(kInit));
         units_.push_back(cv.at(kUnit));
 
+        json s_data = cv.at(kS); // Fetching s coefficients
+        PaddSData(s_data, i); // Padd if needed
         for (int mv = 0; mv < n_MV_; mv++) {
-            FillSR(cv.at(kS), i, mv);
+            FillSR(s_data, i, mv);
         }
         i++;
     }                          

@@ -24,7 +24,7 @@ class CVData {
 private:
     int n_CV_; /** Number of controlled variables */
     int n_MV_; /** Number of manipulated variables */
-    int N_; /** Number of step response coefficients */
+    int N_; /** Largest number of step response coefficients */
     
     std::vector<string> outputs_; /** vector of state specifiers */
     std::vector<double> inits_; /** vector of initial values */
@@ -36,8 +36,8 @@ private:
      * @brief Filling the dobbel linked VectorXd
      * 
      * @param s_data Step response coefficients in JSON format
-     * @param cv cv indicator
-     * @param mv mv indicator
+     * @param cv cv index
+     * @param mv mv index
      */
     void FillSR(const json& s_data, int cv, int mv);
 
@@ -46,6 +46,14 @@ private:
      * 
      */
     void AllocateVectors();
+
+    /**
+     * @brief Padding S coefficients such that the model representation has equal number of Ss for each response
+     * 
+     * @param s_data 
+     * @param cv 
+     */
+    void PaddSData(json& s_data, int cv); 
 
 public:
     /**

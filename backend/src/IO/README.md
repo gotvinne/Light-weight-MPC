@@ -14,7 +14,7 @@ The [nlohmann/json](https://json.nlohmann.me/api/basic_json/) library is used in
    "model": {
       "n_CV": int,
       "n_MV": int,
-      "N": int, (#Step-response coefficients)
+      "N": int, (#Largest Step-coefficient series)
    },
 
    "CV": [
@@ -54,7 +54,8 @@ The [nlohmann/json](https://json.nlohmann.me/api/basic_json/) library is used in
    ],                         
 }
 ```
-
+NB! Not every step coefficient series need to be N elements long. The software pads smaller vectors using $$S(N+1) \approx S(N)$$. 
+ 
 *Scenario file*:
 ```json  
 {

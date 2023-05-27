@@ -32,7 +32,15 @@ static void FillVector(json& vector, const MatrixXd& mat, int row) {
     }
 }
 
-static json SliceVector(json& vector, int start, int end) {
+/**
+ * @brief Slice a json array 
+ * 
+ * @param vector original array
+ * @param start start index
+ * @param end end index
+ * @return json sliced array
+ */
+static json SliceVector(const json& vector, int start, int end) {
     json vec = json::array();
 
     if (start > end) {
@@ -215,16 +223,16 @@ static void SerializeConstraints(json& data, const VectorXd& l_du, const VectorX
 }
 
 /**
- * @brief 
+ * @brief Serialize the controller tuning
  * 
- * @param data 
- * @param mpc_m 
- * @param Q 
- * @param R 
- * @param Ro 
- * @param bias_update 
+ * @param data json object to be filled
+ * @param mpc_m std::map holding model parameters
+ * @param Q Output error penalty
+ * @param R Acuation penalty
+ * @param Ro slack penalty
+ * @param bias_update integral effect
  */
-static void SerializeMPC(json& data, std::map<string, int> mpc_m, const VectorXd& Q, const VectorXd& R, const VectorXd& Ro, bool bias_update) {
+static void SerializeTuning(json& data, std::map<string, int> mpc_m, const VectorXd& Q, const VectorXd& R, const VectorXd& Ro, bool bias_update) {
     json obj = json::object();
     obj[kP] = mpc_m[kP];
     obj[kM] = mpc_m[kM];
@@ -355,7 +363,7 @@ void SerializeScenario(const string& write_path, const string& scenario, const s
     }
 
     data[kSystem] = system; // Write system
-    SerializeMPC(data, mpc_m, Q, R, Ro, bias_update);
+    SerializeTuning(data, mpc_m, Q, R, Ro, bias_update);
     SerializeConstraints(data, l_du, l_u, l_y, u_du, u_u, u_y, n_CV, n_MV);
     WriteJson(data, write_path);
 }
