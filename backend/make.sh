@@ -43,9 +43,9 @@ if [ $? -eq 0 ]; then #Build successful
     echo 
 
     if $argN; then # If flag is found
-      ./mpc_core -T $argT -s $argS -r $argRef -n
+      ./mpc_simulator -T $argT -s $argS -r $argRef -n
     else 
-      ./mpc_core -T $argT -s $argS -r $argRef
+      ./mpc_simulator -T $argT -s $argS -r $argRef
     fi
 
     if [ $? -eq 0 ]; then #Running successfull
