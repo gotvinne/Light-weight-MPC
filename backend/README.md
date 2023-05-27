@@ -25,7 +25,6 @@ Other libraries used:
 - [osqp-eigen](https://github.com/robotology/osqp-eigen), C++ wrapper for OSQP 
 - [nlohmann/json](https://json.nlohmann.me/api/basic_json/), Json parser
 - [Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page), Template library for linear algebra
-- [boost/odeint](http://headmyshoulder.github.io/odeint-v2/), Numerical ODE solver
 - [CLI11](https://github.com/CLIUtils/CLI11), Command line parser
 - [Emscripten](https://emscripten.org/docs/index.html), web compiler
 
