@@ -33,29 +33,29 @@ if(WEBASSEMBLY)
 
     FetchContent_MakeAvailable(nlohmann_json Eigen osqp)
 
-    project(mpc_core VERSION 1.0 LANGUAGES CXX)
+    project(mpc_simulator VERSION 1.0 LANGUAGES CXX)
     set(BACKEND_SRC src/wasm/*.cc src/OsqpEigen/*.cpp src/IO/*.cc src/model/*.cc src/MPC/*.cc src/simulations.cc)
     file(GLOB_RECURSE SRC_FILES ${BACKEND_SRC})
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/${DEST}") # Set webassembly output
-    add_executable(mpc_core ${SRC_FILES}) 
+    add_executable(mpc_simulator ${SRC_FILES}) 
 
-    target_include_directories(mpc_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
-    target_link_libraries(mpc_core nlohmann_json::nlohmann_json Eigen3::Eigen osqp)
+    target_include_directories(mpc_simulator PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+    target_link_libraries(mpc_simulator nlohmann_json::nlohmann_json Eigen3::Eigen osqp)
 
     # emcc compiler flags
-    set(EMCC_FLAGS "--bind -s MAIN_MODULE=2 -s NO_DISABLE_EXCEPTION_CATCHING -s USE_ES6_IMPORT_META=0 -s WASM=1 -s SINGLE_FILE=1 -s ALLOW_MEMORY_GROWTH=1 -s MALLOC=emmalloc -s MODULARIZE=1 -s EXPORT_ES6=1 -s ENVIRONMENT=web -s EXPORT_NAME='mpc_core' -s ASSERTIONS=1 -s LINKABLE=1 -std=c++11")
-    set_target_properties(mpc_core PROPERTIES SUFFIX ".mjs" LINK_FLAGS ${EMCC_FLAGS})
+    set(EMCC_FLAGS "--bind -s MAIN_MODULE=2 -s NO_DISABLE_EXCEPTION_CATCHING -s USE_ES6_IMPORT_META=0 -s WASM=1 -s SINGLE_FILE=1 -s ALLOW_MEMORY_GROWTH=1 -s MALLOC=emmalloc -s MODULARIZE=1 -s EXPORT_ES6=1 -s ENVIRONMENT=web -s EXPORT_NAME='mpc_simulator' -s ASSERTIONS=1 -s LINKABLE=1 -std=c++11")
+    set_target_properties(mpc_simulator PROPERTIES SUFFIX ".mjs" LINK_FLAGS ${EMCC_FLAGS})
 
 else(WEBASSEMBLY)
     #set(CMAKE_CXX_FLAGS "-Wall -Wextra") # Print warnings
-    project(mpc_core VERSION 1.0 LANGUAGES CXX)
+    project(mpc_simulator VERSION 1.0 LANGUAGES CXX)
 
     find_package(OsqpEigen REQUIRED)
     find_package(nlohmann_json 3.11.2 REQUIRED)
 
     file(GLOB_RECURSE SRC_FILES src/*.cc)
-    add_executable(mpc_core ${SRC_FILES}) # Define executable
+    add_executable(mpc_simulator ${SRC_FILES}) # Define executable
 
-    target_include_directories(mpc_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
-    target_link_libraries(mpc_core OsqpEigen::OsqpEigen nlohmann_json::nlohmann_json)
+    target_include_directories(mpc_simulator PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+    target_link_libraries(mpc_simulator OsqpEigen::OsqpEigen nlohmann_json::nlohmann_json)
 endif(WEBASSEMBLY)
