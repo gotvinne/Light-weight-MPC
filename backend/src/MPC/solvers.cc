@@ -132,7 +132,7 @@ void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr_sim, FSRMo
     if (!solver.data()->setUpperBound(u)) { throw std::runtime_error("Cannot initialize upper bound"); }
     if (!solver.initSolver()) { throw std::runtime_error("Cannot initialize solver"); }
 
-    u_mat = MatrixXd::Zero(n_MV, T);
+    u_mat = MatrixXd::Zero(n_MV, T + M);
     y_pred = MatrixXd::Zero(n_CV, T + P);
     SparseXd omega_u = setOmegaU(M, n_MV);
 
@@ -146,17 +146,19 @@ void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr_sim, FSRMo
         VectorXd z = z_st(Eigen::seq(0, a - 1)); // [dU]
 
         // Store optimal du and y_pref: Before update!
-        if (k == T) {           
+        if (k == T) {      
+            u_mat.block(0, T, n_MV, M) = (K_inv * z).reshaped<Eigen::RowMajor>(n_MV, M);       
             y_pred.block(0, k, n_CV, P) = fsr_sim.getY(z, true);
         } else {
+            // Store y_pred
+            y_pred.col(k) = fsr_sim.getY(z);
+
             // Propagate FSR models: Update both! 
             VectorXd du = omega_u * z; // MPC actuation
             fsr_sim.UpdateU(du);
             fsr_cost.UpdateU(du);
-
             u_mat.col(k) = fsr_sim.getUK();
-            y_pred.col(k) = fsr_sim.getY(z);
-
+        
             // Update MPC problem:
             setConstraintVectors(l, u, fsr_cost, c_l, c_u, K_inv, Gamma, m, a);
             setGradientVector(q, fsr_cost, Q_bar, one, ref, conf, n, k); 
