@@ -103,13 +103,25 @@ void setWeightMatrices(SparseXd& Q_bar, SparseXd& R_bar, const MPCConfig& conf) 
     R_bar = R.sparseView(); // dim(R_bar) = n_MV * M x n_MV * M
 }
 
-SparseXd setHessianMatrix(const SparseXd& Q_bar, const SparseXd& R_bar, const MatrixXd& theta, int a, int n) {
+SparseXd setHessianMatrix(const SparseXd& Q_bar, const SparseXd& R_bar, const SparseXd& one, const MatrixXd& theta, int a, int n, int n_CV) {
     // G = 2 * [R_bar + 2 Theta^T Q_bar, Theta, -Theta^T Q_bar 1, Theta^T Q_bar 1
     //          -1^T Q_bar Theta, 1^T Q_bar 1, 0
     //          1^T Q_bar Theta, 0, 1^T Q_bar 1];
     MatrixXd g = MatrixXd::Zero(n, n);
+    int prediction_size = n - a; // (P-W) * n_CV
+
+    // First row:
     g.block(0, 0, a, a) = 2 * theta.transpose() * Q_bar * theta + 2 * R_bar;
+    g.block(0, a, a, n_CV) = -theta.transpose() * Q_bar * one; 
+    g.block(0, a + n_CV, a, n_CV) = theta.transpose() * Q_bar * one; 
     
+    // Second row: 
+    g.block(a, 0, n_CV, a) = -one.transpose() * Q_bar * theta;
+    g.block(a, a, n_CV, n_CV) = one.transpose() * Q_bar * one;
+
+    // Third row:
+    g.block(a + n_CV, 0, n_CV, a) = one.transpose() * Q_bar * theta;
+    g.block(a + n_CV, a + n_CV, n_CV, n_CV) = one.transpose() * Q_bar * one;
     return g.sparseView();
 }
 

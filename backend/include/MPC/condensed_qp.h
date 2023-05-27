@@ -39,11 +39,13 @@ void setWeightMatrices(SparseXd& Q_bar, SparseXd& R_bar, const MPCConfig& conf);
  * 
  * @param Q_bar Positive definite Eigen::MatrixXd output tuning matrix
  * @param R_bar Positive definite Eigen::MatrixXd change of input tuning matrix
+ * @param one 
  * @param theta MatrixXd Theta matrix describing output predictions
  * @param a dim(du)
  * @param n Number of optimalization variables
+ * @param n_CV
  */
-SparseXd setHessianMatrix(const SparseXd& Q_bar, const SparseXd& R_bar, const MatrixXd& theta, int a, int n); 
+SparseXd setHessianMatrix(const SparseXd& Q_bar, const SparseXd& R_bar, const SparseXd& one, const MatrixXd& theta, int a, int n, int n_CV); 
 
 /**
  * @brief Set the Gradient Vector q
