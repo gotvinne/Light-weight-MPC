@@ -70,7 +70,7 @@ void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPC
          VectorXd z = z_st(Eigen::seq(0, a - 1)); // [dU]
          
         if (k == T) { // Store predictons
-            u_mat.block(0, T, n_MV, M) = (K_inv * z).reshaped<Eigen::RowMajor>(n_MV, M);      
+            u_mat.block(0, T, n_MV, M) = (K_inv * z).reshaped<Eigen::RowMajor>(n_MV, M).colwise() + u_mat.col(T-1);      
             y_pred.block(0, T, n_CV, P) = fsr.getY(z, true);
         } else {
             // Store y_pref: Before update!
@@ -147,7 +147,7 @@ void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr_sim, FSRMo
 
         // Store optimal du and y_pref: Before update!
         if (k == T) {      
-            u_mat.block(0, T, n_MV, M) = (K_inv * z).reshaped<Eigen::RowMajor>(n_MV, M);       
+            u_mat.block(0, T, n_MV, M) = (K_inv * z).reshaped<Eigen::RowMajor>(n_MV, M).colwise() + u_mat.col(T-1);       
             y_pred.block(0, k, n_CV, P) = fsr_sim.getY(z, true);
         } else {
             // Store y_pred
