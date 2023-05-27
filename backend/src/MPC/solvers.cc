@@ -68,13 +68,14 @@ void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPC
          // Claim solution:
          VectorXd z_st = solver.getSolution(); // [dU, eta_h, eta_l]
          VectorXd z = z_st(Eigen::seq(0, a - 1)); // [dU]
-         VectorXd du = omega_u * z; // MPC actuation
-
+         // Extract all P dus corresponding to P predictions. 
+         
         // Store optimal du and y_pref: Before update!
         if (k == T) {           
             y_pred.block(0, k, n_CV, P) = fsr.getY(z, true);
         } else {
             // Propagate FSR model:
+            VectorXd du = omega_u * z; // MPC actuation
             fsr.UpdateU(du);
 
             u_mat.col(k) = fsr.getUK();
