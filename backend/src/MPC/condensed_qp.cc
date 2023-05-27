@@ -72,6 +72,20 @@ static void UpdateBounds(VectorXd& bound, FSRModel& fsr, const MatrixXd& K_inv,
     bound -= c; // Subtract k-dependant part
 }
 
+SparseXd setOneMatrix(int P, int W, int n_CV) {
+    // 1 = [1, 0, ..., 0
+    //      ., 0, ..., .
+    //      1_(P-W), 0, ..., 0
+    //      ..., ..., ..., ...] See equation 32 thesis. 
+
+    MatrixXd one_matrix = MatrixXd::Zero((P-W) * n_CV, n_CV); 
+    VectorXd one_vector = VectorXd::Constant(P-W, 1);
+    for (int i = 0; i < n_CV; i++) {
+        one_matrix.block(i * (P-W), i, P-W, 1) = one_vector;
+    }
+    return one_matrix.sparseView();
+}
+
 /////////////////////////////
 /////// COST FUNCTION ///////
 /////////////////////////////
@@ -90,10 +104,12 @@ void setWeightMatrices(SparseXd& Q_bar, SparseXd& R_bar, const MPCConfig& conf) 
 }
 
 SparseXd setHessianMatrix(const SparseXd& Q_bar, const SparseXd& R_bar, const MatrixXd& theta, int a, int n) {
+    // G = 2 * [R_bar + 2 Theta^T Q_bar, Theta, -Theta^T Q_bar 1, Theta^T Q_bar 1
+    //          -1^T Q_bar Theta, 1^T Q_bar 1, 0
+    //          1^T Q_bar Theta, 0, 1^T Q_bar 1];
     MatrixXd g = MatrixXd::Zero(n, n);
     g.block(0, 0, a, a) = 2 * theta.transpose() * Q_bar * theta + 2 * R_bar;
     
-    // G = blkdiag(g (axa), 0 (n_CVxn_CV), 0 (n_CVxn_CV)]
     return g.sparseView();
 }
 
@@ -124,16 +140,17 @@ void setConstraintVectors(VectorXd& l, VectorXd& u, FSRModel& fsr, const VectorX
 }
 
 SparseXd setConstraintMatrix(const MatrixXd& theta, int m, int n, int a, int n_CV) {
-    // A = [ I (axa),           0 (axn_CV),      0 (axn_CV)
-    //       K⁽⁻¹⁾ (axa),       0 (axn_CV),      0 (axn_CV)
-    //       Theta* (n_CV*Pxa), -I* (n_CV*Pxn_CV), 0 (n_CV*Pxn_CV)
-    //       Theta* (n_CV*Pxa),  0 (n_CV*Pxn_CV), I* (n_CV*Pxn_CV)
-    //       0 (n_CVxa),        I (n_CVxn_CV),   0 (n_CVxn_CV)
-    //       0 (n_CVxa),        0 (n_CVxn_CV),   I (n_CVxn_CV)]; 
+    // A = [ I (axa),                0 (axn_CV),           0 (axn_CV)
+    //       K⁽⁻¹⁾ (axa),            0 (axn_CV),           0 (axn_CV)
+    //       Theta (n_CV*(P-W)xa), -1 (n_CV*(P-W)xn_CV), 0 (n_CV*(P-W)xn_CV)
+    //       Theta (n_CV*(P-W)xa),  0 (n_CV*(P-W)xn_CV),  1 (n_CV*(P-W)xn_CV)
+    //       0 (n_CVxa),             I (n_CVxn_CV),        0 (n_CVxn_CV)
+    //       0 (n_CVxa),             0 (n_CVxn_CV),        I (n_CVxn_CV)]; 
     MatrixXd dense = MatrixXd::Zero(m, n); 
     int dim_theta = theta.rows();
 
     MatrixXd In_cv = MatrixXd::Identity(n_CV, n_CV);
+
     MatrixXd Itheta = MatrixXd::Identity(dim_theta, n_CV);
     MatrixXd K_inv = setKInv(a);
 

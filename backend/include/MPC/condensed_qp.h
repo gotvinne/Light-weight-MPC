@@ -16,6 +16,16 @@ using MatrixXd = Eigen::MatrixXd;
 using SparseXd = Eigen::SparseMatrix<double>;
 
 /**
+ * @brief Set the One Matrix object
+ * 
+ * @param P 
+ * @param W 
+ * @param n_CV 
+ * @return SparseXd 
+ */
+SparseXd setOneMatrix(int P, int W, int n_CV);
+
+/**
  * @brief Set the weight Matrices @param Q_bar and @param R_bar
  * 
  * @param Q_bar Eigen::SparseMatrix<double> to be filled by output tuning
