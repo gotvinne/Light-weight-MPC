@@ -9,6 +9,7 @@ T = "T"
 N_CV = "n_CV"
 N_MV = "n_MV"
 P = "P"
+M = "M"
 
 CV = "CV"
 MV = "MV"
@@ -36,16 +37,17 @@ class SimulationData():
         self.n_CV = json_data[N_CV]
         self.n_MV = json_data[N_MV]
         self.P = json_data[P]
+        self.M = json_data[M]
 
         self.y = np.empty([self.n_CV, self.T + self.P])
         self.y_pred = np.empty([self.n_CV, self.T + self.P])
         self.ref = np.empty([self.n_CV, self.T + self.P])
-        self.u = np.ndarray([self.n_MV, self.T])
+        self.u = np.ndarray([self.n_MV, self.T + self.M])
 
         self.ParseCVData(json_data)
         self.ParseMVData(json_data)
 
-    def ReadSimulation(self, filepath):
+    def ReadSimulation(self, filepath: str) -> json:
         """
         Read simulation data json file
         :param filepath: relative path to simulation data
@@ -88,7 +90,7 @@ class SimulationData():
         self.inputs, self.mv_units, self.mv_constraints = inputs, mv_units, mv_constraints
 
 
-def ListSimulations(sim_dirpath):
+def ListSimulations(sim_dirpath: str):
     """
     Listing all avaliable simulations
     :param sim_dirpath: Local directory path
