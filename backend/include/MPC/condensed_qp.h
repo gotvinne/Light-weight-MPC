@@ -16,11 +16,11 @@ using MatrixXd = Eigen::MatrixXd;
 using SparseXd = Eigen::SparseMatrix<double>;
 
 /**
- * @brief Set the One Matrix object
+ * @brief Set the One Matrix, slack scaling matric
  * 
- * @param P 
- * @param W 
- * @param n_CV 
+ * @param P Prediction horizon
+ * @param W Start horizon
+ * @param n_CV number of controlled variables
  * @return SparseXd 
  */
 SparseXd setOneMatrix(int P, int W, int n_CV);
@@ -39,11 +39,11 @@ void setWeightMatrices(SparseXd& Q_bar, SparseXd& R_bar, const MPCConfig& conf);
  * 
  * @param Q_bar Positive definite Eigen::MatrixXd output tuning matrix
  * @param R_bar Positive definite Eigen::MatrixXd change of input tuning matrix
- * @param one 
+ * @param one scaling matrix
  * @param theta MatrixXd Theta matrix describing output predictions
  * @param a dim(du)
  * @param n Number of optimalization variables
- * @param n_CV
+ * @param n_CV number of controlled variables
  */
 SparseXd setHessianMatrix(const SparseXd& Q_bar, const SparseXd& R_bar, const SparseXd& one, const MatrixXd& theta, int a, int n, int n_CV); 
 
@@ -53,7 +53,7 @@ SparseXd setHessianMatrix(const SparseXd& Q_bar, const SparseXd& R_bar, const Sp
  * @param q Eigen::VectorXd gradient vector
  * @param fsr Finite step response model
  * @param Q_bar output tuning
- * @param one 
+ * @param one scaling matrix
  * @param ref Reference vector 
  * @param conf MPCconfig
  * @param n Number of optimalization variables
@@ -81,7 +81,7 @@ void setConstraintVectors(VectorXd& l, VectorXd& u, FSRModel& fsr, const VectorX
 /**
  * @brief Set the Constraint Matrix A
  * 
- * @param one 
+ * @param one scaling matrix
  * @param theta FSRM step response predictions
  * @param m Number of constraints
  * @param n Number of optimization variables
@@ -132,7 +132,7 @@ SparseXd setOmegaU(int M, int n_MV);
  * @brief Populate constraint data, enabling dynamic constraints
  * 
  * @param c Constrain vector data
- * @param conf
+ * @param conf MPC configuration
  * @param a dim(du)
  * @param n_MV Number of manipulated variables
  * @param n_CV Number of constrained variables

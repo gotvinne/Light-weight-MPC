@@ -141,7 +141,7 @@ void MPCSimFSRM(const string& sys, const string& ref_vec, bool new_sim, int T) {
     catch(std::exception& e) {
         std::cout << e.what() << std::endl;
     }
-    
+
     // FSRM:
     MPCConfig sim_conf = conf;
     FSRModel* fsr_cost;

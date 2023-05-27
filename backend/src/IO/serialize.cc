@@ -46,6 +46,7 @@ static void SerializeSimData(json& data, const string& scenario, const FSRModel&
     data[kN_CV] = fsr.getN_CV();
     data[kN_MV] = fsr.getN_MV(); 
     data[kP] = fsr.getP();
+    data[kM] = fsr.getM();
 
     json du_tilde = json::array();
     for (int i = 0; i < fsr.getN_MV(); i++) {

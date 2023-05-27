@@ -56,7 +56,7 @@ void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPC
     if (!solver.data()->setUpperBound(u)) { throw std::runtime_error("Cannot initialize upper bound"); }
     if (!solver.initSolver()) { throw std::runtime_error("Cannot initialize solver"); }
 
-    u_mat = MatrixXd::Zero(n_MV, T);
+    u_mat = MatrixXd::Zero(n_MV, T + M);
     y_pred = MatrixXd::Zero(n_CV, T + P);
     SparseXd omega_u = setOmegaU(M, n_MV);
 
@@ -68,18 +68,18 @@ void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPC
          // Claim solution:
          VectorXd z_st = solver.getSolution(); // [dU, eta_h, eta_l]
          VectorXd z = z_st(Eigen::seq(0, a - 1)); // [dU]
-         // Extract all P dus corresponding to P predictions. 
          
-        // Store optimal du and y_pref: Before update!
-        if (k == T) {           
-            y_pred.block(0, k, n_CV, P) = fsr.getY(z, true);
+        if (k == T) { // Store predictons
+            u_mat.block(0, T, n_MV, M) = (K_inv * z).reshaped<Eigen::RowMajor>(n_MV, M);      
+            y_pred.block(0, T, n_CV, P) = fsr.getY(z, true);
         } else {
+            // Store y_pref: Before update!
+            y_pred.col(k) = fsr.getY(z);
+
             // Propagate FSR model:
             VectorXd du = omega_u * z; // MPC actuation
             fsr.UpdateU(du);
-
             u_mat.col(k) = fsr.getUK();
-            y_pred.col(k) = fsr.getY(z);
 
             // Update MPC problem:
             setConstraintVectors(l, u, fsr, c_l, c_u, K_inv, Gamma, m, a);
