@@ -53,12 +53,13 @@ SparseXd setHessianMatrix(const SparseXd& Q_bar, const SparseXd& R_bar, const Sp
  * @param q Eigen::VectorXd gradient vector
  * @param fsr Finite step response model
  * @param Q_bar output tuning
+ * @param one 
  * @param ref Reference vector 
  * @param conf MPCconfig
  * @param n Number of optimalization variables
  * @param k MPC simulation step, concatinating y_ref
  */
-void setGradientVector(VectorXd& q, FSRModel& fsr, const SparseXd& Q_bar,
+void setGradientVector(VectorXd& q, FSRModel& fsr, const SparseXd& Q_bar, const SparseXd& one,
                         const MatrixXd& ref, const MPCConfig& conf, int n, int k);
 
 /**
@@ -80,6 +81,7 @@ void setConstraintVectors(VectorXd& l, VectorXd& u, FSRModel& fsr, const VectorX
 /**
  * @brief Set the Constraint Matrix A
  * 
+ * @param one 
  * @param theta FSRM step response predictions
  * @param m Number of constraints
  * @param n Number of optimization variables
@@ -87,7 +89,7 @@ void setConstraintVectors(VectorXd& l, VectorXd& u, FSRModel& fsr, const VectorX
  * @param n_CV number of controlled variables
  * @return Eigen::Sparse<double>
  */
-SparseXd setConstraintMatrix(const MatrixXd& theta, int m, int n, int a, int n_CV);
+SparseXd setConstraintMatrix(const SparseXd& one, const MatrixXd& theta, int m, int n, int a, int n_CV);
 
 /**
  * @brief Define constant part of constraints, denoted c_l & c_u

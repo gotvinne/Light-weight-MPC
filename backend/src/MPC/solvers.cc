@@ -36,17 +36,17 @@ void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPC
     solver.data()->setNumberOfConstraints(m);
 
     // Define Cost function variables: 
-    SparseXd Q_bar, R_bar, Gamma = setGamma(M, n_MV);
+    SparseXd Q_bar, R_bar, Gamma = setGamma(M, n_MV), one = setOneMatrix(P, W, n_CV);
     MatrixXd K_inv = setKInv(a), theta = fsr.getTheta();
     // Dynamic variables:
     VectorXd q, l = VectorXd::Zero(m), u = VectorXd::Zero(m); // l and u are lower and upper constraints, z_cd 
     VectorXd c_l = ConfigureConstraint(z_min_pop, m, a, false), c_u = ConfigureConstraint(z_max_pop, m, a, true);
-
+    
     // NB! W-dependant
     setWeightMatrices(Q_bar, R_bar, conf);
-    SparseXd G = setHessianMatrix(Q_bar, R_bar, theta, a, n);
-    setGradientVector(q, fsr, Q_bar, ref, conf, n, 0); // Initial gradient
-    SparseXd A = setConstraintMatrix(theta, m, n, a, n_CV);
+    SparseXd G = setHessianMatrix(Q_bar, R_bar, one, theta, a, n, n_CV);
+    setGradientVector(q, fsr, Q_bar, one, ref, conf, n, 0); // Initial gradient
+    SparseXd A = setConstraintMatrix(one, theta, m, n, a, n_CV);
     setConstraintVectors(l, u, fsr, c_l, c_u, K_inv, Gamma, m, a);
 
     if (!solver.data()->setHessianMatrix(G)) { throw std::runtime_error("Cannot initialize Hessian"); }
@@ -83,7 +83,7 @@ void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPC
 
             // Update MPC problem:
             setConstraintVectors(l, u, fsr, c_l, c_u, K_inv, Gamma, m, a);
-            setGradientVector(q, fsr, Q_bar, ref, conf, n, k); 
+            setGradientVector(q, fsr, Q_bar, one, ref, conf, n, k); 
 
             // Check if bounds are valid:
             if (!solver.updateBounds(l, u)) { throw std::runtime_error("Cannot update bounds"); }
@@ -112,7 +112,7 @@ void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr_sim, FSRMo
     solver.data()->setNumberOfConstraints(m);
 
     // Define Cost function variables: 
-    SparseXd Q_bar, R_bar, Gamma = setGamma(M, n_MV);
+    SparseXd Q_bar, R_bar, Gamma = setGamma(M, n_MV), one = setOneMatrix(P, W, n_CV);
     MatrixXd K_inv = setKInv(a), theta = fsr_cost.getTheta();
     // Dynamic variables:
     VectorXd q, l = VectorXd::Zero(m), u = VectorXd::Zero(m); // l and u are lower and upper constraints, z_cd 
@@ -120,9 +120,9 @@ void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr_sim, FSRMo
 
     // NB! W-dependant
     setWeightMatrices(Q_bar, R_bar, conf);
-    SparseXd G = setHessianMatrix(Q_bar, R_bar, theta, a, n);
-    setGradientVector(q, fsr_cost, Q_bar, ref, conf, n, 0); // Initial gradient
-    SparseXd A = setConstraintMatrix(theta, m, n, a, n_CV);
+    SparseXd G = setHessianMatrix(Q_bar, R_bar, one, theta, a, n, n_CV);
+    setGradientVector(q, fsr_cost, Q_bar, one, ref, conf, n, 0); // Initial gradient
+    SparseXd A = setConstraintMatrix(one, theta, m, n, a, n_CV);
     setConstraintVectors(l, u, fsr_cost, c_l, c_u, K_inv, Gamma, m, a);
 
     if (!solver.data()->setHessianMatrix(G)) { throw std::runtime_error("Cannot initialize Hessian"); }
@@ -144,13 +144,13 @@ void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr_sim, FSRMo
         // Claim solution:
         VectorXd z_st = solver.getSolution(); // [dU, eta_h, eta_l]
         VectorXd z = z_st(Eigen::seq(0, a - 1)); // [dU]
-        VectorXd du = omega_u * z; // MPC actuation
 
         // Store optimal du and y_pref: Before update!
         if (k == T) {           
             y_pred.block(0, k, n_CV, P) = fsr_sim.getY(z, true);
         } else {
             // Propagate FSR models: Update both! 
+            VectorXd du = omega_u * z; // MPC actuation
             fsr_sim.UpdateU(du);
             fsr_cost.UpdateU(du);
 
@@ -159,7 +159,7 @@ void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr_sim, FSRMo
 
             // Update MPC problem:
             setConstraintVectors(l, u, fsr_cost, c_l, c_u, K_inv, Gamma, m, a);
-            setGradientVector(q, fsr_cost, Q_bar, ref, conf, n, k); 
+            setGradientVector(q, fsr_cost, Q_bar, one, ref, conf, n, k); 
 
             // Check if bounds are valid:
             if (!solver.updateBounds(l, u)) { throw std::runtime_error("Cannot update bounds"); }
