@@ -42,7 +42,7 @@ export default function Simulation({simData}) {
                         <Typography variant="h5"> {"Scenario: " + simParam.scenario} </Typography>
                     </Box>
                     <OutputCharts CVs={CVs} T={simParam.T} P={simParam.P}/>
-                    <ActuationCharts MVs={MVs} T={simParam.T} />
+                    <ActuationCharts MVs={MVs} T={simParam.T} M={simParam.M} />
                 </Box>
 
             : <Box sx={{width: "inherit", pt: 3}}>

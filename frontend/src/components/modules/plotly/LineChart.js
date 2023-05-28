@@ -37,7 +37,7 @@ export function OutputCharts({CVs, T, P}) {
     );
 }
 
-export function ActuationCharts({MVs, T}) {
+export function ActuationCharts({MVs, T, M}) {
     
     const [cols, rows, odd_plot] = useMemo(() => {
         let num_rows = Math.floor((MVs.length + 1) / PLOTS_PER_ROW);
@@ -57,7 +57,7 @@ export function ActuationCharts({MVs, T}) {
                                 {(odd_plot && (i+1) === (rows.length) && j === 1) 
                                 ?  <Box key={j+i} /> 
                                 : <Box key={j+i}> 
-                                        {PlotActuation(MVs[j * (i+1)], T)}
+                                        {PlotActuation(MVs[j * (i+1)], T, M)}
                                     </Box>
                                 }
                             </div>

@@ -166,6 +166,7 @@ export function readSimModelParams(sim) {
     nCV: sim["n_CV"],
     nMV: sim["n_MV"],
     P: sim["P"],
+    M: sim["M"]
   }
   return simParam; 
 }

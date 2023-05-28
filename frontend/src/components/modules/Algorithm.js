@@ -20,9 +20,9 @@ function createData(
     createData('\\boldsymbol{\\Theta}', `n_{CV} \\cdot (P-W) \\times M \\cdot n_{MV}`),
     createData('\\boldsymbol{\\Phi}', `n_{C V}\\left(P-W\\right) \\times \\sum_{j=1}^{n_{M V}}\\left(N-W-1\\right)`),
     createData('\\boldsymbol{\\Psi}', `n_{C V}\\left(P-W\\right) \\times n_{M V}`),
-    createData('\\boldsymbol{K}', `M \\cdot n_{MV} \\times M \\cdot n_{MV}`),
+    createData('\\boldsymbol{K/K^{-1}}', `M \\cdot n_{MV} \\times M \\cdot n_{MV}`),
     createData('\\boldsymbol{\\Gamma}', `M \\cdot n_{MV} \\times n_{MV}`),
-    createData('\\boldsymbol{A}', `2M \\cdot n_{MV} + P \\cdot n_{CV} \\times M \\cdot n_{MV}`)
+    createData('\\boldsymbol{A}', `2M \\cdot n_{MV} + (P-W) \\cdot n_{CV} \\times M \\cdot n_{MV}`)
   ];
 
 /**
@@ -36,14 +36,14 @@ export default function Algorithm() {
                 <Typography variant="h4" sx={{fontWeight: 'bold'}}> MPC algorithm: </Typography>
                 <Typography variant="body1" gutterBottom>
                 Implemented using <Link href="https://github.com/gotvinne/Light-weight-MPC/tree/main/src/OSQP-Eigen" underline="hover"> {"osqp-eigen"} </Link>
-                C++ wrapper for the <Link href="https://osqp.org/" underline="hover"> {"OSQP"} </Link> software:
+                C++ wrapper for the <Link href="https://osqp.org/" underline="hover"> {"OSQP"} </Link> software: See chapter 2.3: Model Predictive Control for Finite Step Response Model for more information.
                 </Typography>
                 <Typography variant="body1" gutterBottom>
                 The OSQP, operator splitting QP solver solves the problems of the following form:
                 </Typography>
                 <BlockMath math={`min \\frac{1}{2} z^T \\boldsymbol{G} z+q^T z \\quad s.t. \\quad \\ l \\leq \\boldsymbol{A} z \\leq u `} />
                 <Typography> 
-                    Given, <InlineMath math={"H"} /> is a positive definite matrix, yielding a convex quadratic program. The OSQP solver uses an custom ADMM-based first order method and is one of the fastest QP solvers avaliable. 
+                    Given, <InlineMath math={"\\boldsymbol{G}"} /> is a positive definite matrix, yielding a convex quadratic program. The OSQP solver uses an custom ADMM-based first order method and is one of the fastest QP solvers avaliable. 
                 </Typography>
                 <Typography variant="subtitle1" sx={{fontWeight: "bold"}}> Step Response MPC solver: </Typography>
                 <Typography variant="body1" gutterBottom>
@@ -65,6 +65,22 @@ export default function Algorithm() {
                 <BlockMath math={`\\underline{U} \\leq U(k+j) \\leq \\bar{U}, \\quad j \\in\\left\\{0, \\ldots, M-1\\right\\}`} />
                 <BlockMath math={`\\underline{Y}- \\epsilon_l \\leq Y(k+j) \\leq \\bar{Y}+ \\epsilon_h, \\quad \\epsilon_h \\geq 0, \\epsilon_l \\geq 0, \\quad j \\in\\left\\{W+1, \\ldots, P\\right\\}`} />
 
+                <Typography variant="body1" gutterBottom>
+                    In order to implement the slack constraints <InlineMath math={"\\epsilon \\in \\mathbb{R}^{n_{CV}}"} />, one must map the slack variables to the output <InlineMath math={"Y \\in \\mathbb{R}^{P \\cdot n_{CV}}"} />.
+                    This is done by defining the scaling matrix <InlineMath math={"\\boldsymbol{1}"} />:  
+                </Typography>
+                <BlockMath math={`\\mathbf{1} = \\begin{bmatrix}
+                                    1_{0, 1} & 0 & \\ldots & 0 \\\\
+                                    \\vdots & \\vdots & \\ddots & \\vdots \\\\
+                                    1_{(P-W), 1} & 0 & \\ddots & 0 \\\\
+                                    0 & 1_{0, 2} & \\ddots & 0 \\\\
+                                    \\vdots & \\vdots & \\ddots & \\vdots \\\\
+                                    0 & 1_{(P-W), 2} &  \\ddots & 0 \\\\
+                                    \\vdots & \\ddots & \\ddots & \\vdots \\\\
+                                    0 & 0 & 0 & 1_{0, n_{CV}} \\\\
+                                    \\vdots & \\vdots & \\vdots & \\vdots \\\\ 
+                                    0 & 0 & 0 & 1_{(P-W), n_{CV}}
+                                    \\end{bmatrix} \\in \\mathbb{R}^{(P-W) \\cdot n_{CV} \\times n_{CV}}`} />
                 <Typography variant="subtitle1" sx={{fontWeight: "bold"}}> Tuning approaches: </Typography>
                 <Typography variant="body1" gutterBottom>
                 For this model based controller description, a total of 7 variables are determing the performance. The horizons, <InlineMath math={"P > 0, M > 0, W \\geq 0"} />, are all present in the cost function. The prediction horizon <InlineMath math={"P"}/> determines the closed loop stability.
@@ -92,8 +108,12 @@ export default function Algorithm() {
                     The consdenced formulation is formulated followingly:
                 </Typography>
                 <BlockMath math={`\\min_{z_{cd}} \\quad \\frac{1}{2} z_{cd}^T \\boldsymbol{G_{cd}} z_{cd}+q^T_{cd} z_{cd}`} />
-                <BlockMath math={`\\boldsymbol{G_{cd}} = 2 \\cdot blkdiag( \\boldsymbol{\\Theta}^{T} \\boldsymbol{\\bar{Q}} \\boldsymbol{\\Theta} + \\boldsymbol{\\bar{R}}, \\boldsymbol{0}, \\boldsymbol{0}),`} />
-                <BlockMath math={`q_{cd}(k) = \\begin{bmatrix} 2 \\cdot \\boldsymbol{\\Theta}^T\\boldsymbol{\\bar{Q}}(\\Lambda(k) - \\mathcal{T}(k)) \\\\ \\rho_{h} \\\\ \\rho_{l} \\end{bmatrix},`} />
+                <BlockMath math={`\\boldsymbol{G_{cd}} = 2 \\cdot \\begin{bmatrix} \\boldsymbol{\\Theta}^{T} \\boldsymbol{\\bar{Q}} \\boldsymbol{\\Theta} + \\boldsymbol{\\bar{R}} & -\\boldsymbol{\\Theta^T \\overline{Q} 1} &  \\boldsymbol{\\Theta^T \\overline{Q} 1} \\\\
+                                    -\\boldsymbol{1^T \\overline{Q} \\Theta} & \\boldsymbol{1^T \\overline{Q} 1} & \\boldsymbol{0} \\\\
+                                    \\boldsymbol{1^T \\overline{Q} \\Theta} & \\boldsymbol{0} & \\boldsymbol{1^T \\overline{Q} 1} \\end{bmatrix},`} />
+                <BlockMath math={`q_{cd}(k) = 2 \\cdot \\begin{bmatrix} 2 \\cdot \\boldsymbol{\\Theta}^T\\boldsymbol{\\bar{Q}}(\\Lambda(k) - \\mathcal{T}(k)) \\\\ 
+                                                                        -\\boldsymbol{1^T \\overline{Q}} (\\Lambda(k) - \\mathcal{T}(k)) + \\rho_{h} \\\\ 
+                                                                        \\boldsymbol{1^T \\overline{Q}} (\\Lambda(k) - \\mathcal{T}(k)) + \\rho_{l} \\end{bmatrix},`} />
                 <Typography sx={{pl:"30%"}}> such that: </Typography>
                 <BlockMath math={`\\underline{z}_{cd}(k) = \\begin{bmatrix}
                                 \\Delta \\underline{U} \\\\ \\underline{U} \\\\ -\\infty \\\\ \\underline{Y} \\\\ 0 \\\\ 0
@@ -101,8 +121,8 @@ export default function Algorithm() {
                                 \\begin{bmatrix}
                                 \\mathbf{I} & \\mathbf{0} & \\mathbf{0} \\\\
                                 \\mathbf{K^{-1}} & \\mathbf{0} & \\mathbf{0} \\\\
-                                \\mathbf{\\Theta} & \\mathbf{-I} & \\mathbf{0} \\\\
-                                \\mathbf{\\Theta} & \\mathbf{0} & \\mathbf{I} \\\\
+                                \\mathbf{\\Theta} & \\mathbf{-1} & \\mathbf{0} \\\\
+                                \\mathbf{\\Theta} & \\mathbf{0} & \\mathbf{1} \\\\
                                 \\mathbf{0} & \\mathbf{I} & \\mathbf{0} \\\\
                                 \\mathbf{0} & \\mathbf{0} & \\mathbf{I} \\\\
                                 \\end{bmatrix} z_{cd} \\leq \\begin{bmatrix}

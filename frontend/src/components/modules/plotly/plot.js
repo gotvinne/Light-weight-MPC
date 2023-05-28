@@ -5,6 +5,7 @@ import Plot from "react-plotly.js"
 const BLACK = 'rgb(0, 0, 0)';
 const BLUE = 'rgb(0, 0, 255)';
 const RED = 'rgb(255, 0, 0)';
+const PURPLE = 'rgb(128, 0, 128)';
 
 export function PlotPrediction(cv_data, T, P) {
     let t = Array.from({ length: T+P }, (value, index) => index);
@@ -17,7 +18,7 @@ export function PlotPrediction(cv_data, T, P) {
         name: "Output",
         type: "line",
         line: {
-            color: 'rgb(128, 0, 128)'
+            color: PURPLE
         }
     };
 
@@ -38,7 +39,7 @@ export function PlotPrediction(cv_data, T, P) {
         name: "Pred Output",
         mode: 'lines',
         line: {
-            color: 'rgb(128, 0, 128)',
+            color: PURPLE,
             dash: "dot"
         }
     };
@@ -94,10 +95,10 @@ export function PlotPrediction(cv_data, T, P) {
     ); 
 }
 
-export function PlotActuation(mv_data, T) {
-    let t = Array.from({ length: T }, (value, index) => index);
-    let lower = Array(T).fill(mv_data.c[0]);
-    let upper = Array(T).fill(mv_data.c[1]);
+export function PlotActuation(mv_data, T, M) {
+    let t = Array.from({ length: T+M }, (value, index) => index);
+    let lower = Array(T+M).fill(mv_data.c[0]);
+    let upper = Array(T+M).fill(mv_data.c[1]);
 
     var actuation = {
         x: t.slice(0, T),
@@ -114,11 +115,10 @@ export function PlotActuation(mv_data, T) {
         x: t.slice(T, t.length),
         y: mv_data.u.slice(T, t.length),
         name: "Pred actuation",
-        type: "scatter",
+        mode: "lines",
         line: {
             color: BLUE,
-            dash: "dot",
-            shape: 'hv'
+            dash: "dot"
         }
     };
 
