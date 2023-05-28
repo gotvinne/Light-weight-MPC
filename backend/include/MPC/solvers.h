@@ -19,7 +19,7 @@
 using VectorXd = Eigen::VectorXd;
 using MatrixXd = Eigen::MatrixXd;
 /**
- * @brief Solving the condensed optimalization problem using OSQP-Eigen for W = 0
+ * @brief Solving the condensed positive semi-definite optimalization problem using OSQP-Eigen for W = 0
  * 
  * @param T MPC horizon
  * @param u_mat Optimized u, filled by reference
@@ -34,7 +34,7 @@ void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPC
              const VectorXd& z_max, const MatrixXd& ref);
 
 /**
- * @brief Solving the condensed optimalization problem using OSQP-Eigen for W != 0
+ * @brief Solving the condensed positive semi-definite optimalization problem using OSQP-Eigen for W != 0
  * 
  * @param T MPC horizon
  * @param u_mat Optimized u, filled by reference
