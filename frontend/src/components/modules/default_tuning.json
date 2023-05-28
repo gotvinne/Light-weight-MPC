@@ -21,9 +21,9 @@
     },
 
 
-    "siso_test": { 
-        "System": "siso_test", 
-        "Scenario": "siso_test", 
+    "first_order_model": { 
+        "System": "first_order_model", 
+        "Scenario": "first_order_model_test", 
         "T": "100", 
         
         "P": "10", 
