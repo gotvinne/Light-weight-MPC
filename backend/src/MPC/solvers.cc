@@ -17,9 +17,7 @@
 using SparseXd = Eigen::SparseMatrix<double>; 
 
 void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPCConfig& conf, const VectorXd& z_min, 
-             const VectorXd& z_max, const MatrixXd& ref) {
-
-    std::cout << "Condensed" << std::endl;            
+             const VectorXd& z_max, const MatrixXd& ref) {         
     // Initialize solver:
     OsqpEigen::Solver solver;
     solver.settings()->setWarmStart(true); // Starts primal and dual variables from previous QP
@@ -97,7 +95,6 @@ void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPC
 
 void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr_sim, FSRModel& fsr_cost, const MPCConfig& conf, const VectorXd& z_min, 
              const VectorXd& z_max, const MatrixXd& ref) {
-    std::cout << "Condensed_W" << std::endl;  
     // Initialize solver:
     OsqpEigen::Solver solver;
     solver.settings()->setWarmStart(true); // Starts primal and dual variables from previous QP
@@ -177,7 +174,6 @@ void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr_sim, FSRMo
 
 void SRSolverWoSlack(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPCConfig& conf, const VectorXd& z_min, 
              const VectorXd& z_max, const MatrixXd& ref) {
-    std::cout << "Condensed_WoSlack" << std::endl;  
     // Initialize solver:
     OsqpEigen::Solver solver;
     solver.settings()->setWarmStart(true); // Starts primal and dual variables from previous QP
@@ -251,8 +247,7 @@ void SRSolverWoSlack(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, co
 }
 
 void SRSolverWoSlack(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr_sim, FSRModel& fsr_cost, const MPCConfig& conf, const VectorXd& z_min, 
-             const VectorXd& z_max, const MatrixXd& ref) {
-    std::cout << "Condensed_W_WoSlack" << std::endl;  
+             const VectorXd& z_max, const MatrixXd& ref) {  
     // Initialize solver:
     OsqpEigen::Solver solver;
     solver.settings()->setWarmStart(true); // Starts primal and dual variables from previous QP

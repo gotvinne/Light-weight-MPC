@@ -214,7 +214,11 @@ void ParseOpenLoop(const string& system, std::map<string, int>& m_map, CVData& c
 }
 
 MatrixXd ParseReferenceStr(string ref_str, int T, int P) {
-    json ref_data = json::parse(ref_str), ref_vec = ref_data.at(kRef);
+    // ref_str { 
+    //      "ref": [ref1, ref2, ..., refn_CV]    
+    // }
+    json ref_data = json::parse(ref_str);
+    json ref_vec = ref_data.at(kRef);
 
     int size = int(ref_vec.size());
     MatrixXd ref = MatrixXd::Zero(size, T + P);
