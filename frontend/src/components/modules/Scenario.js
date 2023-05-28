@@ -28,21 +28,23 @@ export default function Scenario({simHook}) {
     const [buttonDisable, setButtonDisable] = useState(true);
     const [simStatus, setSimStatus] = useState({status: "", error: ""});
         
-    const [cv, mv] = useMemo(() => { // When system is selected, c/mv[0] = data, units
+    const [cv, mv] = useMemo(() => { // When system is selected, c/mv[0] = data, units, called every time scenario module reloads
         if (sce["System"] === "") {
             return [[[], []], [[], []]];
         } else {
             let cv_data = readModelParams(sce["System"], "CV");
             setRef(() => {return Array(cv_data[0].length).fill("0")});
-
-            setSce(sce => {
-                const resource = require(`./default_tuning.json`); 
-                if (resource.hasOwnProperty(sce["System"])) {
-                    return resource[sce["System"]];
-                } else { 
-                    return sce; 
-                }
-            })
+            
+            if (sce["Scenario"] === "") {
+                setSce(sce => { // Set default tuning
+                    const resource = require(`./default_tuning.json`); 
+                    if (resource.hasOwnProperty(sce["System"])) {
+                        return resource[sce["System"]];
+                    } else { 
+                        return sce; 
+                    }
+                })
+            }
             return [cv_data, readModelParams(sce["System"], "MV")];
         }
     }, [sce["System"]]);
@@ -54,7 +56,7 @@ export default function Scenario({simHook}) {
     }, []);
 
     useEffect(() => { // Store sce
-        if (sce !== TEXT_FIELDS) {
+        if (sce !== TEXT_FIELDS) { // If not empty
             localStorage.setItem(SCENARIO_STORAGE_KEY, JSON.stringify(sce));
         }
         
@@ -86,7 +88,7 @@ export default function Scenario({simHook}) {
     }
 
     const handleSelect = e => { 
-        setSce(sce => { return {...sce, ["System"]: e.target.value} });
+        setSce(sce => { return {...sce, "System": e.target.value} });
     };
 
     const handleReference = e => {
