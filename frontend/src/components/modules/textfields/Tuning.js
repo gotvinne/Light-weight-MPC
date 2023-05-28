@@ -32,7 +32,7 @@ export default function Tuning({ncv, nmv, error, sce, handler}) {
                     <Box />
                     <TextField error={error["RoH"]} sx={{width: "90%"}} id={"RoH"} variant="outlined" helperText={"RoH, vector<double>, length: "+ ncv.toString()} value={sce["RoH"]} onChange={handler} required/>
                     <Box />
-                    <TextField error={error["RoL"]} sx={{width: "90%"}} id={"RoH"} variant="outlined" helperText={"RoL, vector<double>, length: "+ ncv.toString()} value={sce["RoH"]} onChange={handler} required/>
+                    <TextField error={error["RoL"]} sx={{width: "90%"}} id={"RoL"} variant="outlined" helperText={"RoL, vector<double>, length: "+ ncv.toString()} value={sce["RoL"]} onChange={handler} required/>
                 </Box>
             </Box>
         </div>
