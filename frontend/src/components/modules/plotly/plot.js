@@ -71,7 +71,7 @@ export function PlotPrediction(cv_data, T, P) {
     var layout = {
         title: cv_data.output,
         xaxis: {
-            title: "MPC horizon, t"
+            title: "MPC horizon, T"
         },
         yaxis: {
             title: cv_data.unit
@@ -149,7 +149,7 @@ export function PlotActuation(mv_data, T, M) {
     var layout = {
         title: mv_data.input,
         xaxis: {
-            title: "MPC horizon, t"
+            title: "MPC horizon, T"
         },
         yaxis: {
             title: mv_data.unit
