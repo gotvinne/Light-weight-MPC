@@ -33,7 +33,7 @@ export default function Algorithm() {
     return (
         <div className="Algorithm">
             <Box sx={{ width: '75%', pl: "5%", pt: "3%"}}>
-                <Typography variant="h4" sx={{fontWeight: 'bold'}}> MPC algorithm: </Typography>
+                <Typography variant="h4" sx={{fontWeight: 'bold'}}> MPC-FSRM algorithm: </Typography>
                 <Typography variant="body1" gutterBottom>
                 Implemented using <Link href="https://github.com/gotvinne/Light-weight-MPC/tree/main/src/OSQP-Eigen" underline="hover"> {"osqp-eigen"} </Link>
                 C++ wrapper for the <Link href="https://osqp.org/" underline="hover"> {"OSQP"} </Link> software: See chapter 2.3: Model Predictive Control for Finite Step Response Model for more information.
@@ -100,18 +100,18 @@ export default function Algorithm() {
                 The condensed formulation solves a smaller optimalization problem, obtained using the Nullspace method. This method reduces the number of optimalization variabled by defining a linear transform. <InlineMath math={"z_{st} = A z_{cd} + C \\quad"} /> 
                 The transform cancels optimalization variables with the given constraints, yielding a computationally easier problem. </Typography>
                 <Typography>
-                The original optimalization vector, <InlineMath math={"z_{st} = \\begin{bmatrix} \\Delta U \\\\ U \\\\ Y \\\\ \\epsilon_h \\\\ \\epsilon_l \\end{bmatrix} \\quad"} />, is reduced to 
-                <InlineMath math={"z_{cd} = \\begin{bmatrix} \\Delta U \\\\ \\epsilon_h \\\\ \\epsilon_l \\end{bmatrix}."} />
+                The original optimalization vector, <InlineMath math={"z_{st} = \\begin{bmatrix} \\Delta U \\\\ U \\\\ Y \\\\ \\epsilon_h \\\\ \\epsilon_l \\end{bmatrix}"} />, is reduced to 
+                <InlineMath math={"\\quad z_{cd} = \\begin{bmatrix} \\Delta U \\\\ \\epsilon_h \\\\ \\epsilon_l \\end{bmatrix}."} />
                 </Typography>
 
                 <Typography>
                     The consdenced formulation is formulated followingly:
                 </Typography>
                 <BlockMath math={`\\min_{z_{cd}} \\quad \\frac{1}{2} z_{cd}^T \\boldsymbol{G_{cd}} z_{cd}+q^T_{cd} z_{cd}`} />
-                <BlockMath math={`\\boldsymbol{G_{cd}} = 2 \\cdot \\begin{bmatrix} \\boldsymbol{\\Theta}^{T} \\boldsymbol{\\bar{Q}} \\boldsymbol{\\Theta} + \\boldsymbol{\\bar{R}} & -\\boldsymbol{\\Theta^T \\overline{Q} 1} &  \\boldsymbol{\\Theta^T \\overline{Q} 1} \\\\
+                <BlockMath math={`\\boldsymbol{G_{cd}} = \\mathbf{A}^T \\mathbf{G} \\mathbf{A} = 2 \\cdot \\begin{bmatrix} \\boldsymbol{\\Theta}^{T} \\boldsymbol{\\bar{Q}} \\boldsymbol{\\Theta} + \\boldsymbol{\\bar{R}} & -\\boldsymbol{\\Theta^T \\overline{Q} 1} &  \\boldsymbol{\\Theta^T \\overline{Q} 1} \\\\
                                     -\\boldsymbol{1^T \\overline{Q} \\Theta} & \\boldsymbol{1^T \\overline{Q} 1} & \\boldsymbol{0} \\\\
                                     \\boldsymbol{1^T \\overline{Q} \\Theta} & \\boldsymbol{0} & \\boldsymbol{1^T \\overline{Q} 1} \\end{bmatrix},`} />
-                <BlockMath math={`q_{cd}(k) = 2 \\cdot \\begin{bmatrix} 2 \\cdot \\boldsymbol{\\Theta}^T\\boldsymbol{\\bar{Q}}(\\Lambda(k) - \\mathcal{T}(k)) \\\\ 
+                <BlockMath math={`q_{cd}(k) = C(k)^T \\mathbf{G} \\mathbf{A} + q^T \\mathbf{A} = 2 \\cdot \\begin{bmatrix} 2 \\cdot \\boldsymbol{\\Theta}^T\\boldsymbol{\\bar{Q}}(\\Lambda(k) - \\mathcal{T}(k)) \\\\ 
                                                                         -\\boldsymbol{1^T \\overline{Q}} (\\Lambda(k) - \\mathcal{T}(k)) + \\rho_{h} \\\\ 
                                                                         \\boldsymbol{1^T \\overline{Q}} (\\Lambda(k) - \\mathcal{T}(k)) + \\rho_{l} \\end{bmatrix},`} />
                 <Typography sx={{pl:"30%"}}> such that: </Typography>
@@ -128,6 +128,31 @@ export default function Algorithm() {
                                 \\end{bmatrix} z_{cd} \\leq \\begin{bmatrix}
                                 \\Delta \\bar{U} \\\\ \\bar{U} \\\\ \\bar{Y} \\\\ \\infty \\\\ \\infty \\\\ \\infty
                                 \\end{bmatrix} - \\begin{bmatrix} 0 \\\\ \\mathbf{K}^{-1} \\mathbf{\\Gamma} U(k-1) \\\\ \\mathbf{\\Lambda}(k) \\\\ \\mathbf{\\Lambda}(k) \\\\ 0 \\\\ 0 \\end{bmatrix} = \\bar{z}_{cd}(k) `} />
+
+                <Typography variant="subtitle1" sx={{fontWeight: "bold"}}> Condensed Formulation without slack variables: </Typography>
+                <Typography variant="body1" gutterBottom>
+                If the tuning parameters RoH and RoL are both null vectors, slack variables are disabled form the Model Predictive Controller. This yields another controller formulation. </Typography>
+                <Typography>
+                The original optimalization vector, <InlineMath math={"z_{st} = \\begin{bmatrix} \\Delta U \\\\ U \\\\ Y \\end{bmatrix}"} />, is reduced to 
+                <InlineMath math={"\\quad z_{cd} = \\Delta U."} />
+                </Typography>
+
+                <Typography>
+                    The consdenced formulation is formulated followingly:
+                </Typography>
+                <BlockMath math={`\\min_{z_{cd}} \\quad \\frac{1}{2} z_{cd}^T \\boldsymbol{G_{cd}} z_{cd}+q^T_{cd} z_{cd}`} />
+                <BlockMath math={`\\boldsymbol{G_{cd}} = \\mathbf{A}^T \\mathbf{G} \\mathbf{A} = 2 \\cdot (\\boldsymbol{\\Theta}^{T} \\boldsymbol{\\bar{Q}} \\boldsymbol{\\Theta} + \\boldsymbol{\\bar{R}}) \\succeq 0,`} />
+                <BlockMath math={`q_{cd}(k) = C(k)^T \\mathbf{G} \\mathbf{A} + q^T \\mathbf{A} = 2 \\cdot \\boldsymbol{\\Theta}^T\\boldsymbol{\\bar{Q}}(\\Lambda(k) - \\mathcal{T}(k))`} />
+                <Typography sx={{pl:"30%"}}> such that: </Typography>
+                <BlockMath math={`\\underline{z}_{cd}(k) = \\begin{bmatrix}
+                                \\Delta \\underline{U} \\\\ \\underline{U} \\\\ \\underline{Y} 
+                                \\end{bmatrix} - \\begin{bmatrix} 0 \\\\ \\mathbf{K}^{-1} \\mathbf{\\Gamma} U(k-1) \\\\ \\Lambda(k) \\end{bmatrix} \\leq \\begin{bmatrix}
+                                \\mathbf{I} \\\\
+                                \\mathbf{K^{-1}} \\\\
+                                \\mathbf{\\Theta} \\\\
+                                \\end{bmatrix} z_{cd} \\leq \\begin{bmatrix}
+                                \\Delta \\bar{U} \\\\ \\bar{U} \\\\ \\bar{Y} 
+                                \\end{bmatrix} - \\begin{bmatrix} 0 \\\\ \\mathbf{K}^{-1} \\mathbf{\\Gamma} U(k-1) \\\\ \\Lambda(k) \\end{bmatrix} = \\bar{z}_{cd}(k) `} />
 
                 <Typography sx={{pt: "2%"}} variant="h5"> Overview of the dimensions used in the controller: </Typography>               
                 <Box sx={{pl: "30%", pt: "2%"}}> 
