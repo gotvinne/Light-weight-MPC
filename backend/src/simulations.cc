@@ -129,8 +129,7 @@ void MPCSimFSRM(const string& sys, const string& ref_vec, bool new_sim, int T) {
     MPCConfig conf; 
     MatrixXd du_tilde; 
 
-    // Parse information:
-    try {
+    try { // Parse information:
         if (new_sim) {
             ParseNew(sce_path, m_map, cvd, mvd, conf, z_min, z_max);
         } else {
@@ -140,42 +139,130 @@ void MPCSimFSRM(const string& sys, const string& ref_vec, bool new_sim, int T) {
     }
     catch(std::exception& e) {
         std::cout << e.what() << std::endl;
+        exit(1);
     }
 
-    // FSRM:
-    MPCConfig sim_conf = conf;
-    FSRModel* fsr_cost;
+    // Determine simulation type:
+    MPC_FSRM_Simulation sim_type;
     bool reduced_cost = (conf.W != 0); // Simulate smaller QP
-    if (reduced_cost) {
-        fsr_cost = new FSRModel(cvd.getSR(), m_map, conf, mvd.Inits, cvd.getInits());
-        sim_conf.W = 0;
-    } 
-    FSRModel fsr_sim(cvd.getSR(), m_map, sim_conf, mvd.Inits, cvd.getInits());
-    if (!new_sim) {
-        fsr_sim.setDuTildeMat(du_tilde); 
-        if (reduced_cost) {fsr_cost->setDuTildeMat(du_tilde); }
+    if (reduced_cost && conf.disable_slack) {
+        sim_type = MPC_FSRM_Simulation::CONDENSED_W_WoSlack;
+    } else if (conf.disable_slack) {
+        sim_type = MPC_FSRM_Simulation::CONDENSED_WoSlack;
+    } else if (reduced_cost) {
+        sim_type = MPC_FSRM_Simulation::CONDENSED_W;
+    } else {
+        sim_type = MPC_FSRM_Simulation::CONDENSED;
     }
-    
-    // MPC variables:
-    MatrixXd u_mat, y_pred, ref = setRef(ref_vec, T, conf.P, m_map[kN_CV]); 
-    /** Optimized actuation, (n_MV, T) */ /** Predicted output (n_CV, T)*/ /** Reference */
 
-    try { // Solve
-        if (reduced_cost) {
-            SRSolver(T, u_mat, y_pred, fsr_sim, *fsr_cost, conf, z_min, z_max, ref);
-            delete fsr_cost;
-        } else {
-            SRSolver(T, u_mat, y_pred, fsr_sim, conf, z_min, z_max, ref);
+    switch (sim_type) {
+        case MPC_FSRM_Simulation::CONDENSED: {
+            FSRModel fsr(cvd.getSR(), m_map, conf, mvd.Inits, cvd.getInits());
+            if (!new_sim) {
+                fsr.setDuTildeMat(du_tilde); 
+            }
+            MatrixXd u_mat, y_pred, ref = setRef(ref_vec, T, conf.P, m_map[kN_CV]); 
+            /** Optimized actuation, (n_MV, T) */ /** Predicted output (n_CV, T)*/ /** Reference */
+
+            try { // Solve
+                SRSolver(T, u_mat, y_pred, fsr, conf, z_min, z_max, ref);
+                if (new_sim) { // Serialize
+                    SerializeSimulationNew(sim_path, sys, cvd, mvd, 
+                    y_pred, u_mat, z_min, z_max, ref, fsr, T);
+                } else {
+                    SerializeSimulation(sim_path, y_pred, u_mat, ref, T);
+                }
+            }
+            catch(std::exception& e) {
+                std::cout << e.what() << std::endl;
+                exit(1);
+            }
+            break;
         }
-        
-        if (new_sim) { // Serialize
-            SerializeSimulationNew(sim_path, sys, cvd, mvd, 
-               y_pred, u_mat, z_min, z_max, ref, fsr_sim, T);
-        } else {
-            SerializeSimulation(sim_path, y_pred, u_mat, ref, T);
+
+        case MPC_FSRM_Simulation::CONDENSED_W: {
+            MPCConfig sim_conf = conf;
+            sim_conf.W = 0;
+            FSRModel fsr_sim(cvd.getSR(), m_map, sim_conf, mvd.Inits, cvd.getInits());
+            FSRModel fsr_cost(cvd.getSR(), m_map, conf, mvd.Inits, cvd.getInits());
+
+            if (!new_sim) {
+                fsr_sim.setDuTildeMat(du_tilde); 
+                fsr_cost.setDuTildeMat(du_tilde);
+            }
+
+            MatrixXd u_mat, y_pred, ref = setRef(ref_vec, T, conf.P, m_map[kN_CV]); 
+            /** Optimized actuation, (n_MV, T) */ /** Predicted output (n_CV, T)*/ /** Reference */
+
+            try { // Solve
+                SRSolver(T, u_mat, y_pred, fsr_sim, fsr_cost, conf, z_min, z_max, ref);
+                if (new_sim) { // Serialize
+                    SerializeSimulationNew(sim_path, sys, cvd, mvd, 
+                    y_pred, u_mat, z_min, z_max, ref, fsr_sim, T);
+                } else {
+                    SerializeSimulation(sim_path, y_pred, u_mat, ref, T);
+                }
+            }
+            catch(std::exception& e) {
+                std::cout << e.what() << std::endl;
+                exit(1);
+            }
+            break;
         }
-    }
-    catch(std::exception& e) {
-        std::cout << e.what() << std::endl;
+
+        case MPC_FSRM_Simulation::CONDENSED_WoSlack: {
+            FSRModel fsr(cvd.getSR(), m_map, conf, mvd.Inits, cvd.getInits());
+            if (!new_sim) {
+                fsr.setDuTildeMat(du_tilde); 
+            }
+            MatrixXd u_mat, y_pred, ref = setRef(ref_vec, T, conf.P, m_map[kN_CV]); 
+            /** Optimized actuation, (n_MV, T) */ /** Predicted output (n_CV, T)*/ /** Reference */
+
+            try { // Solve
+                SRSolverWoSlack(T, u_mat, y_pred, fsr, conf, z_min, z_max, ref);
+
+                if (new_sim) { // Serialize
+                    SerializeSimulationNew(sim_path, sys, cvd, mvd, 
+                    y_pred, u_mat, z_min, z_max, ref, fsr, T);
+                } else {
+                    SerializeSimulation(sim_path, y_pred, u_mat, ref, T);
+                }
+            }
+            catch(std::exception& e) {
+                std::cout << e.what() << std::endl;
+                exit(1);
+            }
+            break;
+        }
+
+        case MPC_FSRM_Simulation::CONDENSED_W_WoSlack: {
+            MPCConfig sim_conf = conf;
+            sim_conf.W = 0;
+            FSRModel fsr_sim(cvd.getSR(), m_map, sim_conf, mvd.Inits, cvd.getInits());
+            FSRModel fsr_cost(cvd.getSR(), m_map, conf, mvd.Inits, cvd.getInits());
+
+            if (!new_sim) {
+                fsr_sim.setDuTildeMat(du_tilde); 
+                fsr_cost.setDuTildeMat(du_tilde);
+            }
+
+            MatrixXd u_mat, y_pred, ref = setRef(ref_vec, T, conf.P, m_map[kN_CV]); 
+            /** Optimized actuation, (n_MV, T) */ /** Predicted output (n_CV, T)*/ /** Reference */
+
+            try { // Solve
+                SRSolverWoSlack(T, u_mat, y_pred, fsr_sim, fsr_cost, conf, z_min, z_max, ref);
+                if (new_sim) { // Serialize
+                    SerializeSimulationNew(sim_path, sys, cvd, mvd, 
+                    y_pred, u_mat, z_min, z_max, ref, fsr_sim, T);
+                } else {
+                    SerializeSimulation(sim_path, y_pred, u_mat, ref, T);
+                }
+            }
+            catch(std::exception& e) {
+                std::cout << e.what() << std::endl;
+                exit(1);
+            }
+            break;
+        }
     }
 }

@@ -52,8 +52,8 @@ if [ $? -eq 0 ]; then #Build successful
         echo
     else
        
-       echo -e "${RED}RUNTIME ERROR! ${NC}\n"
+       echo "${RED}RUNTIME ERROR! ${NC}\n"
     fi
 else
-    echo -e "${RED}BUILD ERROR! ${NC}\n"
+    echo "${RED}BUILD ERROR! ${NC}\n"
 fi

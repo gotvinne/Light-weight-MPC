@@ -19,6 +19,13 @@ using VectorXd = Eigen::VectorXd;
 using MatrixXd = Eigen::MatrixXd;
 using string = std::string;
 
+enum class MPC_FSRM_Simulation {
+    CONDENSED, // Condensed controller with slack constraints
+    CONDENSED_W, // Condensed controller with slack constraints, reduced cost due to W != 0
+    CONDENSED_WoSlack, // Condensed controller without slack constraints
+    CONDENSED_W_WoSlack // Condensed controller without slack constraints, reduced cost due to W != 0
+};
+
 /**
  * @brief MPC simulation of FSR model, can also do simulations further. Scenario file: sce_sys.json
  * 
