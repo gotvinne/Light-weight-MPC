@@ -156,4 +156,13 @@ MPCConfig::MPCConfig(const json& sce_data) {
         R[i] = mpc_data.at(kR).at(i);
     }
     bias_update = mpc_data.at(kBu);
+    DetermineSlack();
 }
+
+void MPCConfig::DetermineSlack() {
+    if (RoH.isZero(0) && RoL.isZero(0)) {
+        disable_slack = true;
+    } else {
+        disable_slack = false;
+    }
+} 

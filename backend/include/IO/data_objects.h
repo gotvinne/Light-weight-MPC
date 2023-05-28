@@ -132,6 +132,7 @@ struct MPCConfig {
     VectorXd RoH; /** Upper Slack variable tuning */
     VectorXd RoL; /** Lower Slack variable tuning */
     bool bias_update; /** Bias update / Integral effect enabled */
+    bool disable_slack;
 
     /**
      * @brief Empty Constructor. Construct a new MPCConfig object.
@@ -143,7 +144,9 @@ struct MPCConfig {
      * 
      * @param sce_data nlohmann::json object holding scenario data
      */
-    MPCConfig(const json& sce_data); 
+    MPCConfig(const json& sce_data);
+
+    void DetermineSlack(); 
 };
 
 #endif // DATA_OBJECTS_H
