@@ -21,7 +21,7 @@ Software applications:
 - Industrial use, determing the optimal MPC tuning.
 - Academic framework understanding the controller method. 
 
-## backend - MPC-core
+## backend - MPC-simulator
 - C/C++ module for simulating an MPC controller on an FSRM
 - Python module using pyplot.matplotlib to visualise simulation data
 - Emscripten compiler to compile code to Webassembly format to interface JavaScript
