@@ -88,7 +88,7 @@ NB! Not every step coefficient series need to be N elements long. The software p
 
 - Simulation without slack variables: 
 ```json
-"RoL": [0, 0, ..., 0 n_CV] // Need testing
+"RoL": [0, 0, ..., 0 n_CV] 
 "RoH": [0, 0, ..., 0 n_CV]
 ```
 - Simulation without integral effect:
@@ -110,6 +110,7 @@ NB! The indicator for the constraints is only used for readability and is not pa
  "n_CV": int,
  "n_MV": int, 
  "P": int, 
+ "M": int,
  "du_tilde" : [[du11, du12, du13, ... , du1(N-1)],
          [du21, du22, du23, ... , du2(N-1)], 
          ... , 
