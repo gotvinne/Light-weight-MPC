@@ -67,3 +67,4 @@ npm start
 ```console
 npm run build
 ```
+This command creates a build directory with a production build. 

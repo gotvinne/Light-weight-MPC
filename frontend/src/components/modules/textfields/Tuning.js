@@ -12,12 +12,12 @@ import { Box, Typography, TextField } from '@mui/material';
 export default function Tuning({ncv, nmv, error, sce, handler}) {
     return (
         <div> 
-            <Box align="left" sx={{pl: "23%", pt: 2}}>
+            <Box align="left" sx={{pl: "22%", pt: 2}}>
                 <Typography variant="h5" sx={{fontWeight: 'bold'}}> Model Predictive Controller: </Typography>
             </Box>
         
             <Box sx={{pt: 2, display: "flex", flexDirection: "row"}}>
-                <Box sx ={{pt:2, pl: 7}}>
+                <Box sx ={{pt:2, pl: "10%"}}>
                     <TextField error={error["P"]} sx={{width: "90%"}} id={"P"} variant="outlined" helperText={"Prediction horizon P, int"} value={sce["P"]} onChange={handler} required/>
                     <Box />
                     <TextField error={error["M"]} sx={{width: "90%"}} id={"M"} variant="outlined" helperText={"Control horizon M, int"} value={sce["M"]} onChange={handler} required/>
