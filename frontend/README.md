@@ -67,4 +67,8 @@ npm start
 ```console
 npm run build
 ```
-This command creates a build directory with a production build. 
+This command creates a build directory with a production build. The software can for instance be deployed using a static server
+```console
+npm install -g serve
+serve -s build
+```
