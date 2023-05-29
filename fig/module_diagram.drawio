@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2023-05-29T12:58:40.780Z" agent="Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/113.0" etag="5x38hLcO4bNRyJSbHqyV" version="21.3.5" type="github">
+<mxfile host="app.diagrams.net" modified="2023-05-29T12:59:33.612Z" agent="Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/113.0" etag="qo19gI3uaJvXL3LQwARi" version="21.3.5" type="github">
   <diagram id="A-3z6pfksdwcIngbcSIF" name="Page-1">
     <mxGraphModel dx="1360" dy="915" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -160,7 +160,7 @@
             <mxPoint x="760" y="480" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="KQM3if-_3TN-MtTE4v_3-28" value="&lt;b&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;MPC-simulator&lt;/font&gt;&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+        <mxCell id="KQM3if-_3TN-MtTE4v_3-28" value="&lt;font style=&quot;font-size: 15px;&quot;&gt;&lt;b&gt;&lt;font style=&quot;font-size: 15px;&quot;&gt;MPC-simulator&lt;/font&gt;&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="600" y="440" width="160" height="30" as="geometry" />
         </mxCell>
         <mxCell id="KQM3if-_3TN-MtTE4v_3-29" value="&lt;font style=&quot;font-size: 15px;&quot;&gt;&lt;b&gt;Visualization tool&lt;br&gt;&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
