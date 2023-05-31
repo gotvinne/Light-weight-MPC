@@ -18,7 +18,7 @@ export default function Constraints({nmv, ncv, sce, error, handler}) {
             <Box align="left" sx={{pl: "32%", pt: 2}}>
                 <Typography variant="h5" sx={{fontWeight: 'bold'}}> Constraints: </Typography>
             </Box>
-            <Box sx={{pl: "3%", display: "flex", flexDirection: "row"}}>
+            <Box sx={{pl: "7%", display: "flex", flexDirection: "row"}}>
                 <Box sx ={{pt:2}}>
                     <TextField error={error["ldu"]} sx={{width: "90%"}} id={"ldu"} variant="outlined" helperText={"vector<double>, length: " + nmv.toString()} value={sce["ldu"]} onChange={handler} required/>
                     <Box />
