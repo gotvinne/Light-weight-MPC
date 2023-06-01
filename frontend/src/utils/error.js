@@ -69,7 +69,7 @@ function updateTunings(sce, error, ncv, nmv) {
     const ncv_arr = ["Q", "RoH", "RoL"];
     const nmv_arr = "R";
     
-    tuning_arr.forEach((tuning) => {
+    ncv_arr.forEach((tuning) => {
         const data = convertArr(sce[tuning]);
         if (data.length === ncv) { // If size is correct
             if (data.some(v => v < 0) === false) { // Only positive elements
@@ -81,7 +81,7 @@ function updateTunings(sce, error, ncv, nmv) {
     })
 
     const data = convertArr(sce[nmv_arr]);
-    if (data.length === ncv) { // If size is correct
+    if (data.length === nmv) { // If size is correct
         if (data.some(v => v < 0) === false) { // Only positive elements
             error[nmv_arr] = false;
         }
