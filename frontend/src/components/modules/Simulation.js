@@ -20,7 +20,6 @@ export default function Simulation({simData}) {
         if (simData === "") {
             setSimAvaliable(false);
         } else {
-            console.log(simData)
             const json_sim = JSON.parse(simData);
             setSimParam(readSimModelParams(json_sim));
             setCVs(readSimCV(json_sim));

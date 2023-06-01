@@ -12,9 +12,11 @@ export function PlotPrediction(cv_data, T, P) {
     let lower = Array(T+P).fill(cv_data.c[0]);
     let upper = Array(T+P).fill(cv_data.c[1]);
 
+    console.log(t.length)
+
     var output = {
-        x: t.slice(0, T),
-        y: cv_data.y_pred.slice(0, T),
+        x: t.slice(0, T+1),
+        y: cv_data.y_pred.slice(0, T+1),
         name: "Output",
         type: "line",
         line: {
@@ -34,8 +36,8 @@ export function PlotPrediction(cv_data, T, P) {
     };
 
     var output_pred = {
-        x: t.slice(T, t.length),
-        y: cv_data.y_pred.slice(T, t.length),
+        x: t.slice(T+1, t.length),
+        y: cv_data.y_pred.slice(T+1, t.length),
         name: "Pred Output",
         mode: 'lines',
         line: {
@@ -101,8 +103,8 @@ export function PlotActuation(mv_data, T, M) {
     let upper = Array(T+M).fill(mv_data.c[1]);
 
     var actuation = {
-        x: t.slice(0, T),
-        y: mv_data.u.slice(0, T),
+        x: t.slice(0, T+1),
+        y: mv_data.u.slice(0, T+1),
         name: "Actuation",
         type: 'scatter',
         line: {
