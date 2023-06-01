@@ -28,7 +28,7 @@ export function updateError(sce, error, ncv, nmv) {
     var curr_err = error;
 
     updateHorizons(sce, curr_err);
-    updateTunings(sce, curr_err, ncv);
+    updateTunings(sce, curr_err, ncv, nmv);
     updateConstraints(sce, curr_err, ncv, nmv);
     return curr_err;
 }
@@ -51,7 +51,7 @@ function updateHorizons(sce, error) {
     // Check W:
     (data[3] <= data[1] ? error["W"] = false : error["W"] = true) 
     // Check M:
-    if (data[2] < data[1] && data[2] < data[0] && data[2] > 0) {
+    if (data[2] <= data[1] && data[2] < data[0] && data[2] > 0) {
         error["M"] = false;
     } else {
         error["M"] = true;
@@ -63,9 +63,11 @@ function updateHorizons(sce, error) {
  * @param {React.useState} sce MPC scenario hook
  * @param {React.useState} error Error hook
  * @param {Number} ncv number of controlled variables
+ * @param {Number} nmv number of manipulated variables
  */
-function updateTunings(sce, error, ncv) {
-    const tuning_arr = ["Q", "R", "RoH", "RoL"];
+function updateTunings(sce, error, ncv, nmv) {
+    const ncv_arr = ["Q", "RoH", "RoL"];
+    const nmv_arr = "R";
     
     tuning_arr.forEach((tuning) => {
         const data = convertArr(sce[tuning]);
@@ -77,6 +79,16 @@ function updateTunings(sce, error, ncv) {
             error[tuning] = true; 
         }
     })
+
+    const data = convertArr(sce[nmv_arr]);
+    if (data.length === ncv) { // If size is correct
+        if (data.some(v => v < 0) === false) { // Only positive elements
+            error[nmv_arr] = false;
+        }
+    } else {
+        error[nmv_arr] = true; 
+    }
+
 }
 
 /**
