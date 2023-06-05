@@ -1,6 +1,6 @@
 # Light-weight MPC
 ### - A simulation software for MPC control
-This is a repo for implementing the master's thesis for the study programme [Cybernetics & Robotics](https://www.ntnu.no/studier/mttk) at **NTNU** the fall 2022. The thesis is handed out by **Equinor**, and aims on implementing a simpler software framework simulating optimized control on step response models. 
+This is a repo for implementing the master's thesis for the study programme [Cybernetics & Robotics](https://www.ntnu.no/studier/mttk) at **NTNU**. The thesis is handed out by **Equinor**, and aims on implementing a simpler software framework simulating optimized control on step response models. 
 
 [Project thesis description](https://www.itk.ntnu.no/ansatte/imsland_lars/projects2022.html)
 

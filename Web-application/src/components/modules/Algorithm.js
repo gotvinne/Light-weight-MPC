@@ -35,7 +35,7 @@ export default function Algorithm() {
             <Box sx={{ width: '75%', pl: "5%", pt: "3%"}}>
                 <Typography variant="h4" sx={{fontWeight: 'bold'}}> MPC-FSRM algorithm: </Typography>
                 <Typography variant="body1" gutterBottom>
-                Implemented using <Link href="https://github.com/gotvinne/Light-weight-MPC/tree/main/src/OSQP-Eigen" underline="hover"> {"osqp-eigen"} </Link>
+                Implemented using <Link href="https://github.com/robotology/osqp-eigen" underline="hover"> {"osqp-eigen"} </Link>
                 C++ wrapper for the <Link href="https://osqp.org/" underline="hover"> {"OSQP"} </Link> software: See chapter 2.3: Model Predictive Control for Finite Step Response Model for more information.
                 </Typography>
                 <Typography variant="body1" gutterBottom>
