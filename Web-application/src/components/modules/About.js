@@ -46,13 +46,13 @@ export default function About() {
 
       <Box sx={{pt: "2%", pl:"15%", display: "flex", flexDirection: "row"}}>
         <Box sx={{pl: "10%"}}> 
-          <img src={require("./../../img/Logo.png")} alt="Logo" width="110%" />
+          <img src={require("../../img/Logo.png")} alt="Logo" width="110%" />
           <Typography > 
             fig: Software logo
           </Typography>
         </Box>
         <Box sx={{pl: "10%"}}> 
-          <img src={require("./../../img/mpc_control_loop.png")} alt="loop" width="100%"/>
+          <img src={require("../../img/mpc_control_loop.png")} alt="loop" width="100%"/>
           <Typography > 
             fig: Illustration of the MPC simulation loop
           </Typography>

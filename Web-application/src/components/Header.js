@@ -16,7 +16,7 @@ export default function Header() {
                     </Typography>
                 </Box>
                 <Box sx={{pl: "30%"}}>
-                    <img src={require("./../img/small_logo.png")} alt="small_logo" width="45%"/>
+                    <img src={require("../img/small_logo.png")} alt="small_logo" width="45%"/>
                 </Box>
             </Box>
         </div>

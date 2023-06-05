@@ -1,8 +1,10 @@
 
-# React-based Front-End:
-Developed using application framework [Create-React-App](https://create-react-app.dev/). In order to run the application, Node.js needs to be installed and can be done through a package manager **nvm (Node Version Manager)**. 
+# Web-application: React JavaScript
+Developed using application framework [Create-React-App](https://create-react-app.dev/). In order to run the application, Node.js and npm need to be installed. Download Node.js and npm from [here](https://nodejs.org/en/download).
 
-This front end is implemented using *React JavaScript* and library [MaterialUI](https://mui.com/). 
+Operating system: Windows, MacOS, Linux
+
+This front end is implemented using *React JavaScript* and the React library [MaterialUI](https://mui.com/). 
 
 ### Modules
 Folder structure: 
@@ -19,7 +21,7 @@ package-lock.json
 package.json
 ```
 ### React packages
-In order to run the application, Download Node.js and npm from [here](https://nodejs.org/en/download). Check package.json for react dependancies.
+Check package.json for react dependancies.
 
 **React dependancies**: 
 - "@emotion/react": "^11.10.6",
@@ -44,12 +46,6 @@ In order to run the application, Download Node.js and npm from [here](https://no
 - "require-context": "^1.1.0",
 - "stream": "^0.0.2",
 - "web-vitals": "^3.3.1"
-
-1. Install the tool npm install -g npm-check-updates
-2. Verify that your package.json is checked in to version control (the next command will overwrite the package.json)
-3. Update the package.json ncu --upgrade
-4. Validate the changes to your package.json
-5. Install the new packages npm install
 
 ### create-react-app 
 In order to build a React application, [create-react-app](https://create-react-app.dev/docs/getting-started/) was utilized. 
