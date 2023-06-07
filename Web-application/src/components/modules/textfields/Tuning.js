@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Typography, TextField } from '@mui/material';
-import { BlockMath, InlineMath } from 'react-katex';
+import { BlockMath } from 'react-katex';
 
 const SYMBOLS = [`P =`, `M =`,`W =`,`Q =`,`R =`,`\\rho_h =`,`\\rho_l =`];
 
