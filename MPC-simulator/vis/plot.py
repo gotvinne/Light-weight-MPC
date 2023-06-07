@@ -3,7 +3,6 @@ from SimulationData import *
 import argparse
 from matplotlib import pyplot as plt
 
-
 ########################################################
 # Script plotting simulation data via terminal
 ########################################################
@@ -13,10 +12,10 @@ parser.add_argument("-s", "--simulation", type=str, help="Simulation file", dest
 
 args = parser.parse_args()
 
-simulation_name = "/data/simulations/sim_" + args.simulation + ".json"
+simulation_name = "/data/simulations/" + args.simulation + ".json"
 sim_data = SimulationData(simulation_name)
 
-fontsize = 10
+fontsize = 12
 figsize = 12
 plt.rcParams.update({'font.size': fontsize})
 title = "MPC simulation data, CV (purple) MV (blue)"
