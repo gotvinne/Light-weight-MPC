@@ -98,7 +98,7 @@ export default function About() {
           </Typography>
         </Box>
         <Box sx={{pl: "10%"}}> 
-          <img src={require("../../img/mpc_control_loop.png")} alt="loop" width="100%"/>
+          <img src={require("../../img/outputfeedback.png")} alt="loop" width="100%"/>
           <Typography > 
             fig: Illustration of the MPC simulation loop
           </Typography>
