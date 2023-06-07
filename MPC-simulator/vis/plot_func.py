@@ -47,7 +47,7 @@ def PlotPrediction(axs: plt.axis, sim_data: SimulationData, cv_rows: int, toggli
     :param cv_rows: Number of CV rows to be plotted
     :param toggling: Indicator is SISO system is plotted
     """
-    plot_horizon = sim_data.T + sim_data.P # Also plotting predictions
+    plot_horizon = sim_data.T + sim_data.P + 1 # Predictions + y0
     t = np.arange(0, plot_horizon, dtype=int) 
 
     if toggling:
@@ -58,7 +58,7 @@ def PlotPrediction(axs: plt.axis, sim_data: SimulationData, cv_rows: int, toggli
                 # plt.plot(t, sim_data.y[i, :], "b", label="System output")
                 axs[i, toggle].plot(t[0:sim_data.T+1], sim_data.y_pred[index, 0:sim_data.T+1], PURPLE, label="Output") 
                 axs[i, toggle].plot(t[sim_data.T:], sim_data.y_pred[index, sim_data.T:], PURPLE, linestyle="--", label="Predicted output") 
-                axs[i, toggle].plot(t, sim_data.ref[index, :], RED, label="Reference") 
+                axs[i, toggle].plot(t, sim_data.ref[index, :], RED, linewidth=0.5, label="Reference") 
                 
                 # Constraints 
                 upper = sim_data.cv_constraints[index][1] * np.ones(plot_horizon)
@@ -75,9 +75,9 @@ def PlotPrediction(axs: plt.axis, sim_data: SimulationData, cv_rows: int, toggli
     else: 
         axs[0].axvline(x = sim_data.T, color = BLACK, label = "Prediction axis")
         # axs[0].plot(t, sim_data.y[i, :], "b", label="System output")
-        axs[0].plot(t[0:sim_data.T+1], sim_data.y_pred[0, 0:sim_data.T+1], PURPLE, label="Output") 
+        axs[0].plot(t[0:sim_data.T], sim_data.y_pred[0, 0:sim_data.T], PURPLE, label="Output") 
         axs[0].plot(t[sim_data.T:], sim_data.y_pred[0, sim_data.T:], PURPLE, linestyle="--", label="Predicted output") 
-        axs[0].plot(t, sim_data.ref[0, :], RED, label="Reference") 
+        axs[0].plot(t, sim_data.ref[0, :], RED, linewidth=0.5, label="Reference") 
         
         # Constraints 
         upper = sim_data.cv_constraints[0][1] * np.ones(plot_horizon)

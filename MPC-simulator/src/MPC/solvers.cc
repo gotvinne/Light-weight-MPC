@@ -58,7 +58,7 @@ void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPC
     if (!solver.initSolver()) { throw std::runtime_error("Cannot initialize solver"); }
 
     u_mat = MatrixXd::Zero(n_MV, T + M);
-    y_pred = MatrixXd::Zero(n_CV, T + P);
+    y_pred = MatrixXd::Zero(n_CV, T + P + 1); // +1 Due to first prediction being y0
     const SparseXd omega_u = setOmegaU(M, n_MV);
 
     // MPC loop:
@@ -69,14 +69,12 @@ void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, const MPC
          // Claim solution:
          VectorXd z_st = solver.getSolution(); // [dU, eta_h, eta_l]
          VectorXd z = z_st(Eigen::seq(0, a - 1)); // [dU]
+         y_pred.col(k) = fsr.getY(z); // Store y_pred before update! 
          
         if (k == T) { // Store predictons
             u_mat.block(0, T, n_MV, M) = (K_inv * z).reshaped<Eigen::RowMajor>(n_MV, M).colwise() + u_mat.col(T-1);      
-            y_pred.block(0, T, n_CV, P) = fsr.getY(z, true);
+            y_pred.block(0, T + 1, n_CV, P) = fsr.getY(z, true);
         } else {
-            // Store y_pref: Before update!
-            y_pred.col(k) = fsr.getY(z);
-
             // Propagate FSR model:
             VectorXd du = omega_u * z; // MPC actuation
             fsr.UpdateU(du);
@@ -135,7 +133,7 @@ void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr_sim, FSRMo
     if (!solver.initSolver()) { throw std::runtime_error("Cannot initialize solver"); }
 
     u_mat = MatrixXd::Zero(n_MV, T + M);
-    y_pred = MatrixXd::Zero(n_CV, T + P);
+    y_pred = MatrixXd::Zero(n_CV, T + P + 1);
     const SparseXd omega_u = setOmegaU(M, n_MV);
 
     // MPC loop:
@@ -146,15 +144,13 @@ void SRSolver(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr_sim, FSRMo
         // Claim solution:
         VectorXd z_st = solver.getSolution(); // [dU, eta_h, eta_l]
         VectorXd z = z_st(Eigen::seq(0, a - 1)); // [dU]
+        y_pred.col(k) = fsr_sim.getY(z);
 
         // Store optimal du and y_pref: Before update!
         if (k == T) {      
             u_mat.block(0, T, n_MV, M) = (K_inv * z).reshaped<Eigen::RowMajor>(n_MV, M).colwise() + u_mat.col(T-1);       
-            y_pred.block(0, k, n_CV, P) = fsr_sim.getY(z, true);
+            y_pred.block(0, T + 1, n_CV, P) = fsr_sim.getY(z, true);
         } else {
-            // Store y_pred
-            y_pred.col(k) = fsr_sim.getY(z);
-
             // Propagate FSR models: Update both! 
             VectorXd du = omega_u * z; // MPC actuation
             fsr_sim.UpdateU(du);
@@ -211,7 +207,7 @@ void SRSolverWoSlack(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, co
     if (!solver.initSolver()) { throw std::runtime_error("Cannot initialize solver"); }
 
     u_mat = MatrixXd::Zero(n_MV, T + M);
-    y_pred = MatrixXd::Zero(n_CV, T + P);
+    y_pred = MatrixXd::Zero(n_CV, T + P + 1);
     const SparseXd omega_u = setOmegaU(M, n_MV);
 
     // MPC loop:
@@ -222,14 +218,12 @@ void SRSolverWoSlack(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr, co
          // Claim solution:
          VectorXd z_st = solver.getSolution(); // [dU, eta_h, eta_l]
          VectorXd z = z_st(Eigen::seq(0, n - 1)); // [dU]
+         y_pred.col(k) = fsr.getY(z);
          
         if (k == T) { // Store predictons
             u_mat.block(0, T, n_MV, M) = (K_inv * z).reshaped<Eigen::RowMajor>(n_MV, M).colwise() + u_mat.col(T-1);      
-            y_pred.block(0, T, n_CV, P) = fsr.getY(z, true);
+            y_pred.block(0, T + 1, n_CV, P) = fsr.getY(z, true);
         } else {
-            // Store y_pref: Before update!
-            y_pred.col(k) = fsr.getY(z);
-
             // Propagate FSR model:
             VectorXd du = omega_u * z; // MPC actuation
             fsr.UpdateU(du);
@@ -286,26 +280,24 @@ void SRSolverWoSlack(int T, MatrixXd& u_mat, MatrixXd& y_pred, FSRModel& fsr_sim
     if (!solver.initSolver()) { throw std::runtime_error("Cannot initialize solver"); }
 
     u_mat = MatrixXd::Zero(n_MV, T + M);
-    y_pred = MatrixXd::Zero(n_CV, T + P);
+    y_pred = MatrixXd::Zero(n_CV, T + P + 1);
     const SparseXd omega_u = setOmegaU(M, n_MV);
 
     // MPC loop:
     for (int k = 0; k <= T; k++) { // Simulate one step more to get predictions.
-        Optimize:
+        //Optimize:
         if (solver.solveProblem() != OsqpEigen::ErrorExitFlag::NoError) { throw std::runtime_error("Cannot solve problem"); }
 
         // Claim solution:
         VectorXd z_st = solver.getSolution(); // [dU, eta_h, eta_l]
         VectorXd z = z_st(Eigen::seq(0, n - 1)); // [dU]
+        y_pred.col(k) = fsr_sim.getY(z); // Store y_pred:
 
         // Store optimal du and y_pref: Before update!
         if (k == T) {      
             u_mat.block(0, T, n_MV, M) = (K_inv * z).reshaped<Eigen::RowMajor>(n_MV, M).colwise() + u_mat.col(T-1);       
-            y_pred.block(0, k, n_CV, P) = fsr_sim.getY(z, true);
+            y_pred.block(0, T + 1, n_CV, P) = fsr_sim.getY(z, true);
         } else {
-            // Store y_pred:
-            y_pred.col(k) = fsr_sim.getY(z);
-
             // Propagate FSR models: Update both! 
             VectorXd du = omega_u * z; // MPC actuation
             fsr_sim.UpdateU(du);

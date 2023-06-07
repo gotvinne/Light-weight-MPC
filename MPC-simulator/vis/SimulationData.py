@@ -40,8 +40,8 @@ class SimulationData():
         self.M = json_data[M]
 
         self.y = np.empty([self.n_CV, self.T + self.P])
-        self.y_pred = np.empty([self.n_CV, self.T + self.P])
-        self.ref = np.empty([self.n_CV, self.T + self.P])
+        self.y_pred = np.empty([self.n_CV, self.T + self.P + 1])
+        self.ref = np.empty([self.n_CV, self.T + self.P + 1])
         self.u = np.ndarray([self.n_MV, self.T + self.M])
 
         self.ParseCVData(json_data)

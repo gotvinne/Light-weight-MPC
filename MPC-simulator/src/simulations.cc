@@ -55,18 +55,18 @@ static MatrixXd setStepActuation(const string& ref_str, const std::vector<double
  * @return MatrixXd reference variable
  */
 static MatrixXd setRef(const string& ref_str, int T, int P, int n_CV) {
-    // ref = R^(n_CV x T + P)
+    // ref = R^(n_CV x T + P + 1)
     // Split string to std::vector
     std::vector<double> ref_vec = ParseRefString(ref_str, n_CV); 
     
     int size = int(ref_vec.size());
-    MatrixXd ref = MatrixXd::Zero(size, T + P);
+    MatrixXd ref = MatrixXd::Zero(size, T + P + 1);
     if (size != n_CV) {
         throw std::invalid_argument("Number of references do not coincide with number of n_CV, expected: " + std::to_string(n_CV));
     }
-
+    // Fill ref matrix:
     for (int i = 0; i < size; i++) {
-        ref.row(i) = VectorXd::Constant(T + P, ref_vec.at(i)); // Takes predictions into account!
+        ref.row(i) = VectorXd::Constant(T + P + 1, ref_vec.at(i)); // Take predictions and y0 into account
     }
     return ref;
 }
