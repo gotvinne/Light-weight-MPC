@@ -22,13 +22,13 @@ using VectorXd = Eigen::VectorXd;
 using MatrixXd = Eigen::MatrixXd;
 
 /**
- * @brief 
+ * @brief Argument checking for assuring valid open loop sim
  * 
- * @param ref_str 
- * @param step_str 
- * @param n_CV 
+ * @param ref_str Reference vector
+ * @param step_str step vector
+ * @param n_CV Number of controlled variables
  */
-static void CheckVectors(const std::vector<double>& ref_vec, const std::vector<double>& step_vec, int n_CV) {
+static void CheckArgs(const std::vector<double>& ref_vec, const std::vector<double>& step_vec, int n_CV) {
     if (ref_vec.size() != n_CV) {
         throw std::invalid_argument("Number of reference elements does not coincide with n_CV");
     } else if (step_vec.size() != n_CV) {
@@ -57,7 +57,7 @@ static MatrixXd setStepActuation(const string& ref_str, const string& step_str, 
     // Split string to std::vector
     std::vector<double> ref_vec = ParseRefString(ref_str); 
     std::vector<double> step_vec = ParseRefString(step_str); 
-    CheckVectors(ref_vec, step_vec, n_CV);
+    CheckArgs(ref_vec, step_vec, n_CV);
 
     MatrixXd du = MatrixXd::Zero(int(ref_vec.size()), T);
     for (int i = 0; i < du.rows(); i++) {
