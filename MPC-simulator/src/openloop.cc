@@ -22,17 +22,42 @@ using VectorXd = Eigen::VectorXd;
 using MatrixXd = Eigen::MatrixXd;
 
 /**
+ * @brief 
+ * 
+ * @param ref_str 
+ * @param step_str 
+ * @param n_CV 
+ */
+static void CheckVectors(const std::vector<double>& ref_vec, const std::vector<double>& step_vec, int n_CV) {
+    if (ref_vec.size() != n_CV) {
+        throw std::invalid_argument("Number of reference elements does not coincide with n_CV");
+    } else if (step_vec.size() != n_CV) {
+        throw std::invalid_argument("Number of step elements does not coincide with n_CV");
+    }
+    
+    for (int i = 0; i < n_CV; i++) {
+        if (step_vec[i] > ref_vec[i]) {
+            throw std::invalid_argument("Step element "+std::to_string(i)+", is larger then reference element");
+        } else if (int(ref_vec[i]) % int(step_vec[i]) != 0) {
+            throw std::invalid_argument("Step element "+std::to_string(i)+", does not have zero reminder in division with the reference element");
+        }
+    }
+}
+
+/**
  * @brief Produce general input for Open loop simulation. Reference becomes input for OpenLoop simulation.
  * 
  * @param ref_str reference string
- * @param T MPC horizon
- * @param step Determines how actuation shall step from 0 to reference input. 
+ * @param step_str step string
+ * @param n_CV number of controlled variables
+ * @param T MPC horizon 
  * @return Eigen::MatrixXd change in actuation.
  */
 static MatrixXd setStepActuation(const string& ref_str, const string& step_str, int n_CV, int T) { 
     // Split string to std::vector
-    std::vector<double> ref_vec = ParseRefString(ref_str, n_CV); 
-    std::vector<double> step_vec = ParseRefString(step_str, n_CV); 
+    std::vector<double> ref_vec = ParseRefString(ref_str); 
+    std::vector<double> step_vec = ParseRefString(step_str); 
+    CheckVectors(ref_vec, step_vec, n_CV);
 
     MatrixXd du = MatrixXd::Zero(int(ref_vec.size()), T);
     for (int i = 0; i < du.rows(); i++) {
@@ -60,9 +85,15 @@ void OpenLoopFSRM(const string& sys, const string& ref_str, const string& step_s
     std::map<string, int> m_map;
 
     // Parse information:
-    ParseOpenLoop(sys, m_map, cvd, mvd);
+    try {
+        ParseOpenLoop(sys, m_map, cvd, mvd);
+    } catch(std::exception& e) {
+        std::cout << e.what() << std::endl;
+        exit(1);
+    }
+   
     FSRModel fsr(cvd.getSR(), m_map, mvd.Inits, cvd.getInits()); // Open loop constructor
-
+    
     // Actuation: Reference in Open Loop Simulation becomes actuation.
     MatrixXd du = setStepActuation(ref_str, step_str, m_map[kN_CV], T); 
     MatrixXd u_mat = MatrixXd::Zero(fsr.getN_MV(), T), y_pred = MatrixXd::Zero(fsr.getN_CV(), T);
@@ -81,5 +112,6 @@ void OpenLoopFSRM(const string& sys, const string& ref_str, const string& step_s
     }
     catch(std::exception& e) {
         std::cout << e.what() << std::endl;
+        exit(1);
     }
 }

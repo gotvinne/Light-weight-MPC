@@ -6,6 +6,7 @@
 #     -r std::vector<double> reference vector
 #     -a std::vector<double> step vector
 # 
+# NB! refernce and step vector can only take on integer values
 # ex: sh openloop.sh -T 180 -s SingleWell -r [3800,70] -a [5,25]
 
 mkdir -p "build" #NB! Sometimes the old build folder needs to be deleted.

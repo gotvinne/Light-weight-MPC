@@ -100,9 +100,8 @@ MatrixXd ParseReferenceStr(string ref_str, int T, int P);
  * @brief Parse string to std::vector<double>. Throws errors if invalid arg.
  * 
  * @param ref_str reference string 
- * @param n_CV number of controlled variables
  * @return std::vector<double> converted string 
  */
-std::vector<double> ParseRefString(const string& ref_str, int n_CV);
+std::vector<double> ParseRefString(const string& ref_str);
 
 #endif // PARSE_H

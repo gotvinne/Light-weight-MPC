@@ -36,7 +36,7 @@ using MatrixXd = Eigen::MatrixXd;
 static MatrixXd setRef(const string& ref_str, int T, int P, int n_CV) {
     // ref = R^(n_CV x T + P + 1)
     // Split string to std::vector
-    std::vector<double> ref_vec = ParseRefString(ref_str, n_CV); 
+    std::vector<double> ref_vec = ParseRefString(ref_str); 
     
     int size = int(ref_vec.size());
     MatrixXd ref = MatrixXd::Zero(size, T + P + 1);

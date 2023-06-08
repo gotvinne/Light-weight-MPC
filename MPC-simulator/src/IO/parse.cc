@@ -229,7 +229,7 @@ MatrixXd ParseReferenceStr(string ref_str, int T, int P) {
     return ref;
 }
 
-std::vector<double> ParseRefString(const string& ref_str, int n_CV) {
+std::vector<double> ParseRefString(const string& ref_str) {
     // Remove whitespaces:
     string copy = ref_str;
     if (copy[0] != '[') {
@@ -251,6 +251,7 @@ std::vector<double> ParseRefString(const string& ref_str, int n_CV) {
             ref_vec.push_back(std::stod(item));
         }
     }
+
     return ref_vec;
 }
 
