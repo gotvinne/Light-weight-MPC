@@ -11,12 +11,7 @@
 #ifndef SIMULATIONS_H
 #define SIMULATIONS_H
 
-#include <vector>
 #include <string>
-#include <Eigen/Dense>
-
-using VectorXd = Eigen::VectorXd;
-using MatrixXd = Eigen::MatrixXd;
 using string = std::string;
 
 enum class MPC_FSRM_Simulation {
@@ -35,14 +30,5 @@ enum class MPC_FSRM_Simulation {
  * @param T MPC horizon
  */
 void MPCSimFSRM(const string& sys, const string& ref_vec, bool new_sim, int T);
-
-/**
- * @brief Open loop simulation of FSR model
- * 
- * @param sys System name
- * @param ref_str Reference values
- * @param T Simulations steps
- */
-void OpenLoopFSRM(const string& sys, const string ref_str, int T);
 
 #endif // SIMULATIONS_H

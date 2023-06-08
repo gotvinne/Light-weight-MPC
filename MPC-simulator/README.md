@@ -50,15 +50,15 @@ conda install -n env -c conda-forge cli11
 ```console
 conda env export > env/env.yml
 ```
-- Build and run program, NB! make.sh calls binary ./mpc_simulator
+- Build and run program, NB! lightweight.sh calls binary ./mpc_simulator
 Arguments:
 - [-T int] mpc_horizon: Simulate scenario for the given mpc_horizon
 - [-s string] scenario_name: Scenario file to be simulated
 - [-r string] reference vector
 - [-n bool] new simulation
 ```console
-chmod +x setup.sh                       // Set execute permission
-sh make.sh -T mpc_horizon -s sce -r [ref] -n
+chmod +x lightweight.sh                       // Set execute permission
+sh lightweight.sh -T mpc_horizon -s sce -r [ref] -n
 ```
 ### Webassembly
 Light-weight MPC uses the *Emscripten* compiler in order to compile the C++-code to *Webassembly* which can be reached from a website using JavaScript.

@@ -4,15 +4,13 @@
 #     -T int MPC horizon
 #     -s string System name
 #     -r std::vector<double> reference vector
-#     -n bool new simulation
+#     -a std::vector<double> step vector
 # 
-# ex: sh make.sh -T 180 -s SingleWell -r [3800,70] -n
+# ex: sh openloop.sh -T 180 -s SingleWell -r [3800,70] -a [5,25]
 
 mkdir -p "build" #NB! Sometimes the old build folder needs to be deleted.
 
-# CLI parser
-argN=false
-while getopts "ns:r:T:h" flag; 
+while getopts "s:r:a:T:h" flag; 
 do
   case ${flag} in
     T)
@@ -21,11 +19,11 @@ do
       argS=${OPTARG};;
     r) 
       argRef=${OPTARG};;
-    n) 
-      argN=true;;
+    a) 
+      argStep=${OPTARG};;
 
     ?|h)
-      echo "WRONG CLI, Usage: $(basename $0) [-T int] [-s string] [-r std::vector<double>] [-n]"
+      echo "WRONG CLI, Usage: $(basename $0) [-T int] [-s string] [-r std::vector<double>] [-a std::vector<double>]"
       exit 1;;
   esac
 done
@@ -42,16 +40,12 @@ NC='\033[0m'
 if [ $? -eq 0 ]; then #Build successful
     echo 
 
-    if $argN; then # If flag is found
-      ./mpc_simulator -T $argT -s $argS -r $argRef -n
-    else 
-      ./mpc_simulator -T $argT -s $argS -r $argRef
-    fi
+    # Calling open loop simulation -o
+    ./mpc_simulator -T $argT -s $argS -r $argRef -a $argStep -o
 
     if [ $? -eq 0 ]; then #Running successfull
         echo
     else
-       
        echo "${RED}RUNTIME ERROR! ${NC}\n"
     fi
 else
