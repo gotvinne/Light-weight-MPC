@@ -97,3 +97,17 @@ One can choose to either open Jupyter-Notebook and run *vis.ipynb*. Alternativel
 ```console
 python3 vis/plot.py -s "Simulation"
 ```
+
+### Open loop simulation
+When facing a new model to try to fit tuning parameters too. It might be useful to assess the open loop response. The simulator can produce an open loop simulation by calling another build script: 
+
+Arguments:
+- [-T int] mpc_horizon: Simulate scenario for the given mpc_horizon
+- [-s string] scenario_name: Scenario file to be simulated
+- [-r string] Actuation vector 
+- [-a string] Step vector
+```console
+chmod +x openloop.sh                       // Set execute permission
+sh openloop.sh -T mpc_horizon -s sce -r [ref] -a [step]
+```
+In an open loop simulation the actuation is determined without the use of a controller. Here the actuation vector determines the maximum value the actuation will reach. The corresponding step vector determines how the actuation increases each simulation step. By passing an actuation and a step vector equal to 1 a step response is applied to the system. 
