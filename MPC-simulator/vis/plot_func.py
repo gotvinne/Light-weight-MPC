@@ -1,6 +1,7 @@
 from matplotlib import pyplot as plt
 from math import ceil
 from SimulationData import *
+from OpenLoopData import *
 
 # Colors:
 PURPLE = "m"
@@ -8,10 +9,10 @@ BLUE = "b"
 RED = "r"
 BLACK = "k"
 
-def PlotMPC(sim_data: SimulationData, title: str, FIG_SIZE: int = 14) -> plt.figure:
+def PlotMPC(sim_data, title: str, FIG_SIZE: int = 14) -> plt.figure:
     """
     Plot data in MPC-simulator format, CV plots are divided from MV.
-    :param sim_data: SimulationData
+    :param sim_data: SimulationData or OpenLoopData
     :param title: Figure title
     :param FIG_SIZE: figure size
     :return: figure reference
@@ -33,8 +34,13 @@ def PlotMPC(sim_data: SimulationData, title: str, FIG_SIZE: int = 14) -> plt.fig
 
     fig, axs = plt.subplots(cv_rows + mv_rows, cols, figsize=(FIG_SIZE, FIG_SIZE)) 
     fig.suptitle(title)
-    PlotPrediction(axs, sim_data, cv_rows, toggling=(cols == 2))
-    PlotActuation(axs, sim_data, cv_rows, mv_rows, toggling=(cols == 2))
+
+    if (sim_data.P == 1 and sim_data.M == 1): # Open loop plot
+        PlotOpenLoopPrediction(axs, sim_data, cv_rows, toggling=(cols == 2))
+        PlotOpenLoopActuation(axs, sim_data, cv_rows, mv_rows, toggling=(cols == 2))
+    else:
+        PlotPrediction(axs, sim_data, cv_rows, toggling=(cols == 2))
+        PlotActuation(axs, sim_data, cv_rows, mv_rows, toggling=(cols == 2))
     plt.show(block=False) # Avoid blocking 
 
     return fig
@@ -137,4 +143,72 @@ def PlotActuation(axs: plt.axis, sim_data: SimulationData, cv_rows: int, mv_rows
         axs[1].legend()
         axs[1].grid()
         axs[1].set_title(sim_data.inputs[0])
+
+def PlotOpenLoopPrediction(axs: plt.axis, sim_data: OpenLoopData, cv_rows: int, toggling: bool):
+    """
+    Plotting the n_CV different predicted outputs along with the reference model output
+    :param axs: plt.axs reference
+    :param sim_data: OpenLoopData object
+    :param cv_rows: Number of CV rows to be plotted
+    :param toggling: Indicator is SISO system is plotted
+    """
+    plot_horizon = sim_data.T
+    t = np.arange(0, plot_horizon, dtype=int) 
+
+    if toggling:
+        index = 0
+        for i in range(cv_rows):
+            for toggle in range(2):
+                # plt.plot(t, sim_data.y[i, :], "b", label="System output")
+                axs[i, toggle].plot(t, sim_data.y_pred[index, :], PURPLE, label="Output") 
+
+                axs[i, toggle].set_xlabel("MPC horizon, T")
+                axs[i, toggle].set_ylabel(sim_data.cv_units[index])
+                axs[i, toggle].legend()
+                axs[i, toggle].grid()
+                axs[i, toggle].set_title(sim_data.outputs[index])
+                index += 1
+    else: 
+        # axs[0].plot(t, sim_data.y[i, :], "b", label="System output")
+        axs[0].plot(t, sim_data.y_pred[0, :], PURPLE, label="Output") 
+
+        axs[0].set_xlabel("MPC horizon, T")
+        axs[0].set_ylabel(sim_data.cv_units[0])
+        axs[0].legend()
+        axs[0].grid()
+        axs[0].set_title(sim_data.outputs[0])
+
+
+def PlotOpenLoopActuation(axs: plt.axis, sim_data: SimulationData, cv_rows: int, mv_rows: int, toggling: bool):
+    """
+    Plotting the n_MV different optimized inputs
+    :param axs: plt.axis reference object
+    :param sim_data: SimulationData object holding the simulation information
+    :param cv_rows: Number of CV rows to be plotted
+    :param mv_rows: Number of MV rows to be plotted
+    :param toggling: Indicator is SISO system is plotted
+    """
+    plot_horizon = sim_data.T
+    t = np.arange(0, plot_horizon, dtype=int)
+    if toggling:
+        index = 0
+        for i in range(cv_rows, cv_rows + mv_rows):
+            for toggle in range(2):
+                axs[i, toggle].step(t, sim_data.u[index, :], BLUE, label="Optimized actuation")
+
+                axs[i, toggle].set_xlabel("MPC horizon, T")
+                axs[i, toggle].set_ylabel(sim_data.mv_units[index])   
+                axs[i, toggle].legend()
+                axs[i, toggle].grid()
+                axs[i, toggle].set_title(sim_data.inputs[index])
+                index += 1
+    else:
+        axs[1].step(t, sim_data.u, BLUE, label="Optimized actuation")
+        
+        axs[1].set_xlabel("MPC horizon, T")
+        axs[1].set_ylabel(sim_data.mv_units[0])   
+        axs[1].legend()
+        axs[1].grid()
+        axs[1].set_title(sim_data.inputs[0])
+
 
