@@ -25,6 +25,7 @@ FSRModel::FSRModel(VectorXd** SR, std::map<string, int> m_param, const MPCConfig
     phi_ = getPhiMatrix(W_);
     psi_ = getPsi(W_);
 
+    B_ = VectorXd::Zero((P_ - W_) * n_CV_);
     du_tilde_mat_ = MatrixXd::Zero(n_MV_, N_-W_-1);  
 }
 
@@ -45,6 +46,7 @@ FSRModel::FSRModel(VectorXd** SR, std::map<std::string, int> m_param, const std:
     phi_ = getPhiMatrix(W_);
     psi_ = getPsi(W_);
 
+    B_ = VectorXd::Zero((P_ - W_) * n_CV_);
     du_tilde_mat_ = MatrixXd::Zero(n_MV_, N_-W_-1); 
 }    
 
@@ -201,40 +203,4 @@ void FSRModel::setDuTildeMat(const MatrixXd& mat) {
         u_ -= vec;
     }
     du_tilde_mat_ = mat.block(0, 0, n_CV_, N_-1-W_); 
-}
-
-// Print functions: 
-void FSRModel::PrintTheta() const {
-    std::cout << "Theta: " << "(" << theta_.rows() << ", " << theta_.cols() << ")" << std::endl; 
-    std::cout << theta_ << std::endl; 
-    std::cout << std::endl;
-}
-
-void FSRModel::PrintPhi() const {
-    std::cout << "Phi : " << "(" << phi_.rows() << ", " << phi_.cols() << ")" << std::endl;
-    for (int i = 0; i < phi_.rows(); i++) {
-        std::cout << "Row = pad: " << i << std::endl;
-        std::cout << phi_(i, Eigen::seq(0, N_-W_-1-1)) << std::endl;
-        std::cout << std::endl;
-        std::cout << phi_(i, Eigen::seq(N_-W_-1, Eigen::indexing::last)) << std::endl;
-        std::cout << std::endl;
-    }
-}
-
-void FSRModel::PrintPsi() const {
-    std::cout << "Psi : " << "(" << psi_.rows() << ", " << psi_.cols() << ")" << std::endl;
-    std::cout << psi_ << std::endl; 
-    std::cout << std::endl;
-}
-
-void FSRModel::PrintActuation() const {
-    std::cout << "U(k-1):" << std::endl;
-    std::cout << u_K_ << std::endl;
-    std::cout << std::endl;
-    std::cout << "U_tilde:" << std::endl;
-    std::cout << du_tilde_mat_ << std::endl;
-    std::cout << std::endl;
-    std::cout << "U(k+W-N):" << std::endl;
-    std::cout << u_ << std::endl;
-
 }

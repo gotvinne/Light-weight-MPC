@@ -32,6 +32,7 @@ private:
 
     VectorXd u_, u_K_; /** Manipulated variables, U(k-N+W), n_MV */ /** Denotes U(k-1), n_MV */
     VectorXd y_; /** Controlled variables n_CV * (P-W) */ 
+    VectorXd B_; /** Bias update, B(k), n_CV * (P - W)*/
     MatrixXd du_tilde_mat_; /** Post change in actuation matrix (n_MV, (N-1-W)) */
 
     VectorXd** pp_SR_vec_; /** Matrix of Eigen::VectorXd holding every n_CV * n_MV step response */
@@ -111,14 +112,20 @@ private:
     /**
      * @brief Get the Omega Y object
      * 
-     * @return SparseXd 
+     * @return SparseXd Omega Y matrix
      */
     SparseXd getOmegaY() const;
 
+    /**
+     * @brief Set the Init Y object
+     * 
+     * @param init_y vector of init values
+     * @param predictions P - W
+     * @return VectorXd 
+     */
     VectorXd setInitY(std::vector<double> init_y, int predictions);
     
 public: 
-
     /**
      * @brief Default construcor
      * 
@@ -172,6 +179,17 @@ public:
     void UpdateU(const VectorXd& du);
 
     /**
+     * @brief Set the Bias object
+     * 
+     * @param bias Bias argument
+     */
+    void setBias(const VectorXd& bias) {
+        for (int i = 0; i < n_CV_; i++) {
+            B_.block((P_-W_) * i, 0, (P_ - W_), 0) = bias;
+        }
+    }
+
+    /**
      * @brief Return model output, Y(k+1) = Omega * (Theta * Delta U + Phi * Delta U_tilde + Psi * U)
      *                                    = Omega * (Theta * Delta U + Lambda)
      * Y is a vector containing every (P-W) * n_CV predictions further in time
@@ -200,13 +218,7 @@ public:
      * 
      * @return VectorXd 
      */
-    VectorXd getLambda() const { return phi_ * getDuTilde() + psi_ * u_ + y_; }; 
-
-    /** Print functions */
-    void PrintTheta() const;
-    void PrintPhi() const;
-    void PrintPsi() const;
-    void PrintActuation() const;
+    VectorXd getLambda() const { return phi_ * getDuTilde() + psi_ * u_ + y_ + B_; }; 
 };
 
 #endif // FSR_MODEL_H
