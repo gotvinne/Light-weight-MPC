@@ -159,6 +159,11 @@ public:
      */
     ~FSRModel();
 
+    /**
+     * @brief Set the Du Tilde Mat object
+     * 
+     * @param mat 
+     */
     void setDuTildeMat(const MatrixXd& mat);
 
     /** Get functions */
