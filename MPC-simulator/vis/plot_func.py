@@ -81,7 +81,7 @@ def PlotPrediction(axs: plt.axis, sim_data: SimulationData, cv_rows: int, toggli
     else: 
         axs[0].axvline(x = sim_data.T, color = BLACK, label = "Prediction axis")
         # axs[0].plot(t, sim_data.y[i, :], "b", label="System output")
-        axs[0].plot(t[0:sim_data.T], sim_data.y_pred[0, 0:sim_data.T], PURPLE, label="Output") 
+        axs[0].plot(t[0:sim_data.T+1], sim_data.y_pred[0, 0:sim_data.T+1], PURPLE, label="Output") 
         axs[0].plot(t[sim_data.T:], sim_data.y_pred[0, sim_data.T:], PURPLE, linestyle="--", label="Predicted output") 
         axs[0].plot(t, sim_data.ref[0, :], RED, linewidth=0.5, label="Reference") 
         
