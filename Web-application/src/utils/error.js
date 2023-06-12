@@ -39,19 +39,27 @@ export function updateError(sce, error, ncv, nmv) {
  * @param {React.useState} error Error hook
  */
 function updateHorizons(sce, error) {
-    const data = [parseInt(sce["T"]), parseInt(sce["P"]), parseInt(sce["M"]), parseInt(sce["W"])];
+    const T = parseInt(sce["T"]), P = parseInt(sce["P"]), M = parseInt(sce["M"]), W= parseInt(sce["W"]);
     // Check T: 
-    if (Math.max(...data) === data[0] && data[0] > 0) {
+    if (T > P && T > M && T > W && T > 0) {
         error["T"] = false;
-    } else { error["T"] = true; }
+    } else { 
+        error["T"] = true;
+    }
     // Check P:
-    if (data[0] > data[1] && data[1] >= data[2] && data[1] > data[3] && data[1] > 0) {
+    if (T > P && P >= M && P > 0) { // P < N ? 
         error["P"] = false;
-    } else { error["P"] = true; } 
+    } else { 
+        error["P"] = true; 
+    } 
     // Check W:
-    (data[3] <= data[1] ? error["W"] = false : error["W"] = true) 
+    if (W <= M && W >= 0) {
+        error["W"] = false;
+    } else {
+        error["W"] = true;
+    } 
     // Check M:
-    if (data[2] <= data[1] && data[2] < data[0] && data[2] > 0) {
+    if (M <= P && M < T && M > 0) { // M > W ? 
         error["M"] = false;
     } else {
         error["M"] = true;
@@ -67,28 +75,57 @@ function updateHorizons(sce, error) {
  */
 function updateTunings(sce, error, ncv, nmv) {
     const ncv_arr = ["Q", "RoH", "RoL"];
-    const nmv_arr = "R";
     
-    ncv_arr.forEach((tuning) => {
-        const data = convertArr(sce[tuning]);
+    const disable_slack = DisableSlack(sce, error);
+    if (disable_slack) {
+        // Check only Q
+        const data = convertArr(sce["Q"]);
         if (data.length === ncv) { // If size is correct
             if (data.some(v => v < 0) === false) { // Only positive elements
-                error[tuning] = false;
+                error["Q"] = false;
             }
         } else {
-            error[tuning] = true; 
-        }
-    })
-
-    const data = convertArr(sce[nmv_arr]);
-    if (data.length === nmv) { // If size is correct
-        if (data.some(v => v < 0) === false) { // Only positive elements
-            error[nmv_arr] = false;
+            error["Q"] = true; 
         }
     } else {
-        error[nmv_arr] = true; 
+        ncv_arr.forEach((tuning) => {
+            const data = convertArr(sce[tuning]);
+            if (data.length === ncv) { // If size is correct
+                if (data.some(v => v < 0) === false) { // Only positive elements
+                    error[tuning] = false;
+                }
+            } else {
+                error[tuning] = true; 
+            }
+        })
     }
+    
+    // Check R:
+    const data = convertArr(sce["R"]);
+    if (data.length === nmv) { // If size is correct
+        if (data.some(v => v < 0) === false) { // Only positive elements
+            error["R"] = false;
+        }
+    } else {
+        error["R"] = true; 
+    }
+}
 
+/**
+ * Determine slack disabled
+ * @param {React.useState} sce MPC scenario hook
+ * @param {React.useState} error Error hook
+ * @returns bool is slack is disabled
+ */
+function DisableSlack(sce, error) {
+    const roh = convertArr(sce["RoH"]), rol = convertArr(sce["RoL"]);
+    if (roh.length === 0 && rol.length === 0) {
+        error["RoH"] = false;
+        error["RoL"] = false;
+        return true;
+    } else {
+        return false;
+    }
 }
 
 /**
