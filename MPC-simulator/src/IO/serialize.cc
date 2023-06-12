@@ -260,18 +260,19 @@ void SerializeSimulation(const string& write_path, const MatrixXd& y_pred, const
                         const MatrixXd& ref, int T) {
     json sim_data = ReadJson(write_path); // Assume this file already exists.
     int old_P = int(sim_data.at(kP));
+    int old_M = int(sim_data.at(kM));
     sim_data.at(kT) = T + int(sim_data.at(kT)); // Update MPC horizon
     
     json cv_data = sim_data.at(kCV), mv_data = sim_data.at(kMV);
     int i = 0;
     for (auto& cv : cv_data) {
         json predictions = cv[kY_pred];
-        predictions.erase(predictions.end() - old_P, predictions.end()); // Slice away P predictions
+        predictions.erase(predictions.end() - old_P - 1, predictions.end()); // Slice away P predictions
         FillVector(predictions, y_pred, i); // Update Y_pred
         cv[kY_pred] = predictions;
 
         json reference = cv[kRef];
-        reference.erase(reference.end() - old_P, reference.end()); //Slice away P references
+        reference.erase(reference.end() - old_P - 1, reference.end()); //Slice away P references
         FillVector(reference, ref, i);
         cv[kRef] = reference; 
         i++;
@@ -279,7 +280,7 @@ void SerializeSimulation(const string& write_path, const MatrixXd& y_pred, const
     i = 0;
     for (auto& mv : mv_data) {
         json actuations = mv[kU];
-        // Might slice away.
+        actuations.erase(actuations.end() - old_M, actuations.end()); // Slice away M predictions
         FillVector(actuations, u_mat, i); // Update U
         mv[kU] = actuations; 
         i++;
