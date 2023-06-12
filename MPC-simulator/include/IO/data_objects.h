@@ -50,8 +50,8 @@ private:
     /**
      * @brief Padding S coefficients such that the model representation has equal number of Ss for each response
      * 
-     * @param s_data 
-     * @param cv 
+     * @param s_data Step coefficients parsed from model
+     * @param cv cv index
      */
     void PaddSData(json& s_data, int cv); 
 
@@ -114,8 +114,6 @@ struct MVData {
      */
     MVData(const json& mv_data, int n_MV);
 
-    // Do not have a need for an assignment operator since no memory is allocated. 
-
     void setInits(double value, int index) { Inits.at(index) = value; }
 };
 
@@ -131,7 +129,6 @@ struct MPCConfig {
     VectorXd R; /** Input change tuning */
     VectorXd RoH; /** Upper Slack variable tuning */
     VectorXd RoL; /** Lower Slack variable tuning */
-    bool bias_update; /** Bias update / Integral effect enabled */
     bool disable_slack;
 
     /**
@@ -146,7 +143,13 @@ struct MPCConfig {
      */
     MPCConfig(const json& sce_data);
 
-    void DetermineSlack(); 
+    /**
+     * @brief Determine if slack variables shall be simulated
+     *  
+     * @param mpc_data json data holding mpc configuration
+     * @param n_CV number of constrained variables
+     */
+    void DetermineSlack(const json& mpc_data, int n_CV); 
 };
 
 #endif // DATA_OBJECTS_H

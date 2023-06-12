@@ -127,7 +127,9 @@ MVData::MVData(const json& mv_data, int n_MV) {
     }             
 }
 
-MPCConfig::MPCConfig() : P(), M(), W(), bias_update() {}
+MPCConfig::MPCConfig() : P(), M(), W() {
+    disable_slack = false;
+}
 MPCConfig::MPCConfig(const json& sce_data) {
     json mpc_data = sce_data.at(kMPC);
     P = mpc_data.at(kP);
@@ -137,32 +139,47 @@ MPCConfig::MPCConfig(const json& sce_data) {
     // Recall sizes
     int n_CV = int(mpc_data.at(kQ).size());
     int n_MV = int(mpc_data.at(kR).size());
-
     Q.resize(n_CV); 
     R.resize(n_MV);
-    RoH.resize(n_CV);
-    RoL.resize(n_MV);
-    
+
+    DetermineSlack(mpc_data, n_CV);
+    // Store Q, Roh and RoL
     for (int i = 0; i < n_CV; i++) { 
-        Q[i] = mpc_data.at(kQ).at(i);
-        if (mpc_data.at(kRoH).at(i) < 0 || mpc_data.at(kRoL).at(i) < 0) {
-            throw std::invalid_argument("Negative turning arguments in Q and R");
+        double q = mpc_data.at(kQ).at(i);
+        if (q < 0) {
+            throw std::invalid_argument("Negative Q-tuning");
         } else {
-            RoH(i) = mpc_data.at(kRoH).at(i);
-            RoL(i) = mpc_data.at(kRoL).at(i);
+            Q[i] = q;
+        }
+        
+        if (!disable_slack) {
+            double roh = mpc_data.at(kRoH).at(i);
+            double rol = mpc_data.at(kRoL).at(i);
+            if (roh < 0 || rol < 0) {
+                throw std::invalid_argument("Negative turning arguments in RoH and RoL");
+            } else {
+                RoH(i) = roh;
+                RoL(i) = rol;
+            }
         }
     }
+    // Store R
     for (int i = 0; i < n_MV; i++) {
-        R[i] = mpc_data.at(kR).at(i);
+        double r = mpc_data.at(kR).at(i);
+        if (r < 0) {
+            throw std::invalid_argument("Negative R-tuning");
+        } else {
+            R[i] = r;
+        }
     }
-    bias_update = mpc_data.at(kBu);
-    DetermineSlack();
 }
 
-void MPCConfig::DetermineSlack() {
-    if (RoH.isZero(0) && RoL.isZero(0)) {
+void MPCConfig::DetermineSlack(const json& mpc_data, int n_CV) {
+    if (mpc_data.at(kRoH).empty() && mpc_data.at(kRoH).empty()) {
         disable_slack = true;
     } else {
         disable_slack = false;
+        RoH.resize(n_CV);
+        RoL.resize(n_CV);
     }
 } 

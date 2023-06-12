@@ -209,14 +209,12 @@ static void SerializeConstraints(json& data, const VectorXd& l_du, const VectorX
  * @param Q Output error penalty
  * @param R Acuation penalty
  * @param Ro slack penalty
- * @param bias_update integral effect
  */
-static void SerializeTuning(json& data, std::map<string, int> mpc_m, const VectorXd& Q, const VectorXd& R, const VectorXd& Ro, bool bias_update) {
+static void SerializeTuning(json& data, std::map<string, int> mpc_m, const VectorXd& Q, const VectorXd& R, const VectorXd& Ro) {
     json obj = json::object();
     obj[kP] = mpc_m[kP];
     obj[kM] = mpc_m[kM];
     obj[kW] = mpc_m[kW];
-    obj[kBu] = bias_update;
 
     json q = json::array(), r = json::array(), rol = json::array(), roh = json::array();
     for (int i = 0; i < Q.rows(); i++) {
@@ -318,7 +316,7 @@ void SerializeOpenLoop(const string& write_path, const string& scenario, const C
 ////////////////////////////////
 
 void SerializeScenario(const string& write_path, const string& scenario, const string& system, const string& sys_path, std::map<string, int> mpc_m,
-                     const VectorXd& Q, const VectorXd& R, const VectorXd& Ro, bool bias_update, const VectorXd& l_du, 
+                     const VectorXd& Q, const VectorXd& R, const VectorXd& Ro, const VectorXd& l_du, 
                      const VectorXd& l_u, const VectorXd& l_y, const VectorXd& u_du, const VectorXd& u_u, const VectorXd& u_y,
                      int n_CV, int n_MV) {
     json data;
@@ -343,7 +341,7 @@ void SerializeScenario(const string& write_path, const string& scenario, const s
     }
 
     data[kSystem] = system; // Write system
-    SerializeTuning(data, mpc_m, Q, R, Ro, bias_update);
+    SerializeTuning(data, mpc_m, Q, R, Ro);
     SerializeConstraints(data, l_du, l_u, l_y, u_du, u_u, u_y, n_CV, n_MV);
     WriteJson(data, write_path);
 }

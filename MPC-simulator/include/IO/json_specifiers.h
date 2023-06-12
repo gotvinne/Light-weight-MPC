@@ -34,7 +34,6 @@ const string kQ = "Q";
 const string kR = "R";
 const string kRoH = "RoH";
 const string kRoL = "RoL";
-const string kBu = "bias update";
 const string kC = "c"; 
 const string kDu = "du";
 

@@ -8,7 +8,6 @@
  * @copyright Copyright (c) 2023
  * 
  */
-
 #include "wasm/wasm.h"
 #include "simulations.h"
 #include "IO/data_objects.h"
@@ -22,9 +21,35 @@
 #include <map>
 #include <vector>
 #include <Eigen/Dense>
+#include <nlohmann/json.hpp>
 
 using VectorXd = Eigen::VectorXd;
 using MatrixXd = Eigen::MatrixXd;
+using json = nlohmann::json; 
+
+/**
+ * @brief Parse JSON reference to Eigen::MatrixXd, used in Web application
+ * 
+ * @param ref_str JSON formatted string
+ * @param T MPC horison 
+ * @param P Prediction horizon
+ * @return Allocated Eigen::MatrixXd holding references
+ */
+static MatrixXd ParseReferenceStr(string ref_str, int T, int P) {
+    // ref_str { 
+    //      "ref": [ref1, ref2, ..., refn_CV]    
+    // }
+    json ref_data = json::parse(ref_str);
+    json ref_vec = ref_data.at(kRef);
+
+    int size = int(ref_vec.size());
+    MatrixXd ref = MatrixXd::Zero(size, T + P);
+
+    for (int i = 0; i < size; i++) {
+        ref.row(i) = VectorXd::Constant(T + P, ref_vec.at(i)); // Takes predictions into account!
+    }
+    return ref;
+}
 
 string simulate(string sce_file, string sys_file, string sce, string ref_str, int T) {
     // System variables:
