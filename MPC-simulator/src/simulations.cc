@@ -98,10 +98,11 @@ void MPCSimFSRM(const string& sys, const string& ref_vec, bool new_sim, int T) {
             if (!new_sim) {
                 fsr.setDuTildeMat(du_tilde); 
             }
-            MatrixXd u_mat, y_pred, ref = setRef(ref_vec, T, conf.P, m_map[kN_CV]); 
-            /** Optimized actuation, (n_MV, T) */ /** Predicted output (n_CV, T)*/ /** Reference */
+            MatrixXd u_mat, y_pred;
+            /** Optimized actuation, (n_MV, T) */ /** Predicted output (n_CV, T)*/
 
             try { // Solve
+                MatrixXd ref = setRef(ref_vec, T, conf.P, m_map[kN_CV]);  /** Reference */
                 SRSolver(T, u_mat, y_pred, fsr, conf, z_min, z_max, ref);
                 if (new_sim) { // Serialize
                     SerializeSimulationNew(sim_path, sys, cvd, mvd, 
@@ -128,10 +129,11 @@ void MPCSimFSRM(const string& sys, const string& ref_vec, bool new_sim, int T) {
                 fsr_cost.setDuTildeMat(du_tilde);
             }
 
-            MatrixXd u_mat, y_pred, ref = setRef(ref_vec, T, conf.P, m_map[kN_CV]); 
-            /** Optimized actuation, (n_MV, T) */ /** Predicted output (n_CV, T)*/ /** Reference */
+            MatrixXd u_mat, y_pred;
+            /** Optimized actuation, (n_MV, T) */ /** Predicted output (n_CV, T)*/ 
 
             try { // Solve
+                MatrixXd ref = setRef(ref_vec, T, conf.P, m_map[kN_CV]); /** Reference */
                 SRSolver(T, u_mat, y_pred, fsr_sim, fsr_cost, conf, z_min, z_max, ref);
                 if (new_sim) { // Serialize
                     SerializeSimulationNew(sim_path, sys, cvd, mvd, 
@@ -152,10 +154,11 @@ void MPCSimFSRM(const string& sys, const string& ref_vec, bool new_sim, int T) {
             if (!new_sim) {
                 fsr.setDuTildeMat(du_tilde); 
             }
-            MatrixXd u_mat, y_pred, ref = setRef(ref_vec, T, conf.P, m_map[kN_CV]); 
-            /** Optimized actuation, (n_MV, T) */ /** Predicted output (n_CV, T)*/ /** Reference */
+            MatrixXd u_mat, y_pred;
+            /** Optimized actuation, (n_MV, T) */ /** Predicted output (n_CV, T)*/ 
            
             try { // Solve
+                MatrixXd ref = setRef(ref_vec, T, conf.P, m_map[kN_CV]); /** Reference */
                 SRSolverWoSlack(T, u_mat, y_pred, fsr, conf, z_min, z_max, ref);
 
                 if (new_sim) { // Serialize
@@ -183,10 +186,11 @@ void MPCSimFSRM(const string& sys, const string& ref_vec, bool new_sim, int T) {
                 fsr_cost.setDuTildeMat(du_tilde);
             }
 
-            MatrixXd u_mat, y_pred, ref = setRef(ref_vec, T, conf.P, m_map[kN_CV]); 
-            /** Optimized actuation, (n_MV, T) */ /** Predicted output (n_CV, T)*/ /** Reference */
+            MatrixXd u_mat, y_pred;
+            /** Optimized actuation, (n_MV, T) */ /** Predicted output (n_CV, T)*/ 
 
             try { // Solve
+                MatrixXd ref = setRef(ref_vec, T, conf.P, m_map[kN_CV]); /** Reference */
                 SRSolverWoSlack(T, u_mat, y_pred, fsr_sim, fsr_cost, conf, z_min, z_max, ref);
                 if (new_sim) { // Serialize
                     SerializeSimulationNew(sim_path, sys, cvd, mvd, 

@@ -257,6 +257,7 @@ std::vector<double> ParseRefString(const string& ref_str) {
     }
 
     string stripped = copy.substr(1, copy.size() - 2);
+    // Replace , with " "
     const char sep = ',', space = ' ';
     std::replace(stripped.begin(), stripped.end(), sep, space);
  
