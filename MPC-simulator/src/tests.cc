@@ -50,7 +50,6 @@ void TestSerializeScenario(const string& sce, const string& sys, const string& S
       {1},     
       {1}      
     };
-    bool bias_update = 0;
 
     VectorXd l_du = VectorXd::Constant(1, -1);
     VectorXd l_u = VectorXd::Constant(1, -1);
@@ -60,7 +59,7 @@ void TestSerializeScenario(const string& sce, const string& sys, const string& S
     VectorXd u_y = VectorXd::Constant(1, 1);
 
     try {
-        SerializeScenario(path, sce, sys, SYS_PATH, mpc_m, Q, R, Ro, bias_update,
+        SerializeScenario(path, sce, sys, SYS_PATH, mpc_m, Q, R, Ro,
         l_du, l_u, l_y, u_du, u_u, u_y, n_CV, n_MV);
     }
     catch(std::exception& e) {

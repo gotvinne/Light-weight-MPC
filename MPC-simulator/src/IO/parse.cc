@@ -68,6 +68,18 @@ static void ConstraintData(const json& sce_data, VectorXd& arr, bool upper) {
     }
 }
 
+static void ValidateConstraints(const VectorXd& z_min, const VectorXd& z_max, std::map<string, int>& m_map) {
+    if (z_min.rows() != (2 * m_map[kN_MV] + m_map[kN_CV]) || z_min.rows() != (2 * m_map[kN_MV] + m_map[kN_CV])) {
+        throw std::out_of_range("Constraints does not match system description, n_CV = " + std::to_string(m_map[kN_CV]) + " n_MV = " + std::to_string(m_map[kN_MV]));
+    }
+
+    for (int i = 0; i < z_min.size(); i++) {
+        if (z_min[i] > z_max[i]) {
+            throw std::invalid_argument("Lower constraint index, " + std::to_string(i) + ", takes a higher value then upper constraint");
+        }
+    }
+}
+
 /**
  * @brief high-level function parsing system file
  * 
@@ -171,18 +183,32 @@ void ParseNew(const string& sce_filepath, std::map<string, int>& m_map,
     json sys_data = ReadJson(sys_filepath);
     ParseSystemData(sys_data, m_map, cvd, mvd);
 
+    // Error checking system and scenario parameters:
     if (conf.Q.rows() != m_map[kN_CV]) {
-        throw std::out_of_range("Q matrix dimension does not match system description");
+        throw std::out_of_range("Q matrix dimension does not match system description, n_CV = " + std::to_string(m_map[kN_CV]));
     }
     if (conf.R.rows() != m_map[kN_MV]) {
-        throw std::out_of_range("R matrix dimension does not match system description");
+        throw std::out_of_range("R matrix dimension does not match system description, n_CV = " + std::to_string(m_map[kN_CV]));
     }
     if (conf.P > m_map[kN]) {
         throw std::out_of_range("Cannot predict further then P = N = " + std::to_string(m_map[kN]));
     }
-    if (conf.M > m_map[kN]) {
-        throw std::out_of_range("Cannot predict further then M = N = " + std::to_string(m_map[kN]));
+    if (conf.M > conf.P) {
+        throw std::out_of_range("Cannot predict further then M = P = " + std::to_string(conf.P));
     }
+    if (conf.W > conf.M) {
+        throw std::out_of_range("W must be smaller or equal then M =" + std::to_string(conf.M));
+    }
+
+    if (!conf.disable_slack) {
+        if (conf.RoH.rows() != m_map[kN_CV]) {
+            throw std::out_of_range("RoH dimension does not match system description, n_CV = " + std::to_string(m_map[kN_CV]));
+        }
+        if (conf.RoL.rows() != m_map[kN_CV]) {
+            throw std::out_of_range("RoL dimension does not match system description, n_CV = " + std::to_string(m_map[kN_CV]));
+        }
+    }
+    ValidateConstraints(z_min, z_max, m_map);
 }
 
 void Parse(const string& sce_filepath, const string& sim_filepath, std::map<string, int>& m_map,
@@ -196,9 +222,10 @@ void Parse(const string& sce_filepath, const string& sim_filepath, std::map<stri
     ParseSimulationData(sim_data, du_tilde, mvd);
 }
 
+// Web application parse
 void Parse(const string& sce_file, const string& sys_file, std::map<string, int>& m_map,
                     CVData& cvd, MVData& mvd, MPCConfig& conf, 
-                        Eigen::VectorXd& z_min, Eigen::VectorXd& z_max) {
+                    VectorXd& z_min, VectorXd& z_max) {
     json sce_data = json::parse(sce_file), sys_data = json::parse(sys_file); 
 
     string system; // Dummy variable
@@ -211,22 +238,6 @@ void ParseOpenLoop(const string& system, std::map<string, int>& m_map, CVData& c
     string sys_filepath = "../data/systems/" + system + ".json";
     json sys_data = ReadJson(sys_filepath);
     ParseSystemData(sys_data, m_map, cvd, mvd);
-}
-
-MatrixXd ParseReferenceStr(string ref_str, int T, int P) {
-    // ref_str { 
-    //      "ref": [ref1, ref2, ..., refn_CV]    
-    // }
-    json ref_data = json::parse(ref_str);
-    json ref_vec = ref_data.at(kRef);
-
-    int size = int(ref_vec.size());
-    MatrixXd ref = MatrixXd::Zero(size, T + P);
-
-    for (int i = 0; i < size; i++) {
-        ref.row(i) = VectorXd::Constant(T + P, ref_vec.at(i)); // Takes predictions into account!
-    }
-    return ref;
 }
 
 std::vector<double> ParseRefString(const string& ref_str) {
@@ -251,7 +262,6 @@ std::vector<double> ParseRefString(const string& ref_str) {
             ref_vec.push_back(std::stod(item));
         }
     }
-
     return ref_vec;
 }
 

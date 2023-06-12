@@ -119,7 +119,6 @@ void SerializeOpenLoop(const string& write_path, const string& scenario, const C
  * @param Q output tuning 
  * @param R input tuning
  * @param Ro Slack variable tuning
- * @param bias_update bool
  * @param l_du lower du constraint
  * @param l_u lower u constraint
  * @param l_y lower y constraint
@@ -130,7 +129,7 @@ void SerializeOpenLoop(const string& write_path, const string& scenario, const C
  * @param n_MV number of manipulated variables
  */
 void SerializeScenario(const string& write_path, const string& scenario, const string& system, const string& sys_path, std::map<string, int> mpc_m,
-                     const VectorXd& Q, const VectorXd& R, const VectorXd& Ro, bool bias_update, const VectorXd& l_du, 
+                     const VectorXd& Q, const VectorXd& R, const VectorXd& Ro, const VectorXd& l_du, 
                      const VectorXd& l_u, const VectorXd& l_y, const VectorXd& u_du, const VectorXd& u_u, const VectorXd& u_y,
                      int n_CV, int n_MV);
 
