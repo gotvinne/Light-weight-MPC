@@ -27,7 +27,8 @@ export default function Scenario({simHook}) {
     const [ref, setRef] = useState("");
     const [buttonDisable, setButtonDisable] = useState(true);
     const [simStatus, setSimStatus] = useState({status: "", error: ""});
-        
+    
+    // Read model parameters
     const [cv, mv] = useMemo(() => { // When system is selected, c/mv[0] = data, units, called every time scenario module reloads
         if (sce["System"] === "") {
             return [[[], []], [[], []]];
@@ -60,7 +61,8 @@ export default function Scenario({simHook}) {
             localStorage.setItem(SCENARIO_STORAGE_KEY, JSON.stringify(sce));
         }
         
-        if (sce["System"] !== "") { // Check is system update
+        // Enable simulation button:
+        if (sce["System"] !== "") { // Check if system update
             setError({...updateError(sce, error, cv[0].length, mv[0].length)});
             if (Object.values(error).every((v) => v === false) && sce["System"] !== "" && onlyNumbers(ref)) {
                 setButtonDisable(false);

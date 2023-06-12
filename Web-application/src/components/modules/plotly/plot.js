@@ -8,11 +8,9 @@ const RED = 'rgb(255, 0, 0)';
 const PURPLE = 'rgb(128, 0, 128)';
 
 export function PlotPrediction(cv_data, T, P) {
-    let t = Array.from({ length: T+P }, (value, index) => index);
-    let lower = Array(T+P).fill(cv_data.c[0]);
-    let upper = Array(T+P).fill(cv_data.c[1]);
-
-    console.log(t.length)
+    let t = Array.from({ length: T+P+1 }, (value, index) => index);
+    let lower = Array(T+P+1).fill(cv_data.c[0]);
+    let upper = Array(T+P+1).fill(cv_data.c[1]);
 
     var output = {
         x: t.slice(0, T+1),
@@ -23,6 +21,8 @@ export function PlotPrediction(cv_data, T, P) {
             color: PURPLE
         }
     };
+
+    console.log(cv_data.ref.length)
 
     var ref_plot = {
         x: t,
@@ -36,8 +36,8 @@ export function PlotPrediction(cv_data, T, P) {
     };
 
     var output_pred = {
-        x: t.slice(T+1, t.length),
-        y: cv_data.y_pred.slice(T+1, t.length),
+        x: t.slice(T, t.length),
+        y: cv_data.y_pred.slice(T, t.length),
         name: "Pred Output",
         mode: 'lines',
         line: {

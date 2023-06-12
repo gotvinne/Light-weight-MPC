@@ -11,7 +11,7 @@ function createData(
 }
 
 const tableData = [
-  createData('P', `P \\in [M, T), \\quad P \\leq N_* + M`),
+  createData('P', `P \\in [M, N_{*}]`),
   createData('M', `M \\in [W, P]`),
   createData('W', `W \\in [0, M]`),
   createData('T', `T > P`),

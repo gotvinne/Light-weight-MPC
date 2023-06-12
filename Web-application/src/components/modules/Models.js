@@ -46,15 +46,15 @@ export default function Models() {
                                         \\vdots & \\vdots & \\vdots & \\vdots \\\\\n
                                         \\boldsymbol{S}_{n_{CV} 1} & \\cdots & \\cdots & \\boldsymbol{S}_{n_{CV} n_{MV}} \\end{array}\\right]_{n_{CV} \\cdot (P-W) \\times M \\cdot n_{MV}},  `} />
                         <Box width={"2%"}/>
-                        <BlockMath math={`\\boldsymbol{S} \\triangleq\\left[\\begin{array}{cccc}
-                                        s_1 & 0 & \\cdots & 0 \\\\\n
-                                        s_2 & s_1 & 0 & \\vdots \\\\\n
-                                        \\vdots & \\vdots & \\ddots & 0 \\\\\n
-                                        s_M & s_{M-1} & \\cdots & s_1 \\\\\n
-                                        s_{M+1} & s_M & \\cdots & s_2 \\\\\n
-                                        \\vdots & \\vdots & \\ddots & \\vdots \\\\\n
-                                        s_P & s_{P-1} & \\cdots & s_{P-M+1}
-                                        \\end{array}\\right] `} />
+                        <BlockMath math={`\\boldsymbol{S_{i,j}} = \\left[\\begin{array}{cccc}
+                                        s_W & s_{W-1} & \\cdots & 0 \\\\
+                                        s_{W+1} & s_W & 0 & \\vdots \\\\
+                                        \\vdots & \\vdots & \\ddots & 0 \\\\
+                                        s_M & s_{M-1} & \\cdots & s_1 \\\\
+                                        s_{M+1} & s_M & \\cdots & s_2 \\\\
+                                        \\vdots & \\vdots & \\ddots & \\vdots \\\\
+                                        s_P & s_{P-1} & \\cdots & s_{P-M}
+                                        \\end{array}\\right]_{\\left(P - W\\right) \\times M}. `} />
                 </Box>
 
 
