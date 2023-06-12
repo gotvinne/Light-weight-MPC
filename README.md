@@ -29,3 +29,6 @@ Software applications:
 
 ### LICENCE:
 Released under the terms of the BSD 3-Clause License
+
+### Master thesis
+Light-weight MPC, TTK4900 Engineering Cyberneticsm Master's thesis. 
