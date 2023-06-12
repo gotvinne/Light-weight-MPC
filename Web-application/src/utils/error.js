@@ -24,10 +24,10 @@ export function onlyNumbers(arr) {
  * @param {Number} nmv number of manipulated variables
  * @returns Updated error hook
  */
-export function updateError(sce, error, ncv, nmv) {
+export function updateError(sce, error, ncv, nmv, n) {
     var curr_err = error;
 
-    updateHorizons(sce, curr_err);
+    updateHorizons(sce, curr_err, n);
     updateTunings(sce, curr_err, ncv, nmv);
     updateConstraints(sce, curr_err, ncv, nmv);
     return curr_err;
@@ -37,33 +37,21 @@ export function updateError(sce, error, ncv, nmv) {
  * updateError helper function, checking horizons
  * @param {React.useState} sce MPC scenario hook
  * @param {React.useState} error Error hook
+ * @param {Number} N Model horizon
  */
-function updateHorizons(sce, error) {
+function updateHorizons(sce, error, N) {
     const T = parseInt(sce["T"]), P = parseInt(sce["P"]), M = parseInt(sce["M"]), W= parseInt(sce["W"]);
     // Check T: 
-    if (T > P && T > M && T > W && T > 0) {
-        error["T"] = false;
-    } else { 
-        error["T"] = true;
-    }
+    (T > 0) ? error["T"] = false : error["T"] = true;
+    
     // Check P:
-    if (T > P && P >= M && P > 0) { // P < N ? 
-        error["P"] = false;
-    } else { 
-        error["P"] = true; 
-    } 
+    (P <= N && P >= M && P > 0) ? error["P"] = false : error["P"] = true; 
+    
     // Check W:
-    if (W <= M && W >= 0) {
-        error["W"] = false;
-    } else {
-        error["W"] = true;
-    } 
+    (W <= M && W >= 0) ? error["W"] = false : error["W"] = true;
+
     // Check M:
-    if (M <= P && M < T && M > 0) { // M > W ? 
-        error["M"] = false;
-    } else {
-        error["M"] = true;
-    }
+    (M <= P && M > 0) ? error["M"] = false : error["M"] = true;
 }
 
 /**

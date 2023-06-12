@@ -61,12 +61,12 @@ export function importSystems() {
 
 /**
  * Read model parameters from system JSON file
- * @param {string} fileName 
+ * @param {string} system_name Name of FSRM system
  * @param {string} identifier CV/MV identifier
  * @return array, first index is CV/MV data second is corresponding units
  */
-export function readModelParams(fileName, identifier) {
-  const resource = require(`./../systems/${fileName}.json`); // Load file
+export function readModelParams(system_name, identifier) {
+  const resource = require(`./../systems/${system_name}.json`); // Load file
   const data = resource[identifier];
  
   const arr = [];
@@ -93,12 +93,22 @@ export function readModelParams(fileName, identifier) {
 }
 
 /**
+ * 
+ * @param {string} system_name FSRM system name 
+ * @returns System's corresponding model horizon
+ */
+export function readModelHorizon(system_name) {
+  const resource = require(`./../systems/${system_name}.json`); // Load file
+  return resource["model"]["N"];
+}
+
+/**
  * Read JSON file from local system folder
- * @param {string} fileName 
+ * @param {string} system_name FSRM system name
  * @return JSON formatted Object
  */
-export function readSystem(fileName) {
-  const resource = require(`./../systems/${fileName}.json`); // Load file
+export function readSystem(system_name) {
+  const resource = require(`./../systems/${system_name}.json`); // Load file
   return JSON.stringify(resource);
 }
 

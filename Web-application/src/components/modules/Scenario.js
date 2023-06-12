@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { TextField, Box, Button, MenuItem, FormControl, InputLabel, Select, Typography } from "@mui/material";
-import { importSystems, readModelParams, readSystem, serializeRef, serializeScenario } from "../../utils/IO.js";
+import { importSystems, readModelHorizon, readModelParams, readSystem, serializeRef, serializeScenario } from "../../utils/IO.js";
 import { onlyNumbers, updateError } from "../../utils/error.js";
 import { simulate } from "../../utils/wasm.js";
 
@@ -24,7 +24,8 @@ export default function Scenario({simHook}) {
     const [sce, setSce] = useState(TEXT_FIELDS);
     const [systemNames] = useState(importSystems());
     const [error, setError] = useState(ERROR);
-    const [ref, setRef] = useState("");
+    const [ref, setRef] = useState(""); // Reference vector
+    const [n, setN] = useState(0);
     const [buttonDisable, setButtonDisable] = useState(true);
     const [simStatus, setSimStatus] = useState({status: "", error: ""});
     
@@ -35,6 +36,7 @@ export default function Scenario({simHook}) {
         } else {
             let cv_data = readModelParams(sce["System"], "CV");
             setRef(() => {return Array(cv_data[0].length).fill("0")});
+            setN(readModelHorizon(sce["System"]));
             
             if (sce["Scenario"] === "") {
                 setSce(sce => { // Set default tuning
@@ -63,7 +65,7 @@ export default function Scenario({simHook}) {
         
         // Enable simulation button:
         if (sce["System"] !== "") { // Check if system update
-            setError({...updateError(sce, error, cv[0].length, mv[0].length)});
+            setError({...updateError(sce, error, cv[0].length, mv[0].length, n)});
             if (Object.values(error).every((v) => v === false) && sce["System"] !== "" && onlyNumbers(ref)) {
                 setButtonDisable(false);
             } else {
@@ -124,7 +126,7 @@ export default function Scenario({simHook}) {
             </Box>
             
             <Box sx={{pl: "1%", pt: "1%", width: "36%"}}>
-                <Reference cv={cv} mv={mv} ref_value={ref} handler={handleReference}/>
+                <Reference cv={cv} mv={mv} ref_value={ref} n={n} handler={handleReference}/>
 
                 <Box sx={{pt: 2, height: "5%", display: "flex", flexDirection: "row"}} >
                     <Typography color={"#d40808"}>

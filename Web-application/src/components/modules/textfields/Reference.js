@@ -5,7 +5,7 @@ import { InlineMath } from 'react-katex';
 /**
  * Render variables in mathematical format
  * @param {Number} length 
- * @param {String} identifier 
+ * @param {String} identifier n_CV / n_MV
  * @returns Mathematical rendering of length and identifier
  */
 export function variableRender(length, identifier) {
@@ -22,12 +22,13 @@ export function variableRender(length, identifier) {
 
 /**
  * Display Reference TextFields
- * @param {Array} cv 
- * @param {Array} mv 
- * @param {React.useState} ref_value
+ * @param {Array} cv cv_data
+ * @param {Array} mv mv_data
+ * @param {React.useState} ref_value reference hook
+ * @param {number} n model horizon
  * @param {Function} handler callback function
  */
-export default function Reference({cv, mv, ref_value, handler}) {
+export default function Reference({cv, mv, ref_value, n, handler}) {
     return (
         <div>
             <Typography variant="h5" sx={{fontWeight: 'bold'}} >
@@ -85,6 +86,13 @@ export default function Reference({cv, mv, ref_value, handler}) {
                         </Box>
                         )
                     })}
+                </Box>
+            </Box>
+            <Box sx={{height: "5%", display: "flex", flexDirection: "row"}} >
+                <Box sx={{width: "25%", pt: 2, display: "flex", flexDirection: "row"}}> 
+                    <Typography variant="h5">
+                        <InlineMath math={`N_* = ${n}`} />
+                    </Typography>
                 </Box>
             </Box>
         </div>

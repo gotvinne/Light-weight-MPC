@@ -14,7 +14,7 @@ const tableData = [
   createData('P', `P \\in [M, N_{*}]`),
   createData('M', `M \\in [W, P]`),
   createData('W', `W \\in [0, M]`),
-  createData('T', `T > P`),
+  createData('T', `T > 0`),
   createData('\\boldsymbol{Q}', `\\boldsymbol{Q} \\geq 0, \\quad \\boldsymbol{Q}.length == n_{CV}`),
   createData('\\boldsymbol{R}', `\\boldsymbol{R} \\geq 0, \\quad \\boldsymbol{R}.length == n_{MV}`),
   createData('\\rho_h', `\\rho_h \\geq 0, \\quad \\rho_{h}.length == n_{CV}`),

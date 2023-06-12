@@ -25,7 +25,7 @@ export default function Models() {
                 <Typography variant="subtitle1" sx={{fontWeight: "bold"}}> Model definition: </Typography>
                 <Typography>
                     Instead of using states to describe the dynamics for a given time <InlineMath math={"t"} /> the step response models uses step response coefficients, <InlineMath math={"s"} /> to describe the relation between the input and output. 
-                    For an arbitrary FSR model, the model is describe by <InlineMath math={"N"} /> step response coefficients. 
+                    For an arbitrary FSR model, the model is describe by <InlineMath math={"N_*"} /> step response coefficients. 
                     Furthermore, in order to describe how the change in actuation affects the outputs and the predicted outputs, three matrices are defined: 
                     <InlineMath math={"\\quad \\boldsymbol{\\Theta, \\Phi, \\Psi}"} />. The first matrix determines how the step response coefficients are used to predict future outputs, while the others describes the dynamics of past actuation. 
                 </Typography>
@@ -64,14 +64,14 @@ export default function Models() {
                                     \\boldsymbol{\\Phi_{2,1}} & \\boldsymbol{\\Phi_{2,2}} & \\cdots & \\boldsymbol{\\Phi_{2, n_{M V}}} \\\\\n
                                     \\vdots & \\vdots & \\ddots & \\vdots \\\\\n
                                     \\boldsymbol{\\Phi_{n_{C V}, 1}} & \\boldsymbol{\\Phi_{n_{C V}, 2}} & \\cdots & \\boldsymbol{\\Phi_{n_{C V}, n_{M V}}}
-                                    \\end{array}\\right]_{n_{C V}\\left(P-W\\right) \\times \\sum_{j=1}^{n_{M V}}\\left(N-W-1\\right)}, `} />
+                                    \\end{array}\\right]_{n_{C V}\\left(P-W\\right) \\times \\sum_{j=1}^{n_{M V}}\\left(N_*-W-1\\right)}, `} />
                     <Box width={"2%"}/>
                     <BlockMath math={`\\boldsymbol{\\Phi_{i, j}} =\\left[\\begin{array}{ccccc}
                                     s_{W+1} & s_{W+2} & \\ldots & s_{N-2} & s_{N-1} \\\\\n
                                     s_{W+2} & s_{W+3} & \\ldots & s_{N-1} & s_{N}\\\\\n
                                     \\vdots & \\vdots & \\vdots & \\vdots & \\vdots \\\\\n
                                     s_{P+1} & s_{P+2} & \\ldots & s_{N} & s_{N}
-                                    \\end{array}\\right]_{\\left(P-W\\right) \\times N-W-1} `} />
+                                    \\end{array}\\right]_{\\left(P-W\\right) \\times N_*-W-1} `} />
 
                 </Box>
                 
