@@ -68,6 +68,13 @@ static void ConstraintData(const json& sce_data, VectorXd& arr, bool upper) {
     }
 }
 
+/**
+ * @brief Validate the parsed constraints
+ * 
+ * @param z_min lower constraints
+ * @param z_max upper constraints
+ * @param m_map model parameters
+ */
 static void ValidateConstraints(const VectorXd& z_min, const VectorXd& z_max, std::map<string, int>& m_map) {
     if (z_min.rows() != (2 * m_map[kN_MV] + m_map[kN_CV]) || z_min.rows() != (2 * m_map[kN_MV] + m_map[kN_CV])) {
         throw std::out_of_range("Constraints does not match system description, n_CV = " + std::to_string(m_map[kN_CV]) + " n_MV = " + std::to_string(m_map[kN_MV]));

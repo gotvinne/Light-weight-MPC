@@ -179,7 +179,7 @@ void MPCConfig::DetermineSlack(const json& mpc_data, int n_CV) {
         disable_slack = true;
     } else {
         disable_slack = false;
-        RoH.resize(n_CV);
-        RoL.resize(n_CV);
+        RoH = VectorXd::Zero(n_CV);
+        RoL = VectorXd::Zero(n_CV);
     }
 } 
