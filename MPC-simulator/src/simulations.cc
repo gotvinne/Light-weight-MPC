@@ -154,7 +154,7 @@ void MPCSimFSRM(const string& sys, const string& ref_vec, bool new_sim, int T) {
             }
             MatrixXd u_mat, y_pred, ref = setRef(ref_vec, T, conf.P, m_map[kN_CV]); 
             /** Optimized actuation, (n_MV, T) */ /** Predicted output (n_CV, T)*/ /** Reference */
-
+           
             try { // Solve
                 SRSolverWoSlack(T, u_mat, y_pred, fsr, conf, z_min, z_max, ref);
 

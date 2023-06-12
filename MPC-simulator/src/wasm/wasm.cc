@@ -43,10 +43,10 @@ static MatrixXd ParseReferenceStr(string ref_str, int T, int P) {
     json ref_vec = ref_data.at(kRef);
 
     int size = int(ref_vec.size());
-    MatrixXd ref = MatrixXd::Zero(size, T + P);
+    MatrixXd ref = MatrixXd::Zero(size, T + P + 1);
 
     for (int i = 0; i < size; i++) {
-        ref.row(i) = VectorXd::Constant(T + P, ref_vec.at(i)); // Takes predictions into account!
+        ref.row(i) = VectorXd::Constant(T + P + 1, ref_vec.at(i)); // Takes y0 and predictions into account!
     }
     return ref;
 }
