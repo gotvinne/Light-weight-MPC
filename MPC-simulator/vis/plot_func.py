@@ -194,7 +194,7 @@ def PlotOpenLoopActuation(axs: plt.axis, sim_data: SimulationData, cv_rows: int,
         index = 0
         for i in range(cv_rows, cv_rows + mv_rows):
             for toggle in range(2):
-                axs[i, toggle].step(t, sim_data.u[index, :], BLUE, label="Optimized actuation")
+                axs[i, toggle].step(t, sim_data.u[index, :], BLUE, label="Actuation")
 
                 axs[i, toggle].set_xlabel("MPC horizon, T")
                 axs[i, toggle].set_ylabel(sim_data.mv_units[index])   
@@ -203,7 +203,7 @@ def PlotOpenLoopActuation(axs: plt.axis, sim_data: SimulationData, cv_rows: int,
                 axs[i, toggle].set_title(sim_data.inputs[index])
                 index += 1
     else:
-        axs[1].step(t, sim_data.u, BLUE, label="Optimized actuation")
+        axs[1].step(t, sim_data.u, BLUE, label="Actuation")
         
         axs[1].set_xlabel("MPC horizon, T")
         axs[1].set_ylabel(sim_data.mv_units[0])   

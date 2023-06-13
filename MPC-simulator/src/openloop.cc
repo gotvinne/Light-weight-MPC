@@ -18,6 +18,7 @@
 #include <vector>
 #include <map>
 #include <Eigen/Dense>
+#include <cmath>
 using VectorXd = Eigen::VectorXd;
 using MatrixXd = Eigen::MatrixXd;
 
@@ -38,7 +39,7 @@ static void CheckArgs(const std::vector<double>& ref_vec, const std::vector<doub
     for (int i = 0; i < n_CV; i++) {
         if (step_vec[i] > ref_vec[i]) {
             throw std::invalid_argument("Step element "+std::to_string(i)+", is larger then reference element");
-        } else if (int(ref_vec[i]) % int(step_vec[i]) != 0) {
+        } else if (std::fmod(ref_vec[i], step_vec[i]) != 0) {
             throw std::invalid_argument("Step element "+std::to_string(i)+", does not have zero reminder in division with the reference element");
         }
     }
@@ -99,6 +100,7 @@ void OpenLoopFSRM(const string& sys, const string& ref_str, const string& step_s
     MatrixXd u_mat = MatrixXd::Zero(fsr.getN_MV(), T), y_pred = MatrixXd::Zero(fsr.getN_CV(), T);
  
     for (int k = 0; k < T; k++) {
+        // Store actuation and prediction
         u_mat.col(k) = fsr.getUK();
         y_pred.col(k) = fsr.getY(du.col(k));
 
@@ -107,7 +109,7 @@ void OpenLoopFSRM(const string& sys, const string& ref_str, const string& step_s
     }
 
     // Serialize: 
-    try { // Serialize open loop must be changed to fit the new parsing lib
+    try { 
         SerializeOpenLoop(sim_path, sys, cvd, mvd, y_pred, u_mat, fsr, T); 
     }
     catch(std::exception& e) {
