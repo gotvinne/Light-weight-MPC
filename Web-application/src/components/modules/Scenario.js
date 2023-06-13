@@ -125,7 +125,7 @@ export default function Scenario({simHook}) {
                 <Constraints nmv={mv[0].length} ncv={cv[0].length} error={error} sce={sce} handler={handleTextField} />
             </Box>
             
-            <Box sx={{pl: "1%", pt: "1%", width: "36%"}}>
+            <Box sx={{pl: "1%", pt: "1%", width: "40%"}}>
                 <Reference cv={cv} mv={mv} ref_value={ref} n={n} handler={handleReference}/>
 
                 <Box sx={{pt: 2, height: "5%", display: "flex", flexDirection: "row"}} >
@@ -135,7 +135,7 @@ export default function Scenario({simHook}) {
                 </Box>
             </Box>
 
-            <Box textAlign="left" sx={{pl: "1%", pt: "1%", width: "25%"}}>
+            <Box textAlign="left" sx={{pl: "2%", pt: "1%", width: "20%"}}>
                 <Button variant="contained" size="large" sx={{minWidth: "50%", minHeight: "12%"}} color={"success"} disabled={buttonDisable} onClick={handleSimulatonClick}> RUN SIMULATION </Button>
             </Box>
             

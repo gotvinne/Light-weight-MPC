@@ -14,10 +14,10 @@ export function OutputCharts({CVs, T, P}) {
     }, [CVs]);
     // Keys are set randomly to avoid warning
     return (
-        <div className="Scenario">
+        <div>
             {rows.map((i) => {
                 return (
-                <Box key={i} sx={{pl:"10%", width: "45%", display: "flex", flexDirection: "row"}}>
+                <Box key={i} sx={{pl:"1%", width: "45%", display: "flex", flexDirection: "row"}}>
                     {cols.map((j) => {
                         return (
                             <div key={10+j}>
@@ -47,10 +47,10 @@ export function ActuationCharts({MVs, T, M}) {
     }, [MVs]);
     // Keys are set randomly to avoid warning
     return (
-        <div className="Scenario">
+        <div>
             {rows.map((i) => {
                 return (
-                <Box key={i} sx={{pl:"10%", width: "45%", display: "flex", flexDirection: "row"}}>
+                <Box key={i} sx={{pl:"1%", width: "45%", display: "flex", flexDirection: "row"}}>
                     {cols.map((j) => {
                         return (
                             <div key={10+j}>
