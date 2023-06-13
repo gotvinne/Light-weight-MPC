@@ -60,7 +60,7 @@ def PlotPrediction(axs: plt.axis, sim_data: SimulationData, cv_rows: int, toggli
         index = 0
         for i in range(cv_rows):
             for toggle in range(2):
-                axs[i, toggle].axvline(x = sim_data.T, color = BLACK, label = "Prediction axis")
+                axs[i, toggle].axvline(x = sim_data.T, color = BLACK)
                 # plt.plot(t, sim_data.y[i, :], "b", label="System output")
                 axs[i, toggle].plot(t[0:sim_data.T+1], sim_data.y_pred[index, 0:sim_data.T+1], PURPLE, label="Output") 
                 axs[i, toggle].plot(t[sim_data.T:], sim_data.y_pred[index, sim_data.T:], PURPLE, linestyle="--", label="Predicted output") 
@@ -79,7 +79,7 @@ def PlotPrediction(axs: plt.axis, sim_data: SimulationData, cv_rows: int, toggli
                 axs[i, toggle].set_title(sim_data.outputs[index])
                 index += 1
     else: 
-        axs[0].axvline(x = sim_data.T, color = BLACK, label = "Prediction axis")
+        axs[0].axvline(x = sim_data.T, color = BLACK)
         # axs[0].plot(t, sim_data.y[i, :], "b", label="System output")
         axs[0].plot(t[0:sim_data.T+1], sim_data.y_pred[0, 0:sim_data.T+1], PURPLE, label="Output") 
         axs[0].plot(t[sim_data.T:], sim_data.y_pred[0, sim_data.T:], PURPLE, linestyle="--", label="Predicted output") 
@@ -113,7 +113,7 @@ def PlotActuation(axs: plt.axis, sim_data: SimulationData, cv_rows: int, mv_rows
         index = 0
         for i in range(cv_rows, cv_rows + mv_rows):
             for toggle in range(2):
-                axs[i, toggle].axvline(x=sim_data.T, color=BLACK, label="Prediction axis")
+                axs[i, toggle].axvline(x=sim_data.T, color=BLACK)
                 axs[i, toggle].step(t[0:sim_data.T+1], sim_data.u[index, 0:sim_data.T+1], BLUE, label="Optimized actuation")
                 axs[i, toggle].step(t[sim_data.T:], sim_data.u[index, sim_data.T:], BLUE, linestyle="--",
                                     label="Predicted actuation")
@@ -129,7 +129,7 @@ def PlotActuation(axs: plt.axis, sim_data: SimulationData, cv_rows: int, mv_rows
                 axs[i, toggle].set_title(sim_data.inputs[index])
                 index += 1
     else:
-        axs[1].axvline(x=sim_data.T, color=BLACK, label="Prediction axis")
+        axs[1].axvline(x=sim_data.T, color=BLACK)
         axs[1].step(t[0:sim_data.T+1], sim_data.u[0, 0:sim_data.T+1], BLUE, label="Optimized actuation")
         axs[1].step(t[sim_data.T:], sim_data.u[0, sim_data.T:], BLUE, linestyle="--", label="Predicted actuation")
 
