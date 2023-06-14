@@ -31,7 +31,9 @@ export default function About() {
       <Box sx={{width: "70%", pl: "15%"}}>
         <Typography variant="body1" gutterBottom>
           This is a repo for implementing the master's thesis for the study programme Cybernetics & Robotics at NTNU. 
-          The thesis is handed out by Equinor, and aims on implementing a simpler software framework simulating optimized control on step response models.
+          The thesis is handed out by Equinor, and aims on implementing a simpler software framework simulating optimized control on step-response models.
+          The simulator available through this web application simulates the performance of an MPC on the corresponding control model assuming no model errors. The functionlity to define a plant model is left out for future implementations. 
+          Hence, there are no control feedback present in the application.  
           The software reads a model definition defined in the system definition JSON format. Followingly, it parses the UX defined controller tuning and simulates the specified controller method.
         </Typography>
         <Typography variant="body1" gutterBottom>
@@ -50,6 +52,21 @@ export default function About() {
           The source code can be found at <Link href="https://github.com/Light-weight-MPC" underline="hover"> {'Github'} </Link> and is distributed under the <Link href="https://github.com/gotvinne/Light-weight-MPC/blob/main/LICENSE" underline="hover"> {"BSD-3-Clause license."} </Link>
         </Typography>
 
+        <Box sx={{pt: "2%", display: "flex", flexDirection: "row"}}>
+        <Box sx={{pl: "10%"}}> 
+          <img src={require("../../img/Logo.png")} alt="Logo" width="110%" />
+          <Typography > 
+            fig: Software logo
+          </Typography>
+        </Box>
+        <Box sx={{pl: "10%"}}> 
+          <img src={require("../../img/lightweightmpc_loop.png")} alt="loop" width="100%"/>
+          <Typography > 
+            fig: Illustration of the Light-weight MPC simulation loop. 
+          </Typography>
+        </Box>
+      </Box>
+
         <Typography variant="subtitle1" align='left' sx={{fontWeight: "bold"}} gutterBottom>
           Software usage:
         </Typography>
@@ -64,13 +81,13 @@ export default function About() {
         </Typography>
       
         <Typography sx={{fontWeight: "bold"}} align="left" variant="subtitle1"> Parameter criteria for valid simulation: </Typography>
-        <Box sx={{pt: "2%"}} align="center"> 
-            <TableContainer  sx={{width: "70%"}} component={Paper}>
+        <Box sx={{pt: "2%"}} align="left"> 
+            <TableContainer  sx={{width: "50%"}} component={Paper}>
                 <Table sx={{ width: "100%" }} aria-label="simple table">
                     <TableHead>
                         <TableRow>
                             <TableCell> Parameter </TableCell>
-                            <TableCell sx={{pl: "20%"}}> Criteria </TableCell>
+                            <TableCell align="left"> Criteria </TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -80,7 +97,7 @@ export default function About() {
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                 >
                                 <TableCell component="th" scope="row"> <InlineMath math={row.name}/> </TableCell>
-                                <TableCell align="center"> <InlineMath math={row.num} /> </TableCell>
+                                <TableCell align="left"> <InlineMath math={row.num} /> </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
@@ -89,21 +106,6 @@ export default function About() {
         </Box>   
       </Box> 
       <Box sx={{pt: "2%"}}/>
-
-      <Box sx={{pt: "2%", pl:"15%", display: "flex", flexDirection: "row"}}>
-        <Box sx={{pl: "10%"}}> 
-          <img src={require("../../img/Logo.png")} alt="Logo" width="110%" />
-          <Typography > 
-            fig: Software logo
-          </Typography>
-        </Box>
-        <Box sx={{pl: "10%"}}> 
-          <img src={require("../../img/outputfeedback.png")} alt="loop" width="100%"/>
-          <Typography > 
-            fig: Illustration of the MPC simulation loop
-          </Typography>
-        </Box>
-      </Box>
 
     </div>
   );

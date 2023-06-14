@@ -12,7 +12,7 @@ export default function Models() {
     return (
         <div className="Algorithm">
             <Box sx={{ width: '75%', pl: "5%", pt: "3%"}}>
-                <Typography variant="h4" sx={{fontWeight: 'bold'}}> Finite Step Response Model, FSRM </Typography>
+                <Typography variant="h4" sx={{fontWeight: 'bold'}}> Finite Step Response Model (FSRM) </Typography>
                 <Typography variant="body1" gutterBottom>
                 Implemented 
                 using <Link href="https://eigen.tuxfamily.org/index.php?title=Main_Page" underline="hover"> {"Eigen"} </Link> software for linear algebra:
