@@ -7,17 +7,18 @@ import mpc_simulator from "../mpc_simulator.mjs";
  * @param {String} sce Scenario name
  * @param {Number} T MPC horizon
  * @param {React.useState} setSimHook Simulation hook
+ * @param {React.useState} setSimError Simulation status hook
  */
-export function simulate(sce_file, sys_file, sce, ref_str, T, setSimHook, errorHook) {
-    let wasm: any;
+export function simulate(sce_file, sys_file, sce, ref_str, T, setSimHook, setSimError) {
+    let wasm;
     mpc_simulator()
     .then((module) => {
         wasm = module;
         setSimHook(wasm.simulate(sce_file, sys_file, sce, ref_str, T));
     })
     .catch((error) => {
-        console.error(error);
-        errorHook(simStatus => { return {...simStatus, error: String(error)}});
+        console.error('Error:', error.message);
+        setSimError(error.message);
         setSimHook("SIM ERROR");
     });
 }

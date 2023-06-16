@@ -17,9 +17,11 @@ const ERROR = {"T": false, "P": false, "M": false, "W": false, "Q": false, "R": 
 
 /**
  * Module defining MPC scenario
+ * @param {React.useState} simError simulation error hook  
  * @param {React.useState} simHook hook to store simulation data  
+ * @param {React.useState} setSimErrorHook simulation error set hook  
  */
-export default function Scenario({simHook}) {
+export default function Scenario({simError, simHook, setSimErrorHook}) {
     //** HOOKS */
     const [sce, setSce] = useState(TEXT_FIELDS);
     const [systemNames] = useState(importSystems());
@@ -27,7 +29,7 @@ export default function Scenario({simHook}) {
     const [ref, setRef] = useState(""); // Reference vector
     const [n, setN] = useState(0);
     const [buttonDisable, setButtonDisable] = useState(true);
-    const [simStatus, setSimStatus] = useState({status: "", error: ""});
+    
     
     // Read model parameters
     const [cv, mv] = useMemo(() => { // When system is selected, c/mv[0] = data, units, called every time scenario module reloads
@@ -81,10 +83,8 @@ export default function Scenario({simHook}) {
         const ref_str = serializeRef(ref);
 
         // MPC simulation:
-        console.log("Simulating...");
-        setSimStatus(simStatus => { return {...simStatus, status: "Simulating..."} });
         simHook("Simulating");
-        simulate(sce_file, sys_file, sce["Scenario"], ref_str, parseInt(sce["T"]), simHook, setSimStatus);
+        simulate(sce_file, sys_file, sce["Scenario"], ref_str, parseInt(sce["T"]), simHook, setSimErrorHook);
     };
 
     const handleTextField = e => { 
@@ -128,9 +128,9 @@ export default function Scenario({simHook}) {
             <Box sx={{pl: "1%", pt: "1%", width: "40%"}}>
                 <Reference cv={cv} mv={mv} ref_value={ref} n={n} handler={handleReference}/>
 
-                <Box sx={{pt: 2, height: "5%", display: "flex", flexDirection: "row"}} >
-                    <Typography color={"#d40808"}>
-                        {simStatus.error}
+                <Box sx={{pt: "5%", height: "5%", display: "flex", flexDirection: "row"}} >
+                    <Typography variant="h4" color={"#d40808"}>
+                        {simError}
                     </Typography>
                 </Box>
             </Box>

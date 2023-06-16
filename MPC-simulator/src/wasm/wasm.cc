@@ -64,9 +64,14 @@ string simulate(string sce_file, string sys_file, string sce, string ref_str, in
     // Parse information:
     try {
         Parse(sce_file, sys_file, m_map, cvd, mvd, conf, z_min, z_max);
-    }
-    catch(std::exception& e) {
+    } catch(std::out_of_range& e) {
         return string(e.what());
+    } catch(std::invalid_argument& e) {
+        return string(e.what());
+    } catch(json::exception& e) {
+        return string(e.what());
+    } catch(...) {
+        return "ERROR: Parsing";
     }
 
     // Determine simulation type:
@@ -91,9 +96,11 @@ string simulate(string sce_file, string sys_file, string sce, string ref_str, in
             MatrixXd u_mat, y_pred, ref = ParseReferenceStr(ref_str, T, conf.P);
             try { // Solve
                 SRSolver(T, u_mat, y_pred, fsr, conf, z_min, z_max, ref);
-            }
-            catch(std::exception& e) {
+            } catch(std::runtime_error& e) {
                 sim_results = string(e.what());
+                break;
+            } catch(...) {
+                sim_results = "ERROR: Solver";
                 break;
             }
             sim_results = SerializeSimulation(sce, cvd, mvd, 
@@ -112,9 +119,11 @@ string simulate(string sce_file, string sys_file, string sce, string ref_str, in
 
             try { // Solve
                 SRSolver(T, u_mat, y_pred, fsr_sim, fsr_cost, conf, z_min, z_max, ref);
-            }
-            catch(std::exception& e) {
+            } catch(std::runtime_error& e) {
                 sim_results = string(e.what());
+                break;
+            } catch(...) {
+                sim_results = "ERROR: Solver";
                 break;
             }
             sim_results = SerializeSimulation(sce, cvd, mvd, 
@@ -129,9 +138,11 @@ string simulate(string sce_file, string sys_file, string sce, string ref_str, in
             MatrixXd u_mat, y_pred, ref = ParseReferenceStr(ref_str, T, conf.P);
             try { // Solve
                 SRSolverWoSlack(T, u_mat, y_pred, fsr, conf, z_min, z_max, ref);
-            }
-            catch(std::exception& e) {
+            } catch(std::runtime_error& e) {
                 sim_results = string(e.what());
+                break;
+            } catch(...) {
+                sim_results = "ERROR: Solver";
                 break;
             }
             sim_results = SerializeSimulation(sce, cvd, mvd, 
@@ -149,9 +160,11 @@ string simulate(string sce_file, string sys_file, string sce, string ref_str, in
             MatrixXd u_mat, y_pred, ref = ParseReferenceStr(ref_str, T, conf.P);
             try { // Solve
                 SRSolverWoSlack(T, u_mat, y_pred, fsr_sim, fsr_cost, conf, z_min, z_max, ref);
-            }
-            catch(std::exception& e) {
+            } catch(std::runtime_error& e) {
                 sim_results = string(e.what());
+                break;
+            } catch(...) {
+                sim_results = "ERROR: Solver";
                 break;
             }
             sim_results = SerializeSimulation(sce, cvd, mvd, 
