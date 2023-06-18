@@ -62,7 +62,7 @@ export default function About() {
         <Box sx={{pl: "10%"}}> 
           <img src={require("../../img/lightweightmpc_loop.png")} alt="loop" width="100%"/>
           <Typography > 
-            fig: Illustration of the Light-weight MPC simulation loop. 
+            fig: Illustration of the Light-Weight MPC simulation loop. 
           </Typography>
         </Box>
       </Box>

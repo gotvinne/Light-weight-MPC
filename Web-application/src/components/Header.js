@@ -12,7 +12,7 @@ export default function Header() {
             <Box sx={{width: "inherit", pt: 1, pb: 1, display: "flex", flexDirection: "row"}}>
                 <Box sx={{pl: "40%", width: "25%"}} >
                     <Typography variant="h4" color="#ec4335" sx={{pt: "5%", fontWeight: 'bold'}}>
-                        Light-weight MPC
+                        Light-Weight MPC
                     </Typography>
                 </Box>
                 <Box sx={{pl: "30%"}}>
