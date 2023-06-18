@@ -1,11 +1,11 @@
 # MPC-simulator: C++, Python, Webassembly
-This is a simulation software base for automating MPC simulations on Finite Step Response Models. All data files, including the model description and controller definition, are defined using JSON format making the software easily integratable. Having defined the input files, one can simulate the controller from the command line, calling make.sh using CMake and GNU compiler. In order to visualize the simulation data, plotting functionality is implemented in Python. Additionally, in order to interface the software to web-applications, the software is compiled to wasm format calling emcc.sh using the Emscripten compiler. 
+This is a lightweight software base for automating MPC simulations on Finite Step-Response Models. All data files, including the model description and controller definition, are defined using JSON format making the software easily integratable. Having defined the input files, one can simulate the controller from the command line, calling make.sh using CMake and GNU compiler. In order to visualize the simulation data, plotting functionality is implemented in Python. Additionally, in order to interface the software to web-applications, the software is compiled to wasm format calling emcc.sh using the Emscripten compiler. 
 
 Operating system: Linux, MacOS
 ## Modules
 - [data](data/README.md): System, scenario and simulation files.
 - [MPC](src/MPC/README.md): Solving the MPC problems.
-- [model](src/model/README.md): Generating a Finite Step Response Model. 
+- [model](src/model/README.md): Generating a Finite Step-Response Model. 
 - [IO](src/IO/README.md): Parsing and serializing respectively input and output data.
 - [vis](vis/README.md): Visualizing simulations in jupyter notebook
 
