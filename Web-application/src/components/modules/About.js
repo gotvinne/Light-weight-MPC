@@ -15,12 +15,12 @@ const tableData = [
   createData('M', `M \\in [W, P]`),
   createData('W', `W \\in [0, M]`),
   createData('T', `T > 0`),
-  createData('\\boldsymbol{Q}', `\\boldsymbol{Q} \\geq 0, \\quad \\boldsymbol{Q}.length == n_{CV}`),
-  createData('\\boldsymbol{R}', `\\boldsymbol{R} \\geq 0, \\quad \\boldsymbol{R}.length == n_{MV}`),
-  createData('\\rho_h', `\\rho_h \\geq 0, \\quad \\rho_{h}.length == n_{CV}`),
-  createData('\\rho_l', `\\rho_l \\geq 0, \\quad \\rho_{l}.length == n_{CV}`),
-  createData('\\overline{z}', `\\overline{z}_i > \\underline{z}_i, \\quad i \\in \\{0, \\ldots ,  2 \\cdot n_{MV} + n_{CV}\\} \\quad \\overline{z}.length == 2 \\cdot n_{MV} + n_{CV}`),
-  createData('\\underline{z}', `\\underline{z}_i < \\overline{z}_i, \\quad i \\in \\{0, \\ldots ,  2 \\cdot n_{MV} + n_{CV}\\} \\quad \\underline{z}.length == 2 \\cdot n_{MV} + n_{CV}`)
+  createData('\\boldsymbol{Q}', `\\boldsymbol{Q} \\geq 0, \\quad \\boldsymbol{Q}.length = n_{CV}`),
+  createData('\\boldsymbol{R}', `\\boldsymbol{R} \\geq 0, \\quad \\boldsymbol{R}.length = n_{MV}`),
+  createData('\\rho_h', `\\rho_h \\geq 0, \\quad \\rho_{h}.length = n_{CV}`),
+  createData('\\rho_l', `\\rho_l \\geq 0, \\quad \\rho_{l}.length = n_{CV}`),
+  createData('\\overline{z}', `\\overline{z}_i > \\underline{z}_i, \\quad i \\in \\{0, \\ldots ,  2 \\cdot n_{MV} + n_{CV}\\} \\quad \\overline{z}.length = 2 \\cdot n_{MV} + n_{CV}`),
+  createData('\\underline{z}', `\\underline{z}_i < \\overline{z}_i, \\quad i \\in \\{0, \\ldots ,  2 \\cdot n_{MV} + n_{CV}\\} \\quad \\underline{z}.length = 2 \\cdot n_{MV} + n_{CV}`)
 ];
 /**
  * Module describing the background of the project
@@ -33,7 +33,7 @@ export default function About() {
           This is a repo for implementing the master's thesis for the study programme Cybernetics & Robotics at NTNU. 
           The thesis is handed out by Equinor, and aims on implementing a simpler software framework simulating optimized control on step-response models.
           The simulator available through this web application simulates the performance of an MPC on the corresponding control model assuming no model errors. The functionlity to define a plant model is left out for future implementations. 
-          Hence, there are no control feedback present in the application.  
+          Hence, there are no output feedback present in the application.  
           The software reads a model definition defined in the system definition JSON format. Followingly, it parses the UX defined controller tuning and simulates the specified controller method.
         </Typography>
         <Typography variant="body1" gutterBottom>

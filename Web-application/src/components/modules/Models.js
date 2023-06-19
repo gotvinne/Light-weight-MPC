@@ -18,8 +18,8 @@ export default function Models() {
                 using <Link href="https://eigen.tuxfamily.org/index.php?title=Main_Page" underline="hover"> {"Eigen"} </Link> software for linear algebra:
                 </Typography>
                 <Typography variant="body1" gutterBottom>
-                    The FSRModel is a C++ object creating the dynamics of a general linear step response model. 
-                    The following equations and matrices are avaliable by calling the FSRModel functionality.
+                    The FSRModel is a C++ object creating the dynamics of a general linear Step-Response model. 
+                    The following equations and matrices are avaliable as FSRModel member functions. The model is commonly used to describe the control plant of an exponentially stable process. In constrast to the State Space Model, this model stores the state information in the actuation. Hence, tracking the dynamic of the model is the same as tracking the applied actuation. 
                 </Typography>
 
                 <Typography variant="subtitle1" sx={{fontWeight: "bold"}}> Model definition: </Typography>
